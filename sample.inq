@@ -1,0 +1,36 @@
+photo qtl.out
+load data sample
+photo qtl.out
+trait 1
+show trait
+make trait logwt=log(weight)
+seq [all]
+show linkage maps
+trait 2
+scan
+show peaks
+draw scan
+sequence [8+6]
+map
+sequence [8+6 2+8]
+map
+sequence [2]
+map
+sequence [1-7]
+map
+sequence [8+6:recessive]
+map
+sequence [2+6:try]
+map
+sequence [2-5:try]
+scan
+show trys
+draw scan 2 3.0
+sequence [2+6][8+6]
+map
+comment We mapped and characterized two QTLs.
+quit
+
+
+
+

@@ -1,0 +1,423 @@
+PREPARING DATA FOR MAPMAKER VERSION 3.0 AND MAPMAKER/QTL VERSION 1.1
+(c) Copyright 1992 Whitehead Institute for Biomedical Research
+
+Data files are fully compatible between MAPMAKER Version 3.0 and MAPMAKER/QTL 
+version 1.1, providing a unified package for mapping both genetic markers as 
+well as factors controlling quantitative traits in the same populations. 
+MAPMAKER Version 3.0 can analyze data derived from progeny of several types of 
+crosses, including:
+
+    F2 backcross (e.g. BC1)
+    F2 intercross
+    F3 intercross (by self-mating)
+    Recombinant Inbred Lines (by self or sib-mating)
+
+There are also other types of crosses for which MAPMAKER and MAPMAKER/QTL can 
+be used, because the genetic model for the cross is identical to that of one of 
+the above simple crosses. For example, F2 testcrosses and F1 haploid data can 
+be used, as described below.
+
+Unlike MAPMAKER however, MAPMAKER/QTL can currently only work with F2 
+intercross and backcross data.  The two programs handle loading and preparing 
+data files in similar ways, and share files which hold intermediate results. 
+
+To get your data into MAPMAKER and MAPMAKER/QTL, the data must first be placed 
+into a 'raw' file in an appropriate format. You can either maintain your data 
+in this format, or instead extract it from your working database (such as a 
+spreadsheet program). MAPMAKER (not MAPMAKER/QTL) must then be used to 
+'prepare' these files into a processed form ready for analysis, these processed 
+files are then loadable by either MAPMAKER or MAPMAKER/QTL.  These issues are 
+the topic of the next sections.
+
+
+SETTING UP A RAW DATA FILE
+
+Raw files are flat ASCII text files which may be generated in many ways, 
+including: (i) any simple text editor, such as DOS Edit, A/UX's Text Editor, or 
+Sun's OpenWindows Text Editor; (ii) a word-processor which can export text-only 
+files; (iii) a spreadsheet or flat-file database which can export "Text Only" 
+files, such as Excel, Lotus 1-2-3, or FileMaker; or (iv) a program which you 
+write yourself. The raw data does not need to be stored on the same machine as 
+that you run MAPMAKER on, although you obviously will need some way of 
+transferring the data (Bear in mind that text-only formats are very slightly 
+different on Unix, DOS, and Macintosh -- your software should convert the file 
+appropriately as it is trasferred. Ask your computer support people for 
+details.)
+
+As a general note, MAPMAKER attempts to be very lienient about how you separate 
+items in a data file (e.g. spaces, tabs, or sometimes line breaks), and is 
+generally insenitive to extra spaces, uppercase-lowercase distinctions, and 
+(after the top two lines) blank lines.  However, it is still possible to format 
+ia file in such a way as it confuses MAPMAKER -- if you have trouble, try to 
+make your MAPMAKER file look more like the sample file, included.
+
+The very first line of your raw data file should read like:
+
+    data type xxxx
+
+where  xxxx is one of the allowed data types, either:
+
+    f2 intercross
+    f2 backcross
+    f3 self
+    ri self
+    ri sib
+
+The second line of the raw file should contain a list of three numbers, 
+separated by spaces, such as:
+
+    46 362 2
+
+The first of these values indicates the number of progeny for which data are 
+included in the file (in this case, 46). The second indicates the number of 
+genetic loci for which data are supplied (362). The third indicates the number 
+of quantitative traits in the data set (here 2, although this may be zero, of 
+course).
+
+Additional information may be optionally supplied at the end of this line. In 
+particular, you may specify the coding scheme you use for genotypes. By 
+default, the codes used for F2 backcross (a.k.a. BC1) data are:
+
+    'A'    Homozygote for the recurrent parent genotype.
+    'H'    Heterozygote.
+    '-'    Missing data for the individual at this locus.
+
+For F2 intercross data, the default codes are:
+
+    'A'    Homozygote for the allele from parental strain a of this locus.
+    'B'    Homozygote for the allele from parental strain b of this locus.
+    'H'    Heterozygote carrying both alleles a  and b.
+    'C'    Not a homozygote for allele a  (either bb  or ab  genotype.)
+    'D'    Not a homozygote for allele b  (either aa  or ab  genotype.)
+    '-'    Missing data for the individual at this locus
+
+For RI data, the default codes are:
+
+    'A'    Homozygote for parental genotype a.
+    'B'    Homozygote for parental genotype b.
+    '-'    Missing data for the individual (or line) at this locus.
+
+Also by default, MAPMAKER will match genotype characters in a case-insensitive 
+manner (that is 'a' and 'A' indicate the same genotypes).
+
+Howver, you can tell MAPMAKER to use whatever conventions you like, so long as 
+you use the same conventions for the entire data file. First off, if you follow 
+the numbers on the second line with the word "case", then MAPMAKER will match 
+genotype characters in a case sensitive manner (that is 'a' and 'A' can be used 
+to indicate different genotypes). For example:
+
+    46 362 2 case
+
+If you do not wish to use case-sensitive genotypes, do not include the word 
+"case".
+
+To specify the coding scheme itself, include on the end of the above line the 
+word "symbols" followed by the coding scheme you wish to use, defined in terms 
+of the coding scheme above. For example, if you wish to use the following 
+scheme with an RI data set:
+
+    '1'    Homozygote for parental genotype a.
+    '2'    Homozygote for parental genotype b.
+    '0'    Missing data for the individual (or line) at this locus.
+
+then you would use a second line like:
+
+    46 362 2 symbols 1=A 2=B 0=-
+
+Note that when interpreting this line, MAPMAKER is in fact quite finickey about 
+spaces and case distinctions (in order to keep MAPMAKER from ever 
+misunderstanding exactly what you mean). In particular, NO SPACES should 
+surround the "=" signs.
+
+To use with a backross data set the scheme:
+
+    'a'    Homozygote for parental genotype a.
+    'A'    Heterozygote.
+    '-'    Missing data for the individual (or line) at this locus.
+
+you should use a line like:
+
+    46 362 2 case symbols a=A A=H
+
+The main restriction on coding schemes are that the only allowed symbols are 
+letters, numbers, and the characters '-' and '+'. 
+
+After the first two header lines, the raw file should then present the genetic 
+locus data, in the following simple format:  For each locus, you list (1) the 
+name of the locus, preceded by an asterisk ("*"); (2) one or more spaces (or 
+tabs etc.); and (3) the genotypic data for all individuals, in order. For 
+example:
+
+    *locus1   BA-HHHAAABBB-HHAA
+
+would provide data for a locus named "locus1" with individual #1 having the B 
+genotype, individual #2 having the A genotype, and so forth. Data for each new 
+locus should begin on a new line (with blank lines allowed), although the 
+genetic data for any one locus may be "broken" by any number of spaces, tabs, 
+and line breaks. This means that, among other things, tab-delimited-text files 
+(such as those often exported by spreadsheet programs) will work well, for 
+example:
+
+    *L2  B    A    -    H    H    H    A    A    A    B    B    B    -    H
+
+There is a system-dependednt maximum line length, although it is fairly large 
+(at least 1,000 characters, where a tab counts as one character).
+
+Locus names should be kept to at most 8 characters, and must be limited to 
+alphabetic and numeric characters, along with the underscore character ('_') 
+and periods ('.'). No other characters are allowed (although any dashes in 
+locus names ('-') will be converted to underscores). Locus names must start 
+with a alphabetic character (so that they are not confused with locus numbers 
+in MAPMAKER sequences).
+
+Any quantitative trait data should come after the genetic locus data. These 
+data follow a similar format, except that the trait values for each individual 
+must be separated by at least one space, tab, or line break. A dash ('-') alone 
+indicates missing data. For example:
+
+    *weight    6.3 7.7 8.0 6.2 8.6 - 7.5 9.0 5.5 - - 8.4 7.7 7.4 6.9 -
+
+would correspond to a trait named "weight", for which individual #1 has a value 
+of 6.3, individual #2 has a value of 7.7, and so on. The sixth individual is 
+missing data for this trait (and will be ignored for all analyses involving 
+these trait data). As for the genotypes, a new trait should begin on a new 
+line, and line breaks are allowed. Tab-delimted-text files work well here too.
+
+Traits may also be specified as functions of other existing trait data. For 
+example:
+
+    *weight1    6.3  7.7  8.0  6.2  8.6  6.9  7.5  9.0 
+    *weight2    6.7  7.9  7.5  6.8  8.0  7.3  7.5  9.5 
+    *mean= (weight1 + weight2)/2
+
+The format of these equations is described under the "make trait" command. Such 
+traits must be included in the number of traits indicated on the file's second 
+line.
+
+Note that genetic maps (particularly for MAPMAKER/QTL) are no longer included 
+in the raw file, as they were with MAPMAKER Version 2.0. Instead, use a ".prep" 
+initialization file, described below.
+
+Finally, note that comments may be inserted on any line starting with a number 
+sign character ("#"). 
+
+An example of a complete raw file follows:
+
+    data type f2 intercross
+    20 5 2
+    # Joe's tiny data set, 10/21 version.
+
+    *locus1  BBBHH-AAABBBHHH-AABA
+    *locus2  AB-ABHABHAB-ABHABHBH
+    *locus3  ABBAHHHBHABHABHBBHH-
+    # Locus3 may be mis-scored in individual 12!
+    *locus4  ABHABAAAHAB-ABHABHHB
+    *locus5  ABHABHAA-ABHABHAHHHB
+
+    *trait1 6.3 7.7 8.0 6.2 8.8 6.2 4.1 6.5 5.4 7.3
+            8.7 9.0 5.2 6.8 7.2 7.1 7.6 8.3 8.1 7.5
+    *trait2 5.5 5.5 5.5 4.5 4.5 4.5 3.5 3.5 3.5  - 
+            5.5 5.5 4.5 4.5 4.5 3.5 5.2 6.8 7.2 7.1
+
+
+PREPARING A RAW DATA FILE FOR ANALYSIS
+
+Once your data are in the raw file format, it is easy to process them into a 
+form usable by MAPMAKER Version 3.0 and MAPMAKER/QTL 1.1.  In this version of 
+the programs, you must do this processing using MAPMAKER's "prepare data" 
+command (you can not presently prepare a raw file using MAPMAKER/QTL). 
+
+Simply put, the "prepare data" command loads the information in your raw data 
+file into MAPMAKER. Unless told otherwise (see below), MAPMAKER then writes 
+some new files which are in a slightly different format (you should not ever 
+modify these files, and thus you should not be concerned about precisely what 
+this format is.)  Your raw file remains unaltered and should be saved as a 
+backup copy of your data. These new files will serve as the working data set 
+for MAPMAKER and MAPMAKER/QTL -- both programs will read and write these files 
+repeatedly to keep the state of your analyses between sessions.
+
+In the process of preparing data, MAPMAKER loads the new data set into its 
+memory, which is then ready for analysis (earlier versions of MAPMAKER required 
+you to separately load a data file after it is prepared, this is no longer the 
+case.)
+
+The first files generated get the extensions ".data", ".maps", and ".traits" 
+(truncated on DOS systems to ".dat", ".map", and ".tra"). The ".data" file 
+contains the genetic locus data. The ".maps" file contains saved mapping 
+results along with some MAPMAKER specific information.  The ".traits" file 
+contains the quantitative trait data and several MAPMAKER/QTL specific values. 
+Other files may also be created while you use MAPMAKER and MAPMAKER/QTL -- 
+these include ".2pt" and ".3pt" files containing MAPMAKER's two-point and 
+three-point data respectively, and a ".qtls" file (".qtl" on DOS) containing 
+save results from MAPMAKER/QTL.
+
+To prepare a raw file, simply start up MAPMAKER, and type the command:
+
+    prepare data xxxx
+
+where xxxx is the name of the raw file (with its extension, if it has one). We 
+recommend that raw files use the extension ".raw", although this is not 
+required. For example:
+
+    prepare data mydata.raw
+
+If you specify a directory for the file name, the prepared files will be placed 
+in that directory also. 
+
+You may now start analyzing your data using any of MAPMAKER's commands. When 
+you later quit MAPMAKER (or use the "save" command), the files will be updated.  
+Later, you may resume your analyses by restarting MAPMAKER and re-loading these 
+files using the "load data" command. For example:
+
+    load data mydata
+
+
+USING AN INITIALIZATION (.PREP) FILE
+
+Whenever you issue the "prepare data" command, MAPMAKER looks for a file with 
+the same name as the raw data file and the extension ".prep" (on UNIX, 
+truncated to ".pre" on DOS). If this file is present, it is assumed to contain 
+MAPMAKER commands, which are automatically executed after the data are 
+prepared. These "initialization files" serve as a useful way to setup MAPMAKER 
+in the appropriate state for working with a particular data set. With an 
+initialization file, every time that data set is prepared (e.g. if you change 
+genotype data), it is relatively easy to start again where you left off. 
+
+When a initialization file is not found, MAPMAKER's default initialization 
+action is simply to save the working data files (as if the "save data" command 
+had been typed).  When a initialization file is found, MAPMAKER executes these 
+commands INSTEAD.  Thus, if you want MAPMAKER to save the files, you should end 
+your initialization file with a "save data" command.
+
+Typical actions in an initialization file might be to:
+    - set various MAPMAKER options or parameters
+    - declare the names of chromosomes, classes, anchor loci, etc
+    - set the framework orders of chromosomes, particularly for MAPMAKER/QTL
+    - precompute two-point data and find linkage groups
+    - set various named sequences
+
+To load a data set into MAPMAKER/QTL, you need to provide "framework" maps for 
+any chromosome you wish to scan. When you know a map order for some 
+chromosomes, it is often convenient to place this in a initialization file in 
+order to quickly have a data set ready for MAPMAKER/QTL. 
+
+If you wish MAPMAKER to calculate the map distances, you can do this with 
+commands like:
+
+    make chromosome chrom2
+    sequence R45S TG165 TG175 CD35 TG93 CD66 TG50B
+    framework chrom2
+
+To provide map distances yourself, use a sequence with fixed distances using 
+MAPMAKER's "=" syntax:
+
+    seq R45S =21.9 TG165 =20.7 TG175 =4.4 CD35 =13.2 TG93 =7.3 CD66 =13.6 TG50B
+
+See the discussion of the "sequence" command in the MAPMAKER reference manual 
+for details. Note that the above map distances  would be assumed to be in 
+centimorgans, using the specified "centimorgan function" (by default, the 
+Haldane function). Naturally, you do not NEED to declare the map orders in an 
+initialization file to use MAPMAKER/QTL -- you may issue the same commands 
+interactively before saving the data and then run MAPMAKLER/QTL.
+
+A sample ".prep" file might be:
+
+    units cm
+    cent func kosambi
+    make chrom chrom1 chrom2 chrom3
+    seq 1
+    anchor chrom1
+    seq 4 
+    anchor chrom2
+    seq 13
+    anchor chrom3
+    error det on
+    seq all
+    error prob 0.5
+    two point
+    assign
+    seq R45S TG165 TG175 CD35 TG93 CD66 TG50B
+    frame chrom2
+    save
+
+(note the use of command abbreviations here). Another exmaple of a  ".prep" 
+file is supplied with the sample data files included with MAPMAKER.
+
+
+USING OTHER TYPES OF CROSSES AND MARKERS
+
+MAPMAKER's linkage analysis mechanism is quite general, and in fact can analyze 
+many varied sorts of data.
+
+Fort example, one frequently asked question concerns multibanded markers, such 
+as cDNA RFLPs and RAPDs, particularly in an F2 intercross. In this case, each 
+band of the marker can be considered a dominant trait, and can be entered using 
+the C and D notation described above. However, some of the bands may be 
+allelic, in which case you would gain much power by recoding them as a 
+codominant (A/B/H) marker.  This can be done two ways: either (1) enter each 
+band as a +/- marker, and perform an initial linkage analysis looking for 
+markers that are recombinationally unseparated and which map together.  Recode 
+these as a codominant locus.  Alternatively (2), you may be able to use 
+MAPMAKER's "join haplotypes" feature, discussed in the referencs manual.
+
+To enter data for other types of crosses, you need to determine whether the 
+cross genetically resembles one MAPMAKER already understands, in terms of the 
+underlying genetic model, or whether it one of MAPMAKER's models will provide a 
+reasonble interpretation (modulo some scaling of likelihoods and distances). 
+
+As a simple example, consider an F2 testcross, which is much like a backcross 
+except that we have:
+
+    (a|a x b|b)  x  c|c
+
+in which case the observable F2 genotypes are a|c and b|c. To code this as a 
+backcross, simply designate one parent's genotype (a or b) as 'A', the other as 
+'H', and enter the data with this coding in the normal way.  NAPMAKER's 
+underlying genetic model will be exactly correct and the LOD scores and 
+distances will be correct. Be careful however with +/- markers (such as RAPDs) 
+to get the parental genotype assignments (a allele vs. b allele) correct!
+
+As another example, imagine F1 haploids of an outbred species, again encoding 
+the data as a simple backcross. For example, if we cross:
+
+    a|b  x  c|d
+
+then the observable haploid genotypes at any locus are: a, b, c, and d.  If 
+linkage phase is known (that is if we know which chromosome a and b are on, and 
+which c and d are on, and we can keep this assignment consistent accross the 
+entire data set), then the case is easy: Arbitrarily designate one backcross 
+class (say 'A') as "a or c", the other ('H') as "b or d", and enter the data 
+with this coding in the normal way -- NAPMAKER's underlying genetic model again 
+will be exactly correct and the LOD scores and distances will be correct. 
+
+Problems arise when true genotypic classes cannot be distinguished, or 
+(equivalently) when linkage-phase is not known beforehand, as may be the case 
+with RAPDs and similar markers. In such cases, your only recourse may be to 
+perform a segragation analysis on the observed genotypes to determine probable 
+phase assignments, and then code the data as phase known.  Other methods may be 
+available: contact us for details.
+
+
+COMPATIBILITY WITH PREVIOUS VERSIONS OF MAPMAKER
+
+Users of MAPMAKER version 2.0 (a.k.a. 1.9) will have little trouble getting 
+their data into MAPMAKER version 3.0, because the file formats are virtually 
+identical. The only slight difference is in the format of the second line of 
+the data file header, as described above.
+
+Users of MAPMAKER/QTL version 1.0 (a.k.a. 0.9) however, will have to slightly 
+modify their files in the way that chromosome orders and maps are included. The 
+format described above makes this very convenient for the majority of users who 
+will compute maps in MAPMAKER and then load these results into MAPMAKER/QTL.
+
+Users of MAPMAKER Version 1.0, or MAPMAKER for Macintosh (a.k.a. MAPMAKER-II) 
+will need to do a little more work, because of both the slightly different 
+header and the required asterixes before locus names, as described above. F2 
+backcross data sets, entered into old versions of MAPMAKER as intercrosses, 
+should in fact be analyzed as true backcrosses in the new version (luckily, 
+MAPMAKER 3.0's ability to use arbitrary genotype coding schemes, described 
+above, insures that you will NOT have to retype all of your genotype data into 
+MAPMAKER.)
+
+
+Ver 3b: S. Lincoln 12/92

@@ -1,0 +1,51 @@
+remark ...Initialization file for large MAPMAKER/EXP sample data set...
+print names on
+print maps on
+triple error detection on
+informativeness criteria 4.0 44 codominant
+
+make chromosome chrom1 chrom2 chrom3 chrom4 chrom5 chrom6 chrom7 chrom8 
+make chromosome chrom9 chrom10 chrom11 chrom12 chrom13 chrom14 chrom15 
+make chromosome chrom16 chrom17 chrom18 chrom19
+sequence L020 L031
+anchor chrom1
+sequence L018 L044
+anchor chrom2
+sequence L040 L037
+anchor chrom3
+sequence L067 M008
+anchor chrom4
+sequence A082 A011
+anchor chrom5
+sequence D011 T023
+anchor chrom6
+sequence T027 L025
+anchor chrom7
+sequence L011 D020
+anchor chrom8
+sequence L019 L032
+anchor chrom9
+sequence T031 D030
+anchor chrom10
+sequence L003 D002
+anchor chrom11
+sequence L041 L016
+anchor chrom12
+sequence D024 M038
+anchor chrom13
+sequence T010 L027
+anchor chrom14
+sequence L001 L029
+anchor chrom15
+sequence M127 L039
+anchor chrom16
+sequence L004 L028
+anchor chrom17
+sequence L024 L087
+anchor chrom18
+sequence M013 M109
+anchor chrom19
+
+sequence all
+two point
+save

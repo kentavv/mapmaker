@@ -1,0 +1,23 @@
+remark  Define two chromosomes, arbitrarily named "one" and "two"
+make chromosome one two
+
+remark  Chromosome one will be the linkage group which contains marker 1
+remark  Chromosome two will be the linkage group which contains marker 4
+sequence 1 
+anchor one
+sequence 4
+anchor two
+
+remark  Now we assign all of the markers to one of these two chromosomes. We
+remark  need to do this in order to make frameworks, as the framework for a
+remark  chromosome must only contain markers assigned to that chromosome...
+sequence all
+assign
+
+remark  Now we finally can set the framework maps for the two chromosomes...
+sequence 1 3 2 5 7
+frame one
+sequence 4 11 8 12 9 6 10
+frame two
+
+

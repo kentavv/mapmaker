@@ -1,0 +1,41 @@
+remark ...Tutorial commands for large MAPMAKER/EXP data set...
+photo tutorial.out
+prepare data mouse.raw
+photo tutorial.out
+
+sequence all
+assign
+list chromosomes
+sequence unassigned
+list assignments
+links
+
+sequence chrom10
+three point
+order
+let best=order1
+
+sequence best
+ripple
+
+sequence chrom12
+three point
+order
+
+sequence T002 M062 L016 L058 A064 L041 T051 m027 T064
+map
+error detection on
+map
+genotypes
+error detection off
+
+sequence chrom10: best
+framework chrom10
+sequence assigned
+place
+draw chromosome
+help draw chromosome
+
+quit
+yes
+

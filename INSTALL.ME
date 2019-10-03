@@ -1,0 +1,740 @@
+MAPMAKER 3.0 and MAPMAKER/QTL 1.1 INSTALLATION GUIDE
+(c) Copyright 1992 Whitehead Institute for Biomedical Research
+
+Here,we describe how you should copy the MAPMAKER files on to your computer and 
+how to then complete the installation process. In the preceding "General 
+Information" section (and in the READ.ME file), we describe the types of 
+systems which can run MAPMAKER. It is important that you read this section 
+first to make sure your computer is appropriate, before proceeding with the 
+instructions below.  Separate sections below describe MAPMAKER installation on 
+(1) PC's, (2) Sun SPARCstations, (3) A/UX Macintoshes, and (4) other computers.
+
+
+(1) INSTALLING ON A PC COMPATIBLE RUNNING DOS
+
+From a DOS prompt, make a new directory named MAPMAKER on your hard
+disk.  If you have received MAPMAKER on floppy disk, simply "CD" into this 
+directory and copy the files on the MAPMAKER floppy disk(s) into it.  The 
+commands to do this will be something like:
+
+    MKDIR C:\MAPMAKER
+    CD C:\MAPMAKER
+    COPY A:*.* C:
+
+If instead you retrieved MAPMAKER from the Internet via FTP, you should move 
+the files you retrieved into this MAPMAKER directory now, as above.
+
+You should now have READ.ME and INSTALL.ME files (this document, actually) as 
+well as two compressed PKZIP self-extracting archives named MAPM3PC1.EXE and 
+MAPM3PC2.EXE. To extract the other MAPMAKER files from this archive, you should 
+simply type:
+
+    MAPM3PC1 /D
+    MAPM3PC2 /D
+
+Many more files will now be in this directory, including:
+
+MAPMAKER.BAT  - The actual executable for MAPMAKER/EXP 3.0
+MAPMAKER.PIF  - MAPMAKER launcher for Windows 3.1
+MAPMBIN.EXE   - The binary program for MAPMAKER 3.0 (*)
+MAPMAKER.HLP  - The on-line help information for MAPMAKER 3.0 
+QTL.BAT       - The actual executable for MAPMAKER/QTL Version 1.1
+QTL.PIF       - MAPMAKER/QTL launcher for Windows 3.1
+QTLBIN.EXE    - The binary program for MAPMAKER/QTL Version 1.1 (*)
+QTL.HLP       - The on-line help information for MAPMAKER/QTL 1.1
+SAMPLE.RAW    - A sample data set, used in the tutorials
+SAMPLE.IN     - Sample batch file (commands from the MAPMAKER/EXP tutorial)
+SAMPLE.INP    - Sample batch file (commands to set up the QTL tutorial)
+SAMPLE.INQ    - Sample batch file (commands from the MAPMAKER/QTL tutorial)
+MOUSE.RAW     - Large sample data set for MAPMAKER/EXP tutorial
+MOUSE.PRE     - Initialization file for MOUSE.RAW
+MOUSE.IN      - Sample batch file (commands from the MAPMAKER/EXP tutorial)
+DOS4GW.EXE    - The run-time package used by the programs (from WATCOM *)
+MAPM.VMC      - The virtual memory set up file used by DOS4GW.EXE
+READ.ME       - The Release Notes, including license information
+INSTALL.ME    - This Installation Guide
+FEED.ME       - Instructions for preparing data files
+CHANGE.ME     - Change list, bug list and to-do list
+COVER.ME      - Cover letter
+GSCRIPT <DIR> - Portions of the FSF's GhostScript package
+
+If this succeeds, you can now delete the archives:
+
+
+    DEL MAPM3PC1.EXE
+    DEL MAPM3PC2.EXE
+
+To run MAPMAKER, your PC must have EXTENDED memory active (for most data sets 8 
+megabytes or more is best, 4 may or may not suffice). The DOS command MEM will 
+tell you how much extended memory is available. If this number is zero, but 
+your PC has extended memory installed, check your CONFIG.SYS file for a line 
+like:
+
+    DEVICE=C:\DOS\HIMEM.SYS
+ or DEVICE=C:\WINDOWS\HIMEM.SYS
+
+(You can use the DOS editor or Windows Notepad to do this.) If this line is not 
+present, you need to add it (although you should consult the DOS and/or Windows 
+documentation first). Remember that EXTENDED memory is entirely different from 
+EXPANDED or LIM/EMS (as is provided by EMM386).
+
+In addition, the lines:
+
+    DEVICE=C:\DOS\ANSI.SYS
+    BREAK=ON
+
+should also be in your CONFIG.SYS file.
+
+You will also likely find it convenient to have the MAPMAKER directory listed 
+in your PATH, which is usually set-up in your AUTOEXEC.BAT file. This way, you 
+can simply type "MAPMAKER" or "QTL" at a DOS prompt to run MAPMAKER or 
+MAPMAKER/QTL respectively. To use the on-line help feature, you also need to 
+separately indicate which directory the help files are in (as well as other 
+files the MAPMAKER programs use). These concerns both also hold true for the 
+GhostScript package, if you wish to use it. The appropriate commands in your 
+"AUTOEXEC.BAT" file should read something like:
+
+    PATH C:\DOS;C:\WINDOWS;C:\MAPMAKER;C:\MAPMAKER\GSCRIPT;
+    SET MAPM_LIB=C:\MAPMAKER
+    SET GS_LIB=C:\MAPMAKER\GSCRIPT
+
+After making these changes, you will then need to completely restart your 
+computer (e.g. Hit Control-Alt-Delete). Consult your DOS documentation or your 
+PC support person if you have any questions.
+
+With the programs installed this way, to run MAPMAKER or MAPMAKER/QTL 
+(respectively) you can simply type at a DOS prompt:
+
+    MAPMAKER
+or  QTL
+
+It should not matter what directory you are presently in. In particular, you 
+will find it most convenient to make a separate directory (or directories) for 
+all of your personal data files and output, and to "CD" into that directory 
+before you run MAPMAKER.
+
+The MAPM.VMC file included describes to your computer the memory requirements 
+for running MAPMAKER and MAPMAKER/QTL. If you use particularly large data sets, 
+you may need to change the "virtualsize" limit set in this file. You can also 
+edit this file with a standard text editor.
+
+The above comments assume, of course, that you have DOS 5.0 installed in the 
+C:\DOS directory and Windows 3.1 (if you have it) in the C:\WINDOWS directory. 
+If not, modify the above instructions accordingly.  If you are installing 
+MAPMAKER on something other than your drive C: in directory \MAPMAKER, you will 
+also need to edit the contents of the MAPMAKER.BAT, QTL.BAT, and MAPM.VMC files 
+accordingly.
+
+Lastly, you may find it convenient to run MAPMAKER and MAPMAKER/QTL with more 
+lines of text on the screen at once (a feature allowed by EGA and VGA 
+displays). To do this, you can simply alter the "MODE" and "SET" commands in 
+the included "MAPMAKER.BAT" and "QTL.BAT" files by first removing the "REM" 
+words and then changing the command to specify "lines=43" or "lines=50" (as 
+opposed to "lines=25"). These modes work particularly well within Windows, more 
+particularly if you change the font of the DOS window.
+
+* You should not try to run these executables directly.  Use the 
+  ".BAT" scripts or ".PIF" files instead.
+
+RUNNING MAPMAKER WITH WINDOWS 3.1
+
+MAPMAKER and MAPMAKER/QTL will run correctly in a "DOS Prompt" window under 
+Microsoft Windows 3.1 running in "386-Enhanced" mode using the above 
+installation method.  The programs will run in the background, allowing them to 
+perform lengthy computations while you use the computer for other things 
+(performance however, may not be the best).
+
+For MAPMAKER and MAPMAKER/QTL to work, Windows must make a sufficient amount of 
+"Virtual Memory" available to these programs, which it may not be doing by 
+default. To make virtual memory available, select the Control Panel icon in the 
+Windows Program Manager.  Then, select the "386 Enhanced" icon, and click on 
+the "Virtual Memory" button in the dialog box that appears. Increase the size 
+to 20,000 KB or more (if possible) and then exit and restart Windows (you can 
+use either a temporary or permanent swap file). Note that the precise amount 
+you need depends on the size of your data sets and the number of other programs 
+you want to run at the same time.
+
+For your convenience, "PIF" files are included for both MAPMAKER and 
+MAPMAKER/QTL. If you simply drag these from a "File Manager" window into the 
+"Program Manager", you can simply start the MAPMAKER programs by double 
+clicking on the appropriate icon. However, you may then need to use MAPMAKER's 
+"CD" command to go into the appropriate directory containing your data files.
+
+DISPLAYING AND PRINTING POSTSCRIPT GRAPHICS
+
+The MAPMAKER and MAPMAKER/QTL "draw" commands produce standard level 1 
+PostScript files (text files with the extension ".PS") which can be displayed 
+and printed in a number of ways. They print "as-is" simply by sending them to a 
+PostScript printer using the DOS "PRINT" command, although we have tested this 
+using an Apple LaserWriter.  Be aware that many LaserJet compatible printers do 
+NOT by default support PostScript.
+
+You can also display these graphics under Windows 3.1 using the "GhostScript" 
+package included with MAPMAKER. In the Windows "File Manager" you should 
+"associate" the application:
+
+    C:\MAPMAKER\GSCRIPT\GSWIN.EXE
+
+with files ending in the extension ".PS" (consult your Windows documentation 
+for details). This way, when you double-click on a ".PS" file, including those 
+generated by MAPMAKER, the graphics will be displayed in a scrolling window 
+using GhostScript. Two windows in fact are opened: a GhostScript transcript 
+window, and the graphic image itself. Multi-page graphics will be displayed one 
+page at a time: simply hit the return key in the transcript window to view 
+successive pages. When viewing is complete, type "quit" (in lower case letters) 
+in the transcript window to exit GhostScript. As of this version, GhostScript 
+can have only one file open at a time, and it does not seem to understand drag-
+and-drop or cut-and-paste actions.
+
+GhostScript can also output directly to a EGA or VGA monitor, without Windows, 
+although the type is so small that this feature is only useful as a "Print 
+Preview" function.
+
+GhostScript can allegedly also be used to print PostScript graphics on a non-
+PostScript Hewlett-Packard LaserJet or DeskJet or Epson 9-pin or 24-pin 
+compatible printer. You can do this by typing the "GS386" command to DOS with 
+the appropriate arguments as described in the GhostScript documentation. If 
+GhostScript is not satisfactory, various other third-party packages can also be 
+used to display or print the PostScript files. It is also possible to move the 
+PostScript files to another computer (PC or otherwise) with a PostScript 
+printer attached for printing (PostScript files contain only simple ASCII 
+text). 
+
+Exactly how you get the PostScript files displayed or printed is a technical 
+problem addressed by many commercial and free products, and it depends greatly 
+on your exact system configuration. Consult your computer support people for 
+details. Because system configurations vary so greatly, we cannot provide any 
+help in these matters.
+
+GhostScript documentation is included in the text files "README" and "USE.DOC" 
+in the "GSCRIPT" directory.
+
+KNOWN INCOMPATIBILITIES
+
+The virtual memory required by MAPMAKER is incompatible with disk compression 
+utilities such as STACKER. If a similar utility is active on your PC, you may 
+need to remove it before MAPMAKER will run properly. This may require 
+reformatting your hard disk - ask your PC support people.
+
+MAPMAKER seems to have problems when launched from the visual DOS shell 
+(DOSSHELL). We do not recommend using MAPMAKER with DOSSHELL - exit to DOS 
+before running MAPMAKER. MAPMAKER is definitely incompatible with DOSSHELL's 
+"task switching" feature - use Windows instead.
+
+When running under Windows, MAPMAKER often exits completely (WITHOUT updating 
+your data files) when you hit Control-C or Control-Break, rather than having 
+this simply stop the command MAPMAKER is currently performing. This sometimes 
+(although rarely) happens under ordinary DOS also, and there is little we can 
+do about it (it's a system bug). Save your files often and use Control-
+C/Control-Break sparingly, if at all.
+
+We have one 4+ year old 386 PC clone with a very old AMI BIOS which will not 
+run MAPMAKER correctly. We don't know why.
+
+Some old 386 clones used a 287 (not a 387) as their math coprocessor -these 
+systems may not work.
+
+As we have not had the opportunity to test the programs on the wide 
+variety of PC systems and setups available, there are likely MANY other 
+incompatibilities with particular device drivers, memory managers, anti-virus 
+utilities, "TSR" programs, networks, shells, etc. If you discover any other 
+incompatibilities, please tell us, so that we can note them here.
+
+
+(2) INSTALLING ON A SPARCSTATION RUNNING SUNOS
+
+You have two choices when installing MAPMAKER: (1) You can simply install 
+MAPMAKER into your personal account (or into a shared account, which multiple 
+users log into), or (2) you can install MAPMAKER as a system wide resource 
+available to all users (e.g. in /usr/local or some such place).
+
+We detail the former type of installation here -- an individual with some level 
+of Unix expertise and the system manager (root) password will be easily able to 
+accomplish the later using these instructions here as a guideline.
+
+From a Unix prompt (e.g. in a Command Tool window), make a new directory named 
+"mapmaker" in your account's home directory (be sure to use lower case). If you 
+received MAPMAKER on floppy disk, simply "cd" into this directory and copy the 
+files on the MAPMAKER floppy disk into this directory. The commands to do this 
+will be something like:
+
+    mkdir ~/mapmaker
+    cd ~/mapmaker
+    bar xvpf /dev/rfd0c
+    eject
+
+If instead you retrieved MAPMAKER from the Internet via FTP, you should move 
+the files you retrieved into the "mapmaker" directory now, using the "mv" 
+command.
+
+You should now have READ.ME and INSTALL.ME files (this document, actually) and 
+a compressed tar archive named "mapm3-sparc.tar.Z". To extract the actual 
+MAPMAKER files from this archive, you should type:
+
+    uncompress mapm3-sparc.tar.Z
+    tar xvpf mapm3-sparc.tar
+
+Many more files will now be in this directory, including:
+
+mapmaker      - The executable program for MAPMAKER 3.0
+mapmaker.help - The on-line help information for MAPMAKER 3.0
+xmapmaker     - A script for running MAPMAKER under OpenWindows or X11
+qtl           - The executable version of MAPMAKER/QTL Version 1.1
+qtl.help      - The on-line help information for MAPMAKER/QTL 1.1
+xqtl          - A script for running MAPMAKER/QTL under OpenWindows or X11
+sample.raw    - A sample data set, used in the tutorials
+sample.in     - Sample batch file (commands from the MAPMAKER/EXP tutorial)
+sample.inp    - Sample batch file (commands to set up the QTL tutorial)
+sample.inq    - Sample batch file (commands from the MAPMAKER/QTL tutorial)
+mouse.raw     - Large sample data set for MAPMAKER/EXP tutorial
+mouse.prep    - Initialization file for MOUSE.RAW
+mouse.in      - Sample batch file (commands from the MAPMAKER/EXP tutorial)
+READ.ME       - The Release Notes, including License information
+INSTALL.ME    - This Installation Guide
+FEED.ME       - Instructions for preparing data files
+CHANGE.ME     - Change list, bug list and to-do list
+COVER.ME      - Cover letter
+ghostscript/  - The GhostScript package from the Free Software Foundation
+
+If this succeeds, you can now delete the archive:
+
+    rm mapm3-sparc.tar
+
+You will also likely find it convenient to have the "mapmaker" directory
+listed in your "path", which is usually set-up in the ".cshrc" or ".login" file 
+in your home directory. This way, you can simply type "mapmaker" or "qtl" at a 
+Unix prompt to run MAPMAKER or MAPMAKER/QTL respectively. To use the on-line 
+help feature, you also need to separately indicate which directory the help 
+files are in (as well as other files the MAPMAKER programs use). These concerns 
+both also hold true for the GhostScript package, if you wish to use it. The 
+appropriate commands in your ".cshrc" file might read something like:
+
+set path=(. /bin /usr/bin /usr/ucb /usr/local/bin /usr/openwin/bin\
+/usr/openwin/bin/xview /home/joe/mapmaker /home/joe/mapmaker/ghostscript)
+rehash
+setenv MAPM_LIB /home/joe/mapmaker
+setenv GS_LIB /home/joe/mapmaker/ghostscript
+
+Note that the backslash at the end of the first line above indicates that the 
+command spans two lines, and that the backslash MUST be the very last character 
+on the line. Instead, you could make this one long line.
+
+After making these changes, you may need to completely log out and log back in 
+again. The above instructions above assume that you are a "C-Shell" user (the 
+default on Suns), and need to be changed for those who use sh, ksh, bash, or 
+some other Unix shell. Consult your Sun documentation or your Unix support 
+person if you have any questions.
+
+With the programs installed this way, to run MAPMAKER or MAPMAKER/QTL 
+(respectively) you can simply type at a Unix prompt:
+
+    mapmaker
+or  qtl
+
+It should not matter what directory you are presently in. In particular, you 
+will find it most convenient to make a separate directory (or directories) for 
+all of your personal data files and output, and to "cd" into that directory 
+before you run MAPMAKER.
+
+RUNNING MAPMAKER WITH SUNVIEW, OPENWINDOWS, OR X-WINDOWS
+
+As we mentioned earlier, MAPMAKER runs correctly under SunView, OpenWindows, 
+and X-Windows using a standard terminal-emulator program, such as Command Tool 
+(cmdtool), Shell Tool (shelltool), or xterm. However, Sun's Command Tool 
+program, in both SunView and OpenWindows (in both versions 2.0 and 3.0), has a 
+nasty design flaw (in our humble opinion) which causes MAPMAKER's command line 
+editing to fail. Sun is aware of this problem and claimed years ago that they 
+would fix it someday.
+
+Possible solutions to this problem are:
+
+(1) Do not use MAPMAKER command line editing features. In Command Tool, you can 
+use the limited command editing capabilities it provides.
+
+(2) Run MAPMAKER in a "Shell Tool" window instead. Unfortunately, Shell Tool 
+does not provide a scrollbar to review MAPMAKER output which has scrolled off 
+the screen. The "review output" command provides one slightly less convenient 
+way to do this, however.
+
+(3) Under OpenWindows, run MAPMAKER in a "xterm" window instead. This way you 
+get both a scrollbar and command line editing.  Xterm's scrollbar is a tad 
+peculiar however -- play with all of the mouse buttons and you'll figure it 
+out. Cut-and-paste between xterm and OpenLook programs is also peculiar, 
+although we rarely find this a problem. Contact Sun for details.
+
+(4) Use "real" X-Windows instead of OpenWindows (or SunView).
+
+In OpenWindows 2.0, Sun provided xterm in /usr/openwin/demo for some 
+strange reason, thus if you simply type "xterm", SunOS will usually not find 
+the command. In OpenWindows 3.0, it is correctly in /usr/openwin/bin. Note that 
+the version 2.0 xterm produces warnings you may safely ignore.
+
+The "xmapmaker" and "xqtl" scripts we have provided start an xterm window with 
+MAPMAKER or MAPMAKER/QTL inside, respectively.  You should be able to type into 
+your CONSOLE window or into a Command Tool:
+
+	xmapmaker &
+or	xqtl &
+
+in which case a new window will open running MAPMAKER or MAPMAKER/QTL. The "&" 
+symbol of course indicates that the program should be run "in the background", 
+as is usually appropriate for programs which open their own windows. Consult 
+your Sun documentation for details.
+
+Using "olwm", the OpenWindows "file manager", or "binder", it is possible to 
+provide menu entries and/or icons which more simply start MAPMAKER and 
+MAPMAKER/QTL. Consult your Sun documentation for details. We do not use 
+OpenWindows, so we can not offer any help on this.
+
+DISPLAYING AND PRINTING POSTSCRIPT GRAPHICS
+
+The MAPMAKER and MAPMAKER/QTL "draw" commands produce standard level 1 
+PostScript files (text files with the extension ".ps") which can be displayed 
+and printed in a number of ways. They print "as-is" simply by sending them to a 
+PostScript printer using the Unix "lpr" command, although we have only tested 
+this using an Apple LaserWriter.
+
+You can also display these graphics under OpenWindows or X-Windows 
+using the "GhostScript" package included with MAPMAKER. In a window with a Unix 
+prompt (e.g. Command Tool, xterm, etc.) simply type something like:
+
+	gs mygenome.ps
+
+and a window will open displaying the named PostScript file. Multi-page 
+graphics will be displayed one page at a time: simply hit the return key in the 
+transcript window to view successive pages. When viewing is complete, type 
+"quit" (in lower case letters) in the Unix window to exit GhostScript. As of 
+this version, GhostScript can have only one file open at a time, and it does 
+not understand OpenWindows/X-Windows actions such as cut-and-paste or drag-and-
+drop. More sophisticated PostScript previewers are available -- for example, if 
+you have Internet access, look for "ghostview" or "gpsview" on prep.ai.mit.edu.
+
+As of OpenWindows version 2.0, Sun's "pageview" command has many bugs which 
+prevent it from correctly displaying MAPMAKER's PostScript graphics output. We 
+do not know how well the 3.0 pageview works, although we recommend that you use 
+the GhostScript package instead. GhostScript has the added advantage of working 
+on PC's, Mac's, X-Terminals, or other types of workstations connected to your 
+Sun using X-Windows.
+
+GhostScript claims it can also be used to print PostScript graphics on a non-
+PostScript Hewlett-Packard LaserJet or DeskJet or Epson 9-pin or 24-pin 
+compatible printer. We have not tried this. If GhostScript is not satisfactory, 
+various third-party packages can also be used to display or print the 
+PostScript files, including the Sun NewsPrint product. We have
+NOT tried NewsPrint or GhostScript with any type of printer. It is also 
+possible to move the PostScript files to another computer (Sun, Mac, or PC) 
+with a PostScript printer attached for printing (PostScript files contain only 
+simple ASCII text).
+
+Exactly how you get the PostScript files displayed or printed is a technical 
+problem addressed by many commercial and free products, and it depends greatly 
+on your exact system configuration. Consult your computer support people for 
+details. Because system configurations vary so greatly, we cannot provide any 
+help in these matters.
+
+GhostScript documentation is included in the text files "README" and "use.doc" 
+in the "ghostscript" directory.
+
+
+(3) INSTALLING ON A MACINTOSH RUNNING A/UX
+
+Exactly how you install MAPMAKER under A/UX depends exactly on how A/UX is 
+configured on your system. Because we suspect that many A/UX users will be 
+installing A/UX only to use MAPMAKER, we first provide a few hints about that 
+process:
+
+(1) We have installed UNIX systems on many hardware platforms, and have found 
+the A/UX documentation to be the best we have encountered. Moreover, the 
+integration between A/UX and System 7 is excellent, and most proficient Mac 
+users will have no problem installing A/UX. Installing networking under A/UX is 
+slightly different (however straightforward) from doing it under ordinary 
+System 7, and you may want to have your computer support person take a look at 
+the A/UX manual. 
+
+(2) The Apple documentation correctly states that a complete installation of 
+A/UX requires 160Mb of disk space. However, a minimal A/UX 3.0, more than 
+adequate for running MAPMAKER, requires only about 60Mb. The only package you 
+need to install for MAPMAKER is the "Core A/UX System", although the 
+"Networking Capability" and "UNIX Printing" packages will be needed to use an 
+Apple LaserWriter. The "Commando Dialogs" may be useful if you intend to make 
+much use of the A/UX command line interface, but are optional. No others are 
+usually required.
+
+(3) A very simple A/UX installation configuration is adequate, particularly if 
+you are no more worried about security than your average Mac user. We have 
+users simply log into the "Guest" account, which we leave without a password. 
+The machine is left running this way most of the time. We did give the "root" 
+account a password and we log into it only when we need to perform a system 
+set-up function, and we log out immediately afterwards (this helps prevent 
+other users from inadvertently messing up the system). Note that if you enable 
+TCP/IP networking and you are on a network, then it is possible to log into 
+your A/UX machine from anyplace on the net, in which case stricter uses of 
+passwords is a good idea.
+
+(4) Really do read the A/UX README file, provided on floppy disk. In 
+particular, we were confused by the problem it mentions about disks greater 
+than 160Mb having an un-mounted partition (page 2). The instructions it gives 
+leave out a step, needed if you wish ordinary users to have access to this 
+folder. After the "mkdir" command, type:
+
+    chmod rwx /users2
+
+It's also handy to make an alias of the "/users2" folder in the Finder and drag 
+it onto the Mac desktop.
+
+(5) If you have multiple hard disks, you only need to have A/UX format the disk 
+it is installed on -- other disks can be left in any System 7 compatible format 
+(although you should note the A/UX README file's comments about old disk 
+drivers -- LaCie's SilverLining has worked well for us with A/UX). However, 
+note that MAPMAKER input and output can ONLY be stored in a folder on an A/UX 
+partition or disk, which can also store Mac files as usual.
+
+(6) A good source of compatibility and technical information about A/UX is the 
+comp.unix.aux bulletin-board on the Internet. The Frequently Asked Questions 
+(FAQ) document they publish is very helpful, although rather technical. A copy 
+as of December of 1992 is included as the file AUX.FAQ.
+
+(7) Remember that A/UX comes with one year of toll-free technical support by 
+phone. Use this! In particular, they can help with the few exiting 
+compatibility problems between A/UX and System 7 programs (however, almost all 
+applications and many INITs are compatible).
+
+(8) It is a good idea to make a separate System Folder for each user. This way, 
+in case you/they add an extension which doesn't work right or otherwise screws 
+the system up, you can log in as "root" and fix it (otherwise, nobody can log 
+in). To make your own Sstem Folder, when logged in as Guest (or as the user in 
+question) type into a CommandShell window:
+
+    systemfolder
+
+You only need to do this once. Be sure the capitalization and (lack of) spacing 
+is correct.
+
+(9) You may find the A/UX TextEditor program for editing, reading, and printing 
+the many text files used for input and output by MAPMAKER.  It's a good idea to 
+make an alias of this program in your Apple Menu Iems folder (it's in the "bin" 
+folder in the "mac" folder on the "/" drive).  Any file capable of producing 
+ASCII text files will work, although formated files (e.g. from a word processor 
+or spreadsheet) will not be readable by MAPMAKER.
+
+(10) A/UX is not fast. We find performance good on a Quadra 700, and acceptable 
+on a IIci (with a cache card). We do not recommend slower Macs.
+
+
+INSTALLING MAPMAKER AND MAPMAKER/QTL
+
+You have two choices when installing MAPMAKER: (1) You can simply install 
+MAPMAKER into your personal account (or into a shared account, which multiple 
+users log into, such as the "Guest" account), or (2) you can install MAPMAKER 
+as a system wide resource available to all users (e.g. in /usr/local or some 
+such place).
+
+We detail the former type of installation here -- an individual with some level 
+of A/UX expertise and the system manager (root) password will be easily able to 
+accomplish the later using these instructions here as a guideline.
+
+Log into A/UX. Using the Finder, make a new folder inside your "home directory 
+folder" named "Mapmaker" (note the capitalization, and make this name exact). 
+If you received MAPMAKER on floppy disks, open this new folder and drag the 
+contents of the MAPMAKER floppy disks here. 
+
+If instead you received MAPMAKER via FTP, you can drop the files you retrieved 
+from the network here. The main file, "mapm3-aux.hqx" is a BinHex file.  
+Depending on how you retrieved it, you may need to apply BinHex 4.0 (or a 
+compatible program) to convert it into Macintosh format. Ask your support 
+people for details.
+
+You should now have READ.ME and INSTALL.ME files (this document, actually) and 
+a self-extracting Compact-Pro archive named "Mapmaker3.archive". To extract the 
+actual MAPMAKER files from this archive, simply double click on the archive and 
+make sure that your new Mapmaker folder is indicated in the dialog box which 
+then pops up.
+
+Many more files will now be in this folder, including:
+
+mapmaker      - The executable program for MAPMAKER 3.0
+mapmaker.help - The on-line help information for MAPMAKER 3.0
+qtl           - The executable version of MAPMAKER/QTL Version 1.1
+qtl.help      - The on-line help information for MAPMAKER/QTL 1.1
+sample.raw    - A sample data set, used in the tutorials
+sample.in     - Sample batch file (commands from the MAPMAKER/EXP tutorial)
+sample.inp    - Sample batch file (commands to set up the QTL tutorial)
+sample.inq    - Sample batch file (commands from the MAPMAKER/QTL tutorial)
+mouse.raw     - Large sample data set for MAPMAKER/EXP tutorial
+mouse.prep    - Initialization file for MOUSE.RAW
+mouse.in      - Sample batch file (commands from the MAPMAKER/EXP tutorial)
+.cshrc        - A set-up file for the A/UX CommandShell
+READ.ME       - The Release Notes, including license information
+INSTALL.ME    - This Installation Guide
+FEED.ME       - Instructions for preparing data files
+COVER.ME      - Cover letter
+CHANGE.ME     - Change list, bug list and to-do list
+
+If this succeeds, you may now trash the "Mapmaker3.archive" file.
+
+MAPMAKER requires that your "Command Shells" be set up in such a way that they 
+indicate to MAPMAKER where to find certain files it needs, and other 
+"preferences"-type information.  Again, because most A/UX users will only use 
+"Command Shell" windows to run MAPMAKER, we have provided a simple ".cshrc" 
+file which contains the appropriate settings. You should move this file into 
+your "home directory folder" now, replacing the existing one (note that in the 
+finder, this file is diaplayed with a leading bullet character rather than a 
+period -- this is correct, don't change it). If you in fact already have a 
+customized ".cshrc" file (other than the default one A/UX gave you), you will 
+need to merge their contents together using the A/UX Text Editor, and the 
+instructions provided for setting your "path" and other "environment variables" 
+above for SPARCstations may be relevant.
+
+After making these changes, you may need to completely log out and log back in 
+again. The above instructions above assume that you are a "C-Shell" user (the 
+default for A/UX), and need to be changed for those who use sh, ksh, bash, or 
+some other Unix shell. Consult your A/UX documentation or a Unix support person 
+for questions.
+
+With the programs installed this way, to run MAPMAKER or MAPMAKER/QTL 
+(respectively) you can simply type at a prompt in a CommandShell window:
+
+    mapmaker
+or  qtl
+
+It should not matter what folder (directory) you are presently in. In 
+particular, you will find it most convenient to make a separate folder (or 
+folders) for all of your personal data files and output, and to "cd" into that 
+folder in the Command Shell before you run MAPMAKER, as described in the A/UX 
+documentation.  Recall that the A/UX Command Shell is sensitive to upper and 
+lower case letters, and it is easily confused by file names containing spaces.
+
+Alternatively, you can start MAPMAKER or QTL by simply double-clicking on the 
+respective file in the finder, and then hitting the default button in the 
+"Commando" dialog which appears. In this case however, you mey need to then use 
+the MAPMAKER or MAPMAKER/QTL "cd" command to go into the folder containing your 
+data files before you begin work.
+
+Unix and the Mac Finder have different file naming conventions which can create 
+confusion.  In particular, Unix is case sensitive, doesn't generally like 
+spaces in file names, and people usually place "extensions" (for ex: ".raw") at 
+the end of file names to tell what type of file it is.  We suggest that you use 
+the Unix naming conventions for both folders and files you will use with 
+MAPMAKER.
+
+DISPLAYING AND PRINTING POSTSCRIPT GRAPHICS
+
+The MAPMAKER and MAPMAKER/QTL "draw" commands produce standard level 1 
+PostScript files (text files with the extension ".ps") which can be displayed 
+and printed in a number of ways. They print "as-is" simply by sending them to a 
+PostScript printer (such as an ordinary Apple LaserWriter on LocalTalk) using 
+the A/UX "lpr" command, as described in the A/UX documentation (see the 
+Networking book, under "Printing"). For example, you can use MAPMAKER's 
+"system" command to bring up an A/UX prompt, and type something like:
+
+    lpr mygenome.ps
+
+Alternatively, a Mac program such as SendPS or others (available in some public 
+domain collections) will do the same thing. Printing these files using the A/UX 
+Text Editor will not have the desired effect, however. Also, it is not possible 
+to print these files on any QuickDraw printers (laser or dot-matrix) without a 
+PostScript emulator like "GhostScript" or "Freedom of Press".
+
+You can also display these graphics under the X-window system (including MacX) 
+using a PostScript previewer such as the freely available "GhostScript" 
+package. We do not suspect that most MAPMAKER A/UX users will use X-Windows 
+however, and so we have not included this package. Rumor has it that a native 
+Macintosh version of GhostScript may exist, although we have not tried it. 
+
+Exactly how you get the PostScript files displayed or printed is a technical 
+problem addressed by many commercial and free products, and it depends greatly 
+on your exact system configuration. Consult your computer support people for 
+details. Because system configurations vary so greatly, we cannot provide any 
+help in these matters.
+
+
+(4) INSTALLING ON ANOTHER TYPE OF COMPUTER
+
+We distribute MAPMAKER for DOS, Sun, and A/UX systems because we belive those 
+systems represent the greatest installed base of users (and these computers 
+have floppy disk drives, makeing it easy to send executables). However, we know 
+that the MAPMAKER programs will easily compile and run correctly on:
+
+    DECStation (MIPS-based) systems running Ultrix 4.x.
+
+In addition, we have heard that previous versions of MAPMAKER had been made to 
+work correctly on:
+
+    IBM RS/6000 Unix Systems
+    Silicon Graphics Systems
+    HP Series 700 Unix Systems
+    DEC VAX/VMS systems, both with and without DEC's POSIX package
+    Various 386 and 486 versions of Unix
+
+Other platforms we would like to see work would include:
+
+    DEC Alpha systems running OSF/1 and/or OpenVMS
+    Windows NT on anything (Intel, MIPS, Alpha)
+
+As we have no experience ourselves with these platforms and the new version of 
+MAPMAKER, we must wait until some user tries them and reports back to us about 
+what is required to make MAPMAKER work (if it really works at all).
+
+WHAT YOU WILL NEED
+
+A computer. Lots of memory. A C compiler (K&R, not ANSI). A good deal of disk 
+space. Somebody who has basic experience with C programming on this platform 
+and who has anywhere from 15 minutes to a few days free.
+
+The MAPMAKER source code is available on the Internet by Anonymous FTP from 
+genome.wi.edu. Get the README file there for details. The code is provided as a 
+compressed tar archive which can be extracted using Unix commands like:
+
+	uncompress mapm3-source.tar.Z 
+	tar xvf mapm-source.tar
+
+Versions of the GNU readline and GhostScript packages are included which we 
+know work with MAPMAKER.  Check the documentation included with them for 
+installation instructions and license agreement.
+
+If you have no Internet access, we may be able to send you source code on tape, 
+although if so, we may charge you a distribution fee for it, and we can 
+generate only limited types of tapes. Contact:
+
+	Mark Daly
+	Whitehead Institute for Biomedical Research
+	9 Cambridge Center
+	Cambridge, Massachusetts  02142  USA
+	FAX 617-258-6505
+	Internet Email: mjdaly@athena.mit.edu
+
+As with MAPMAKER itself, the source code is redistributable under the MAPMAKER 
+license terms. You can copy it from your colleagues or collaborators (or 
+competitors), under the license's terms.
+
+WHAT YOU SHOULD DO
+
+You will need to slightly edit the source files. Look in "Makefile", 
+"lib/syscode.c" and "lib/system.h". A C programmer will likely know what to do, 
+given the comments in those files. A makefile is provided, so the programs 
+should compile itself if you type the command "make".  The hassles will be 
+greatest on operating systems which are most dissimilar to Berkely (BSD) Unix.
+
+If you succeed in making MAPMAKER work on another type of computer, please tell 
+us. If you fail, please tell us -- we may (or may not) be able to offer help.  
+We'd like to at least know, so we can tell others.
+
+While it is possible to compile MAPMAKER on a Macintosh (using either MPW C or 
+ThinkC 5.0 w/32-bit integers), we have not been able to make these versions 
+reliable -- they crash often, likely because of the primitive and non-standard 
+nature of the Macintosh's memory manager. The Macintosh port of MAPMAKER 
+remains available from DuPont, as described above.
+
+MODIFYING MAPMAKER
+
+You are welcome to modify MAPMAKER for your own uses. In addition, you can 
+distribute modified versions, under the terms of our license agreement.
+
+To add commands, you need only to write the command function in C (use our 
+functions as a guideline), and add an entry to the command table in main.c. 
+
+To interface MAPMAKER to a database, see the comments in database.c Contact 
+Mark Daly, at the address above, if you have any questions.
+
+
+Ver 3b: S. Lincoln 12/92

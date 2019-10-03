@@ -1,0 +1,181 @@
+
+Dear Colleague,
+
+Welcome to MAPMAKER.
+
+MAPMAKER is an interactive computer package for constructing genetic 
+linkage maps, and for mapping genes underlying complex traits using 
+those linkage maps.  The current version of the MAPMAKER package 
+contains the following two programs:
+
+MAPMAKER/EXP is a linkage analysis package for constructing primary 
+linkage maps of markers segregating in experimental crosses. 
+MAPMAKER/EXP performs full multipoint linkage analyses (that is, 
+simultaneous estimation of all recombination fractions from the primary 
+data) for dominant, recessive, and co-dominant (e.g. RFLP-like) markers 
+in BC1 backcrosses, F2 and F3(self) intercrosses, and Recombinant Inbred 
+lines.  MAPMAKER/EXP is an experimental-cross only successor to the 
+original MAPMAKER package.
+
+MAPMAKER/QTL is a companion program to MAPMAKER/EXP which allows one to 
+map genes controlling polygenic quantitative traits in F2 intercrosses 
+and BC1 backcrosses relative to a genetic linkage map.
+
+The first version of MAPMAKER was distributed in 1988, while 
+MAPMAKER/QTL appeared in 1990.  Since then, we have had many occasions 
+to revise our in-house version of the programs based on our experiences 
+using it on our own data sets.  Recently, we decided that enough 
+worthwhile additions had been made to justify issuing the third major 
+public release, MAPMAKER/EXP Version 3.0 and MAPMAKER/QTL 1.1.  Some of 
+the major changes that may be of interest:
+
+* MAPMAKER/EXP understands more types of experimental crosses.
+
+* MAPMAKER/EXP incorporates an algorithm for detecting potential 
+genotyping errors, as described in Lincoln and Lander (Genomics 14: 
+604-610, 1992).
+
+* Many features have been added to allow automatic analysis of very 
+large data sets.  A new three-point analysis feature helps make these 
+big jobs much faster.  A "join haplotypes" feature helps efficiently 
+handle recombinationally unseparated markers.
+
+* User interface improvements include the ability to draw chromosome 
+maps and QTL LOD plots as PostScript graphics, as well as a command 
+line editing feature. 
+
+* Both programs have had many bugs fixed and have a number of subtle 
+feature improvements.  For example, locus names now work correctly in 
+all parts of both programs.  A "change list", is included which lists 
+many of these modifications.
+
+* The license agreement for the MAPMAKER package has been changed to 
+allow free redistribution.  That is, you are welcome to copy the copy 
+the programs from your colleagues and for your colleagues.  Moreover, 
+under specific conditions, you may distribute modified versions of 
+MAPMAKER.  See the license agreement for details.
+
+
+* A great deal of effort has been put into making MAPMAKER work 
+correctly on PC-compatible computers under DOS as well as Macintoshes 
+(although only under Unix).
+
+A note on the history of these programs:
+
+MAPMAKER/EXP:
+
+Several years ago, we worked out, together with Phil Green, an efficient 
+algorithm for multi-point linkage analysis in CEPH-type pedigrees.  To 
+compute the map distances for one genetic order, the computation time of 
+this algorithm scales linearly (rather than exponentially) with the 
+number of loci being studied.  We implemented this algorithm in a 
+computer program and found that it allowed us to study large numbers of 
+loci in manageable amounts of time. 
+
+As we began to analyze large data sets, however, we realized that our 
+job was less than half-done.  In addition to being able to construct the 
+maximum likelihood map for any given order of markers, we needed a 
+computer package that would let us conveniently explore and compare many 
+alternative possible genetic orders.  This was not necessary for data 
+sets consisting of five or six markers, but was essential for projects 
+involving dozens or hundreds of loci.  Thus, we set out to build a 
+"geneticist-friendly computer environment" for exploring data and 
+building linkage maps.  The result was MAPMAKER.
+
+Much of the heaviest use of MAPMAKER has been in analyzing experimental 
+crosses.  MAPMAKER/EXP represents our first version tailored 
+specifically for data from experimental crosses.  We hope to fold new 
+features into a future version for handling outbred crosses in a 
+complete manner, although no such features exist at present (some types 
+of outbred crosses can still be analyzed by MAPMAKER however, see the 
+"Preparing Data" document for details.  For those who require CEPH-type 
+data analysis, version 2.0 of MAPMAKER, including this capability, 
+remains available by FTP.
+
+Multi-point linkage analysis considers all of the raw (genotypic) data 
+available simultaneously in each computation to find map orders and map 
+distances.  We contrast this with so-called "multi-two-point" approaches 
+which consider many pairwise relationships between markers at once, but 
+not the raw data itself.
+
+MAPMAKER/EXP 3.0 carries these ideas further, as it is the computer 
+program we have used for assembling our lab's genetic map of the mouse 
+(currently at over 1,000 loci scored on 46 F2 intercross progeny).
+
+MAPMAKER/QTL:
+
+The availability of high-resolution molecular genetic maps has made it 
+feasible to understand the underlying genetic and biochemical basis of 
+many traits displaying complex modes of inheritance.  To accomplish 
+this, together with David Botstein, we worked out a maximum likelihood 
+algorithm for mapping the genes underlying quantitative traits 
+segregating in experimental populations.  Using this method, we have 
+looked at traits including hypertension, cancer, and diabetes in rats 
+and mice, while in agricultural genetics we have examined yield, disease 
+resistance, and quality characters in a variety of crop species and 
+agricultural animals.
+
+MAPMAKER/QTL is our computer program for mapping these genes using the 
+techniques of "interval mapping" and "simultaneous search".  Interval 
+mapping uses the power of a complete genetic map to discern weak effects 
+from genetic distance between marker locus and putative QTL 
+(Quantitative Trait Locus), while "simultaneous search" allows us to fit 
+multiple QTLs across the genome at once, thus reducing the overall non-
+genetic variance in the trait.  Both techniques together provide 
+increased "power" for detecting QTLs, allowing one to find genes with 
+smaller effects (in equivalent data sets) than one can using simpler 
+phenotype on genotype correlations.  MAPMAKER/QTL uses data sets 
+(including maps) prepared by MAPMAKER/EXP.
+
+
+The Manual:
+
+The best way to learn about a computer program is to use it.  We have 
+therefore written two tutorials which demonstrate the use of MAPMAKER 
+and MAPMAKER/QTL, respectively.  The sample data set on which the 
+tutorials are based is included with the software, so that you can sit 
+down at the computer and try various analyses out as you read the 
+tutorials.
+
+Following the tutorials, the reference sections describe in more detail 
+the various  commands, including many commands not mentioned in the 
+tutorials but which you may find useful over time.  These descriptions 
+are also available on-line, via the "help" command.
+
+Subsequent sections of this introduction describe how to prepare data 
+for use by the MAPMAKER programs and how to install the programs on your 
+computer.  (MAPMAKER is designed to run on either Unix based computers, 
+such as Sun workstations, or on high-end PC compatible computers running 
+DOS or Microsoft Windows).  The release notes also detail the License 
+Agreement and provide instructions for requesting the software, 
+reporting problems, or retrieving the source code (which is in "C").
+
+A warning: While we have tested the programs extensively on our own data 
+and on our computers, there will almost certainly be  small bugs that we 
+have not turned up.  We urge you to inform us about the problems so that 
+we may fix them.  Even better, for those groups with programming 
+expertise, if you can fix any bug, port the software to some other type 
+of computer, or extend its functionality, please send the modifications 
+on to us.  We will either incorporate them into the distributed version, 
+or at least make them available as "user contributed" code.
+
+The initial MAPMAKER program was the result of the extraordinary efforts 
+of Stephen Lincoln, Mark Daly, Jeff Abrahamson, Aaron Barlow, and Lee 
+Newburg.  The new version of MAPMAKER, the extensive documentation, and 
+all of the development of MAPMAKER/QTL have been the brainchild and 
+product of Stephen Lincoln and Mark Daly.  I am extremely fortunate to 
+be associated with such talented scientists and programmers.
+
+Finally, MAPMAKER is distributed freely to both academic and coprporate 
+researchers.  However, this work is quite expensive and time-consuming.  
+Coprporate users who bennefit from these programs are encouraged to 
+contribute a donation in lieu of payment, solely to help with the 
+ongoing support, development, and distribution of the package (tax-
+deductable donations may be sent to the Lander Lab at the Whitehead 
+Institute).  Researchers are further encouraged to cite MAPMAKER in 
+papers and talks when the package has been of use.   
+
+Happy mapmaking!
+
+Eric S. Lander
+January, 1993

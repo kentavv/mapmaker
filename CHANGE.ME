@@ -1,0 +1,123 @@
+CHANGE LIST, BUG LIST, AND WISH LIST FOR MAPMAKER VERSION 3.0 AND 
+MAPMAKER/QTL VERSION 1.1
+
+
+CHANGES SINCE PREVIOUS RELEASE:
+
+NOTE: Many copies of MAPMAKER 2.0 and MAPMAKER/QTL 1.0 were distributed as 
+Versions 1.9 and 0.9, respectively.  They are basically the same, modulo a few 
+big fixes, and we refer to them collectively as "Release 2.0".  All features 
+below pertain to MAPMAKER/EXP unless marked (QTL), in which case they apply to 
+MAPMAKER/QTL.
+
+The license is changed to make it completely freely redistibutable. 
+
+Too many bugs were fixed to list here, and too many small features were cleaned 
+up to list here.  This list is partial.
+
+Command-line editing and history works on Unix (including A/UX). Try the up and 
+down arrows (or control-P, -N, -A, -B, -E, -K, -Y). The keystrokes are Emacs-
+like, although we have not documented them here.  It does NOT work in a Sun 
+cmdtool window, as described in the inkstallation instructions.
+
+The "linked?" command is gone: Instead there is the "?" and "=" syntax in 
+sequences. 
+
+The "ripple" command lets you specify how many markers to permute.
+
+Two-point data are always computed on demand: it is never necessary to execute 
+"two point" explicitly.  This is NOT true of three-point, however.
+
+Print names now works much better.  Using marker names as arguments works much 
+better. However, marker names can no longer be abbreviated - this caused too 
+many problems.
+
+All "genome analysis" features are new. This has had some effects on sequence 
+syntax. See manual.
+
+All "error detection" features are new. See manual.
+
+The old "three point" analysis features are gone, replaced with much better 
+ones, fully integrated with the multipoint analysis. See manual.
+
+All "join haplotype" features are new. These are not mentioned in the turorial, 
+and are a first cut - they're a little rough around the edges yet.  Use them 
+carefully.
+
+All multipoint analysis is now based on the new "Hidden Markov Model" 
+algorithm, allowing new cross types.  In some cases it's faster, in others 
+slower. Relative log-likelihoods should not have changed.
+
+Postscript graphics added: "draw chromosome", "draw map", "draw scan" (QTL).
+
+"Genotypes" command replaces "count crossovers". "count meioses" is gone, 
+replaced (sort of) by "suggest subset".
+
+The "orders" and "build" (new) commands are now really useful for automatic 
+mapping. We have experimented with optimization approaches (e.g. Simulated 
+Annealing, etc), and we prefer the greedy algorithms.
+
+The input file format has changed very slightly, if you either (i) used a 
+custom genotyping notation, or (2) placed map orders in your data file. 
+Modifying your raw files should take very little time. Only MAPMAKER (not QTL) 
+can prepare data now.  See manual.
+
+The "import data" and "export data" features are new, although they are 
+placeholders for those who which to build a database interface from/to 
+MAPMAKER.
+
+The ".data", ".traits" etc. file formats have changed drastically. Release 2.0 
+files can NOT be loaded into the new versions.
+
+CEPH analysis features are gone.  Experimental crosses only for the time being.
+
+Steve Lincoln has finally gone off to Grad School, and while he may do some 
+MAPMAKER development, Mark Daly will be the main front man.
+
+
+KNOWN BUGS AND PROBLEMS IN THIS RELEASE:
+
+Two-point analysis for F3 and RI is slow.
+
+Control-C handling occasionally has problems corrupting internal data -- use it 
+sparingly.  On DOS Control-C can sometimes abort MAPAKER, although this happens 
+more often under windows (WATCOM problem?).
+
+Very large data sets cause sequence-parsing to work very slowly with print 
+names on.
+
+The assign algorithm is correct and robust, although it is sensitive to global 
+state (which markers are already assigned) in a way that "group" is not.  Not a 
+bug, but an issue.
+
+
+TO-DOs and WISH LIST:
+
+QTL needs many revisions. In particular, MAPMAKER/QTL needs the new MAPMAKER 
+converge_to_map() code, to understand other cross types, and QTL needs 
+qualitative models.
+
+The Fast Three-Point feature did not make it into this release. We really want 
+this!
+
+We need to refold outbred analysis into MAPMAKER, only better. QTL too.
+
+MAPMAKER/QTL needs a model for polygenic qualitative traits.
+
+A way to make command line editing work on DOS.
+
+A way of importing small modifications to a data set
+
+Draw editable Mac PICTs rather than PostScript
+
+Native Mac Port
+
+Better Windows front end?
+
+Other Ports (Solaris 2.0, VMS, etc)
+
+Integrate with Steve Knapp's, Piet Stamm's, and Ken Manley's software.
+
+
+
+Ver 3b: S. Lincoln 12/92

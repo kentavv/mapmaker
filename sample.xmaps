@@ -1,0 +1,75 @@
+24723 mapmaker map data
+*OrderInfo: 0 0
+*T175        0   0.01000   -1   -1   -1   -1   -1    0    0
+*T93         0   0.01000   -1   -1   -1   -1   -1    0    0
+*C35         0   0.01000   -1   -1   -1   -1   -1    0    0
+*T24         0   0.01000   -1   -1   -1   -1   -1    0    0
+*C66         0   0.01000   -1   -1   -1   -1   -1    0    0
+*T209        0   0.01000   -1   -1   -1   -1   -1    0    0
+*T50B        0   0.01000   -1   -1   -1   -1   -1    0    0
+*T125        0   0.01000   -1   -1   -1   -1   -1    0    0
+*T83         0   0.01000   -1   -1   -1   -1   -1    0    0
+*T17         0   0.01000   -1   -1   -1   -1   -1    0    0
+*C15         0   0.01000   -1   -1   -1   -1   -1    0    0
+*T71         0   0.01000   -1   -1   -1   -1   -1    0    0
+*Classes:
+*no_class
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*Chromosomes: 0
+*Assignments and Placements:
+*T175      0
+*T93       0
+*C35       0
+*T24       0
+*C66       0
+*T209      0
+*T50B      0
+*T125      0
+*T83       0
+*T17       0
+*C15       0
+*T71       0
+*MapmakerStatusInfo:
+*PrintNames: 0
+*Tolerance: 0.001000
+*Units: 1
+*MapFunc: 0
+*DefaultLOD: 3.000000
+*DefaultTheta: 0.316060
+*UseThreePoint: 1
+*TripletLOD: 3.000000
+*TripletTheta: 0.316060
+*TripletNumLinks: 2
+*ThreePointThreshold: 4.000000
+*ThreePointWindow: 9
+*TripletErrorRate: 0.000000
+*NptThreshold: 2.000000
+*NptFirstThreshold: 3.000000
+*NptWindow: 7
+*NptMinIndivs: 1
+*NptCodominant: 0
+*NptMinTheta: 0.009007
+*PrintAllMaps: 0
+*UseErrorRate: 0
+*ErrorLodThreshold: 1.000000
+*ErrorSingleThreshold: 2.000000
+*ErrorNetThreshold: 3.000000
+*Contexts: 1
+*ActiveContext: 0
+
+*Context 1
+*SexSpecific: 0
+*CompressDNA: 1
+*UseNum: 0
+*MaxProblemSize: 10000000
+*SavedNames: 0
+*SequenceHistory: 0

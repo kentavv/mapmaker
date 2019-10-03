@@ -1,0 +1,485 @@
+Dear Colleauge,
+
+Thank you for your interest in MAPMAKER. We are currently distributing:
+
+  - MAPMAKER/EXP Version 3.0 - A program for genetic linkage analysis
+  - MAPMAKER/QTL 1.1 - A program for mapping genes underlying complex traits 
+  - A complete manual for the above with tutorial and reference section
+
+Collectively, we refer to this package as "MAPMAKER". This letter describes:
+
+  (0) What is MAPMAKER?
+  (1) How to Get MAPMAKER
+  (2) How to Run MAPMAKER on a PC Compatible Running DOS
+  (3) How to Run MAPMAKER on a Sun SPARCStation Running SunOS
+  (4) How to Run MAPMAKER on a Apple Macintosh Running A/UX
+  (5) License Agreement
+
+
+(0) WHAT IS MAPMAKER?
+
+MAPMAKER/EXP is a linkage analysis package designed to help construct primary 
+linkage maps of markers segregating in experimental crosses. MAPMAKER/EXP 
+performs full multipoint linkage analysis (simultaneous estimation of all 
+recombination fractions from the primary data) for dominant, recessive, and co-
+dominant (e.g.  RFLP-like) markers.  MAPMAKER/EXP is an experimental-cross-only 
+successor to the original MAPMAKER program.
+
+MAPMAKER/QTL is a companion program to MAPMAKER/EXP which allows one to map 
+genes controlling polygenic quantitative traits in F2 intercrosses and BC1 
+backcrosses relative to a genetic linkage map. More information on MAPMAKER/QTL 
+can be found in the technical report (included with MAPMAKER/QTL). 
+
+For more information on these programs, see the list of references, provided at 
+the end of this document.  Also, be sure to read the technical reports, which 
+provide tutorials and reference manual for the two programs.
+
+New features in this release include:
+
+- Many many bug-fixes, feature, and user-interface improvements.
+- A sophisticated algorithm for detecting typing errors in data from 
+  experimental crosses (see Lincoln and Lander, "Systematic Detection of Errors
+  in Genetic Linkage Data" Genomics 14: 604-610)
+- The ability to draw genetic maps (in MAPMAKER/EXP) and LOD-score plots (in
+  MAPMAKER/QTL) as PostScript files.
+- Support for additional cross types, including F2 intercross, BC1 backcross,
+  F3(self) intercross, and sib and self mated Recombinant Inbreds in
+  MAPMAKER/EXP.
+- Many features for automating analysis and storing results, particularly 
+  useful with very large data sets. An outline of a database interface is 
+  provided, for sites who wish to integrate MAPMAKER into their informatics 
+  systems.
+- New "three point" and "join haplotypes" features for speeding lengthy 
+  analyses.
+- A new license agreement which allows free redistribution of MAPMAKER.Under
+  specific conditions, you may even distribute modified versions of MAPMAKER.
+  See the license agreement (below) for details.
+
+(1) HOW TO GET MAPMAKER
+
+We distribute ready-to-run executables for any of the following:
+
+- 386 and 486 based PC-compatible computers running DOS 5.0
+- High-end Apple Macintoshes running A/UX 3.0, Apple's Unix
+- Sun SPARCStations running SunOS 4.x (Sun's Unix)
+
+We will send 3-1/2" high-density (1.44 MB) floppy disks with a photocopied 
+manual if you send your name, title, organization, address, Internet E-mail 
+address (if available and if you really use it), FAX (otherwise), to:
+
+	MAPMAKER 
+	c/o Dr. Eric Lander
+	Whitehead Institute for Biomedical Research
+	9 Cambridge Center
+	Cambridge, Massachusetts  02142  USA
+	FAX 617-258-6505
+	Internet: mapmaker@genome.wi.mit.edu      <= NOTE NEW EMAIL ADDRESS!
+	Bitnet:   mapm@mitwibr                       
+
+Be sure to specify whether you want the PC, SUN, or A/UX version. Do not send 
+blank disks.  We prefer lab heads or PI's to request the program, simply 
+because these individuals tend to move less often, and contacting the lab 
+becomes a bit easier for us. Due to the expense involved, please do not request 
+extra copies of the manual or floppy disks: the license agreement allows to 
+make extra copies for yourself. An order form is included at the end of this 
+document.
+
+Alternatively, you can retrieve the software yourself over the Internet via 
+anonymous FTP from host "genome.wi.mit.edu" in the /distribution/mapmaker 
+directory. Fetch the FTP.ME (text) file there for further instructions. If you 
+do get MAPMAKER this way (or already have), please "register" by sending us the 
+information requested above to the address above, mentioning that you already 
+have the software.  In return, we will send you a printed copy of the manual. 
+Source code (in "C") is also available by anonymous FTP which you may be able 
+to compile and run on other platforms. 
+
+MAPMAKER for Macintosh, also called MAPMAKER-II (not to be confused with 
+MAPMAKER Version 2.0) is also available. This program is actually a port of 
+MAPMAKER 1.0 (circa 1988) to the native Macintosh operating system (that is, it 
+does not require A/UX) and it is extended with additional graphics 
+capabilities. This program is the result of a collaboration between The 
+Whitehead Institute and Dupont Co., and it is distributed by Dupont. 
+MAPMAKER/QTL is not included. For information, contact:
+
+	Mapmaker for Macintosh
+	c/o Dr. Scott Tingey
+	E 402/4249
+	Dupont Experimental Station
+	Wilmington, Delaware  19898  USA
+
+Below, we describe what sort of computer you will need to run MAPMAKER 3.0 and 
+MAPMAKER/QTL 1.1.
+
+
+(2) HOW TO RUN MAPMAKER ON A PC COMPATIBLE RUNNING DOS
+
+In the last 1-2 years, extremely powerful IBM PC compatible computers have 
+become very inexpensive and widely available. These computers are now an 
+excellent choice for running MAPMAKER and MAPMAKER/QTL.
+
+To run MAPMAKER on a PC with DOS, your PC must have a 386 or 486 processor, and 
+should be running MS-DOS 5.0 (that is, we have not tested the program on any 
+other versions of DOS). We strongly recommend using a math coprocessor - 486DX 
+and 486DX2 based systems always have such a coprocessor built in, all other 
+systems (386SX, 386DX, 486SX) require this as an option. For performance 
+reasons, we do not recommend using a 386SX or SLC. MAPMAKER works correctly 
+with, but does not make much use of (and does not require) Windows 3.1.  
+
+MAPMAKER will need at least 5MB (megabytes) or more of EXTENDED (not EXPANDED) 
+memory available.  More memory is better.  You will also need up to 20MB of 
+free disk space on your hard drive. While the MAPMAKER executable programs and 
+sample data files should only fill up about 2MB, running the program will 
+require a large amount (about 16 MB) of "swap space" on your hard disk while it 
+is running. Your data files and output will take up additional disk space also.
+
+MAPMAKER is sent on 3-1/2 inch high-density (1.44MB) floppy disks. You will 
+need a computer with this type of drive to install MAPMAKER. Of course, this 
+does not have to be the computer you eventually run MAPMAKER on, if you have 
+some other way of transferring the files.  MAPMAKER is distributed as an 
+executable program: you do NOT need a compiler to install it.
+
+Please ask your computer support people if your PC is appropriate. Our test 
+configuration is a DELL 433P (33MHz 486DX) with 16Mb memory, a 105Mb hard disk, 
+and a VGA display. We run DOS 5.0 as shipped by Dell, using only the included 
+utilities, except for Sun's PC-NFS with a 3Com ethernet board.  MAPMAKER should 
+run fine on most PC's (including laptops) with the required features.
+
+MAPMAKER 3.0 draws graphic images in the standard PostScript (Level 1) format. 
+For your convenience, we have included a copy of the Free Software Foundation's 
+"GhostScript" package -- a PostScript interpreter which allows you to display 
+these graphics under Windows 3.1 (GhostScript can also output directly to a EGA 
+or VGA monitor, although the type is so small as to be illegible). These 
+PostScript files should also print as-is on any PostScript printer, such as an 
+Apple LaserWriter, and GhostScript claims it can print these files on a HP 
+LaserJet or Deskjet or Epson 9-pin or 24-pin compatible printer. We cannot 
+vouch for these capabilities nor can we provide any support for using 
+GhostScript as it is not our product. Some commercial products (such as 
+"Freedom of Press") also claim to accomplish the same thing.
+
+Typical mail order prices for a system like ours are around US$2500 as of the 
+fall of 1992. Most users will not need quite as fancy (or as expensive) a 
+computer, however. We cannot attest to MAPMAKER's ability to run on any other 
+hardware or software configuration.
+
+MAPMAKER is incompatible with some TSRs and device divers. Among others, it 
+will not work correctly with STACKER.
+
+
+(3) HOW TO RUN MAPMAKER ON A SUN SPARCSTATION RUNNING SUNOS
+
+Most of our development is done on Sun and DEC Unix-based workstations. The 
+"RISC" technology they employ makes these machines extremely fast, and many 
+models are well under $10,000 in the US. The newest low-end systems start at 
+less than $5,000, and are even cheaper if you are eligible for educational or 
+US government pricing. Moreover, a good deal of other genome related software 
+and databases are becoming available for these machines. However, they are more 
+difficult to set up and maintain than PCs or Macs. 
+
+To run MAPMAKER on a Sun Workstation, you will need a SPARC based system 
+(SPARCStation or Sun-4 system) running SunOS 4.1.x, also known as Solaris 1.0 
+or 1.1.  We have not tested the programs on any other versions of SunOS, 
+including SunOS 4.0.x or Solaris 2.0 or 2.1, although Sun *claims* they are 
+binary compatible. Note that some of the new Sun Workstations REQUIRE Solaris 
+2.1. We also have no experience with non-Sun SPARC compatibles.
+
+MAPMAKER itself requires between 10-30MB (megabytes) of swap space (virtual 
+memory), depending on the size of your data sets and the number of other 
+programs you wish to run at the same time. 8MB of physical memory is usually 
+adequate for MAPMAKER, although 16MB is often recommended. In our experience, 
+if you run MAPMAKER with Sun's OpenWindows product, you will need *much more* 
+memory and swap space - we usually recommend 32MB of swap space with at least 
+16MB of physical memory. Ask a Unix system administrator or Sun technical 
+support if your computer is appropriate.
+
+MAPMAKER is sent on 3-1/2 inch high-density (1.44MB) "bar" format floppy disks. 
+You will need a Sun with this type of drive to install MAPMAKER. Of course, 
+this does not have to be the Sun you eventually run MAPMAKER on, if you have 
+some other way of transferring the files.   MAPMAKER is distributed as an 
+executable program -- you do NOT need a compiler to install it.
+
+The executable program and sample data files should only fill up 2MB of disk 
+space, although your data files and output will take up additional disk space. 
+Unfortunately, SunOS itself uses a lot of disk space: Sun's 400MB drives 
+provide more than adequate room, although the 200MB drives are a bit of a 
+squeeze if you actually want to *do* anything with the computer (and you have 
+no networked file server available).
+
+MAPMAKER is a text based program which runs using a standard terminal 
+(including a Mac or PC acting as a terminal, connected to the Sun either using 
+Ethernet or a standard serial line - consult your computer support people or 
+Sun technical support for details). In principle, this way one SPARCStation 
+could provide analysis services for an entire lab of Macs and PCs. MAPMAKER 
+also works in a Command Tool, Shell Tool, or xterm window under SunView, 
+OpenWindows, or The X Window System.
+ 
+MAPMAKER draws graphic images in the standard PostScript (Level 1) format. For 
+your convenience, we have included a copy of the Free Software Foundation's 
+"GhostScript" package -- a PostScript interpreter which allows you to display 
+these graphics under X-Windows and OpenWindows. GhostScript works either on the 
+SPARCStation graphics console itself, or remotely over Ethernet using X-Windows 
+from a PC, Mac, X-Terminal, or another workstation: ask a Unix system 
+administrator or Sun technical support for details. These PostScript files 
+should also print as-is on any PostScript printer, such as an Apple 
+LaserWriter.  However, we have no experience with any other type of printer, 
+including the Sun "SPARCprinter" or others driven by Sun's "NewsPrint" package.
+
+
+(4) HOW TO RUN MAPMAKER ON AN APPLE MACINTOSH RUNNING A/UX
+
+MAPMAKER 3.0 and MAPMAKER/QTL 1.1 do not presently work correctly with the 
+standard Macintosh operating system. The MAPMAKER programs are computationally 
+intensive large memory model programs which, when ported naively, frequently 
+crash the stock Macintosh operating system.  Unfortunately, this is a difficult 
+problem to solve (any volunteers out there?).  As we mentioned above, a well 
+ported version of MAPMAKER Version 1.0 is available from Dupont, which will 
+fill some users' needs. 
+
+It is possible, however, to run the newest versions of MAPMAKER (3.0) and 
+MAPMAKER/QTL (1.1) on Macintoshes running Apple's Unix Operating System, A/UX 
+3.0. A/UX 3.0 is a merger of the ordinary Macintosh System 7 Finder with a 
+nearly-invisible (to the user) set of Unix internals. In fact, A/UX users may 
+almost never know that their computer is running Unix -- they will see only the 
+ordinary Macintosh Finder and will have access to almost all standard System 7 
+compatible programs and files. At the same time, A/UX provides the necessary 
+underlying features for big programs like MAPMAKER and MAPMAKER/QTL to work 
+without extensive modifications.
+
+In our experience, we found A/UX fairly easy to set up, well documented, and 
+robust. Moreover, Apple provides telephone support to help install A/UX.  Thus, 
+we can certainly recommend this platform for running MAPMAKER and MAPMAKER/QTL, 
+with the only caveats that (i) it requires a relatively expensive Macintosh and 
+other hardware, (ii) A/UX itself is not cheap; and (iii) even the top of the 
+line Macintoshes cannot compete in price-to-performance with either PC clones,  
+or most dedicated Unix workstations.
+
+A/UX places significant demands on a Mac. The minimum A/UX 3.0 configuration 
+needed to run MAPMAKER (as well as System 7 and most other Mac programs) will 
+take up over 60 megabytes (Mb) of disk space (a full A/UX installation requires 
+160Mb, although you will likely not need all of these features). Fortunately, 
+it is possible to load A/UX (and MAPMAKER) onto a second external disk drive.
+
+A/UX requires 8Mb of memory, although 16Mb is preferable for running MAPMAKER 
+on typical data sets. A/UX only runs on MacII and better class machines (and 
+original MacIIs will require a hardware upgrade), and A/UX will not run on 
+PowerBooks. We have run MAPMAKER under A/UX on a Mac IIci (with a minimal A/UX 
+configuration on an external 80Mb disk, leaving about 20Mb free) and on a 
+Quadra 700 with 230Mb of disk (full setup, leaving about 100Mb free). Both have 
+20Mb of memory and Radius monitors and video cards, as well as third-party disk 
+drives (both worked, although the Quadra was noticeably faster). We cannot 
+vouch for any other configuration, so consult your Apple dealer (Classic-II's, 
+LC-II's and IIsi's are probably not a good idea, both because they have no math 
+coprocessors, and because they have other performance bottlenecks internally). 
+Most third party hardware is compatible, although you should check with the 
+vendor. Notorious for compatibility problems are some Ethernet boards and a few 
+third party CD-ROM drives (in particular, those with NEC mechanisms).
+
+A/UX is available directly from Apple to US Customers (1-800-795-1000) for 
+$649, and comes with one year of free phone support. A/UX is also available (at 
+a somewhat lower price actually) from authorized Apple dealers, both inside and 
+outside of the US. A/UX comes on a CD-ROM, and thus a CD-ROM drive is required 
+to install it (although you do not need the CD-ROM to subsequently run A/UX - 
+you can simply borrow a CD-ROM drive to do the installation). A/UX is also 
+available pre-installed on new Macs. Installing A/UX will require you to back 
+up all of your files, as it must re-initialize your hard disk (although, if you 
+have multiple hard disks, it needs only to reinitialize the disk that A/UX is 
+installed on). The entire installation process took us an afternoon. 
+
+MAPMAKER for A/UX is sent on 3-1/2 inch high-density (1.4MB) Mac floppy disks. 
+You will need a Mac with this type of drive to install MAPMAKER. Of course, 
+this does not have to be the Mac you eventually run MAPMAKER on, if you have 
+some other way of transferring the files.  MAPMAKER is distributed as an 
+executable program -- you do NOT need a compiler to install it.
+
+MAPMAKER is a text based program which runs using a standard terminal window 
+(including the A/UX CommandShell application, which runs under A/UX's System 7 
+Finder). In principle, you can use one A/UX Mac to serve an entire lab, with 
+other Macs or PCs acting as terminals, connected to the A/UX Mac either using 
+Ethernet or a standard serial lines - consult your computer support people or 
+Apple dealer for details. MAPMAKER does not require the use of MacX or A/UX's 
+X-Windows implementation, although it will work with it.
+
+MAPMAKER draws graphic images in the standard PostScript (Level 1) format. 
+These PostScript files should print as-is on any PostScript printer, such as an 
+Apple LaserWriter NTR (A/UX prints to LaserWriters via AppleTalk, which can be 
+shared with other Macs as usual). They will not print on an non-PostScript 
+laser-printer (including the Apple LS) or on an ImageWriter. We do not 
+presently provide software to view these graphics on the screen or to paste 
+these graphics into other Mac software.
+
+
+(5) LICENSE AGREEMENT
+
+The MAPMAKER package, including both the MAPMAKER version 3.0 and MAPMAKER/QTL 
+version 1.1 programs, all associated files, source code, and documentation 
+(herein referred to collectively as MAPMAKER) are distributed under the 
+following license terms at no charge. Installation of the program on any 
+computer or any use of the program implies that the user and the user's 
+organization (herein referred to as "you") agree to the following terms:
+
+(1) Warranty, or lack thereof: These programs are provided on an "as is" 
+basis, with no warranty of any type, including warranty of suitability for any 
+particular purpose or ability to function correctly on any type of computer. No 
+technical support can be guaranteed.
+
+(2) Right to Use: You are provided with a license to use MAPMAKER for "basic 
+research purposes" as defined by the Whitehead Institute for Biomedical 
+Research. Generally speaking, most mapping efforts are considered "basic 
+research" unless the sale of either mapped markers or (putative) genes or the 
+sale of mapping services using the MAPMAKER programs is involved. Also 
+generally speaking, the sale of particular lines or strains developed through 
+the indirect use of the MAPMAKER programs is granted. Commercial groups should 
+consult us as to the specific the legalities covering the use of MAPMAKER for 
+their project(s). We will work out licensing such efforts on a case by case 
+basis, and our intention is to see such agreements worked out and to do so 
+quickly.
+
+(3) Redistribution Rights: The Whitehead Institute grants you permission to 
+copy MAPMAKER, both for distribution to individuals within your organization 
+and to those outside the organization. However, all of the software, files, and 
+documentation must be provided and the software must be copied in its entirety 
+preserving, among other things, copyright notices, credits, and license 
+agreement. (One reason behind this is that MAPMAKER and MAPMAKER/QTL are a 
+synchronized distribution, and only versions of the software, documentation, 
+and other files delivered together from the Whitehead Institute are guaranteed 
+to work with each other.) You may charge a small fee for the media and the 
+physical act of copying the software and documentation, not to exceed US$250, 
+but all persons who receive the software do so under this license agreement 
+alone and thus you may not charge for the software itself or restrict any 
+recipient's right to further distribute the version you give to them.
+
+(4) Modification Rights: The Whitehead Institute grants you permission to 
+modify MAPMAKER and to distribute modified versions, both to individuals within 
+your organization and to those outside your organization. However, you must (a) 
+preserve all of the original copyright notices, license agreement, and credits 
+in both the software and documentation, (b) add your own notice, making it 
+immediately apparent upon running the program that it's a modified version, (c) 
+include the unmodified version in its entirety (as described above) along with 
+the modified version; (d) distribute the modified version under the same 
+licensing conditions as the original (e.g. under this agreement); and (e) 
+notify us in writing that you are distributing a modified version and provide 
+us with full source code to the modified version immediately upon request. 
+These restrictions may be waived in some cases by The Whitehead Institute -- 
+contact us for details. Note that this agreement prohibits selling even 
+modified versions of the MAPMAKER package without our permission. Modified 
+versions of MAPMAKER distributed for internal use only within a specific 
+organization are not subject to terms (c), (d), and (e), above.
+
+(6) REFERENCES FOR MAPMAKER AND MAPMAKER/QTL:
+
+E. Lander and P. Green. (1987) Construction of Multilocus Genetic Maps in 
+Humans. Proc. Nat. Acad. Sci. USA 84: 2363-2367.
+
+E. Lander, P. Green, J. Abrahamson, A. Barlow, M. Daley, S. Lincoln, and L. 
+Newburg. (1987) MAPMAKER: An Interactive Computer Package for Constructing 
+Primary Genetic Linkage Maps of Experimental and Natural Populations. Genomics 
+1: 174-181.
+
+E. Lander and D. Botstein. (1989) Mapping Mendelian Factors Underlying 
+Quantitative Traits Using RFLP Linkage Maps. Genetics 121: 185-199.
+
+A. Paterson, E. Lander, S. Lincoln, J. Hewitt, S. Peterson, and S. Tanksley. 
+(1988) Resolution of Quantitative Traits into Mendelian Factors Using a 
+Complete RFLP Linkage Map. Nature 335: 721-726.
+
+S. Lincoln and E. Lander. (1992):  Systematic Detection of Errors in Genetic 
+Linkage Data.  (1992) Genomics 14: 604-610.
+
+
+A Few Examples:
+
+C. Stuber, S. Lincoln, D. Wolf, T. Hellentjaris, and E. Lander. (1992) 
+Identification of Genetic Factors Contributing to Heterosis in a Hybrid from 
+two Elite Maize Inbred Lines.  Genetics, 132: 823-839.
+
+H. Jacob, K. Lindpaintner, S. Lincoln, K. Kusumi, R. Bunker, Y. Mao, D. Ganten, 
+V. Dzau, and E. Lander. (1991) Genetic Mapping of a Major Gene Causing 
+Hypertension in the Stroke Prone Spontaneously Hypertensive Rat.  Cell 67: 213-
+224.
+
+W. Dietrich, H. Katz, S. Lincoln, M. Daly, H. Shin, J. Friedman, N. Dracopoli, 
+and E. Lander. (1991)  A Genetic Map of the Mouse Suitable for Typing 
+Intraspecific Crosses.  Genetics 131: 423-427.
+
+A. Paterson, J. Hewitt, S. Peterson, S. Lincoln, E. Lander, and S. Tanksley. 
+(1991) Mendelian Factors Underlying Quantitative Traits: Comparison across 
+Species, Generations, and Environments.  Genetics 127: 169-179.
+
+N. Dracopoli, B. Stanger. C. Ito, K. Call, S. Lincoln, E. Lander, and D. 
+Housman. (1988) A Genetic Linkage Map of 27 Loci from PND to FY on the Short 
+Arm of Human Chromosome 1. American Journal of Human Genetics 43: 462-470.
+
+
+How to cite MAPMAKER/EXP 3.0 or MAPMAKER/QTL 1.1:
+
+Please use Lander et al. 1987 for MAPMAKER/EXP, and Paterson et al. 1988 for 
+MAPMAKER/QTL. Please also cite:
+
+S. Lincoln, M. Daly, and E. Lander: Constructing Genetic Maps with MAPMAKER/EXP 
+3.0. (1992) Whitehead Institute Technical Report. 3rd edition.
+
+S. Lincoln, M. Daly, and E. Lander: Mapping Genes Controlling Quantitative 
+Traits with MAPMAKER/QTL 1.1. (1992) Whitehead Institute Technical Report. 2nd 
+edition. 
+
+
+Ver 3b, 12/92
+
+
+MAPMAKER/EXP 3.0 and MAPMAKER/QTL 1.1 Request:
+
+Print Name ____________________________________________________________________
+
+Title _________________________________________________________________________
+
+Organization __________________________________________________________________
+
+Address _______________________________________________________________________
+
+_______________________________________________________________________________
+
+_______________________________________________________________________________
+
+_______________________________________________________________________________
+
+Phone _________________________________________________________________________
+
+FAX   _________________________________________________________________________
+
+Electronic Mail _______________________________________________________________
+                                    [  ] Internet     [  ] Bitnet
+
+
+
+Select Either:
+
+____ (1) Version for Sun SPARCStations Running SunOS 4.1.
+
+____ (2) Version for IBM PC-Compatibles Running DOS 5.0.
+
+____ (3) Version for Apple Macintosh Computers Running A/UX 3.0.
+
+____ (4) Manual Only (for those who retrieved the software by FTP).
+
+All formats include 3-1/2" high density (1.44Mb) floppy disks with executable 
+code and printed documentation. Source code is available by anonymous FTP.
+
+
+
+Return This To: 
+
+	MAPMAKER 
+	c/o Dr. Eric Lander
+	Whitehead Institute for Biomedical Research
+	9 Cambridge Center
+	Cambridge, Massachusetts  02142  USA
+	FAX 617-258-6505
+
+
+
+For Information on MAPMAKER 1.0 for Macintosh:
+
+	Mapmaker for Macintosh
+	c/o Dr. Scott Tingey
+	E 402/4249
+	DuPont Experimental Station
+	Wilmington, Delaware  19898  USA
