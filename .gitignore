@@ -1,3 +1,20 @@
+mapmaker
+qtl
+
+lib/makehelp
+mapm/mapmhelp.c
+quant/qtlhelp.c
+mapmaker.help
+mapmaker.ps
+qtl.help
+qtl.ps
+cmake-build-debug/
+cmake-build-release/
+cmake-build-relwithdebug/
+
+sample.xmaps
+mouse.xmaps
+
 # Prerequisites
 *.d
 
