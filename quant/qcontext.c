@@ -100,7 +100,7 @@ void kill_context(con,save_it)
 STATUS_CONTEXT *con;
 bool save_it;
 {
-    char *name,*seqnce,*err;
+    char *err;
 
     if(save_it) {
 	for(Te=con->named_sequences->list; Te!=NULL; Te=Te->next) {

@@ -452,8 +452,7 @@ command lodtable()
 
 command pairwise()
 {
-    int i, j, a, b, num_trials, *try_me=NULL, num_loci, *loci=NULL;
-    bool sex;
+    int num_trials, *try_me=NULL, num_loci, *loci=NULL;
 
     mapm_ready(ANY_DATA,2,UNCRUNCHED_LIST,&num_loci);
     run {
@@ -497,7 +496,7 @@ int chrom;
 	    sf(ps," %-10s %-10s  %s    %s   %s    %s    %s",
 	       loc2str(i),loc2str(j),
 	       rsd(5.2,thetam),rsd(5.2,thetaf),rsd(5.2,lod),
-	       cm_dist(thetam),cm_dist(thetaf)); pr();
+           rsd(6.2,cm_dist(thetam)),rsd(6.2,cm_dist(thetaf))); pr();
 	    if (chrom!=NO_CHROM) { sf(ps,"   (%s)",chrom2str(chrom)); pr(); }
 	    nl();
 	    return(TRUE);
@@ -636,7 +635,7 @@ int loc, *toploc, topnum, how, topref, downref;
 
 command three_point()
 {
-    int i, num_loci, *loci=NULL, num_trips, num_groups, num_links;
+    int num_loci, *loci=NULL, num_trips, num_groups, num_links;
     int *linkage_group=NULL, group_size, num_unlinked, three_locus[3], foo;
     SEQ_NODE *three_seq;
     MAP *map=NULL;
@@ -766,7 +765,7 @@ command forget_three_point()
 
 command suggest_subset()
 {
-    real lodbound, thetabound, seed_like;
+    real lodbound, thetabound;
     int *loci=NULL, num_loci, *linkage_group=NULL, group_size, groups_done;
     int *subset=NULL, subset_size, num_unlinked, i, prev;
 

@@ -48,6 +48,9 @@ void read_raw_f2_locus();
 void read_raw_trait();
 void write_traits();
 
+void add_to_seg_dist(char c, int locus);
+void scale_seg_dist(int locus);
+
 bool uppercase_genotypes; /* set by read_raw_header() for read_raw_f2_locus()*/
 
 real **trait=NULL;
@@ -502,8 +505,7 @@ int n_loci, n_indivs;
 }
 
 
-void free_f2_data(n_loci,n_indivs)
-int n_loci, n_indivs;
+void free_f2_data(int n_loci/*,int n_indivs*/)
 {
     unmatrix(raw.locus_name, n_loci, char);
     unmatrix(raw.data.f2.allele, n_loci, char);
@@ -532,7 +534,7 @@ FILE  *fp; /* sends BADDATA, or MALLOC, INTERRUPT etc. if an error */
 	allocate_f2_data(raw.num_markers,raw.data.f2.num_indivs);
 	for (j=0; j<raw.num_markers; j++) new_read_f2_locus(fp,j);
     } on_error {
-	free_f2_data(raw.num_markers,raw.data.f2.num_indivs);
+	free_f2_data(raw.num_markers/*,raw.data.f2.num_indivs*/);
 	if (msg==ENDOFILE) baddata("unexpected end of file");
 	relay;
     }
@@ -543,7 +545,7 @@ void new_read_f2_locus(fp,locus_num)
 FILE *fp;
 int locus_num;
 {
-    int i, chrom_num; 
+    int i;
     char c, name[NAME_LEN+2];
 
     getdataln(fp); /* Must be at the start of a line */
@@ -607,14 +609,13 @@ FILE  *fp; /* sends BADDATA, or MALLOC, INTERRUPT etc. if an error */
 char *symbols;
 {
     int i;
-    char *leftovers;
 
     run {
 	allocate_f2_data(raw.num_markers,raw.data.f2.num_indivs);
 	for (i=0; i<raw.num_markers; i++) read_raw_f2_locus(fp,i,symbols);
 	for (i=0; i<num_traits; i++) read_raw_trait(fp,i);
     } on_error {
-	free_f2_data(raw.num_markers,raw.data.f2.num_indivs);
+	free_f2_data(raw.num_markers/*,raw.data.f2.num_indivs*/);
 	if (msg==ENDOFILE) baddata("unexpected end of file");
 	relay;
     }
@@ -627,7 +628,7 @@ FILE *fp;
 int locus_num;
 char *symbol;
 {
-    int i, j, num, templen;
+    int i, j;
     char c, *name, converted;
 
     name= get_temp_string();
@@ -881,9 +882,7 @@ FILE *fp;
 
 
 
-add_to_seg_dist(c,locus)
-char c;
-int locus;
+void add_to_seg_dist(char c, int locus)
 {
     switch(c) {
 	case PARENTAL_TYPE_A: {
@@ -926,7 +925,7 @@ int locus;
     }
 }
 
-scale_seg_dist(locus)
+void scale_seg_dist(locus)
 int locus;
 {
     real total;

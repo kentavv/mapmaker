@@ -103,7 +103,7 @@ int *locus, *num_loci, *haplo_group, *num_haplo;
 int *old_obs, *new_obs;
 {
     int i, num_inf, num_dom, best_i, foo;
-    int best_score, old_score, score;
+    int best_score, score;
     
     /* get the most informative marker */
     best_score= 0;
@@ -121,7 +121,6 @@ int *old_obs, *new_obs;
     if (*num_loci==0) return;
     
     do { /* find one to add to the group */
-	old_score= best_score;
 	best_score= 0;
 	for (i=0; i<*num_loci; i++)
 	  if (merge_genotypes(locus[i],old_obs,new_obs)) { /* if no recs */
@@ -333,7 +332,7 @@ int *locus, num_loci;
 int leftmost, rightmost;  /* presumably, the left and rightmost intervals? */
 int init_window_size, newmarker;
 {
-    int first, last, start, end, left, width, i, j;
+    int first, last, start, end, width, i, j;
     
     for (width=init_window_size; width>=1; width--) {
 	first=max(1,leftmost-width+1);
@@ -383,7 +382,7 @@ bool *excluded;  /* side-effected */
 bool three_pt_verify(locus,num_loci,window_size)
 int *locus, num_loci, window_size;
 {
-    int i, j, k, left, right;
+    int i, j, k;
     if (num_loci<3 || window_size<3) return(TRUE); /* crash? */
 
     for (i=0; i<num_loci-2; i++)
@@ -406,7 +405,7 @@ PLACE **result; /* [interval#]->foo side-effected like=NO_LIKE if untried */
 int *best_pos;   /* side effected */
 MAP *best_map, *temp;  /* max_loci must be >=finish-start+2 */
 {
-    int i, j, k, num_allowed, last, *zero=NULL;
+    int i, j, k, num_allowed, last;
     real best_like, lod, theta;
     real theta1, theta2, dist1, dist2, distframe, distscale;
     
@@ -749,7 +748,7 @@ int *num_unplaced;
 real npt_thresh;        /* both are side-effected, and may have NO_LOCUS */
 bool print_anyway;
 {
-    int i, j, k, num, total;
+    int i, j, total;
     bool placed_any, contradiction;
     PLACE   **placements=NULL;
     MAP     *temp_map=NULL;
@@ -820,9 +819,9 @@ bool *contradiction; /* iff return FALSE, is TRUE if 3pt excludes all */
 PLACE **placements; /* these are all temps */
 MAP *temp_map;
 {
-    int places, best_places, best_pos, best_i, i, j;
-    int left, right, pos, how;
-    real next_best, best_unallowed, error_lod, e1, e2; /* e1, e2=threshs */
+    int places, best_places, best_i, i, j;
+    int left, right, how;
+    real next_best, best_unallowed, error_lod;
     bool zero_place, off_ends, single_error;
 
     if (placed->num_loci>=MAX_MAP_LOCI) 

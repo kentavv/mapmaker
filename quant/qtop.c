@@ -85,13 +85,10 @@ void top_init()
 
 /********** Welcome to the Top of the World **********/
 
-main(argc,argv)
-int argc;
-char *argv[];
+int main(int argc, char *argv[])
 {
-    char *version, help_filename[PATH_LENGTH+1];
-    FILE *fp;
-    
+    char help_filename[PATH_LENGTH+1];
+
     custom_lib_init();
     get_cmd_line_args(&argc,argv);
     tty_hello();

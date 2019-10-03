@@ -20,6 +20,8 @@
 #define INC_QLOWLEVEL
 #include "qtl.h"
 
+bool isa_test_wiggle(int wiggle_num);
+
 /***** GLOBAL *****/
 int print_long_maps;
 char default_intercross_chars[10], default_backcross_chars[10];
@@ -374,7 +376,7 @@ command set_trait()
 
 command translate()
 {
-    int printed, i, j;
+    int printed, i;
     
     qtl_ready(ANY_DATA,NOSEQ,NOTRAIT,NOQCTM);
     nomore_args(0);
@@ -453,9 +455,11 @@ command singles() /* FROB */
 
 command qtl_like()
 {
+/*
     int perm;
     real like;
-    
+    */
+
 /*    qtl_ready(ANY_DATA,SEQ,TRAIT,QCTM);
     nl(); 
     
@@ -662,7 +666,7 @@ command wiggle()
 command list_wiggles()
 {
     char arg[TOKLEN+1];
-    int wiggle, order, last;
+    int wiggle, order;
     WIGGLE_OPERATION *op;
 
     qtl_ready(ANY_DATA,NOSEQ,NOTRAIT,NOQCTM);
@@ -864,7 +868,6 @@ command make_trait()
     real *normal_array=NULL;
     NORMAL_TEST *normal_check=NULL;
     char *eqn, *name_to_check, *name;
-    char *error_message=get_temp_string();
     int trait_redone, trait_index;
     EQUATION **postfixed;
 
@@ -978,9 +981,9 @@ command predict()
 
 command dump_scan()
 {
-    char arg[TOKLEN+1], *errmsg=get_temp_string();
+    char arg[TOKLEN+1];
     char *name=get_temp_string();
-    int t[8], num, i, j;
+    int i, j;
     FILE *fp=NULL;
     WIGGLE_OPERATION *op;
     WIGGLE_INTERVAL **data;
@@ -1021,7 +1024,6 @@ command dump_scan()
 
 command dump_traits()
 {
-    char arg[TOKLEN+1], *errmsg=get_temp_string();
     int t[8], num, i, j;
     FILE *fp=NULL;
     
@@ -1060,12 +1062,12 @@ command dump_traits()
 command dump_genome()
 {
     FILE *fp=NULL;
-    int i,j,k,l;
+    int k,l;
     int tot_aa=0,tot_bb=0,tot_ab=0,total_num=0;
     run {
 	print("dumping to 'genome.dump'\n");
 	fp = open_file("genome.dump",WRITE);
-	fprintf(fp,"*loci\t \%AA\t \%AB  \%BB\t n_indivs");
+	fprintf(fp,"*loci\t %%AA\t %%AB  %%BB\t n_indivs");
 	for(k=0;k<raw.n_loci;k++) {
 	    fprintf(fp,"\n");
 	    for(l=0;l<raw.n_indivs;l++) {
@@ -1073,8 +1075,8 @@ command dump_genome()
 		else if (raw.locus[k][l]=='B') {tot_bb++; total_num++; }
 		else if (raw.locus[k][l]=='H') {tot_ab++; total_num++; }
 	    }
-	    fprintf(fp,"%s\t %lf\t %lf\t %lf\t %d",raw.locus_name[k],
-		    100*tot_aa/total_num,100*tot_bb/total_num,100*tot_ab/total_num,
+	    fprintf(fp,"%s\t %.2f\t %.2f\t %.2f\t %d",raw.locus_name[k],
+		    100.*tot_aa/total_num,100.*tot_bb/total_num,100.*tot_ab/total_num,
 		    total_num);
 	    tot_aa=tot_bb=tot_ab=total_num=0;
 	}
@@ -1089,9 +1091,8 @@ command dump_genome()
 
 command list_traits()
 {
-    int printed, i;
+    int i;
     
-    printed = 0;
     print(BIG_DIVIDER); print("TRAITS:\n\n");
     for(i=0; i< raw.n_traits; i++) {
 	if (nullstr(raw.trait_name[i])) sf(ps, "%3d <deleted>  ",i+1);
@@ -1308,7 +1309,7 @@ command forget()
 
 command sequence_editor()
 {
-    char name[TOKLEN+1], prompt[TOKLEN+1], *seq, *err, *foo, *new_seq;
+    char prompt[TOKLEN+1], *new_seq;
     int errpos;
 
     qtl_ready(ANY_DATA,NOSEQ,NOTRAIT,NOQCTM);
@@ -1340,7 +1341,6 @@ command sequence_editor()
   
 command load_data() 
 {
-    bool prev_dat, unloaded;
     FILE *fpa=NULL, *fpb=NULL, *fpc=NULL;
     int num_of_file=0;
     char *dfile= get_temp_string(), *tfile= get_temp_string(), *mfile= get_temp_string();
@@ -1356,10 +1356,6 @@ command load_data()
 	
     } else { /* !nullstr */
 	
-	/* for now we prevent reloading */
-	if ((prev_dat = data_loaded())) error(ALREADY_LOADED_DATA);
-	
-	unloaded=FALSE;
 	nstoken(&args,sREQUIRED,dfile,PATH_LENGTH); tfile[0]='\0';
 	nomore_args(num_args);
 	run {
@@ -1410,7 +1406,7 @@ command load_data()
 		sf(ps,"error: unable to open data file\n"); pr();
 	    } else if (msg==BADDATA) {
 		sf(ps,"error: unable to load data from file\nline %d:",
-		   temp,BADDATA_line_num); pr(); 
+		   BADDATA_line_num); pr();
 		print(BADDATA_error); nl();
 		strcpy(raw.file,"");
 	    } 
@@ -1509,7 +1505,7 @@ command save_status()
 	if (rename_file(name,name3)) rename_file(name2,name);
     } except {
 	when CANTOPEN:
-	    sf(ps,"Can't open %s.\n",name);  pr();
+	    sf(ps,"Can't open %s.\n",name);  pr(); /* fall through */
 	default:
 	    rename_file(name3,name);
 	    if(msg == INTERRUPT) send(INTERRUPT);
@@ -1630,8 +1626,8 @@ void load_qtl_files()
 
 command tester()
 {
-    real theta, pos, f2_sum, f3_sum, a, b, c, x, y, z, left_rf, right_rf;
-    int geno, qtl, left, right;
+    real theta, f2_sum, f3_sum, a, b, c, x, y, z, left_rf, right_rf;
+    int qtl, left, right;
 
     getln("Theta, L_Pos, R_pos: ");
     sscanf(ln,"%lf %lf %lf",&theta,&left_rf,&right_rf);
@@ -1691,9 +1687,8 @@ command tweak_weight()
 command draw_wiggle()
 {
     char arg[TOKLEN+1];
-    int wiggle, order, last;
+    int wiggle, order;
     real threshold, scale;
-    WIGGLE_OPERATION *op;
 
     qtl_ready(ANY_DATA,NOSEQ,NOTRAIT,NOQCTM);
     get_arg(stoken,"",arg);
@@ -1705,7 +1700,7 @@ command draw_wiggle()
     get_wiggle_nums(arg,&wiggle,&order);
     if (wiggle<0) { wiggle=num_wiggles-1; order=wiggles[wiggle]->num_orders-1;}
     else if (order<0 && wiggles[wiggle]->num_orders==1) order=0;
-    op=wiggles[wiggle]; nl();
+    nl();
 
     if (order<0) { 
         print_ps_multi_wiggle(wiggle, threshold);

@@ -267,7 +267,7 @@ void parse_entry(kind,name,abbrev)
 int kind;
 char *name, *abbrev;
 {
-    bool rest=FALSE, need_break;
+    bool rest=FALSE;
     int i;
     STRING line, key;
 
@@ -681,7 +681,7 @@ void man_write_contents()
 	    case TOP:
 	      man_write_line("");
 	      strcpy(upcase,section[s]); uppercase(upcase);
-	      sf(temp," %s\(%d\) %s ",(s>=10 ? "":" "),s,upcase); s++; break;
+	      sf(temp," %s\\(%d\\) %s ",(s>=10 ? "":" "),s,upcase); s++; break;
 	    case CMD: 
 	      strcpy(upcase,entry[i]); uppercase(upcase);
 	      sf(temp,"      %s Command ",upcase); break;
@@ -718,7 +718,7 @@ void man_write_contents()
 	if (entry_type[i]==TOP) {
 	    man_write_line("");
 	    strcpy(upcase,section[s]); uppercase(upcase);
-	    sf(temp,"%s\(%d\) %s ",(s>=10 ? "":""),s,upcase); s++;
+	    sf(temp,"%s\\(%d\\) %s ",(s>=10 ? "":""),s,upcase); s++;
 	    man_write_line(temp);
 	} else {
 	    sf(temp,"%s%s",entry[i],(entry_type[i]==HLP ? "*":""));

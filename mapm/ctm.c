@@ -250,8 +250,6 @@ int total_loci, num_indivs, cross_type;
 void converge_to_map(map)
 MAP *map;
 {
-    int i, hmm;
-
     if (map==NULL || map->num_loci<2 || raw.data_type!=F2) send(CRASH);
     if (map->num_loci>MAX_MAP_LOCI) 
       { strcpy(ps,"too many loci in one map"); error(ps); }
@@ -321,8 +319,7 @@ int f2_count_infs(num_dom,num_het,observation) /* return #inf */
 int *num_dom, *num_het; /* side-effected */
 int *observation; /* array of raw.num_indivs observations */
 {
-    int homo, het, dom, missing, num_inf, j;
-    real rhomo, rhet, rdom, rinf;
+    int homo, het, dom, missing, j;
 
     homo= het= dom= missing= 0;
     for (j=0; j<raw.data.f2.num_indivs; j++)
@@ -344,7 +341,7 @@ int *observation; /* array of raw.num_indivs observations */
 void hmm_converge_to_map(map)
 MAP *map;
 {
-    int iter, i;
+    int iter;
     int testing, one;
     real old_like, new_like;
 
@@ -396,7 +393,7 @@ if (testing) { /********** MORE DEBUGGING CODE **********/
 void setup_hmm(map)
 MAP *map;
 {
-    int i, type;
+    int type;
 
     n_loci=map->num_loci; 
     n_intervals=n_loci-1;
@@ -420,7 +417,7 @@ double *error_rate;
 int cross_type;
 {
     int i, j, k, obs;
-    real total, **recs, **norecs, error_prob;
+    real **recs, **norecs, error_prob;
 
     max_states=2; 	/* STATE_A or _B */
     max_observations=3; /* OBS_A, _H, or _MISSING (yup, this is odd for BC) */
@@ -609,8 +606,7 @@ void setup_f3_self_hmm(locus)
 int *locus; /* The locus numbers in the sequence */
 {
     int i, j, k, the_obs;
-    real total, recs;
-    int x, y;
+    real recs;
     int a[3], b[3], h[3], n[3], aa, ab, ah, ba, bb, bh, ha, hb, hh;
     
     max_states=16; f3_states=0;	 
@@ -755,7 +751,7 @@ real ***obs_prob;      /* [locus][observation/MD][state] side-effected */
 real ***implied_recs;  /* [interval][from_state][to_state] side-effected */
 /* for now, assume obs_probs are fixed and initialized by setup_hmm() */
 {
-    int i, k, j;
+    int i;
     real rec, norec, theta;
     real **prob;
 
@@ -790,9 +786,9 @@ real ***obs_prob;      /* [locus][observation/MD][state] side-effected */
 real ***implied_recs;  /* [interval][from_state][to_state] side-effected */
 /* for now, assume obs_probs are fixed and initialized by setup_hmm() */
 {
-    int i, k, j;
+    int i;
     real theta, one_minus_theta, no_recs, one_rec, two_recs;
-    real **prob, recs, total;
+    real **prob, recs;
 
     /* set the trans_probs (right geno, conditional on left) given theta */
     for (i=0; i<n_intervals; i++) {
@@ -873,7 +869,6 @@ real ***implied_recs;	   /* [interval][from_state][to_state] */
 SUFF_STATS **sufficient_stats; /* [locus] => ptr to struct (recs,norecs)... */
 {
     int i, k, j;
-    int state, left, right;    
     real **transitions_exp, **recs_implied, **norecs_implied;
     real recs, norecs;
 
@@ -940,10 +935,6 @@ real ***obs_prob, ***exp_observations;  /* [locus][observation][state] */
     real sum, total, val, *pheno_given_geno, *the_prob, *prev_prob;
     real indiv_like, total_like;
     real **the_transitions, **my_transitions, *temp, **the_trans_prob;
-
-    /* debugging */
-    int x, y;
-    real r, n;
 
     /* Sometime unroll array refs in here for a little speed */
 
@@ -1147,7 +1138,7 @@ void test_dump0(p,name)
 real **p;
 char *name;
 {
-    int i, j, k, n;
+    int j, k, n;
 
     n= n_intervals > 1 ? 3:2;
     printf("=== %s ===\n    ",name);
@@ -1173,7 +1164,7 @@ real ***exp_genotype;     /* [indiv][locus][state] */
 real ***obs_prob;         /* [locus#][observation][state] */
 real **error_lod;         /* [locus#][indiv] side-effected */
 {
-    real apostiori_rate, state_prob, e1, e2, like;
+    real apostiori_rate, e1, e2, like;
     int i, j, state, the_obs;
 
     for (j=0; j<n_indivs; j++) {

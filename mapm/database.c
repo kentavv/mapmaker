@@ -23,11 +23,9 @@
 
 command import()
 {
+#ifndef NO_DATABASE
     char *out_name, *str, first_token[TOKLEN+1];
     int length, prev_data, filenum;
-    FILE *fp=NULL;
-
-#ifndef NO_DATABASE
 
     /* command initialization */
     mapm_ready(MAYBE_DATA, 0, 0, NULL);
@@ -74,7 +72,7 @@ command import()
 
 void get_from_database()
 {
-    int num_indivs, num_markers, cross_type;
+    int num_indivs=0, num_markers=0, cross_type=0;
 
     /* must allocate MAPMAKER data structures as follows */
 

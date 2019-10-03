@@ -87,6 +87,9 @@ bool do_get_order();	/* internal only! */
 #define BACKWARDS 2
 #define REORDERED 3
 
+bool is_a_named_locus(char *str /* must be a single token, downcased */, int *n);  /* internal use only */
+bool valid_new_name(char *str); /* now does not check valid_name() */
+
 char *maybe_seq=NULL;
 char *seq_temp=NULL;
 char *err_temp=NULL;
@@ -123,8 +126,7 @@ int n_loci;
 }
 
 
-void free_seq_stuff(n_loci)
-int n_loci;
+void free_seq_stuff(/*int n_loci*/)
 {
     unarray(seq_temp,char);
     unarray(err_temp,char);    
@@ -195,7 +197,6 @@ int num;
 SEQ_NODE *mk_locus_range(first,last)
 int first, last;
 {
-    int i;
     SEQ_NODE *node=get_seq_node();
 
     node=mk_locus(first);
@@ -323,7 +324,6 @@ char term_char;
     char c, *not_a_locus_errmsg;
     int n, m;
     SEQ_NODE **p, *q;
-    real theta;
 
     p=NULL; 
 
@@ -421,10 +421,13 @@ SEQ_NODE *this, *prev;
   switch (this->type) {
     case MEGALOCUS:      
     	add_back_pointers(this->node.megalocus.contents,(SEQ_NODE*) NULL);
+    	break;
     case INVERTABLE_SET: 
     	add_back_pointers(this->node.invertable_set.contents,(SEQ_NODE*) NULL);
-    case UNORDERED_SET:  
-	add_back_pointers(this->node.unordered_set.contents,(SEQ_NODE*) NULL);
+    	break;
+    case UNORDERED_SET:
+        add_back_pointers(this->node.unordered_set.contents,(SEQ_NODE*) NULL);
+	    break;
   }
   if (this->next!=NULL) add_back_pointers(this->next,this);
 }
@@ -476,8 +479,6 @@ void get_one_order(p,map)
 SEQ_NODE *p;
 MAP *map;
 { 
-    int i;
-
     reset_seq(p,TRUE);
     clean_map(map); /* resets map->num_loci, among other things */
     get_order(p,map->locus,map->rec_frac,&map->num_loci,map->max_loci);
@@ -492,8 +493,6 @@ int max_loci;         /* the max the array holds */
    loci, not just haplo groups, even if use_haplotypes==TRUE. The size 
    returned by mapm_ready should be right for this. */
 { 
-    int total;
-
     *num_loci=0;
     reset_seq(p,TRUE); 
     get_order(p,loci,NULL,num_loci,max_loci);
@@ -530,8 +529,7 @@ int direction;
    the maximum number of loci the array holds (CRASH if it's exceeded) */
 {
     int j; 
-    real val;
-    
+
     if (p==NULL) return(TRUE); /* should never happen? */
     if (direction==BACKWARDS) while(p->next!=NULL) p=p->next; /* to end */
     
@@ -648,6 +646,7 @@ bool perm_seq(p,order_matters,in_unordered_set)
 /* return TRUE if there is another order, side-effecting the SEQ_NODE tree */
 SEQ_NODE *p;
 bool order_matters;
+bool in_unordered_set;
 {
   int max_position;
   SEQ_NODE *q;
@@ -770,8 +769,6 @@ bool *ok;
 int *i_cnt, *j_cnt, *k_cnt;
 int *locus, num_loci;
 {
-    SEQ_NODE *p;
-
     if (num_loci<3) send(CRASH);
     *ok= TRUE;
     *i_cnt= 0; 
@@ -813,7 +810,6 @@ char *str; /* side-effected: assumed to be MAX_SEQ_LEN long (use new_seq) */
 bool expanded; /* if seq_str is set to the name-expanded seq or not */
 /* if error relay BADSEQ message without changing anything */
 {
-    SEQ_NODE *p;   /* add history stuff later */
     int save_chrom, num_loci;
     char *rest, chrom_name[99];
 
@@ -990,7 +986,7 @@ char **rest;
 void make_compare_seq(locus,num_loci,start_set,set_size)
 int *locus, num_loci, start_set, set_size;
 {
-    int i, j;
+    int i;
     char *last;
     
     last=seq_temp; last[0]='\0';
@@ -1095,7 +1091,7 @@ char *str; /* side-effected! */
 /* send BADSEQ if expansion >MAX_SEQ_LEN chars or if it contains circularly 
    defined names- this should never happen */
 { 
-    char *token_start, *expansion, *errmsg=NULL, *all, *rest, name[TOKLEN+1];
+    char *token_start, *expansion, *errmsg=NULL, *all, *rest;
     int loop_count, chrom;
 
     loop_count=0; all=str; BADSEQ_errpos= -1; 
@@ -1125,7 +1121,7 @@ char *str; /* side-effected! */
 /* send BADSEQ if expansion >MAX_SEQ_LEN chars or if it contains circularly 
    defined names- this should never happen */
 { 
-    char *token_start, *rest, *value, *errmsg=NULL, *all, name[TOKLEN+1];
+    char *token_start, *rest, *value, *errmsg=NULL, *all;
     int loop_count, chrom;
 
     loop_count=0; all=str; BADSEQ_errpos= -1; 
@@ -1154,8 +1150,6 @@ void tokenize_seq(seq,token,num_tokens)
 char *seq, **token;
 int *num_tokens;
 {
-    int i;
-
     swap_for_dash(seq);  /* makes '-' a delimiter ('~') */
     expand_seq_names(seq);
 
@@ -1210,8 +1204,7 @@ char *str;      /* must be a non-null token and a valid_name */
 int *n;         /* side-effected with locus# iff TRUE is returned */
 char **why_not; /* side-effected iff FALSE is returned */
 { 
-    char *foo, *bar;
-    int fail, num;
+    int num;
 
     if (!data_loaded() || !is_a_token(str)) send(CRASH);
     *why_not=ptr_to("");
@@ -1243,8 +1236,7 @@ char *str; 	 /* must be a non-null token and a valid_name */
 char **seq;      /* side-effected */
 char **why_not;  /* side-effected iff FALSE is returned */
 {
-    int n;
-    char *rest, name[TOKLEN+1];
+    char name[TOKLEN+1];
 
     if (!data_loaded() || !is_a_token(str)) send(CRASH);
     *why_not=ptr_to("");
@@ -1275,7 +1267,7 @@ char **why_not;
 bool expanded;
 { 
     char *foo, *rest;
-    int chrom, save_chrom;
+    int save_chrom;
     /* if (name[0]=='*') name++; */
 
     despace(str);
@@ -1363,9 +1355,8 @@ bool is_next_entry;
 }
 
 
-bool valid_new_name(str) /* now does not check valid_name() */
-char *str;
-{ 
+bool valid_new_name(char *str) /* now does not check valid_name() */
+{
     int foo; char *x, *y;
     return (!is_a_named_locus(str,&foo) && 
 	    !is_a_special_sequence(str,&x,&y) &&
@@ -1376,9 +1367,7 @@ char *str;
 
 /********** Internal procedures to implement these... **********/
 
-bool is_a_named_locus(str,n)  /* internal use only */
-char *str; /* must be a single token, downcased */
-int *n;
+bool is_a_named_locus(char *str /* must be a single token, downcased */, int *n)  /* internal use only */
 {
     int i;
 
@@ -1432,7 +1421,7 @@ char *str;
 char **seq;      /* side-effected iff TRUE returned */
 char **why_not;  /* side-effected iff TRUE returned and *str=="" */
 {
-    int chrom, one_chrom, i, j, k, n, contig, num, locus, ordered_seq;
+    int chrom, one_chrom, i, j, k, n, contig, num, ordered_seq;
     char *last;
 
     one_chrom=FALSE; chrom=0;

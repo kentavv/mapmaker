@@ -641,7 +641,7 @@ void ML_qtl_weight(S_matrix,expected_genotype,phenotype,fix_weight,
 real **S_matrix, **expected_genotype, *phenotype, *fix_weight;
 real *mu, *qtl_weight, *sigma_sq;  /* side effect these three */
 {
-    int n, size, i, j;
+    int n, size, i;
     real total, prediction;
     /* S_inverse and row are side-effected */
 
@@ -943,9 +943,7 @@ void qtl_noconv_to_map(data,map) /* OBSOLETE, I THINK */
 DATA *data;
 QTL_MAP *map; 	/* many parts of this are side-effected */
 {
-    real old_like, new_like;
-    int i;
-    bool done;
+    real new_like;
     /* use externs null_qtl_weight, qctm_qtl_weight, qctm_qtl_pos */
 
     set_qctm_globals(data,map);

@@ -97,7 +97,7 @@ command set_framework()
 {
     MAP *map, *old;
     char title[TOKLEN+1];
-    int i, chrom, num_loci;
+    int chrom, num_loci;
 
     mapm_ready(ANY_DATA,MAYBE_SEQ,ONE_ORDER,&num_loci);
     chrom=get_chrom_arg(FALSE);
@@ -248,7 +248,7 @@ command assign()
 
 command attach()
 {
-    int total_loci, i, chrom, n_loci, *locus=NULL;
+    int i, chrom, n_loci, *locus=NULL;
 
     mapm_ready(ANY_DATA,1,UNCRUNCHED_LIST,&n_loci);
     chrom=get_chrom_arg(FALSE);
@@ -278,7 +278,7 @@ command attach()
 
 command unassign()
 {
-    int n_loci, i, j, k, *locus=NULL;
+    int n_loci, i, *locus=NULL;
 
     mapm_ready(ANY_DATA,1,UNCRUNCHED_LIST,&n_loci);
     nomore_args(0);
@@ -306,11 +306,11 @@ command unassign()
 #define NPT_WINDOW 5
 command place()
 {
-    int  chrom, i, j, left, right;
+    int  chrom, i, left, right;
     int  *locus=NULL, n_loci, *chrom_locus=NULL, n_to_place, n_allowed;
     int  *chrom_all=NULL, n_chrom, n_frame, n_to_punt;
-    real npt_thresh, diff;
-    bool got_any, ok;
+    real npt_thresh;
+    bool got_any;
     PLACE **placements=NULL;
     PLACEME **unplaced=NULL;
     MAP *temp=NULL, *frame; /* frame is NOT malloced */
@@ -367,8 +367,7 @@ command place()
 	    print("Placing Markers:\n");
 	    for (i=0; i<n_to_place; i++) {
 		unplaced[i]->locus=chrom_locus[i];
-		ok=TRUE;
-		
+
 		if (use_three_pt) {
 		    /* three_pt_exclusions sets excluded[x] to FALSE first */
 		    n_allowed=three_pt_exclusions(frame->locus,frame->num_loci,
@@ -435,11 +434,9 @@ command place()
 
 command show_chrom()
 {
-    int chrom, i, j;
-    bool found_in_frame, found;
+    int chrom;
     int *marker=NULL, num_markers, **placement_state=NULL;
-    char name[TOKLEN+1], title[TOKLEN+1];
-    MAP *map=NULL;
+    char title[TOKLEN+1];
 
     mapm_ready(ANY_DATA,0,0,NULL);
     chrom=get_chrom_arg(FALSE);
@@ -481,11 +478,11 @@ command show_chrom()
 
 command place_together()
 {
-    int  chrom, i, j, left, right;
-    int  *locus=NULL, n_loci, *chrom_locus=NULL, n_to_place, n_allowed;
-    int  *chrom_all=NULL, n_chrom, n_frame, n_to_punt, n_unplaced, num, prev;
-    real npt_thresh, diff;
-    bool got_any, ok;
+    int  chrom, i;
+    int  *locus=NULL, n_loci, *chrom_locus=NULL, n_to_place;
+    int  *chrom_all=NULL, n_chrom, n_frame, n_unplaced, num, prev;
+    real npt_thresh = 0.;
+    bool got_any;
     PLACEME **unplaced=NULL;
     MAP *order=NULL, *frame; /* frame is NOT malloced */
   
@@ -624,14 +621,13 @@ command draw_chromosome()
     } except {
 	when CANTOPEN:  sf(ps,"Can't create output file '%s'",name); error(ps);
 	when CANTCLOSE: error("\nCan't close file - disk is full?");
-	default: close_file(fp); relay_messages;
+	default: close_file(fp); relay_messages; break;
     }
 }
 
 
 command draw_all_chromosomes()
 {
-    int chrom;
     char name[PATH_LENGTH+1];
     FILE *fp=NULL;
 
@@ -654,6 +650,6 @@ command draw_all_chromosomes()
     } except {
 	when CANTOPEN:  sf(ps,"Can't create output file '%s'",name); error(ps);
 	when CANTCLOSE: error("\nCan't close file - disk is full?");
-	default: close_file(fp); relay_messages;
+	default: close_file(fp); relay_messages; break;
     }
 }

@@ -72,7 +72,7 @@ int *num_loci; /* side-effected,  can be 0, or 1, or greater */
 bool framework_marker(locus)
 int locus;
 {
-    int j, k, found_in_frame;
+    int j;
     MAP *frame;
 
     /* force_haplo_sanity(&locus,FALSE); */
@@ -322,8 +322,6 @@ real lod, theta;
 int linked_locus;
 char *msg; /* pre-empts other message, only for A_PROBLEM as yet */
 {
-    int old_chrom= (assigned(locus) ? assignment_chrom(locus):NO_CHROM);
-
     if (state<=0) { /* set to an unassigned state */
 	if (!nullstr(msg)) /* problem state: use this msg */
 	  strcpy(ps,msg);
@@ -379,14 +377,14 @@ int locus, state;
 
 
 void attach_this(locus,state,chrom)
-int locus, state;
+int locus, state, chrom;
 { assign_this(locus,state,chrom,NO_LOD,NO_THETA,NO_LOCUS,""); }
 
 
-#define ANCHOR_ISFRAME \
-  "%s is a framework marker on %s...cannot re-assign to %s\n"
-#define ANCHOR_ISANCH  \
-  "%s is a framework marker on %s...cannot re-assign to %s\n"
+const char *ANCHOR_ISFRAME =
+  "%s is a framework marker on %s...cannot re-assign to %s\n";
+const char *ANCHOR_ISANCH =
+  "%s is a framework marker on %s...cannot re-assign to %s\n";
 #define ANCHOR_ISNOW "%s- anchor locus on %s\n"
 #define ANCHOR_DUPS  "bad framework\none or more loci are repeated in sequence"
 
@@ -446,8 +444,8 @@ int *locus, num_loci;  /* is_assignable must have been verified */
 real lod1, unlinked_lod1, theta1, lod2, unlinked_lod2, theta2;
 bool haplo;
 {
-    int i, j, state, num_chroms;
-    bool assigned_any, do_changed_only;
+    int i, state, num_chroms;
+    bool assigned_any;
     int **anchor=NULL, *count=NULL;
     real lod, unlinked_lod, theta;
 
@@ -503,7 +501,7 @@ int *count;     /* [num_groups] */
 int num_groups;
 {
     int assigned_locus, j, k, state;
-    int this_locus, pos_locus, this_chrom, pos_chrom, alt_chrom, pos_group;
+    int pos_locus, this_chrom, pos_chrom, alt_chrom, pos_group;
     real lod, theta, this_lod, pos_lod, alt_lod, this_theta, pos_theta;
     bool this_group;
     char *temp= get_temp_string();
@@ -532,7 +530,6 @@ int num_groups;
 		if (lod>this_lod) {
 		    this_lod= lod;
 		    this_theta= theta;
-		    this_locus= assigned_locus;
 		}
 	    }
 	} 
@@ -640,9 +637,7 @@ int locus;
 bool is_placeable(locus,chrom)
 int locus, chrom;
 {
-    int framework, old_chrom, k;
-    
-    /* unplace_this() helps to clean up the placement structure, when this 
+    /* unplace_this() helps to clean up the placement structure, when this
        is called by place or place_together */
 
     if (!force_haplo_sanity(&locus,FALSE)) {
@@ -790,7 +785,7 @@ int second_best_placement(locus,like) /* only ok for M_REGION */
 int locus;
 real *like;
 { 
-    int i, j, pos; /* need to add many error traps */
+    int i, j; /* need to add many error traps */
     real best;
     
     for (i=0; i<placement[locus]->num_intervals; i++)
@@ -798,7 +793,7 @@ real *like;
     best= -VERY_BIG;
     for (j=0; j<placement[locus]->num_intervals; j++)
       if (j!=i && placement[locus]->like_ratio[j]>best) 
-	{ best=placement[locus]->like_ratio[j]; pos=j; }
+	{ best=placement[locus]->like_ratio[j]; ; }
     if (like!=NULL) *like=best;
     if (best== -VERY_BIG) return(-1);
     return(j);
@@ -937,8 +932,8 @@ FILE *fp;
 void read_mapping_data(fp)
 FILE *fp;
 {
-    int locus, num, chrom_num, i, j, num_chroms;
-    real rnum, rnum2;
+    int locus, num, i, j, num_chroms;
+    real rnum;
     char word[TOKLEN+1], temp_locus_name[NAME_LEN+2];
     MAP  *map;
 

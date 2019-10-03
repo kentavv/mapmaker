@@ -8,7 +8,7 @@
  #    #  #          #   #######   ####   #    #  #####    ####    ###     ####
 
 ******************************************************************************
-/* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
+   This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
 #define INC_LIB
@@ -141,7 +141,7 @@ command compare()
     MAP *map;
     int maps_to_save, num_to_print, loci_per_map, n, total, excluded, tried, i;
     int *locus, num_loci, prev;
-    real input_num, threshold, best;
+    real threshold, best;
 
     mapm_ready(ANY_DATA,2,PERM_SEQ,&num_loci);
     get_arg(itoken,20,&maps_to_save);
@@ -212,7 +212,7 @@ command ripple()
 {
     MAP *map0=NULL, *map;
     SAVED_LIST *list;
-    int n_loci, window, excluded, tried, num_ok, i, j, k, n;
+    int n_loci, window, excluded, tried, i, j, k, n;
     real thresh, best;
     bool same;
 
@@ -300,9 +300,9 @@ command try()
     MAP *map=NULL;
     int *marker_to_try=NULL, **new_marker=NULL, num_to_try_at_once, num_tries;
     int num_seq_loci, num_intervals, first_marker, i, j, n, m, next;
-    int **paired_loci=NULL, next_paired, num_paired, num_total, max_paired;
+    int num_total, max_paired;
     bool **exclude_interval=NULL, **zero_placement=NULL, *is_locus_paired=NULL;
-    char *err, token[TOKLEN+1], *intervals, *p;
+    char *err, token[TOKLEN+1];
 
     void expand_seq_names();      /* KLUDGE from sequence.c, gotta do better */
     char *markers, str[MAX_SEQ_LEN+99]; /* KLUDGE KLUDGE KLUDGE */
@@ -455,7 +455,7 @@ SAVED_LIST *list;
 bool *excluded, *zero;
 int *count;
 {
-    int i, j, num_loci, next, num_ok, last, sex, loc, num_paired, best_i;
+    int i, j, num_ok, last, sex, num_paired, best_i;
     MAP *map;
     real best;
     
@@ -533,8 +533,8 @@ int *count;
 command order_maker()
 {
     int *loci=NULL, num_loci, *linkage_group=NULL, num_unlinked, group_size;
-    int starter[3], *subset=NULL, **seed_temp=NULL, subset_size, groups_done;
-    int i, j, k, num, prev, num_to_place, num_unplaced, seed_size, seed_tries;
+    int *subset=NULL, **seed_temp=NULL, subset_size, groups_done;
+    int i, j, num, prev, num_unplaced, seed_size, seed_tries;
     bool seed_ok, found;
     MAP  *order=NULL, *seed_map=NULL;
     PLACEME **unplaced;

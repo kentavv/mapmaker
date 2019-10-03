@@ -75,9 +75,7 @@ int lookup_fp(fp,name,modechar)
 FILE *fp;
 char **name, *modechar; /* side-effected if non-null */
 {
-    int i;
-    
-    if (fp==NULL) { 
+    if (fp==NULL) {
 	if (name!=NULL) *name= null_string;
 	if (modechar!=NULL) *modechar='?';
 	return(-1); 
@@ -864,7 +862,7 @@ void input(prompt,str,length)
 char *prompt, *str;		
 int length;			
 {				
-    int l; bool eof;
+    bool eof;
     more_break_pending= FALSE; eof= FALSE; 
 
     if (redirs==0) { /* it's not redirected via redirect_input() */
@@ -910,7 +908,7 @@ char *prompt, *str;
 int length;			
 char *initial;
 {				
-    int l; bool eof;
+    bool eof;
     more_break_pending= FALSE; eof= FALSE; 
 
     if (interactive && redirs==0 && use_gnu_readline) {

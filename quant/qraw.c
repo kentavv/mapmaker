@@ -18,6 +18,8 @@
 #define INC_QLOWLEVEL
 #define INC_CALLQCTM
 #define INC_QTOPLEVEL
+#include <stdlib.h>
+//#undef CRASH
 #include "qtl.h"
 
 /* External statics */
@@ -132,25 +134,24 @@ void read_quant_trait();
 
 #define DUMMY_LOCI 1
 
-void read_data(fpa,fpb,fpm,temp,number_of_file)
-int number_of_file;
+void read_data(fpa,fpb,fpm,temp/*,int number_of_file*/)
 FILE *fpa, *fpb, *fpm;
 char *temp;
 {
  
-    int k=0,v,l,i,seq_size,e,hist_size,num_chrom,num_loc=0,t_loc=0,j=0,loc;
-    int mapnum,name_len=80, checker, mapm_loci;
+    int k=0,v,l,i,num_chrom,num_loc=0,t_loc=0,j=0,loc;
+    int name_len=80, checker, mapm_loci;
     int n_indivs, n_loci, n_traits, random_check1, random_check2, num_entries;
-    real ma=0,rf;
-    char *size_of_sequence,number_of_lines[TOKLEN+1],*name,*err;
-    char num_of_chroms[TOKLEN+1],pointer_to_lines[TOKLEN+1];
+    real rf;
+    char **name,*err;
+    char num_of_chroms[TOKLEN+1];
     char all_str[5*SEQ_LEN], current_chrom[SEQ_LEN];
     char default_intercross_chars[10], default_backcross_chars[10];
 
     name = NULL;
     run {
 	getdataln(fpa);
-	sscanf(ln,"%*ld %*d %d\n",&mapm_loci);
+	sscanf(ln,"%*d %*d %d\n",&mapm_loci);
 	mapm_loci *= 2;
 	if(mapm_loci < 1) error("insufficient genetic data for analysis\n");
 
@@ -189,7 +190,7 @@ char *temp;
 	array(raw.chrom_start,num_chrom,int);
 	array(raw.chrom_n_loci,num_chrom,int);
 	array(raw.original_locus,mapm_loci,int);
-	e=0;
+
 	/* Now I loop through the chromosomes in order to get all the
 	   important loci, and the map distances between them */
 	strcpy(all_str,"");
@@ -409,8 +410,7 @@ char *temp;
 void save_traitfile(fp)
 FILE *fp;
 {
-    char *name,mapnum;
-    int i,j,loci_tot,map_tot,usenum;
+    int i,j,loci_tot,map_tot;
     
     run {
         sf(ps,"%d mapmaker trait data\n",raw.filenumber);
@@ -498,8 +498,8 @@ int indivs, n_loci, *order;
 /* could send BADDATA or IOERROR */
 {
     
-    char **temp_set,c, nam[TOKLEN+1], *namp;
-    int j,k,i,name_len=80,t,num_of_terms = 0;
+    char **temp_set,c, nam[TOKLEN+1];
+    int j,k,i,t,num_of_terms = 0;
     matrix(temp_set,n_loci,80,char);
     for(i=0;i<t_loc;i++) {
 	if (order[i] == -1) {
@@ -540,11 +540,8 @@ int indivs, n_loci, *order;
 }
 		
 
-real read_map_distance(fp,num)
-FILE *fp;
-int num;
+real read_map_distance(FILE *fp/*int num*/)
 {
-	int bar;
 	real map_dist;
 	if (nullstr(ln)) getdataln(fp);
 	if (!rtoken(&ln, rREQUIRED, &map_dist))
@@ -599,10 +596,9 @@ void read_olddata(fp,path)
 FILE *fp;
 char *path;
 {
-    int i, j, k, n_indivs, n_loci, n_traits, pos;
-    char nam[TOKLEN], c, tok[TOKLEN + 1];
-    real val;
-    extern int nam_len;	
+    int i, j, n_indivs, n_loci, n_traits;
+    char tok[TOKLEN + 1];
+    extern int nam_len;
 	
     BADDATA_line_num= 0;
     if (!nullstr(raw.file)) free_raw();
@@ -664,7 +660,7 @@ FILE *fp;
 int num, indivs;
 /* could send BADDATA or IOERROR */
 {
-    char c, nam[TOKLEN+1], *namp;
+    char c;
     int i;
 
     /* read the locus name */
@@ -748,7 +744,7 @@ void crunch_data() /* side effects the raw data struct */
 
     real r[3], l[3], right, left;
     INTERVAL_GENOTYPE_PROBS *indiv_probs;
-    int geno, foo;
+    int geno;
 
     first=0; last=raw.n_loci-1;
     for (i=0; i<raw.n_indivs; i++) {
@@ -812,7 +808,6 @@ LOCUS_GENOTYPE_PROBS *prob;
 int locus;
 char this_genotype;
 {
-    int i;
     prob[locus][A]= prob[locus][B]= prob[locus][H]= 0.0;
 
     if (raw.data_type==BACKCROSS) 
@@ -852,7 +847,7 @@ real pheno_given_geno(observation,genotype)
 char observation; /* eg the 'phenotype' */
 int genotype;
 {
-    if (raw.data_type==BACKCROSS) 
+    if (raw.data_type==BACKCROSS)
       switch (observation) {
 	  case 'A': return((genotype==A) ? 1.0 : 0.0);
 	  case 'B':
@@ -860,7 +855,7 @@ int genotype;
 	  case '-': return(1.0);
 	  default:  send(CRASH);
       }
-    else if (raw.data_type==INTERCROSS && !raw.f3) 
+    else if (raw.data_type==INTERCROSS && !raw.f3)
       switch (observation) {
 	  case 'A': return((genotype==A) ? 1.0 : 0.0);
 	  case 'B': return((genotype==B) ? 1.0 : 0.0);
@@ -875,12 +870,13 @@ int genotype;
 	  case 'A': return((genotype!=B) ? 1.0 : 0.0);
 	  case 'B': return((genotype!=A) ? 1.0 : 0.0);
 	  case 'H': return((genotype==H) ? 1.0 : 0.0);
-	  case 'C': return((genotype!=A) ? 1.0 : 0.0); 
+	  case 'C': return((genotype!=A) ? 1.0 : 0.0);
 	  case 'D': return((genotype!=B) ? 1.0 : 0.0);
 	  case '-': return(1.0);
 	  default:  send(CRASH);
       }
-    else send(CRASH);
+    send(CRASH);
+    abort();
 }
 
 
@@ -891,11 +887,10 @@ char observation;
 real rec_frac;
 int side;
 {
-    int i, geno_was, geno_is, max_recs,geno1,geno2;
-    real rec, norec, total;
+    int i, geno_was, geno_is, geno1,geno2;
+    real total;
 
     for (i=0; i<MAX_LOCUS_GENOTYPES; i++) prob[locus][i]=0.0;
-    rec= rec_frac; norec= 1.0-rec_frac;
     total= 0.0;
     
     for_locus_genotypes(raw.data_type,geno_was)
@@ -916,8 +911,7 @@ real transition_prob(data_type,geno_was,geno_is,theta)
 int data_type, geno_was, geno_is;
 real theta;
 {
-    INTERVAL_GENOTYPE_PROBS prob;
-    real x, y, z, sum;
+    real sum;
     real C2, D2, E2, F2, G2, C3, D3, E3, F3, G3;
 
     if (data_type==BACKCROSS) {
@@ -931,16 +925,19 @@ real theta;
 		case B: return(sq(theta)); 
 		case H: return(2.0*theta*(1.0-theta));
 	    }
+	    break;
 	    case B: switch(geno_is) {
 		case A: return(sq(theta)); 
 		case B: return(sq(1.0-theta));
 		case H: return(2.0*theta*(1.0-theta)); 
 	    }
+	    break;
 	    case H: switch(geno_is) {
 		case A: return(theta*(1.0-theta)); 
 		case B: return(theta*(1.0-theta));
 		case H: return(sq(theta)+sq(1.0-theta)); 
 	    }
+	    break;
 	}
 
     } else if (data_type==INTERCROSS && raw.f3) { /* haldane & waddington */
@@ -964,26 +961,29 @@ real theta;
 		    case A:  return(C3/sum);
 		    case B:  return(D3/sum);
 		    case H:  case I: return(0.5*(E3/sum));
-		    default: send(CRASH);
+		    default: send(CRASH); break;
 		}
+		break;
 	    case B: 
 	        sum= C3 + D3 + E3;
 		switch(geno_is) {
 		    case B:  return(C3/sum);
 		    case A:  return(D3/sum);
 		    case H:  case I: return(0.5*(E3/sum));
-		    default: send(CRASH);
+		    default: send(CRASH); break;
 		}
-	    case H: case I:   
+            break;
+		case H: case I:
 		sum= 2.0*E3 + F3 + G3;
 		switch(geno_is) {
 		    case A:  return(E3/sum);
 		    case B:  return(E3/sum);
 		    case H: case I: 
 		       return( (geno_was==geno_is ? F3:G3)/sum);
-		    default: send(CRASH);
+		    default: send(CRASH); break;
 		}
-	    default: send(CRASH);
+		break;
+	    default: send(CRASH); break;
 	}
 
 #ifdef ANOTHER_SHOT
@@ -1016,6 +1016,7 @@ real theta;
 #endif
 #ifdef YET_ANOTHER
     } else if (data_type==INTERCROSS && raw.f3) {  /* From Transition Matrix */
+    INTERVAL_GENOTYPE_PROBS prob;
 	x= sq(1.0-theta); y=theta*(1.0-theta); z=sq(theta);
 	sum=0.0;  
 	switch(geno_was) {
@@ -1052,8 +1053,10 @@ real theta;
 	    default: send(CRASH);
 	}
 #endif 
-    } else send(CRASH);
+    }
 
+    send(CRASH);
+    abort();
 }
 
 
@@ -1061,7 +1064,7 @@ real map_length(left,right) 	/* return rf dist from left to right */
 int left, right;		/* Assumes check_interval() has succeeded */
 {
     real total_cm, total_rf;
-    int i,temp;
+    int i;
     
 	
 /*  if (zero_interval(left,right)) return(MIN_REC_FRAC);  */
@@ -1116,6 +1119,8 @@ int data_type, geno;
 	case B: return(0.25);
 	case H: return(0.50);
     }
+
+    abort();
 }
 
 

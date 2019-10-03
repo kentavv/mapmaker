@@ -93,10 +93,10 @@ int num_old;
 int *old_locus;  /* can omit if num_args==0 - should do this with VARARGS */
 {
     int  i, j, n, m;
-    real cm, length, male_cm, female_cm, male_length, female_length;
+    real length, male_cm, female_cm, male_length, female_length;
     real best, next, lod;
     int  bestj, nextj;
-    char haplo, p1, p2, name[TOKLEN+1], num[TOKLEN+1], my_title[TOKLEN+1];
+    char p1, p2, num[TOKLEN+1], my_title[TOKLEN+1];
 
     if (!map->sex_specific) { /**************** CEPH or F2 ****************/
 	length= 0.0;
@@ -111,7 +111,7 @@ int *old_locus;  /* can omit if num_args==0 - should do this with VARARGS */
 	nl();
 
 	for (i=0; i<map->num_loci-1; ++i) {
-	    haplo=' '; p1=p2=' ';
+	    p1=p2=' ';
 	    if (num_old>0) for (p1='(', p2=')', j=0; j<num_old; j++) 
 	      if (old_locus[j]==map->locus[i]) { p1=p2=' '; break; }
 	    sf(num,"%c%d",p1,map->locus[i]+1);
@@ -154,7 +154,7 @@ int *old_locus;  /* can omit if num_args==0 - should do this with VARARGS */
 	    nl();
 	}
 	i=map->num_loci-1;
-	haplo=' '; p1=p2=' ';
+	p1=p2=' ';
 	if (num_old>0) for (p1='(', p2=')', j=0; j<num_old; j++) 
 	  if (old_locus[j]==map->locus[i]) { p1=p2=' '; break; }
 	sf(num,"%c%d",p1,map->locus[i]+1);
@@ -248,7 +248,7 @@ int how_many;
 {
     int i,num_to_print;
     char str[TOKLEN+1];
-    real best, x;
+    real best;
 
     if (how_many==FULL_LIST || how_many>list->num_maps || how_many<0)
       num_to_print= list->num_maps;
@@ -355,7 +355,7 @@ bool **excluded;   /* [i][n]=FALSE if we tried try_marker[i] in excluded */
 int **new_marker;
 int num_tried, first;
 {
-    int i, j, k, q, width_ea, next, last;
+    int i, j, k, q, width_ea, last;
     bool any_paired=FALSE;
     real best[8];
     char *line1= get_temp_string(), *line2= get_temp_string();
@@ -464,8 +464,6 @@ char *region2str(locus,errs)
 int locus;
 char **errs;
 {
-    int i;
-    
     *errs= ptr_to("0.0");
     return("abc1-xyz999");
 }
@@ -475,7 +473,7 @@ char *genetics2str(locus,haplo)
 int locus;
 bool haplo;
 {
-    int type, n_infs, n_dom_obs, n_het_obs, *observation=NULL;
+    int type, n_infs, n_dom_obs, n_het_obs;
     char *retoin= get_temp_string();
 
     if (raw.data_type!=F2) { strcpy(retoin,"ceph"); return(retoin); }
@@ -500,7 +498,7 @@ bool haplo;
 " Num  Name       Genotypes  Prob   Chrom    Group     Group     Class    New?"
 /*234  12345678+ 1234567890 12.45%  12345678 group123  12345678+ 12345678 new */
 #define LIST_LINE \
-   "%4d  %-9s %10s %5.2lf%%  %-8s %-8s  %-9s %-"
+   "%4d  %-9s %10s %5.2lf%%  %-8s %-8s  %-9s"
 /*  num  name typ  err       chr  lg    hap */
 
 
@@ -508,11 +506,11 @@ void print_locus_summary(locus,n_loci,haplo)
 int *locus, n_loci;
 bool haplo;
 {
-    int i, any_new, g, *observation=NULL;
-    char *status, *chrom, *hap, lg[TOKLEN+1];
+    int i, g;
+    char *chrom, *hap, lg[TOKLEN+1];
 
-    for (any_new=FALSE, i=0; i<n_loci; i++) 
-      if (modified[locus[i]]) { any_new=TRUE; break; }
+    for (i=0; i<n_loci; i++)
+      if (modified[locus[i]]) { break; }
     
     print(LIST_HEAD1); nl();
     print(LIST_HEAD2); nl();
@@ -540,7 +538,7 @@ bool haplo;
     }    
 }
 
-#define MAPPING_HEAD1\
+#define MAPPING_HEAD1 \
 "                                                      2nd    Left "
 #define MAPPING_HEAD2 \
 " Num  Name      Assignment Chrom     LOD   Mapping    Like   Locus     Errors"
@@ -554,9 +552,9 @@ void print_mapping_summary(locus,n_loci,haplo)
 int *locus, n_loci;
 bool haplo;
 {
-    int i, j, k, pos, state, *observation=NULL;
+    int i, j, k, pos, state;
     real val;
-    char *chrom, *linked, *lod, *theta, *assign;
+    char *chrom, *lod, *assign;
     char *mapping, *left, *like, *errs, *star;
 
     print(MAPPING_HEAD1); nl();
@@ -565,8 +563,8 @@ bool haplo;
     for (i=0; i<n_loci; i++) {
 	chrom=  ptr_to("-");
 	lod=    ptr_to("  -  ");
-	theta=  ptr_to("   - ");  /* theta and linked are not printed */ 
-	linked= ptr_to("-");
+//	char *theta=  ptr_to("   - ");  /* theta and linked are not printed */
+//	char *linked= ptr_to("-");
 	state= assignment_state(locus[i]);
 	
 	if (state==A_PROBLEM) {
@@ -581,14 +579,14 @@ bool haplo;
 	    assign= ptr_to("low-lod");
 	    chrom=  chrom2str(assignment_chrom(locus[i])); 
 	    lod=    rsd(5.2,assignment_lod(locus[i]));
-	    theta=  rsd(5.1,assignment_theta(locus[i]));
-	    linked= loc2str(assignment_locus(locus[i]));
+//	    theta=  rsd(5.1,assignment_theta(locus[i]));
+//	    linked= loc2str(assignment_locus(locus[i]));
 	} else if (state==A_ASSIGNED) {
 	    assign= ptr_to("linked");
 	    chrom=  chrom2str(assignment_chrom(locus[i])); 
 	    lod=    rsd(5.2,assignment_lod(locus[i]));
-	    theta=  rsd(5.1,assignment_theta(locus[i]));
-	    linked= loc2str(assignment_locus(locus[i]));
+//	    theta=  rsd(5.1,assignment_theta(locus[i]));
+//	    linked= loc2str(assignment_locus(locus[i]));
 	} else if (state==A_ATTACH) {
 	    assign= ptr_to("attached");
 	    chrom=  chrom2str(assignment_chrom(locus[i]));
@@ -740,7 +738,6 @@ int num_loci;		/* placed loci, maybe NO_LOCUS */
 {
     int num_remaining, num_across, num_done, num_intervals;
     int i, j, num_places, rightmost;
-    char dist[TOKLEN+1];
 
     if (map->sex_specific) send(CRASH);
 
@@ -832,9 +829,7 @@ int *old_locus;  /* can omit if num_old==0 - should do this with VARARGS */
     int indiv, n_indivs, firsti, lasti;
     int locus, i, j, *obs=NULL, *prev_obs=NULL, *num_recs=NULL, old;
     int *last_homo=NULL, *last_het=NULL, *homo_was=NULL;
-    int got_one, num;
-    real error_rate, cm;
-    char ch;
+    real error_rate;
 
     if (map->sex_specific || raw.data_type!=F2) send(CRASH);
 

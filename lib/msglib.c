@@ -136,7 +136,7 @@ int num;
 }
 
 
-void punter(num) int num; /* unused */
+void punter(/*int num*/)
 { if (--lvl>=0) longjmp(stk[lvl],QUIT); else {msg=CRASH; untrapped_msg();} }
 
 void trapper(num) int num;

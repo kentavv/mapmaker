@@ -282,7 +282,7 @@ command set_units()
 
 command set_cm_func()
 {
-    int i, mapnum;
+    int i;
 
     char type[TOKLEN+1];
     mapm_ready(ANY_DATA,0,FALSE,NULL);
@@ -565,8 +565,6 @@ command set_error_lod_thresh()
 void allocate_context(con)
 STATUS_CONTEXT *con;
 {
-    TABLE *seqhist=NULL, *names=NULL;
-
     run {
 	con->sex_specific= FALSE;
 	con->compress_DNA= TRUE;

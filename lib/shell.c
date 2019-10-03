@@ -184,8 +184,7 @@ char *program, *version, *copyright, *help_filename;
 /* help_filename must be side-effectable */
 {
     int i;
-    char *full_name[PATH_LENGTH+1];
-    
+
     array(cmd, MAX_COMMANDS, COMMAND*);
     array(matched, MAX_COMMANDS, bool);
     array(topic_name, MAX_COM_TOPICS+1, char*); 
@@ -497,7 +496,7 @@ void expand_history_references(line) /* sends an error if need be */
 char *line; /* line IS side-effected */
 {
     char *str, *save;
-    int num, first, foo, i;
+    int num, first, i;
 
     /* The cmd_history num will NOT have been incremented between the call
        to prompt and here! Also remember that 1+ that number is printed. */

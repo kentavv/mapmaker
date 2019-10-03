@@ -218,7 +218,7 @@ real **expected_genotype, **S_matrix;
 GENO_PROBS *expected_recs;
 int n_individuals, n_genotype_vars, n_continuous_vars, n_intervals;
 {
-    int i, j, n, g, q, m, L, R, num;
+    int i, j, n, g, q, m, num;
 
     num= n_genotype_vars + n_continuous_vars;
 
@@ -395,7 +395,6 @@ int wiggle;
 {
     int i, k;
     WIGGLE_OPERATION *op;
-    char *left;
 
     if (wiggle<0) return;
     if (wiggle>=num_wiggles || (op=wiggles[wiggle])==NULL) send(CRASH);
@@ -572,7 +571,7 @@ void print_test_wiggle_order(wiggle,order,threshold)
 int wiggle, order;
 real threshold;
 {
-    int i, j, k, test;
+    int i, j, test;
     WIGGLE_OPERATION *op;
     WIGGLE_INTERVAL **data[NUM_MODELS];
     WIGGLE_POINT *point[NUM_MODELS];
@@ -629,7 +628,6 @@ int left, right;
 bool fill;
 {
     char *str= get_temp_string();
-    int i;
     if (print_mapm_loci) {
 	if (!print_names) sf(str,"%d-%d",raw.original_locus[left],
 			     raw.original_locus[right]);
@@ -699,7 +697,7 @@ bool verbose;
 	  case TEST_MODELS:     strcpy(str,"try");         break;
 	  case CONSTRAINED: 	
 	      if (!verbose) strcpy(str,"constrain");
-	      else sf(str,"constraints: A=%-4.2lf B=%-4.2lf C=-4.2lf",
+	      else sf(str,"constraints: A=%-4.2lf B=%-4.2lf C=%-4.2lf",
 		      genetics->a,genetics->b,genetics->c);
 	      break;
 	  case FIXED:
@@ -758,7 +756,7 @@ QTL_MAP *map;
 int num; /* number for map (starts at 0) or num_intervals if map is null */
 real offset;
 {
-    int i, spaces_per_int, ints_per_line, columns, right, n_ints;
+    int i, spaces_per_int, ints_per_line, columns, right, n_ints=0;
     char *interval;
     
     if (map==NULL || map->num_continuous_vars>0) send(CRASH);
@@ -906,7 +904,6 @@ int compare, contig;
 {
     COMPARE_OPERATION *op;
     int i, start;
-    bool bad_maps_yet, good_maps_printed;
     real best, like;
 
     if ((op=compares[compare])==NULL) send(CRASH);

@@ -112,7 +112,6 @@ TWO_PT_DATA *get_next_two_pt_entry(a,b,used_needs_incrementing)
 int a, b;
 bool *used_needs_incrementing;
 {
-    int i;
     TWO_PT_DATA *p;
     
     if (two_pt_data[a][b]!=NULL && two_pt_data[a][b]!=UNLINKED_TWO_PT) {
@@ -763,7 +762,7 @@ void return_to_unused(), remove_triple_list();
 void bash_order_info(changed,num_changed)
 int *changed, num_changed;
 {
-    int a, b, i, j, locus;
+    int a, b, i, j;
     TRIPLE_LIST *p, *q, *prev;
     /* this is merciless - might do *something* smarter */
 
@@ -1110,7 +1109,7 @@ FILE *fp;
 void read_three_pt(fp)
 FILE *fp;
 {
-    int i,j,k,filenum;
+    int i,j,k;
     real d1,d2,d3;
 
     while((fscanf(fp,"%d %d %d %lf %lf %lf\n",&i,&j,&k,&d1,&d2,&d3)) == 6) {
@@ -1123,7 +1122,7 @@ FILE *fp;
 void write_three_pt(fp)  
 FILE *fp;
 {
-    int i, j;
+    int i;
     TRIPLE_LIST *p;
 
     for (i= 0; i < raw.num_markers; i++) {

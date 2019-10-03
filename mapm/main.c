@@ -20,11 +20,9 @@ void setup_commands();
 void make_help_entries();    /* move these to lib */
 extern char help_filename[];
 
-main(argc,argv)
-int argc;
-char *argv[];
+int main(int argc, char *argv[])
 {
-    char *version, help_filename[PATH_LENGTH+1];
+    char help_filename[PATH_LENGTH+1];
     FILE *fp;
 
     custom_lib_init();
@@ -372,7 +370,7 @@ int *marker, num_markers;
 bool edges_ok;
 {
     int interval, to_interval, i, first, last;
-    char token[TOKLEN+1], *str, *save_str, c;
+    char *str, *save_str, c;
 
     run {
 	if (edges_ok) { first=0; last=num_markers; }
@@ -428,7 +426,7 @@ char *prompt, *command_str;
 real *real_list;
 int *num_reals;
 {
-    int i, *temp_ints;
+    int i;
 
     if(nullstr(command_str)) {
         getln(prompt); crunch(ln);

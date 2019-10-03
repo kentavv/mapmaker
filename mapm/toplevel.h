@@ -43,7 +43,7 @@ void mapm_ready(); /* args: int data_type_needed;
 /* this is also now all in main.c */
 bool crunch_locus_list(); 
 /* args: locus[], *num_loci; int verbosity,  check_assignments, in_sequence;
-/* side-effects locus[], *num_loci; and, if verbose, may print a msg.
+   side-effects locus[], *num_loci; and, if verbose, may print a msg.
    Deletes duplicates in the list, multiple loci from the same haplo
    group, and renumbers haploed loci to their primary. If
    verbosity==ORDER_ERROR and if duplicates existed, error() is called.

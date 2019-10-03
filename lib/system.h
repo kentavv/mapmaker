@@ -179,7 +179,7 @@ type of a signal handling function used as an argument to signal().
 #define SIGQUIT SIGABRT /* bizzare */
 #endif
 #ifdef _SYS_SUNOS /* the @#!$% map pages lie */
-#define SIGHANDLE int
+#define SIGHANDLE void
 //#define strerror(num) (num<sys_nerr ? sys_errlist[num]:(char*)NULL)
 //extern char *sys_errlist[]; extern int sys_nerr;
 #endif

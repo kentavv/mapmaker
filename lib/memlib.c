@@ -26,9 +26,9 @@ long n_alloced;
 int yy, zz;
 
 #define ALLOC_MSG \
-	"alloc:\t%dx%d\tbytes @ %8lxH. total bytes alloced=%ld\n"
+	"alloc:\t%ldx%ld\tbytes @ %8lxH. total bytes alloced=%ld\n"
 #define ALLOC_FAIL_MSG \
-	"FAILED:\t%dx%d\tbytes              total bytes alloced=%ld\n"
+	"FAILED:\t%ldx%ld\tbytes              total bytes alloced=%ld\n"
 
 CALLOC_PTR_TO *xalloc(num,cell_sizeof)
 CALLOC_NUM_TYPE num;

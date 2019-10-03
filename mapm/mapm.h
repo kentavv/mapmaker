@@ -399,6 +399,9 @@ command prepdat();
 command translate();
 
 
+/* in sequence.c */
+bool valid_new_name(char *str);
+
 /* moved set_age and make_note */
 
 

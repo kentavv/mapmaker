@@ -50,7 +50,7 @@ void allocate_qtl_struct(n_wiggles,n_compares) /* allocate globals */
 int n_wiggles, n_compares;
 /* use globals raw.max_traits, raw.data_type, and raw.n_loci as params */
 {
-    int i, j, k, n_models, n_intervals;
+    int i;
 
     if (raw.data_type==NO_DATA) send(CRASH);
     wiggles=NULL; compares=NULL; /* qtls=NULL; */
@@ -64,9 +64,11 @@ int n_wiggles, n_compares;
 	max_compares=n_compares; num_compares=0;
 	for (i=0; i<n_compares; i++) compares[i]->data=NULL;
 
-	n_models= (raw.data_type==INTERCROSS ? NUM_MODELS:1);
-	n_intervals= raw.n_loci-1;
-	/*  matrix(qtls,raw.n_traits,n_models,WIGGLE_INTERVAL**);
+	/*
+	int j, k;
+	int n_models= (raw.data_type==INTERCROSS ? NUM_MODELS:1);
+	int n_intervals= raw.n_loci-1;
+	    matrix(qtls,raw.n_traits,n_models,WIGGLE_INTERVAL**);
 	    for  (i=0; i<raw.n_traits; i++) for (j=0; j<n_models; j++) {
 	    array(qtls[i][j],n_intervals,WIGGLE_INTERVAL*);
 	    for (k=0; k<n_intervals; k++) qtls[i][j][k]=NULL;
@@ -167,9 +169,8 @@ real cm_step;
 {
     WIGGLE_OPERATION *op;
     WIGGLE_INTERVAL *data, *prev;
-    int i, j, k, n, t;
+    int i, j, k, n;
     real cm, interval_cm;
-    bool new;
 
     if (wiggle_num<0) return;
 
@@ -221,15 +222,16 @@ real cm_step;
     /* This wiggle interval MAY want to go into the qtls struct also... */
     do { 
 	if (map->num_intervals!=1) break;
-	t= map->trait;
+	/*int t= map->trait;*/
 	if (raw.data_type==INTERCROSS) {
 	    if ((i=map->constraint[0].interx_type)>=NUM_MODELS) break;
 	} else { i=0; if (map->constraint[0].backx_weight!=DONT_FIX) break; }
 	if ((j=map->left[0])!=map->right[0]-1) break;
 #ifdef DELETED
+	bool new;
 	/* It does want to go in... */
 	/* if (qtls[t][i][j]!=NULL) {  but these wiggle data already exist! */
-	    /* prev= qtls[t][i][j]; new=FALSE;
+	    /* prev= qtls[t][i][j]; new=FALSE; */
 	    /* If the old one has points, we keep the higher resolution one */
 	    if (prev->point==NULL || data->cm_increment<=prev->cm_increment) {
 		prev->in_qtls_struct=FALSE; 
@@ -304,7 +306,7 @@ char *seq_str;
 int n_intervals, n_orders;
 /* return compare struct entry#, or -1 if error */
 {
-    int n, i, j;
+    int n;
 
     /* KLUDGE - How to recycle these things? */
     if (num_compares==max_compares) return(-1);
@@ -361,8 +363,8 @@ bool contig;
 {
     COMPARE_OPERATION *op;
     COMPARE_DATA *data;
-    WIGGLE_INTERVAL *wig, *prev;
-    int i, j, k, n, t;
+    WIGGLE_INTERVAL *wig;
+    int i;
 
     if (compare_num<0) return;
     if (compare_num>=max_compares || compares[compare_num]==NULL ||
@@ -389,11 +391,11 @@ bool contig;
     do { run { 
 	if (map->qtl_pos[0]!=DONT_FIX) break;
 	if (map->num_intervals!=1) break;
-	t= map->trait;
+	/* int t= map->trait; */
 	if (raw.data_type==INTERCROSS) {
 	    if ((i=map->constraint[0].interx_type)>=NUM_MODELS) break;
 	} else { i=0; if (map->constraint[0].backx_weight!=DONT_FIX) break; }
-	if ((j=map->left[0])!=map->right[0]-1) break;
+	if ((/*j=*/map->left[0])!=map->right[0]-1) break;
 #ifdef DELETED
 	/* It does want to go in... */
 	if (qtls[t][i][j]!=NULL) { /* but data for this qtl already exists! */
@@ -462,7 +464,7 @@ bool get_peak_maps;
 {
     int i, j, peak_i, peak_j, n_intervals;
     bool still_falling, off_end, contig;
-    real lod, local_maxima, pos, cm;
+    real lod, local_maxima;
     real local_minima, prev_lod, starting_value;
     WIGGLE_INTERVAL **interval; 
     WIGGLE_PEAK *first, *last, *peak;

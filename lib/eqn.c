@@ -527,10 +527,6 @@ real value_to_push;
 
 void eqn_init()
 {
-    int i;
-
-   
-    
     matrix(variable_table,200,200,char);
     array(value_table,200,real);
     return;

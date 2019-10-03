@@ -39,7 +39,7 @@ void print_ps_wiggle_order(wiggle, order, threshold)
 int wiggle, order;
 real threshold;
 {
-    int i, j, k, count=0, num_notches=0, pagenum=1;
+    int i, j, count=0, num_notches=0, pagenum=1;
     double *xval, *yval, *notch, highest, longest, current_len;
     WIGGLE_OPERATION *op;
     WIGGLE_INTERVAL **data;
@@ -196,7 +196,7 @@ double *xval, *yval, s0, sn;
 int num_points;
 char *line_type;
 {
-    int i, j;
+    int i;
     double *x0, *x1, *x2, *x3, *y0, *y1, *y2, *y3, *slope, s1, s2;
 
     array(x0, num_points, real);
@@ -283,8 +283,7 @@ char *line_type;
 }
 
 
-void draw_x(fp)
-FILE *fp;
+void draw_x(/*FILE *fp*/)
 {
 #ifdef DRAWX
     fprintf(fp,"GS -3 -3 rlineto stroke GR\n");
@@ -396,10 +395,9 @@ void print_ps_multi_wiggle(wiggle, threshold)
 int wiggle;
 real threshold;
 {
-    int i, j, k, count=0, num_notches=0, pagenum=1, order;
+    int i, j, count=0, num_notches=0, pagenum=1, order;
     double **xval, **yval, *notch, highest, longest, current_len;
     WIGGLE_OPERATION *op;
-    WIGGLE_INTERVAL **data;
     WIGGLE_POINT *point;
     FILE *fp;
     char **label, *trait_str, *filename, *line_choice();

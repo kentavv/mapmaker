@@ -112,7 +112,7 @@ extern int units, print_names, print_mapm_loci, print_scans; 	/* qtop.c */
 extern real pos_tolerance, like_tolerance;			/* qctm.c */
 extern real mat_tolerance;					/* qctm.c */
 extern int print_iter, print_rec_mat, bag_qctm, debug_qctm;	/* qctm.c */
-extern print_brute_force, debug_newton, brute_force;		/* qctm.c */
+extern bool print_brute_force, debug_newton, brute_force;		/* qctm.c */
 extern int max_intervals, max_continuous_vars;			/* qdata.c */
 extern int segregation_distortion; /* NOT USED YET! */
 extern bool altered_chroms;                                     /* qraw.c */

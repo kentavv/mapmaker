@@ -157,7 +157,6 @@ command new_prepare()
 {
     char name[PATH_LENGTH+1];
     FILE *fp=NULL;
-    int end, data_type;
     bool prev_data;
 
     use_uncrunched_args();
@@ -230,7 +229,6 @@ command set_class()
 
 command make_classes()
 {
-    int i;
     char name[TOKLEN+1], *errmsg;
 
     mapm_ready(ANY_DATA,0,0,NULL);
@@ -300,7 +298,7 @@ command set_error_rate()
 command make_note()
 {
     int n, n_loci, i, *locus=NULL;
-    char *middle=ptr_to(""), *name=get_temp_string(), *rest, *errmsg;
+    char *name=get_temp_string(), *rest, *errmsg;
 
     mapm_ready(ANY_DATA,0,0,&n_loci);
 
@@ -393,7 +391,7 @@ command expand_sequence()
 #define BADEDITEDSEQ "An illegal sequence was specified.\nsequence= %s\n"
 command edit_sequence()
 {
-    char name[TOKLEN+1], prompt[TOKLEN+1], *value, *err, n, init;
+    char name[TOKLEN+1], prompt[TOKLEN+1], *value, *err;
     int *locus=NULL, num_loci;
     bool set_seq;
     mapm_ready(ANY_DATA,0,0,NULL);
@@ -435,8 +433,7 @@ command edit_sequence()
 
 command show_seq_history()
 {
-    int i, start, num_to_do, any=FALSE;
-    char *str= get_temp_string();
+    int num_to_do;
 
     mapm_ready(ANY_DATA,0,0,NULL);
     get_one_arg(itoken,20,&num_to_do);
@@ -497,8 +494,8 @@ command names()
 
 command forget()
 {
-    char *errmsg, *seq, *name= get_temp_string();
-    int err;
+    char *errmsg, *name= get_temp_string();
+
     mapm_ready(ANY_DATA,0,0,NULL);
     get_one_arg(stoken,sREQUIRED,name);
 
@@ -511,10 +508,9 @@ command forget()
 
 command new_delete()
 {
-    int i, j, loc, found, num_seq_tokens, k, *locus=NULL, num_loci;
+    int i, j, found, num_seq_tokens, k, *locus=NULL, num_loci;
     int *seq_locus=NULL, seq_loci;
     char locus_name[TOKLEN+1], locus_num[TOKLEN+1], locus_plus[TOKLEN+1];
-    char *errmsg;
 
     mapm_ready(ANY_DATA,1,MAYBE_PERM,NULL);
     if (nullstr(args)) usage_error(0);
@@ -562,10 +558,8 @@ command new_delete()
 
 command new_append()
 {
-    int i, j, found, num_seq_tokens, append_at_top;
     int *locus=NULL, num_loci;
-    char *errmsg;
-    
+
     mapm_ready(ANY_DATA,1,MAYBE_PERM,NULL);
     if (nullstr(args)) usage_error(0);
     despace(args);
@@ -638,7 +632,7 @@ command new_insert()
 command translate()
 {
     int i, num_loci, *locus=NULL, source;
-    char *name[TOKLEN+1], c;
+    char c;
 
     mapm_ready(ANY_DATA,MAYBE_SEQ,UNCRUNCHED_LIST,&num_loci);
     run {

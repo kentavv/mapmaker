@@ -279,8 +279,8 @@ for (j=0; j<max_genotype_vars+1; j++) null_qtl_weight[j]= 0.0;
 void make_genotype_arrays(data_type,num_intervals)
 int data_type,num_intervals;
 {
-    int i, j, this_genotype, N, M, g0, g1;
-    GENOTYPE geno, k;
+    int i, j, this_genotype, N;
+    GENOTYPE geno;
 
     /* The array and matrix macros don't handle things bigger with a dimension
        bigger than 32K. For now we assume that GENOTYPE is a short, and that 

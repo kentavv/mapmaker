@@ -205,14 +205,14 @@ char dummy;
 QTL_SEQUENCE *int_compiler(str)
 char **str; 
 {
-	int left, right, repeat, done, trait;
+	int left, right, repeat, trait;
 	QTL_SEQUENCE *me;
 	QTL_SEQ_OPTION *p, *first, *last;
 	GENETICS genetics;
        	bool isa_cont_var;
 	
 	first=NULL; last=NULL; me=NULL; 
-	left=right= NO_LOCUS; done=FALSE;
+	left=right= NO_LOCUS;
 	genetics.backx_weight= DONT_FIX; genetics.interx_type= FREE;
 	/* 2/21 initialization needed */
 	genetics.a = 0.0; genetics.b = 0.0; genetics.c = 0.0;
@@ -911,7 +911,7 @@ char *str;
 {
     char *every, *super_exp, *new_str, *tok, *expansion, *dummy;
     char *temp_str;
-    int err, i, new_num, num;
+    int err, num;
 
     new_str= NULL; every=get_temp_string(); tok= get_temp_string();
     temp_str=get_temp_string();

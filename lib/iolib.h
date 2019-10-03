@@ -168,6 +168,8 @@ extern bool more, more_mode, ignore_eof;
    Ignore_eof is on whether the standard input is a terminal or not. 
    All are set by tty_init() and get_cmd_line_args() */
 
+bool do_hold(bool start, bool more_on);
+
 #define hold(with_more_on) \
   for (do_hold(TRUE,with_more_on); holding>0; do_hold(FALSE,FALSE))
 extern int holding;
