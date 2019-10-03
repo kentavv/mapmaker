@@ -115,7 +115,7 @@ char *ioline;
 
 /********** FILE HANDLING STUFF ***********/
 
-bool make_filename_in_dir(str,force_ext,ext,add_dir_mode,dir)  
+bool make_filename_in_dir(str,force_ext,ext,add_dir_mode,dir)
 char *str; /* str is side-effected: it should be PATH_LENGTH+1 chars long */
 bool force_ext;
 char *ext; /* may have the preceeding '.' or not */
@@ -172,27 +172,29 @@ char *dir; /* assume no trailing divider, except VMS dirs, which have [..] */
 
 #define NO_DOT (-1)
 
-bool make_filename(str,force_ext,ext)  
+bool make_filename(str,force_ext,ext_)
 char *str; /* str is side-effected: it should be PATH_LENGTH+1 chars long */
 bool force_ext;
-char *ext; /* may have the preceeding '.' or not */
+char *ext_; /* may have the preceeding '.' or not */
 {
     int i, j, first_dot, next_dot, last_dot, root_start, end;
     bool has_ext, two_ext;
-    
+    char *ext_buf = strdup(ext_);
+    char *ext = ext_buf;
+
     if (nullstr(str) || ext==NULL) send(CRASH);
     
     /* Elimiate extra whitespace, despace, truncate, filter, etc. */
     despace(str); truncstr(str,PATH_LENGTH); 
     if (PATH_UPPERCASE) uppercase(str);
-    if (count_tokens(str)!=1) return(FALSE);
+    if (count_tokens(str)!=1) {free(ext_buf); return(FALSE);}
     for (i=0, j=0; i<=len(str); i++) 
       if (strin(PATH_OK_CHARS,str[i])) str[j++]=str[i];
     
     /* Also for the extension... */
     despace(ext); if (ext[0]=='.') ext++; 
     if (PATH_UPPERCASE) uppercase(ext);
-    if (count_tokens(ext)!=1) return(FALSE);
+    if (count_tokens(ext)!=1) {free(ext_buf); return(FALSE);}
     for (i=0, j=0; i<=len(ext); i++) 
       if (strin(PATH_OK_CHARS,ext[i])) ext[j++]=ext[i];
     
@@ -234,7 +236,8 @@ char *ext; /* may have the preceeding '.' or not */
 	if (!nullstr(ext)) strcat(str,"."); 
 	maxstrcat(str+len(str),ext,PATH_LENGTH);
     }	    
-    
+
+    free(ext_buf);
     return(TRUE);
 }
 
@@ -277,15 +280,15 @@ FILE *fp;
 }
 
 
-void fwrite(fp,str)
+void fwrite(fp,str_)
 FILE *fp;
-char *str;
-{ _filter(str); lib_puts(fp,str); } /* DO NOTHING FANCY */
+char *str_;
+{ char *str=strdup(str_); _filter(str); lib_puts(fp,str); free(str); } /* DO NOTHING FANCY */
 
-void fprint(fp,str)
+void fprint(fp,str_)
 FILE *fp;
-char *str;
-{ _filter(str); lib_puts(fp,str); } /* JUST FOR NOW - GET FANCIER LATER */
+char *str_;
+{ char *str=strdup(str_); _filter(str); lib_puts(fp,str); free(str); } /* JUST FOR NOW - GET FANCIER LATER */
 
 
 void finput(fp,str,length)	

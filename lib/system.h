@@ -180,8 +180,8 @@ type of a signal handling function used as an argument to signal().
 #endif
 #ifdef _SYS_SUNOS /* the @#!$% map pages lie */
 #define SIGHANDLE int
-#define strerror(num) (num<sys_nerr ? sys_errlist[num]:(char*)NULL)
-extern char *sys_errlist[]; extern int sys_nerr;
+//#define strerror(num) (num<sys_nerr ? sys_errlist[num]:(char*)NULL)
+//extern char *sys_errlist[]; extern int sys_nerr;
 #endif
 #ifdef _SYS_AUX
 #define SIGHANDLE void
@@ -593,7 +593,7 @@ robust and portable) interfaces are provided by the library. */
 /* The BSD random number functions... seemingly not declared anywhere */
 #ifdef USE_RANDOM
 long random();
-int srandom();
+//int srandom();
 #endif
 
 /* The HPUX (and System V?) random number functions... ditto */

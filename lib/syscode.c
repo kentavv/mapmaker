@@ -323,6 +323,22 @@ int num;
 #endif
 }
 
+
+#ifdef _GNU_READLINE
+static char *default_text = NULL;
+
+int set_rl_default()
+{
+    if(default_text)  {
+        int n = strlen(default_text);
+        rl_extend_line_buffer(n + 1);
+        strcpy(rl_line_buffer, default_text);
+        rl_point = rl_end = n;
+    }
+    return 0;
+}
+#endif
+
 	
 bool do_gnu_edit(prompt,str,num,initial)
 char *prompt, *str;
@@ -334,8 +350,14 @@ char *initial; /* initial may be = str */
     return(FALSE);
 #else
     char *result=NULL, *hist_entry=NULL;
+    Function *old_handler;
 
-    result= gnu_edit_this(prompt,initial);
+    old_handler = rl_startup_hook;
+    rl_startup_hook = set_rl_default;
+    default_text = initial;
+    result = readline(prompt);
+    rl_startup_hook = old_handler;
+
     if (result==NULL) return(FALSE); /* EOF */
 
     nstrcpy(str,result,num-2);

@@ -35,7 +35,7 @@ SYS= -D_SYS_SUNOS
 #### is probably best (for ex: on A/UX or HP/UX, respectively). 
 #### On A/UX -lmalloc is likely a good idea too.
 
-SYS_LIBS= -lm -ltermcap
+SYS_LIBS= -lm -lreadline -ltermcap
 
 #### Below we define the directories for these programs. Set DIR to the place
 #### in which the executables and help files should permanently be installed
@@ -54,12 +54,13 @@ DIR= /usr/local/bin
 #### use MAPMAKER with GNU Readline 1.1, change the lines below to:
 #### 
 #### OUR_LIB= gnu.o
+#### SYS_LIBS= -lm -lreadline -ltermcap
 #### GNU_OPT= -D_GNU_READLINE -I.
-#### GNU_LIBS= -L$(RDLN) -lreadline
 #### 
 #### Otherwise, they should read:
 #### 
 #### OUR_LIB= lib.o
+#### SYS_LIBS= -lm -ltermcap
 #### GNU_OPT=
 #### 
 #### Readline is not part of MAPMAKER as such: it was written by other 
@@ -72,7 +73,6 @@ DIR= /usr/local/bin
 
 OUR_LIB= gnu.o
 GNU_OPT= -D_GNU_READLINE -I.
-GNU_LIBS= -L$(RDLN) -lreadline
 
 #### Now we specify the commands used to compile MAPMAKER.  The stuff
 #### below works on Sun SPARCStations running SunOS 4.1.x (aka Solaris 1.x)
@@ -82,8 +82,8 @@ GNU_LIBS= -L$(RDLN) -lreadline
 #### person at your site should be able to figure out what to do almost
 #### trivially. See the file INSTALL.ME for details. 
 
-COMPILE= cc
-LINKALL= cc
+COMPILE= cc -g
+LINKALL= cc -g
 LINKLIB= ld -r
 DELETE=  rm -f
 INSTALL= cp
@@ -92,7 +92,6 @@ SHELL= /bin/sh
 MAPM= ./mapm/
 QTL=  ./quant/
 LIB=  ./lib/
-RDLN= ./readline/
 DIST= ./dist/
 GS= ghostscript
 
@@ -137,13 +136,6 @@ LIB_CLEAN= $(LIB)*.o $(LIB)*.ln $(LIB)*.lint $(MAKEHELP)
 SYSCODE=   $(LIB)syscode
 MAKEHELP=  $(LIB)makehelp
 
-RDLN_OBJ= $(RDLN)libreadline.a
-RDLN_SRC= \
-  $(RDLN)readline.c $(RDLN)vi_mode.c $(RDLN)history.c $(RDLN)funmap.c \
-  $(RDLN)keymaps.c  $(RDLN)emacs_keymap.c $(RDLN)vi_keymap.c \
-  $(RDLN)chardefs.h $(RDLN)history.h $(RDLN)keymaps.h $(RDLN)readline.h
-RDLN_CLEAN= $(RDLN)libreadline.a $(RDLN)*.o
-
 HELP_CLEAN= $(MAPM)mapmhelp.c $(MAPM)mapmaker.doc mapmaker.help
 MISC_CLEAN= lib.o gnu.o mapm.lint Temp.lint
 
@@ -175,7 +167,7 @@ help:		$(M_HELP_SRC) $(Q_HELP_SRC)
 clean:		
 		$(DELETE) mapmaker mapmaker.help qtl qtl.help
 		$(DELETE) $(MAPM_CLEAN) $(QTL_CLEAN)  $(LIB_CLEAN)
-		$(DELETE) $(RDLN_CLEAN) $(HELP_CLEAN) $(MISC_CLEAN)
+		$(DELETE) $(HELP_CLEAN) $(MISC_CLEAN)
 		$(DELETE) *.data *.maps *.2pt *.3pt *.traits *.out *.ps x*
 		$(DELETE) core *~ \#* */*~ */\#* dist/*
 
@@ -218,7 +210,7 @@ $(SYSCODE).o:	$(SYSCODE).c
 	$(COMPILE) -I$(LIB) $(SYS) $(GNU_OPT) -c $(SYSCODE).c -o $(SYSCODE).o
 
 $(MAKEHELP):	$(MAKEHELP).o $(OUR_LIB)
-	$(LINKALL) $(MAKEHELP).o $(OUR_LIB) $(SYS_LIBS) -o $(MAKEHELP)
+	$(LINKALL) $(MAKEHELP).o $(OUR_LIB) $(SYS_LIBS) -o $(MAKEHELP) $(GNU_LIBS)
 
 $(M_HELP_SRC):	$(M_HELP_IN) $(MAKEHELP)
 	$(MAKEHELP) $(M_HELP_IN) $(M_HELP_SRC) mapmaker.help mapmaker.ps
@@ -226,14 +218,11 @@ $(M_HELP_SRC):	$(M_HELP_IN) $(MAKEHELP)
 $(Q_HELP_SRC):	$(Q_HELP_IN) $(MAKEHELP)
 	$(MAKEHELP) $(Q_HELP_IN) $(Q_HELP_SRC) qtl.help qtl.ps
 
-$(RDLN_OBJ):	$(RDLN_SRC)
-	cd $(RDLN); make libreadline.a
-
 lib.o:	$(LIB_OBJ)
 	$(LINKLIB) $(LIB_OBJ) -o lib.o
 
-gnu.o:	$(LIB_OBJ) $(RDLN_OBJ)
-	$(LINKLIB) $(LIB_OBJ) $(GNU_LIBS) -o gnu.o
+gnu.o:	$(LIB_OBJ)
+	$(LINKLIB) $(LIB_OBJ) -o gnu.o
 
 
 
@@ -256,10 +245,10 @@ lint:	$(MAPM_LN) $(MAPM_LINT) $(LIB_LN) $(LIB_LINT)
 lpr:
 	pr -f $(MAPM_SRC) | lp
 
-obj:	$(LIB)system.h $(MAPM_OBJ) $(LIB_OBJ) $(RDLN_OBJ)
+obj:	$(LIB)system.h $(MAPM_OBJ) $(LIB_OBJ)
 	#load $(MAPM_OBJ) $(LIB_OBJ) $(GNU_LIBS) $(SYS_LIBS)
 
-src:	$(LIB)system.h $(LIB_OBJ) $(RDLN_OBJ) $(MAPM_OBJ)
+src:	$(LIB)system.h $(LIB_OBJ) $(MAPM_OBJ)
 	#load -I$(LIB) $(SYS)   \
   $(MAPM)state.o    $(MAPM)reader.o   $(MAPM)ctm.o \
   $(MAPM)print.o    $(MAPM)sequence.o $(MAPM)main.o \
