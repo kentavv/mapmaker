@@ -306,13 +306,13 @@ bool fix_frames;
 #define ASS_NEWANCH "%s- unassigned (anchor loci on %s have been changed)\n"
 
 #define ASS_FRAME   "%s- framework locus...remains attached to %s\n"
-#define ASS_ASSIGN  "%s- assigned to %s at LOD %4.1lf\n"
-#define ASS_BORDER  "%s- assigned to %s at LOD *%4.1lf*\n"
+#define ASS_ASSIGN  "%s- assigned to %s at LOD %4.1f\n"
+#define ASS_BORDER  "%s- assigned to %s at LOD *%4.1f*\n"
 #define ASS_ATTACH  "%s- attached to %s\n"
 
-#define CHG_ASSIGN "%s- assigned to %s at LOD %4.1lf (previously assigned to %s)\n"
+#define CHG_ASSIGN "%s- assigned to %s at LOD %4.1f (previously assigned to %s)\n"
 #define CHG_ATTACH "%s- attached to %s (previously assigned to %s)\n"
-#define CHG_BORDER "%s- assigned to %s at LOD *%.1lf* (previously assigned to %s)\n"
+#define CHG_BORDER "%s- assigned to %s at LOD *%.1f* (previously assigned to %s)\n"
 
 /* this will unassign anchors, but not reassign them correctly, and it will 
    certainly not make loci anchors - this is OK for now */
@@ -381,10 +381,10 @@ int locus, state, chrom;
 { assign_this(locus,state,chrom,NO_LOD,NO_THETA,NO_LOCUS,""); }
 
 
-const char *ANCHOR_ISFRAME =
-  "%s is a framework marker on %s...cannot re-assign to %s\n";
-const char *ANCHOR_ISANCH =
-  "%s is a framework marker on %s...cannot re-assign to %s\n";
+#define ANCHOR_ISFRAME \
+  "%s is a framework marker on %s...cannot re-assign to %s\n"
+#define ANCHOR_ISANCH \
+  "%s is a framework marker on %s...cannot re-assign to %s\n"
 #define ANCHOR_ISNOW "%s- anchor locus on %s\n"
 #define ANCHOR_DUPS  "bad framework\none or more loci are repeated in sequence"
 
@@ -399,11 +399,11 @@ int chrom, *locus, num_loci; /* maybe 0 */
     for (j=0; j<num_loci; j++) {
 	old_chrom=(assigned(locus[j]) ? assignment_chrom(locus[j]):NO_CHROM);
 	if (old_chrom!=chrom && framework_marker(locus[j])) {
-	    sf(ps,ANCHOR_ISFRAME,loc2str(locus[j]),chrom2str(old_chrom));
+	    sf(ps,ANCHOR_ISFRAME,loc2str(locus[j]),chrom2str(old_chrom),chrom2str(chrom));
 	    error(ps);
 	}
 	if (old_chrom!=chrom && anchor_locus(locus[j])) {
- 	    sf(ps,ANCHOR_ISANCH,loc2str(locus[j]),chrom2str(old_chrom));
+ 	    sf(ps,ANCHOR_ISANCH,loc2str(locus[j]),chrom2str(old_chrom),chrom2str(chrom));
 	    error(ps);
 	}
     }
@@ -625,13 +625,13 @@ int locus;
   " %4d  %-9s - too many possible locations, can't place\n"
 
 #define PLACE_OFFEND  \
-  " %4d  %-9s - placed %soff %send of framework, like%s%.2lf\n"
+  " %4d  %-9s - placed %soff %send of framework, like%s%.2f\n"
 #define PLACE_UNIQUE  \
-  " %4d  %-9s - placed %sin one interval, like%s%.2lf\n"
+  " %4d  %-9s - placed %sin one interval, like%s%.2f\n"
 #define PLACE_ZERO    \
-  " %4d  %-9s - placed %sat zero distance, like%s%.2lf\n"
+  " %4d  %-9s - placed %sat zero distance, like%s%.2f\n"
 #define PLACE_REGION  \
-  " %4d  %-9s - placed %sin %d intervals, like%s%.2lf 2nd%s%.2lf\n"
+  " %4d  %-9s - placed %sin %d intervals, like%s%.2f 2nd%s%.2f\n"
 /*234  123456789 - placed *with errors* in 24 intervals, like=-9.24, 2nd=-5.*/
 
 bool is_placeable(locus,chrom)
@@ -910,7 +910,7 @@ FILE *fp;
 	fpr(fp);
 	if (assignment[locus]->status==M_UNKNOWN) { fnl(fp); continue; }
 
-	sf(ps," %d %d %lf %lf | %d %lf %lf %d %d \n",
+	sf(ps," %d %d %f %f | %d %f %f %d %d \n",
 	   assignment[locus]->chromosome, assignment[locus]->linked_to, 
 	   assignment[locus]->LODscore,   assignment[locus]->theta,
 	   placement[locus]->status,      placement[locus]->threshold,
@@ -920,7 +920,7 @@ FILE *fp;
 	if (placement[locus]->num_intervals==0) continue;
 
 	for (j=0; j < placement[locus]->num_intervals; j++) {
-	    sf(ps," %d %lf %lf",
+	    sf(ps," %d %f %f",
 	       placement[locus]->interval[j], placement[locus]->like_ratio[j],
 	       placement[locus]->distance[j]); fpr(fp);
 	}
