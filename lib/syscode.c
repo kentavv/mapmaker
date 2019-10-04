@@ -380,15 +380,7 @@ char *str; /* side-effected, so it must be big enough */
 }
 
 
-bool tty_gets(str, num)
-char *str;  /* must be num+2 chars long, but use num<<len just in case */
-int num;    /* num chars, not including the '\n' or '\0', will be read */
-/* May send IOERROR, or (hopefully never) CRASH. Return FALSE on EOF.
-   In general, we probably want num to be huge (eg: MAXLINE), 
-      as exceeding it causes an I/O error message to be sent.
-   If fgets() works correctly, then line should be valid on EOF, although 
-      FALSE is still returned. The operating system is responsible for 
-      any post-processing. */
+bool tty_gets(char *str, int num)
 {
     int n, i;
 

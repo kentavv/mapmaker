@@ -376,7 +376,19 @@ bool do_cursor_left(); /* args int spaces; char *str_to_then_print; */
 bool check_tty_lines();
 
 void lib_puts();
-bool tty_gets();
+
+/**
+   @param str must be num+2 chars long, but use num<<len just in case
+   @param num num chars, not including the '\ n' or '\0', will be read
+   @return May send IOERROR, or (hopefully never) CRASH. Return FALSE on EOF.
+
+   In general, we probably want num to be huge (eg: MAXLINE),
+      as exceeding it causes an I/O error message to be sent.
+   If fgets() works correctly, then line should be valid on EOF, although
+      FALSE is still returned. The operating system is responsible for
+      any post-processing. */
+bool tty_gets(char *str, int num);
+
 bool file_gets();
 void ioerror();
 void flush_and_force_nl();
