@@ -314,7 +314,7 @@ SAVED_LIST *list;
 {
     int i;
     real best;
-    MAP *map;
+    MAP *map=NULL;
 
     best=VERY_UNLIKELY; 
     if (list->num_maps==0) send(CRASH);

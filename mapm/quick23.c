@@ -30,13 +30,10 @@ void probinit(), calclike(), do_scene();
 int lookup(), changes();
 real power(), f2_prob();
 
-void f2_quick_two_pt(loc1,loc2,two_pt,sexflag)
-int loc1, loc2;
-TWO_PT_DATA *two_pt;
-bool sexflag;
+void f2_quick_two_pt(int loc1, int loc2, TWO_PT_DATA *two_pt, bool sexflag)
 {
     LOCUS locus;
-    real conv_like, unconv_like;
+    real conv_like=0., unconv_like=0.;
     RECVECTOR **rec_frac;
     if (raw.data_type!=F2) send(CRASH);
 

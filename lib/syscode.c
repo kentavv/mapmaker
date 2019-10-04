@@ -256,7 +256,7 @@ void verbose_untrapped_msg() /* DO NOT ASSUME THAT MSGNAME IS SET! */
   (*(mstrmsg[msg]))(ps_); fprintf(stderr,ps_); 
   if (!nullstr(ps_)) fprintf(stderr,"\n");
   fprintf(stderr,SHUTDOWN1); fprintf(stderr,SHUTDOWN2); 
-  fprintf(stderr,SHUTDOWN3); fgets(ps_,MAXLINE,stdin);
+//  fprintf(stderr,SHUTDOWN3); fgets(ps_,MAXLINE,stdin);
   fprintf(stderr,"\n");
 }
 

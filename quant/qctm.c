@@ -756,7 +756,7 @@ int i; /* interval# */
 real interval_rf, start, end; /* start and end are positions in cM */
 int steps;
 {
-    real inc, pos, like, max_like, best_pos;
+    real inc, pos, like, max_like, best_pos=0.;
     int j;
 
     inc=(end-start)/((real)(steps-1)); max_like= -VERY_BIG;

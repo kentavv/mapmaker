@@ -83,8 +83,8 @@ void try_to_load();  /* FILE *fp; char *name; bool prev_data, is_raw;
 
 /***************************** MAPM's Map Makers  ****************************/
 
-void quick_two_pt(); /* ctm.c, args: locus1 locus2 TWO_PT_DATA sex_spec */
-void f2_quick_two_pt(); /* in quick23.c, used by the above */
+void quick_two_pt(int locus0, int locus1, TWO_PT_DATA *two_pt, bool sex /* do both with and without sex spec */); /* ctm.c */
+void f2_quick_two_pt(int loc1, int loc2, TWO_PT_DATA *two_pt, bool sexflag); /* in quick23.c, used by the above */
 
 /* in ctm.c */
 void converge_to_map(); /* args: MAP *map */

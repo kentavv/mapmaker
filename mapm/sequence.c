@@ -1091,7 +1091,7 @@ char *str; /* side-effected! */
 /* send BADSEQ if expansion >MAX_SEQ_LEN chars or if it contains circularly 
    defined names- this should never happen */
 { 
-    char *token_start, *expansion, *errmsg=NULL, *all, *rest;
+    char *token_start, *expansion=NULL, *errmsg=NULL, *all, *rest;
     int loop_count, chrom;
 
     loop_count=0; all=str; BADSEQ_errpos= -1; 
@@ -1100,7 +1100,7 @@ char *str; /* side-effected! */
 	token_start=str; next_token(&str);
 	if (is_a_sequence(token,&expansion,&errmsg)) {
 	    if (!nullstr(errmsg)) badseq(errmsg);
-	    strcpy(seq_temp,expansion);
+	    if(seq_temp != expansion) strcpy(seq_temp,expansion); /* if-statement to avoid valgrind warning of overlapping strings when pointers seq_temp = expansion, but why are they equal?) */
 	    if (parse_seq_chrom(seq_temp,&chrom,&rest)) {
 		if (chrom!=current_chrom && current_chrom!=NO_CHROM)
 		  badseq(BADSEQ_NOTCHROM);

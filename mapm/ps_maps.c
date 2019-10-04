@@ -226,8 +226,8 @@ FILE *fp;
 int chrom;
 real scale;
 {
-    int i, j, k, l, num_crunched, interval, marker;
-    double interval_length, ps_length, dist;
+    int i, j, k, l, num_crunched, interval=0, marker;
+    double interval_length, ps_length, dist=0.;
     char *loc_str, **placed_markers=NULL;
     MAP *frame;
 

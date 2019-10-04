@@ -161,7 +161,7 @@ QTL_MAP *map; 	/* side-effected */
    set, and prepare_data() must have been run on data */
 {
     int i, k;
-    real a, b, c, mu, sigma_sq;
+    real a=0., b=0., c, mu, sigma_sq;
 
     if (map==NULL || data==NULL) send(CRASH);
 
@@ -399,7 +399,7 @@ QTL_MAP *map;
 int indiv;
 {
     int j, k, geno, qtl, left, right;
-    real pheno, interval_rf, left_rf, right_rf, sum, num, dom;
+    real pheno, interval_rf, left_rf, right_rf, sum, num=0., dom=0.;
     INTERVAL_GENOTYPE_PROBS *interval_prob; /* p[0][genotype-code] => real*/
     LOCUS_GENOTYPE_PROBS qtl_geno_prob, trans_prob; /* [qtl-geno] => real */
 

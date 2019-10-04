@@ -396,7 +396,7 @@ command edit_sequence()
 {
     char name[TOKLEN+1], prompt[TOKLEN+1], *value, *err;
     int *locus=NULL, num_loci;
-    bool set_seq;
+    bool set_seq=FALSE;
     mapm_ready(ANY_DATA,0,0,NULL);
 
     /* edit_line() will send an error if it can't be run now */

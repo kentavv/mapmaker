@@ -104,7 +104,7 @@ void find_haplo_group(locus,num_loci,haplo_group,num_haplo,old_obs,new_obs)
 int *locus, *num_loci, *haplo_group, *num_haplo;
 int *old_obs, *new_obs;
 {
-    int i, num_inf, num_dom, best_i, foo;
+    int i, num_inf, num_dom, best_i=0, foo;
     int best_score, score;
     
     /* get the most informative marker */

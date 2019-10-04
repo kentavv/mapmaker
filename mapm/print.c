@@ -827,7 +827,7 @@ int num_old;
 int *old_locus;  /* can omit if num_old==0 - should do this with VARARGS */
 {
     int indiv, n_indivs, firsti, lasti;
-    int locus, i, j, *obs=NULL, *prev_obs=NULL, *num_recs=NULL, old;
+    int locus, i, j, *obs=NULL, *prev_obs=NULL, *num_recs=NULL, old=0;
     int *last_homo=NULL, *last_het=NULL, *homo_was=NULL;
     real error_rate;
 

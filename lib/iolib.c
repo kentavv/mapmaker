@@ -434,7 +434,7 @@ char *str;
     }
     lib_puts(out,str);
 
-    if (str[len(str)-1]=='\n') {
+    if (len(str) > 0 && str[len(str)-1]=='\n') {
 	if (++lines_written>1000000) send(CRASH);
 	if (more) {
 	    if (printed_lines>=tty_lines-3) more_break_pending=TRUE;
