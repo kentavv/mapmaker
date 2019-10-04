@@ -115,7 +115,7 @@ void hmm_fake_converge_to_map();
 void allocate_hmm_temps(total_loci,num_indivs,cross_type)
 int total_loci, num_indivs, cross_type;
 {
-    int i, num_states, num_observations, num_loci, num_intervals;
+    int i, num_states=0, num_observations=0, num_loci, num_intervals;
     bool special_recs_hack;
     
     switch (cross_type) {
@@ -185,7 +185,7 @@ int total_loci, num_indivs, cross_type;
 void free_hmm_temps(total_loci,num_indivs,cross_type)
 int total_loci, num_indivs, cross_type;
 {
-    int i, num_states, num_observations, num_loci, num_intervals;
+    int i, num_states=0, num_observations=0, num_loci, num_intervals;
     bool special_recs_hack;
     
     switch (cross_type) {
@@ -752,7 +752,7 @@ real ***implied_recs;  /* [interval][from_state][to_state] side-effected */
 /* for now, assume obs_probs are fixed and initialized by setup_hmm() */
 {
     int i;
-    real rec, norec, theta;
+    real rec=0., norec, theta;
     real **prob;
 
     /* set the trans_probs (right geno, conditional on left) given theta */
@@ -869,7 +869,7 @@ real ***implied_recs;	   /* [interval][from_state][to_state] */
 SUFF_STATS **sufficient_stats; /* [locus] => ptr to struct (recs,norecs)... */
 {
     int i, k, j;
-    real **transitions_exp, **recs_implied, **norecs_implied;
+    real **transitions_exp, **recs_implied=NULL, **norecs_implied=NULL;
     real recs, norecs;
 
     if (!separate_recs) {
@@ -901,7 +901,7 @@ MAP *map;
 /* for now, assume no penetrance stuff */
 {
     int i;
-    real recs, norecs, sum, theta, ratio;
+    real recs, norecs, sum, theta=0., ratio;
     
     for (i=0; i<n_intervals; i++) {
 	if (map->fix_interval[i]) continue;
@@ -1189,10 +1189,7 @@ real **error_lod;         /* [locus#][indiv] side-effected */
 }
 
 
-void quick_two_pt(locus0,locus1,two_pt,sex)
-int locus0, locus1;
-TWO_PT_DATA *two_pt;
-bool sex; /* do both with and without sex spec */
+void quick_two_pt(int locus0, int locus1, TWO_PT_DATA *two_pt, bool sex /* do both with and without sex spec */)
 {
     if (raw.data_type==F2 &&
 	(raw.data.f2.cross_type==F2_INTERCROSS || 

@@ -76,17 +76,22 @@ int num_loci;
     array(two_pt_data,num_loci,TWO_PT_DATA**);
     for (i=0; i<num_loci; i++) {
         array(two_pt_data[i],(i+1),TWO_PT_DATA*);
-	for (j=0; j<=i; j++) two_pt_data[i][j]=NULL;
-	two_pt_max+=i+1;
+	    for (j=0; j<=i; j++) two_pt_data[i][j]=NULL;
+	    two_pt_max+=i+1;
     }
     array(two_pt_list,two_pt_max,TWO_PT_DATA*);
 
     UNLINKED_TWO_PT= &the_unlinked_two_pt;
-    UNLINKED_TWO_PT->lodscore[NOSEX]=   UNLINKED_LOD;
-    UNLINKED_TWO_PT->lodscore[SEXSPEC]= UNLINKED_LOD;
-    UNLINKED_TWO_PT->theta[NOSEX]=      UNLINKED_THETA;
-    UNLINKED_TWO_PT->theta[MALE]=       UNLINKED_THETA;
-    UNLINKED_TWO_PT->theta[FEMALE]=     UNLINKED_THETA;
+    UNLINKED_TWO_PT->used = FALSE;
+    for(int i=0; i<3; i++) {
+        UNLINKED_TWO_PT->lodscore[i]=   UNLINKED_LOD;
+        UNLINKED_TWO_PT->theta[i]=      UNLINKED_THETA;
+    }
+//    UNLINKED_TWO_PT->lodscore[NOSEX]=   UNLINKED_LOD;
+//    UNLINKED_TWO_PT->lodscore[SEXSPEC]= UNLINKED_LOD;
+//    UNLINKED_TWO_PT->theta[NOSEX]=      UNLINKED_THETA;
+//    UNLINKED_TWO_PT->theta[MALE]=       UNLINKED_THETA;
+//    UNLINKED_TWO_PT->theta[FEMALE]=     UNLINKED_THETA;
 
     two_pt_used= two_pt_allocated= two_pt_collect= 0;
     two_pt_touched= FALSE;
@@ -114,12 +119,16 @@ TWO_PT_DATA *get_next_two_pt_entry(a,b,used_needs_incrementing)
 int a, b;
 bool *used_needs_incrementing;
 {
-    TWO_PT_DATA *p;
+    TWO_PT_DATA *p=NULL;
     
     if (two_pt_data[a][b]!=NULL && two_pt_data[a][b]!=UNLINKED_TWO_PT) {
 	p=two_pt_data[a][b];
 	p->used=FALSE;
-	two_pt_data[a][b]=NULL;
+    for(int i=0; i<3; i++) {
+        p->lodscore[i]=   UNLINKED_LOD;
+        p->theta[i]=      UNLINKED_THETA;
+    }
+    two_pt_data[a][b]=NULL;
 	two_pt_collect=0;
 	*used_needs_incrementing=FALSE;
 	return(p);
@@ -129,6 +138,14 @@ bool *used_needs_incrementing;
 	while (two_pt_collect<two_pt_used)
 	  if (!two_pt_list[two_pt_collect]->used) {
 	      *used_needs_incrementing=FALSE;
+          {
+              p = two_pt_list[two_pt_collect];
+              p->used=FALSE;
+              for(int i=0; i<3; i++) {
+                  p->lodscore[i]=   UNLINKED_LOD;
+                  p->theta[i]=      UNLINKED_THETA;
+              }
+          }
 	      return(two_pt_list[two_pt_collect]);
 	  } else two_pt_collect++;
 	/* none free if we fall to here */
@@ -166,7 +183,7 @@ int num_entries;
 void compute_two_pt(a,b) /* internal use only */
 int a, b;
 {
-    TWO_PT_DATA *two_pt;
+    TWO_PT_DATA *two_pt=NULL;
     int temp;
     bool inc;
 
@@ -175,19 +192,19 @@ int a, b;
     quick_two_pt(a,b,two_pt,FALSE);
     if (raw.data_type==CEPH) quick_two_pt(a,b,two_pt,TRUE); /* also w/sex */
 
-    if (two_pt->lodscore[NOSEX]<=UNLINKED_LOD &&
-	two_pt->theta[NOSEX]>=UNLINKED_THETA &&
-	(raw.data_type!=CEPH ||
-	     (two_pt->lodscore[SEXSPEC]<=UNLINKED_LOD &&
-	      two_pt->theta[MALE]>=UNLINKED_THETA && 
-	      two_pt->lodscore[FEMALE]>=UNLINKED_THETA))) {
-	two_pt_data[a][b]=UNLINKED_TWO_PT;
+    if (two_pt->lodscore[NOSEX] <= UNLINKED_LOD &&
+        two_pt->theta[NOSEX] >= UNLINKED_THETA &&
+        (raw.data_type != CEPH ||
+         (two_pt->lodscore[SEXSPEC] <= UNLINKED_LOD &&
+          two_pt->theta[MALE] >= UNLINKED_THETA &&
+          two_pt->lodscore[FEMALE] >= UNLINKED_THETA))) {
+        two_pt_data[a][b] = UNLINKED_TWO_PT;
     } else {
-	two_pt->used=TRUE;
-	two_pt_data[a][b]=two_pt;
-	if (inc) two_pt_used++;
+        two_pt->used = TRUE;
+        two_pt_data[a][b] = two_pt;
+        if (inc) two_pt_used++;
     }
-    two_pt_touched=TRUE;
+    two_pt_touched = TRUE;
 }
 
 
@@ -926,7 +943,7 @@ int num_markers;
     matrix(class_name, NUM_CLASSES, NAME_LEN+1, char);
     strcpy(class_name[0],"no_class");
     /* for (i=1; i<NUM_CLASSES; i++) sprintf(class_name[i],"class%d",i); */
-    for (i=1; i<NUM_CLASSES; i++) class_name[i] = '\0';
+    for (i=1; i<NUM_CLASSES; i++) class_name[i][0] = '\0';
 }
 
 
@@ -1022,7 +1039,7 @@ FILE *fp;
     TWO_PT_DATA *new_two;
 
     getdataln(fp);
-    if (sscanf(ln,"%d %d %d",&n_real,&n_unlinked,&n_miss)!=3) 
+    if (sscanf(ln,"%d %d %d",&n_real,&n_unlinked,&n_miss)!=3)
       baddata("expected two-pt count");
     if (n_unlinked>n_miss) missing_means_unlinked=TRUE;
     expand_two_pt(n_real+2);
@@ -1048,7 +1065,7 @@ FILE *fp;
 	      new_two->theta[NOSEX]= theta;
 	      new_two->lodscore[NOSEX]= lod;
 	      two_pt_data[a][b]= new_two;
-	      new_two->used=TRUE; 
+	      new_two->used=TRUE;
 	      two_pt_used++;
 	    } else if (n==7) {
 	      new_two->theta[NOSEX]= theta;
@@ -1057,7 +1074,7 @@ FILE *fp;
 	      new_two->theta[FEMALE]= thetaf;
 	      new_two->lodscore[SEXSPEC]= lodsex;
 	      two_pt_data[a][b]= new_two;
-	      new_two->used=TRUE; 
+	      new_two->used=TRUE;
 	      if (inc) two_pt_used++;
 	    }
 	}
@@ -1083,7 +1100,7 @@ FILE *fp;
 
     for (i=0; i<raw.num_markers-1; i++) {
 	for (j=0; j<=i; j++) {
-	    if (two_pt_data[i][j]==NULL) { 
+	    if (two_pt_data[i][j]==NULL) {
 		if (!missing_means_unlinked) continue;
 		else sprintf(ps, "%d %d\n", i, j); fpr(fp);
 	    } else if(two_pt_data[i][j] == UNLINKED_TWO_PT) {
@@ -1119,7 +1136,7 @@ FILE *fp;
 }
 
 
-void write_three_pt(fp)  
+void write_three_pt(fp)
 FILE *fp;
 {
     int i;
@@ -1132,7 +1149,7 @@ FILE *fp;
               three_pt_data->entry[i].delta1, three_pt_data->entry[i].delta2,
               three_pt_data->entry[i].delta3);
 	  fpr(fp);
-	  p= three_pt_data->entry[i].next;	  
+	  p= three_pt_data->entry[i].next;
 	  while(p != NULL) {
 	    sprintf(ps, "%d %d %d %.3lf %.3lf %.3lf\n", i, p->locus2, p->locus3,
                 p->delta1, p->delta2, p->delta3);

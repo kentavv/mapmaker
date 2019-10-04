@@ -30,9 +30,7 @@ int yy, zz;
 #define ALLOC_FAIL_MSG \
 	"FAILED:\t%ldx%ld\tbytes              total bytes alloced=%ld\n"
 
-CALLOC_PTR_TO *xalloc(num,cell_sizeof)
-CALLOC_NUM_TYPE num;
-SIZEOF_TYPE cell_sizeof;
+CALLOC_PTR_TO *xalloc(CALLOC_NUM_TYPE num, SIZEOF_TYPE cell_sizeof)
 {
 	CALLOC_PTR_TO *p;	
 

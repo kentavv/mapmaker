@@ -383,7 +383,7 @@ char divider; /* character that the string should be split on */
     for (i=0; str[i]!='\0'; i++) 
       if (str[i]==divider) {
 	  j=i+1; while (white(str[j])) j++;        *rest=str+j;
-	  i--;   while (white(str[i]) && i>0) i--; str[i+1]='\0';
+	  i--;   while (i>0 && white(str[i])) i--; str[i+1]='\0';
 	  return(TRUE);
       }
     return(FALSE);

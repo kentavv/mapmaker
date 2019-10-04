@@ -457,7 +457,7 @@ SAVED_LIST *list;
 bool *excluded, *zero;
 int *count;
 {
-    int i, j, num_ok, last, sex, num_paired, best_i;
+    int i, j, num_ok, last, sex, num_paired, best_i=0;
     MAP *map;
     real best;
     
@@ -729,17 +729,17 @@ command order_maker()
 
 command greedy()
 {
-    int *locus=NULL, num_loci, num_order, *all_loci, total;
-    int i, prev, num, num_unplaced;
+    int *locus=NULL, num_loci=0, num_order=0, *all_loci=NULL, total;
+    int i=0, prev=0, num=0, num_unplaced=0;
     MAP *order=NULL;
-    PLACEME **unplaced;
+    PLACEME **unplaced=NULL;
 
     /* args: lod theta start-window start-like max-to-try */
     mapm_ready(F2_DATA,2,LIST_SEQ,&num_order); /* F2 because place_locus */
     if (nullstr(args)) usage_error(0);
     parse_locus_args(&locus,&num_loci); /* error if fails, >=1 */
     crunch_locus_list(locus,&num_loci,CRUNCH_WARNINGS,ANY_CHROMS,IN_ARGS);
-    
+
     if (npt_threshold==npt_first_threshold) /* globals */
       sprintf(ps, "Placement Threshold %.2lf, Npt-Window %d\n",
               npt_threshold, npt_window);
@@ -747,10 +747,16 @@ command greedy()
       sprintf(ps, "Placement Threshold-1 %.2lf, Threshold-2 %.2lf, Npt-Window %d\n",
               npt_first_threshold, npt_threshold, npt_window);
     pr();
-    
+
     if (num_order>=MAX_MAP_LOCI) error("starting order is too big");
     run {
-	total= num_order+num_loci;
+            if (num_loci == 0) {
+                printf("\n\nWARNING: greedy(): num_loci == 0, returning early.\n\n"); fflush(NULL);
+                // Not returning early will lead to an exception in: parray(unplaced,num_loci,PLACEME);
+                send(SYSERROR);
+            }
+
+    total= num_order+num_loci;
 	order=allocate_map(total); /* maybe MAX_MAP */
 	get_list_of_all_loci(seq,order->locus,&order->num_loci,total);
 	array(all_loci,total,int);

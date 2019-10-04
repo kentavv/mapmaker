@@ -501,8 +501,8 @@ int *count;     /* [num_groups] */
 int num_groups;
 {
     int assigned_locus, j, k, state;
-    int pos_locus, this_chrom, pos_chrom, alt_chrom, pos_group;
-    real lod, theta, this_lod, pos_lod, alt_lod, this_theta, pos_theta;
+    int pos_locus=0, this_chrom=0, pos_chrom, alt_chrom, pos_group=0;
+    real lod, theta, this_lod, pos_lod, alt_lod, this_theta=0., pos_theta=0.;
     bool this_group;
     char *temp= get_temp_string();
 

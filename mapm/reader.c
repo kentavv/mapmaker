@@ -384,8 +384,8 @@ int read_raw_file_header(fp,filename,symbol)
 FILE *fp;
 char *filename, *symbol;
 {
-    int type, n_indivs, n_loci, n_chroms, n_traits, i, n, first;
-    char str[TOKLEN+1], *dflt, user[2];
+    int type, n_indivs, n_loci, n_chroms, n_traits, i, n=0, first;
+    char str[TOKLEN+1], *dflt=NULL, user[2];
     if (data_loaded() || fp==NULL) send(CRASH);
 
     getdataln(fp); while(nullstr(ln)); crunch(ln);

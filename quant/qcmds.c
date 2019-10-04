@@ -947,7 +947,7 @@ command make_trait()
 command predict()
 {
     char *name= get_temp_string();
-    int trait_redone, trait_index, i, perm;
+    int trait_redone, trait_index=0, i, perm;
 
     qtl_ready(INTERCROSS,SEQ,TRAIT,QCTM);
     if (nullstr(args)) usage_error(0); 

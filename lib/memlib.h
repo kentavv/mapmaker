@@ -28,7 +28,7 @@ typedef real REAL4[4];
 
 extern bool verbose_mem;    /* may be set by user code */
 extern int yy, zz;	    /* INTERNAL USE ONLY! */
-CALLOC_PTR_TO *xalloc();    /* INTERNAL USE ONLY! */
+CALLOC_PTR_TO *xalloc(CALLOC_NUM_TYPE num, SIZEOF_TYPE cell_sizeof); /* INTERNAL USE ONLY! */
 
 /***************************************************************************
    Syntax for allocating and freeing things:	

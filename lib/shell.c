@@ -496,7 +496,7 @@ void expand_history_references(line) /* sends an error if need be */
 char *line; /* line IS side-effected */
 {
     char *str, *save;
-    int num, first, i;
+    int num, first=0, i;
 
     /* The cmd_history num will NOT have been incremented between the call
        to prompt and here! Also remember that 1+ that number is printed. */

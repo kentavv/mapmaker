@@ -265,7 +265,7 @@ void store_wiggle_point(wiggle_num,map)
 int wiggle_num;
 QTL_MAP *map;
 {
-    WIGGLE_OPERATION *op;
+    WIGGLE_OPERATION *op=NULL;
     WIGGLE_INTERVAL *data;
     int i, j;
 
@@ -463,9 +463,9 @@ real threshold, qtl_falloff, confidence_falloff, min_peak_delta;
 bool get_peak_maps;
 {
     int i, j, peak_i, peak_j, n_intervals;
-    bool still_falling, off_end, contig;
-    real lod, local_maxima;
-    real local_minima, prev_lod, starting_value;
+    bool still_falling=FALSE, off_end, contig;
+    real lod=0., local_maxima=0.;
+    real local_minima=0., prev_lod, starting_value=0.;
     WIGGLE_INTERVAL **interval; 
     WIGGLE_PEAK *first, *last, *peak;
 
@@ -819,7 +819,7 @@ FILE *fp;
 {
     int trait,i,j,n;
     int n_orders,n_ints,n_wiggled,foo;
-    QTL_SEQUENCE *seqnce;
+    QTL_SEQUENCE *seqnce=NULL;
 
     fgetdataln(fp,NULL);
     if(!itoken(&ln,iREQUIRED,&trait))  return;
@@ -971,7 +971,7 @@ FILE *fp;
 {
     int trait,i,contig,n;
     int n_orders,n_ints,n_wiggled,foo;
-    QTL_SEQUENCE *seqnce;
+    QTL_SEQUENCE *seqnce=NULL;
 
     fgetdataln(fp,NULL);
     if(!itoken(&ln,iREQUIRED,&trait))  return;
