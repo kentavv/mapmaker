@@ -753,7 +753,7 @@ command greedy()
             if (num_loci == 0) {
                 printf("\n\nWARNING: greedy(): num_loci == 0, returning early.\n\n"); fflush(NULL);
                 // Not returning early will lead to an exception in: parray(unplaced,num_loci,PLACEME);
-                send(SYSERROR);
+                send(CRASH);
             }
 
     total= num_order+num_loci;
