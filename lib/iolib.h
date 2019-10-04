@@ -96,7 +96,7 @@ void iocheck();   /* no args; CURRENTLY A NOP */
 
 
 /************************ Terminal output routines ***********************/ 
-void print();	 /* args: char *string; does lots of processing */ 
+void print(const char *);	 /* args: char *string; does lots of processing */
 #define nl() print("\n") 
 #define pr() print(ps) 
 void flush();	 /* no args. forces everything print()ed to be output */ 

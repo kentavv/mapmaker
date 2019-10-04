@@ -39,11 +39,11 @@ command make_chromosome()
     if (!nullstr(args)) {
 	while (stoken(&args,sREQUIRED,name)) {
 	    if (!valid_name(name)) 
-	      { sf(ps,CANT_MAKE,name,"illegal name"); pr(); }
+	      { sprintf(ps, CANT_MAKE, name, "illegal name"); pr(); }
 	    else if (!valid_new_name(name))
-	      { sf(ps,CANT_MAKE,name,"name is already in use"); pr(); }
+	      { sprintf(ps, CANT_MAKE, name, "name is already in use"); pr(); }
 	    else if (!make_new_chrom(name,&num))
-	      { sf(ps,CANT_MAKE,name,"chromosome already exists"); pr(); }
+	      { sprintf(ps, CANT_MAKE, name, "chromosome already exists"); pr(); }
 	}
     }
     print("chromosomes defined: ");
@@ -69,14 +69,14 @@ command set_anchors()
 	      if (!is_assignable(locus[i],chrom,FALSE))
 		abort_command(); /* prints msg - is this a sufficient test? */
 	    set_chrom_anchors(chrom,locus,num_loci);
-	    sf(ps,"chromosome %s anchor(s): ",chrom2str(chrom)); pr();
+	    sprintf(ps, "chromosome %s anchor(s): ", chrom2str(chrom)); pr();
 	    for (i=0; i<raw.num_markers; i++) /* requires haplo sanity */
 	      if (assigned_to(i,chrom) && anchor_locus(i))
 		{ print(locname(i,TRUE)); print(" "); }
 	    nl();
 	} else {
 	    set_chrom_anchors(chrom,locus,0);
-	    sf(ps,"chromosome %s now has no anchors\n",chrom2str(chrom)); pr();
+	    sprintf(ps, "chromosome %s now has no anchors\n", chrom2str(chrom)); pr();
 	}
     } on_exit { 
 	unarray(locus,int);
@@ -108,7 +108,7 @@ command set_framework()
     old=get_chrom_frame(chrom,NULL);
     map=get_map_to_bash(chromosome);
     if (num_loci==0) {
-	sf(ps,CHROM_NOFRAME,chrom2str(chrom),(old->num_loci>0 ? "now ":""));
+	sprintf(ps, CHROM_NOFRAME, chrom2str(chrom), (old->num_loci > 0 ? "now " : ""));
 	pr(); nl();
 	clean_map(map);
 	set_chrom_frame(chrom,map);
@@ -117,15 +117,15 @@ command set_framework()
     run {
 	get_one_order(seq,map);
 	if (old->num_loci>0)
-	  { sf(ps,CHROM_FRAME_EXISTS,chrom2str(chrom)); pr(); nl(); }
-	else { sf(ps,CHROM_SETTING,chrom2str(chrom)); pr(); nl(); }
+	  { sprintf(ps, CHROM_FRAME_EXISTS, chrom2str(chrom)); pr(); nl(); }
+	else { sprintf(ps, CHROM_SETTING, chrom2str(chrom)); pr(); nl(); }
     
 	init_rec_fracs(map);
 	converge_to_map(map);
 	set_chrom_frame(chrom,map);
 	
 	print(MAP_DIVIDER);
-	sf(title,CHROM_FRAME,chrom2str(chrom));
+	sprintf(title, CHROM_FRAME, chrom2str(chrom));
 	print_long_map(map,title);
 	print(MAP_DIVIDER);
 	
@@ -155,13 +155,13 @@ command list_chroms()
     for (i=0; i<chromosome->num_maps; i++) {
 	count_chrom_loci(i,&anchor,&frame,&total,&placed,&unique,&region,
 			 TRUE,loci);
-	sf(ps,CHROMS_FORMAT,chrom2str(i),total,frame,anchor,placed,
-	   unique,region); pr();
+	sprintf(ps, CHROMS_FORMAT, chrom2str(i), total, frame, anchor, placed,
+            unique, region); pr();
 	sum_frame+=frame; sum_total+=total; sum_anchor+=anchor;
 	sum_placed+=placed; sum_unique+=unique; sum_region+=region;
     }
-    sf(ps,CHROMS_FORMAT,"Total:",sum_total,sum_frame,sum_anchor,
-       sum_placed,sum_unique,sum_region); pr();
+    sprintf(ps, CHROMS_FORMAT, "Total:", sum_total, sum_frame, sum_anchor,
+            sum_placed, sum_unique, sum_region); pr();
     unarray(loci,int);
 }
 
@@ -176,7 +176,7 @@ command list_assignments()
     print("Chromosome assignments of all loci:\n"); nl();
 
     for (chrom=0; chrom<chromosome->num_maps; chrom++) {
-	sf(ps,"%s= ",chrom2str(chrom)); pr();
+	sprintf(ps, "%s= ", chrom2str(chrom)); pr();
 	for (i=0; i<raw.num_markers; i++) if (assigned_to(i,chrom))
 	  { print(rag(loc2str(i))); print(" "); }
 	nl();
@@ -262,9 +262,9 @@ command attach()
 	      if (assigned_to(locus[i],chrom) && 
 		  (assignment_state(locus[i])==A_ASSIGNED || 
 		   assignment_state(locus[i])==A_BORDERLINE))
-		{ sf(ps,ASS_ALREADY,loc2str(locus[i]),
-		     chrom2str(assignment_chrom(locus[i])),
-		     assignment_lod(locus[i])); pr(); continue; }
+		{ sprintf(ps, ASS_ALREADY, loc2str(locus[i]),
+                  chrom2str(assignment_chrom(locus[i])),
+                  assignment_lod(locus[i])); pr(); continue; }
 	      assign_this(locus[i],A_ATTACH,chrom,NO_LOD,NO_THETA,NO_LOCUS,"");
 	  }
 	print("ok\n");
@@ -332,7 +332,7 @@ command place()
 	}
 	temp=allocate_map(MAX_CHROM_LOCI+1);
 
-	sf(ps,PLACE_HEADER,npt_thresh); pr();
+	sprintf(ps, PLACE_HEADER, npt_thresh); pr();
 	for (i=0; i<n_loci; i++) /* is_placable may print a msg & unplace */
 	  if (!is_placeable(locus[i],ANY_CHROM)) locus[i]=NO_LOCUS;
 
@@ -352,9 +352,9 @@ command place()
 
 	    /* if (!got_any) nl(); */
 	    print(MAP_DIVIDER);
-	    sf(ps,PLACE_SOME,n_to_place,maybe_s(n_to_place),chrom2str(chrom));
+	    sprintf(ps, PLACE_SOME, n_to_place, maybe_s(n_to_place), chrom2str(chrom));
 	    pr(); nl();
-	    if (n_frame<2) { sf(ps,PLACE_NOFRAME); pr(); nl(); continue; }
+	    if (n_frame<2) { sprintf(ps, PLACE_NOFRAME); pr(); nl(); continue; }
 	    got_any=TRUE; /* yes, do this here */
 	    /* if (use_haplotypes) 
 	       { print_haplo_summary(chrom_all,n_chrom); nl(); } */
@@ -405,8 +405,8 @@ command place()
 		  if (print_all_maps && unplaced[i]->locus!=NO_LOCUS && 
 		        placed_locus(unplaced[i]->locus)) {
 		      print(SUB_DIVIDER);
-		      sf(ps,"Best placement of %s:",
-			 rag(loc2str(unplaced[i]->locus)));
+		      sprintf(ps, "Best placement of %s:",
+                      rag(loc2str(unplaced[i]->locus)));
 		      print_special_map(unplaced[i]->best_map,ps,
 					n_frame,frame->locus);
 		  }
@@ -450,11 +450,11 @@ command show_chrom()
 
 	nl();
 	print(MAP_DIVIDER);
-	sf(title,CHROM_FRAME,chrom2str(chrom));
+	sprintf(title, CHROM_FRAME, chrom2str(chrom));
 	print_long_map(chromosome->map_list[chrom],title);
 	print(MAP_DIVIDER);
 	
-	sf(ps,CHROM_MARKS,chrom2str(chrom)); pr(); nl();
+	sprintf(ps, CHROM_MARKS, chrom2str(chrom)); pr(); nl();
 	get_chrom_loci(chrom,marker,ALL_LOCI,&num_markers,NULL);
 	print_locus_summary(marker,num_markers,TRUE); /* change to FALSE? */
 	if (use_haplotypes) { nl(); print_haplo_summary(marker,num_markers); }
@@ -489,11 +489,11 @@ command place_together()
     mapm_ready(ANY_DATA,1,LIST_SEQ,&n_loci);
     nomore_args(0);
     if (npt_threshold==npt_first_threshold) /* globals */
-      sf(ps,"Placement Threshold %.2lf, Npt-Window %d\n",
-	 npt_threshold,npt_window);
+      sprintf(ps, "Placement Threshold %.2lf, Npt-Window %d\n",
+              npt_threshold, npt_window);
     else 
-      sf(ps,"Placement Threshold-1 %.2lf, Threshold-2 %.2lf, Npt-Window %d\n",
-	 npt_first_threshold,npt_threshold,npt_window);
+      sprintf(ps, "Placement Threshold-1 %.2lf, Threshold-2 %.2lf, Npt-Window %d\n",
+              npt_first_threshold, npt_threshold, npt_window);
     pr();
 
     run {
@@ -507,7 +507,7 @@ command place_together()
 	}
 	order=allocate_map(MAX_CHROM_LOCI+1);
 
-	sf(ps,PLACE_HEADER,npt_thresh); pr();
+	sprintf(ps, PLACE_HEADER, npt_thresh); pr();
 	for (i=0; i<n_loci; i++) /* is_placable may print a msg & unplace */
 	  if (!is_placeable(locus[i],ANY_CHROM)) locus[i]=NO_LOCUS;
 
@@ -527,9 +527,9 @@ command place_together()
 
 	    /* if (!got_any) nl(); */
 	    print(MAP_DIVIDER);
-	    sf(ps,PLACE_SOME,n_to_place,maybe_s(n_to_place),chrom2str(chrom));
+	    sprintf(ps, PLACE_SOME, n_to_place, maybe_s(n_to_place), chrom2str(chrom));
 	    pr(); nl();
-	    if (n_frame<2) { sf(ps,PLACE_NOFRAME); pr(); nl(); continue; }
+	    if (n_frame<2) { sprintf(ps, PLACE_NOFRAME); pr(); nl(); continue; }
 	    got_any=TRUE; /* yes, do this here */
 
 	    /* if (use_haplotypes) 
@@ -539,8 +539,8 @@ command place_together()
 
 	    for (i=0; i<n_chrom; i++) {
 		num=chrom_all[i];
-		sf(ps,"%4d %s%s",num+1,raw.locus_name[num],
-		   (use_haplotypes && haplotyped(num) ? "+":""));
+		sprintf(ps, "%4d %s%s", num + 1, raw.locus_name[num],
+                (use_haplotypes && haplotyped(num) ? "+":""));
 		pad_to_len(ps,14); pr();
 		if (i==n_chrom-1 || i%5==4) nl(); else print("  ");
 	    }
@@ -549,27 +549,27 @@ command place_together()
 	    for (i=0; i<n_to_place; i++) unplaced[i]->locus=chrom_locus[i];
 	    n_unplaced= n_to_place;
 
-	    nl(); sf(ps,PLACE_AT,npt_first_threshold); pr();
+	    nl(); sprintf(ps, PLACE_AT, npt_first_threshold); pr();
 	    extend_order(order,unplaced,&n_unplaced,-npt_first_threshold,TRUE);
 
 	    if (npt_first_threshold!=npt_threshold && n_unplaced>0) {
 		print(SUB_DIVIDER);
-		sf(ps,PLACE_AT,npt_threshold); pr();
+		sprintf(ps, PLACE_AT, npt_threshold); pr();
 		extend_order(order,unplaced,&n_unplaced,-npt_threshold,FALSE);
 	    }
 
 	    nl();
-	    sf(ps,"order%d= ",num_orders+1); pr();
+	    sprintf(ps, "order%d= ", num_orders + 1); pr();
 	    for (i=0; i<order->num_loci; i++) {
-		sf(ps,"%s ",rag(loc2str(order->locus[i]))); pr();
+		sprintf(ps, "%s ", rag(loc2str(order->locus[i]))); pr();
 		if (i==0) order_first[0]=order->locus[i];
 		else order_next[prev]=order->locus[i]; 
 		prev=order->locus[i]; /* lint warning is OK */
 	    }
 	    nl();
-	    sf(ps,"other%d= ",num_orders+1); pr();
+	    sprintf(ps, "other%d= ", num_orders + 1); pr();
 	    for (i=0; i<n_unplaced; i++) {
-		sf(ps,"%s ",rag(loc2str(unplaced[i]->locus))); pr();
+		sprintf(ps, "%s ", rag(loc2str(unplaced[i]->locus))); pr();
 		if (i==0) unorder_first[0]=unplaced[i]->locus;
 		else order_next[prev]=unplaced[i]->locus;
 		prev=unplaced[i]->locus;
@@ -580,8 +580,8 @@ command place_together()
 	    if (print_all_maps) for (i=0; i<n_unplaced; i++)
 	      if (unplaced[i]->best_map->num_loci>0) {
 		  print(SUB_DIVIDER);
-		  sf(ps,"Best placement of %s:",
-		     rag(loc2str(unplaced[i]->locus)));
+		  sprintf(ps, "Best placement of %s:",
+                  rag(loc2str(unplaced[i]->locus)));
 		  print_special_map(unplaced[i]->best_map,ps,
 				    order->num_loci,order->locus);
 	      }
@@ -610,18 +610,18 @@ command draw_chromosome()
 
     run {
 	if (!make_filename(name,FORCE_EXTENSION,PS_EXT))
-	  { sf(ps,"illegal filename '%s'",name); error(ps); }
+	  { sprintf(ps, "illegal filename '%s'", name); error(ps); }
 	fp= open_file(name,WRITE);
-	sf(ps,"Drawing chromosome %s in PostScript file '%s'... \n",
-	   chrom2str(chrom),name); pr();
+	sprintf(ps, "Drawing chromosome %s in PostScript file '%s'... \n",
+            chrom2str(chrom), name); pr();
 	print_ps_chrom(fp,chrom);
 	close_file(fp);
 	print("ok\n");
 
     } except {
-	when CANTOPEN:  sf(ps,"Can't create output file '%s'",name); error(ps);
-	when CANTCLOSE: error("\nCan't close file - disk is full?");
-	default: close_file(fp); relay_messages; break;
+	when CANTOPEN: sprintf(ps, "Can't create output file '%s'", name); error(ps); break;
+	when CANTCLOSE: error("\nCan't close file - disk is full?"); break;
+    default: close_file(fp); relay_messages; break;
     }
 }
 
@@ -639,17 +639,17 @@ command draw_all_chromosomes()
     run {
 	/* print all chroms in same file to same scale */
 	if (!make_filename(name,FORCE_EXTENSION,PS_EXT)) 
-	  { sf(ps,"illegal filename '%s'",name); error(ps); }
+	  { sprintf(ps, "illegal filename '%s'", name); error(ps); }
 	fp=open_file(name,WRITE);
-	sf(ps,"Drawing all chromosomes in PostScript file '%s'... \n",name); 
+	sprintf(ps, "Drawing all chromosomes in PostScript file '%s'... \n", name); 
 	pr();
 	print_all_ps_chroms(fp);
 	close_file(fp);
 	print("ok\n");
 	
     } except {
-	when CANTOPEN:  sf(ps,"Can't create output file '%s'",name); error(ps);
-	when CANTCLOSE: error("\nCan't close file - disk is full?");
+	when CANTOPEN: sprintf(ps, "Can't create output file '%s'", name); error(ps); break;
+    when CANTCLOSE: error("\nCan't close file - disk is full?"); break;
 	default: close_file(fp); relay_messages; break;
     }
 }

@@ -42,13 +42,13 @@ real like_base;
 		to_column(MAX_LOG_LIKE_COLUMN);
 		if (like_base!=0.0)
 		  sprintf(ps,"Like: %s",rsn(6.2,map->log_like-like_base));
-		  else sf(ps,"Like: %s",rsn(8.2,map->log_like));
+		  else sprintf(ps, "Like: %s", rsn(8.2, map->log_like));
 		pr();
 	    }
 	    nl(); space(len(text)+2); 
 	    wrapped=TRUE;
 	}
-	if (!print_names) sf(ps,"%d",map->locus[i] + 1);
+	if (!print_names) sprintf(ps, "%d", map->locus[i] + 1);
 	    else strcpy(ps,raw.locus_name[map->locus[i]]);
 	pr();
 	if (i<map->num_loci-1 && map->rec_frac[i][0]==UNLINKED_CM) 
@@ -71,11 +71,11 @@ void print_err(indiv,locus,map)
 int indiv, locus;
 MAP *map;
 {
-    sf(ps,"[#%d %c-%c-%c %.2lf]",indiv+1,
-       raw.data.f2.allele[map->locus[locus-1]][indiv],
-       raw.data.f2.allele[map->locus[locus]]  [indiv],
-       raw.data.f2.allele[map->locus[locus+1]][indiv],
-       map->error_lod[locus][indiv]); 
+    sprintf(ps, "[#%d %c-%c-%c %.2lf]", indiv + 1,
+            raw.data.f2.allele[map->locus[locus-1]][indiv],
+            raw.data.f2.allele[map->locus[locus]]  [indiv],
+            raw.data.f2.allele[map->locus[locus+1]][indiv],
+            map->error_lod[locus][indiv]); 
     pad_to_len(ps,18); pr();
 }
 
@@ -101,29 +101,29 @@ int *old_locus;  /* can omit if num_args==0 - should do this with VARARGS */
     if (!map->sex_specific) { /**************** CEPH or F2 ****************/
 	length= 0.0;
 	/* don't use ps until the title is printed */
-	sf(my_title,"%-26s  ",(!nullstr(title) ? title:"Map:"));
+	sprintf(my_title, "%-26s  ", (!nullstr(title) ? title : "Map:"));
 	print(my_title);
-	if (map->error_lod!=NULL) { sf(ps,"Apriori"); pr(); }
+	if (map->error_lod!=NULL) { sprintf(ps, "Apriori"); pr(); }
 	nl();
 
-	sf(ps,"  Markers          Distance "); pr(); /* that's 28 chars */
-	if (map->error_lod!=NULL) { sf(ps,"  Prob  Candidate Errors"); pr(); }
+	sprintf(ps, "  Markers          Distance "); pr(); /* that's 28 chars */
+	if (map->error_lod!=NULL) { sprintf(ps, "  Prob  Candidate Errors"); pr(); }
 	nl();
 
 	for (i=0; i<map->num_loci-1; ++i) {
 	    p1=p2=' ';
 	    if (num_old>0) for (p1='(', p2=')', j=0; j<num_old; j++) 
 	      if (old_locus[j]==map->locus[i]) { p1=p2=' '; break; }
-	    sf(num,"%c%d",p1,map->locus[i]+1);
-	    sf(ps,"%5s%c %-9s  ",num,p2,locname(map->locus[i],use_haplotypes));
+	    sprintf(num, "%c%d", p1, map->locus[i] + 1);
+	    sprintf(ps, "%5s%c %-9s  ", num, p2, locname(map->locus[i], use_haplotypes));
 	    pr();
 
-	    sf(ps," %s %2s",rf2str(map->rec_frac[i][0]),
-	       (units==CENTIMORGANS ? "cM":"rf")); pr();
+	    sprintf(ps, " %s %2s", rf2str(map->rec_frac[i][0]),
+                (units==CENTIMORGANS ? "cM":"rf")); pr();
 	    length+= cm_dist(map->rec_frac[i][0]);
 	    
 	    if (map->error_lod!=NULL && i>0) { /* must be F2 data */
-		sf(ps,"   %s%%  ",rsd(3.1,map->error_rate[i]*100.0)); pr();
+		sprintf(ps, "   %s%%  ", rsd(3.1, map->error_rate[i] * 100.0)); pr();
 
 		if (!print_all_errors) { /* print the two worst and a count */
 		    best= next= 0.0; bestj= nextj=0; n=0;
@@ -137,7 +137,7 @@ int *old_locus;  /* can omit if num_args==0 - should do this with VARARGS */
 		    if (n==0) print("-");
 		    if (n>=1) print_err(bestj,i,map);
 		    if (n>=2) print_err(nextj,i,map);
-		    if (n>=3) { sf(ps,"%d more",n-2); pr(); }
+		    if (n>=3) { sprintf(ps, "%d more", n - 2); pr(); }
 
 		} else { /* print all errors, unsorted */
 		    for (n=0, j=0; j<raw.data.f2.num_indivs; j++)
@@ -157,14 +157,14 @@ int *old_locus;  /* can omit if num_args==0 - should do this with VARARGS */
 	p1=p2=' ';
 	if (num_old>0) for (p1='(', p2=')', j=0; j<num_old; j++) 
 	  if (old_locus[j]==map->locus[i]) { p1=p2=' '; break; }
-	sf(num,"%c%d",p1,map->locus[i]+1);
-	sf(ps,"%5s%c %-9s  ",num,p2,locname(map->locus[i],use_haplotypes));
+	sprintf(num, "%c%d", p1, map->locus[i] + 1);
+	sprintf(ps, "%5s%c %-9s  ", num, p2, locname(map->locus[i], use_haplotypes));
 	pr();
 
 	print("----------\n");
-	sf(ps,
-	   "                   %5s cM   %d markers   log-likelihood= %.2lf\n",
-	   rsd(5.1,length),map->num_loci,map->log_like); pr();
+	sprintf(ps,
+            "                   %5s cM   %d markers   log-likelihood= %.2lf\n",
+            rsd(5.1,length), map->num_loci, map->log_like); pr();
 
     } else { /**************** Sex-Specific CEPH ****************/
 	/* needs fixing! */
@@ -176,10 +176,10 @@ int *old_locus;  /* can omit if num_args==0 - should do this with VARARGS */
 	    
 	    male_cm= cm_dist(map->rec_frac[i][MALE]);
 	    female_cm= cm_dist(map->rec_frac[i][FEMALE]);
-	    sf(ps,"  %s  %s cM   %s %%     %s cM   %s %%\n",
-	      locs2str(map->locus[i],map->locus[i+1]),
-	      rsd(5.1,male_cm),rsd(5.1,map->rec_frac[i][MALE]*100.0),
-	      rsd(5.1,female_cm),rsd(5.1,map->rec_frac[i][FEMALE]*100.0));
+	    sprintf(ps, "  %s  %s cM   %s %%     %s cM   %s %%\n",
+                locs2str(map->locus[i],map->locus[i+1]),
+                rsd(5.1,male_cm), rsd(5.1,map->rec_frac[i][MALE]*100.0),
+                rsd(5.1,female_cm), rsd(5.1,map->rec_frac[i][FEMALE]*100.0));
             print(ps);
 	    male_length += male_cm;
 	    female_length += female_cm;
@@ -187,9 +187,9 @@ int *old_locus;  /* can omit if num_args==0 - should do this with VARARGS */
 	print(empty_locs_str);
 	print("    --------               --------\n"); 
 	print(empty_locs_str);
-	sf(ps,"    %s cM               %s cM\n\n",
-	   rsd(5.1,male_length),rsd(5.1,female_length)); pr();
-	sf(ps,"  log-likelihood = %lf\n", map->log_like);
+	sprintf(ps, "    %s cM               %s cM\n\n",
+            rsd(5.1,male_length), rsd(5.1,female_length)); pr();
+	sprintf(ps, "  log-likelihood = %lf\n", map->log_like);
 	print(ps);
     }
 }
@@ -209,7 +209,7 @@ char *text;
 	else if (!print_names) print("   "); else print(" ");
     }
     if (map->unlink==NONE_UNLINKED && print_names) print("  ");
-    sf(ps," log-likelihood: %s\n",rsn(7.2,map->log_like)); pr();
+    sprintf(ps, " log-likelihood: %s\n", rsn(7.2, map->log_like)); pr();
 
     if (!map->sex_specific) {
 	print("map:"); to_column(col+3); 
@@ -259,7 +259,7 @@ int how_many;
       best= rmaxf(list->map_list[i]->log_like,best);
 
     for (i=0; i<num_to_print; i++) {
-	if (i!=0 || num_to_print!=1) sf(str,"%d:",i+1);
+	if (i!=0 || num_to_print!=1) sprintf(str, "%d:", i + 1);
 	    else strcpy(str,"1:");
 	pad_to_len(str,4);
         print_tiny_map(list->map_list[i],str,best);
@@ -292,8 +292,8 @@ int locus;
 	if (use_haplotypes && haplotyped(locus) && 
 	    !haplotype_subordinate(locus)) haplo='+';
 	if (print_names)
-	    { sf(str,"%s%c",raw.locus_name[locus],haplo); pad_to_len(str,9); }
-	  else { sf(str,"%d%c",locus+1,haplo); pad_to_len(str,5); }
+	    { sprintf(str, "%s%c", raw.locus_name[locus], haplo); pad_to_len(str, 9); }
+	  else { sprintf(str, "%d%c", locus + 1, haplo); pad_to_len(str, 5); }
     }
     return(str);
 }
@@ -307,7 +307,7 @@ bool haplo_mark;
     bool haplo=FALSE;
     
     if (haplo_mark && haplotyped(locus)) haplo=TRUE;
-    sf(str,"%s%s",raw.locus_name[locus],(haplo ? "+":""));
+    sprintf(str, "%s%s", raw.locus_name[locus], (haplo ? "+" : ""));
     return(str);
 }
 
@@ -364,7 +364,7 @@ int num_tried, first;
     if (num_tried>8) send(CRASH);
     if (print_names) width_ea=11; else width_ea=8;
 
-    sf(line2,empty_loc_str); sf(line1,empty_loc_str); 
+    sprintf(line2, empty_loc_str); sprintf(line1, empty_loc_str); 
     strcat(line2,"   "); strcat(line1,"   ");
     
     for (i=0; i<num_tried; i++) {
@@ -372,10 +372,10 @@ int num_tried, first;
         else { map=get_best_map(list[i]); best[i]=map->log_like; }
 	if (new_marker[i+first][1]!=NO_LOCUS) { /* then paired */
 	    last=1; while(new_marker[i+first][last+1]!=NO_LOCUS) last++;
-	    sf(ps,"[%s",rag(loc2str(new_marker[i+first][0])));
+	    sprintf(ps, "[%s", rag(loc2str(new_marker[i + first][0])));
 	    strcat(line1,pad_to_len(ps,width_ea));
-	    sf(ps,"%s%s]",(last>1 ? "-":" "),
-	       rag(loc2str(new_marker[i+first][last])));
+	    sprintf(ps, "%s%s]", (last > 1 ? "-" : " "),
+                rag(loc2str(new_marker[i+first][last])));
 	    strcat(line2,pad_to_len(ps,width_ea));
 	    any_paired=TRUE;
 	} else {
@@ -395,8 +395,8 @@ int num_tried, first;
 	for (j=0; j<num_tried; j++)  /* j=try_marker */
 	  if (!excluded[j][i]) {
 	      for (k=q=0; k<i; k++) if (!excluded[j][k]) q++;
-	      if (list[j]->map_list[q]->log_like==ZERO_LIKE) sf(ps,"  zero");
-	      else sf(ps,"%s",rsd(6.2,list[j]->map_list[q]->log_like-best[j]));
+	      if (list[j]->map_list[q]->log_like==ZERO_LIKE) sprintf(ps, "  zero");
+	      else sprintf(ps, "%s", rsd(6.2, list[j]->map_list[q]->log_like - best[j]));
 	      print(pad_to_len(ps,width_ea-(j==num_tried-1 ? 1:0)));
 	  } else {
 	      strcpy(ps,"   x");
@@ -418,7 +418,7 @@ int num_tried, first;
     i=base_map->num_loci+1;
     for (j=0; j<num_tried; j++) {
 	for (k=q=0; k<i; k++) if (!excluded[j][k]) q++;
-        sf(ps,"%s",rsd(6.2,list[j]->map_list[q]->log_like-best[j]));
+        sprintf(ps, "%s", rsd(6.2, list[j]->map_list[q]->log_like - best[j]));
 	print(pad_to_len(ps,width_ea-(j==num_tried-1 ? 1:0)));
     } 
     print("|\n");
@@ -429,7 +429,7 @@ int num_tried, first;
 
     print("BEST"); space(len(empty_loc_str)+1-4); 
     for (j=0; j<num_tried; j++) {
-        sf(ps,"%s",rsd(7.2,best[j]));
+        sprintf(ps, "%s", rsd(7.2, best[j]));
 	print(pad_to_len(ps,width_ea));
     }
     nl();
@@ -444,12 +444,12 @@ int *locus, num_loci;
     for (i=0; i<num_loci; i++) {
 	if (haplotyped(locus[i])) {
 	    if (!any) { print("Haplotype groups:\n"); any=TRUE; }
-	    sf(ps," %4d  %-9s = [",haplo_first[locus[i]]+1,
-	       locname(haplo_first[locus[i]],TRUE)); pr();
+	    sprintf(ps, " %4d  %-9s = [", haplo_first[locus[i]] + 1,
+                locname(haplo_first[locus[i]],TRUE)); pr();
 	    for (j=haplo_first[locus[i]]; j!=NO_CHROM; j=haplo_next[j]) {
 		if (j!=haplo_first[locus[i]]) print(" ");
-		if (print_names) sf(ps,"%s",locname(j,FALSE));
-		else sf(ps,"%d",j+1);
+		if (print_names) sprintf(ps, "%s", locname(j, FALSE));
+		else sprintf(ps, "%d", j + 1);
 		pr();
 	    }
 	    print("]\n");
@@ -483,11 +483,11 @@ bool haplo;
     type=raw.data.f2.cross_type;
 
     if (type!=F2_INTERCROSS && type!=F3_SELF) 
-      { sf(retoin,"%4d",n_infs); return(retoin); }
+      { sprintf(retoin, "%4d", n_infs); return(retoin); }
     
-    if (n_dom_obs==0)      sf(retoin,"%4d codom",n_infs);
-    else if (n_het_obs==0) sf(retoin,"%4d +/-  ",n_infs);
-    else                   sf(retoin,"%4d mixed",n_infs);
+    if (n_dom_obs==0)      sprintf(retoin, "%4d codom", n_infs);
+    else if (n_het_obs==0) sprintf(retoin, "%4d +/-  ", n_infs);
+    else                   sprintf(retoin, "%4d mixed", n_infs);
     return(retoin);
 }
     
@@ -527,11 +527,11 @@ bool haplo;
 	else if (g==num_groups-1) strcpy(lg,"unlinked");
 	else sprintf(lg,"group%d",g+1);
 	
-	sf(ps,LIST_LINE,locus[i]+1,locname(locus[i],haplo),
-	   genetics2str(locus[i],haplo),
-	   error_rate[locus[i]]*100.0,chrom,lg,hap); pr(); 
-	if (class[locus[i]]==NO_CLASS) sf(ps," -       "); 
-	else sf(ps,"%-8s ",class_name[class[locus[i]]]);
+	sprintf(ps, LIST_LINE, locus[i] + 1, locname(locus[i], haplo),
+            genetics2str(locus[i],haplo),
+	   error_rate[locus[i]]*100.0, chrom, lg, hap); pr(); 
+	if (class[locus[i]]==NO_CLASS) sprintf(ps, " -       "); 
+	else sprintf(ps, "%-8s ", class_name[class[locus[i]]]);
 	pr();
 	if (modified[locus[i]]) print("new"); else print(" - ");
 	nl();
@@ -639,8 +639,8 @@ bool haplo;
 	    if (second_best_placement(locus[i],&val)>=0) like=rsd(6.2,val);
 	}
 	
-	sf(ps,MAPPING_LINE,locus[i]+1, locname(locus[i],haplo), 
-	   assign, chrom, lod, mapping, like, left, errs, star);
+	sprintf(ps, MAPPING_LINE, locus[i] + 1, locname(locus[i], haplo),
+            assign, chrom, lod, mapping, like, left, errs, star);
 	pr();
     }
 }
@@ -661,12 +661,12 @@ bool **excluded;       /* first index is that into locus[] */
 	num_across=(num_left > 17) ? 18 : num_left;
 	print("    ");
 	for (j=num_done; j<num_across+num_done-1; j++) {
-	    sf(ps," %3d",order[j]+1);  pr();
+	    sprintf(ps," %3d",order[j]+1);  pr();
 	}
 	nl();
 	
 	for (i=0; i<num_loci; i++) if (locus[i]!=NO_LOCUS) {
-	    sf(ps,"%3d ",locus[i]+1);  pr();
+	    sprintf(ps,"%3d ",locus[i]+1);  pr();
 	    for (j=num_done; j<num_across+num_done; j++) {
 		switch(excluded[i][j]) {
 		    case TRUE:  print("."); break; /* kind of rely on TRUE=1 */
@@ -715,8 +715,8 @@ int interval, best, num_intervals, rightmost;
 void pr_locus(n)
 int n;
 { 
-    if (n<99) sf(ps," %2d  ",n+1);
-    else sf(ps,"%4d ",n+1);
+    if (n<99) sprintf(ps, " %2d  ", n + 1);
+    else sprintf(ps, "%4d ", n + 1);
     pr();
 }
 
@@ -724,7 +724,7 @@ int n;
 void pr_dist(rf)
 real rf;
 { 
-    sf(ps,"%3.0lf-:",cm_dist(rf));
+    sprintf(ps, "%3.0lf-:", cm_dist(rf));
     if (ps[0]==' ') ps[0]='-';
     if (ps[1]==' ') ps[1]='-';
     pr();
@@ -771,7 +771,7 @@ int num_loci;		/* placed loci, maybe NO_LOCUS */
 	    /**** draw placements ****/
 	    for (num_places=0, i=0; i<map->num_loci+1; i++) 
 	      if (!placed[j]->excluded[i]) num_places++;
-	    sf(ps,"%4d %-2d",placed[j]->locus+1,num_places); pr();
+	    sprintf(ps, "%4d %-2d", placed[j]->locus + 1, num_places); pr();
 	    if (num_done>0) print(":.");
 	    
 	    for (i=num_done; i<=rightmost; i++) /* draw interval dist */
@@ -798,9 +798,9 @@ bool is_old, isa_haplo;
 
     if (is_old) p1=p2=' '; else { p1='('; p2=')'; }
 
-    sf(name,"%s%c",locname(locus,isa_haplo),p2);
-    if (error_rate==NOER) sf(ps,"%c%-11s      ",p1,name);
-      else sf(ps,"%c%-11s %s%% ",p1,name,rsd(3.1,error_rate*100.0));
+    sprintf(name, "%s%c", locname(locus, isa_haplo), p2);
+    if (error_rate==NOER) sprintf(ps, "%c%-11s      ", p1, name);
+      else sprintf(ps, "%c%-11s %s%% ", p1, name, rsd(3.1, error_rate * 100.0));
     pr();
 
     for (indiv=firsti; indiv<=lasti; indiv++) {
@@ -848,22 +848,22 @@ int *old_locus;  /* can omit if num_old==0 - should do this with VARARGS */
 	          /* 123456789012 */
 	    print("                  ");
 	    for (indiv=firsti; indiv<=lasti; indiv++)
-	      { sf(ps,"%d",((indiv+1)/1000)%10); pr(); }
+	      { sprintf(ps, "%d", ((indiv + 1) / 1000) % 10); pr(); }
 	    nl();
 	}
 	if (n_indivs>=100) {
 	          /* 123456789012 */
 	    print("                  ");
 	    for (indiv=firsti; indiv<=lasti; indiv++)
-	      { sf(ps,"%d",((indiv+1)/100)%10); pr(); }
+	      { sprintf(ps, "%d", ((indiv + 1) / 100) % 10); pr(); }
 	    nl();
 	}
 	print("                  ");
 	for (indiv=firsti; indiv<=lasti; indiv++)
-	  { sf(ps,"%d",((indiv+1)/10)%10); pr(); }
+	  { sprintf(ps, "%d", ((indiv + 1) / 10) % 10); pr(); }
 	print("\n                  ");
 	for (indiv=firsti; indiv<=lasti; indiv++)
-	  { sf(ps,"%d",(indiv+1)%10); pr(); }
+	  { sprintf(ps, "%d", (indiv + 1) % 10); pr(); }
 	print("\n                  ");
 	for (indiv=firsti; indiv<=lasti; indiv++) print("-");
 	nl();
@@ -876,8 +876,8 @@ int *old_locus;  /* can omit if num_old==0 - should do this with VARARGS */
 	    f2_genotype(map->locus[i],use_haplos,obs);
 
 	    if (i>0) {
-		sf(ps,"         %s %s ",rf2str(map->rec_frac[i-1][0]),
-		   (units==CENTIMORGANS ? "cM":"rf")); pr();
+		sprintf(ps, "         %s %s ", rf2str(map->rec_frac[i - 1][0]),
+                (units==CENTIMORGANS ? "cM":"rf")); pr();
 		for (indiv=firsti; indiv<=lasti; indiv++) {
 		    if (map->error_lod!=NULL &&
 			(map->error_lod[i][indiv]>=error_lod_thresh ||
@@ -918,7 +918,7 @@ int *old_locus;  /* can omit if num_old==0 - should do this with VARARGS */
 	print("\n           #Recs: ");
 	for (indiv=firsti; indiv<=lasti; indiv++) 
 	  if (num_recs[indiv]>9) print("*");
-	  else { sf(ps,"%d",num_recs[indiv]%10); pr(); }
+	  else { sprintf(ps, "%d", num_recs[indiv] % 10); pr(); }
 	nl(); nl();
 
 	firsti=lasti+1;
@@ -948,7 +948,7 @@ int *old_locus;  /* can omit if num_old==0 - should do this with VARARGS */
 		    if (!got_one) 
 		      { print("Obligate Doubles:\n"); got_one=TRUE; }
 		    num= i-last_homo[indiv]+1;
- 		    sf(ps,OBLIG_REC,cm,num,indiv+1,
+ 		    sprintf(ps,OBLIG_REC,cm,num,indiv+1,
 		       rag(loc2str(map->locus[last_homo[indiv]])),ch,
 		       rag(loc2str(map->locus[last_het[indiv]])),
 		       rag(loc2str(map->locus[i])),ch);

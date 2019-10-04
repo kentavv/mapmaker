@@ -81,9 +81,9 @@ command draw_map()
 
     run {
 	if (!make_filename(name,FORCE_EXTENSION,PS_EXT))
-	  { sf(ps,"illegal filename '%s'",name); error(ps); }
+	  { sprintf(ps, "illegal filename '%s'", name); error(ps); }
 	fp= open_file(name,WRITE);
-	sf(ps,"Drawing map in PostScript file '%s'... \n",name); pr();
+	sprintf(ps, "Drawing map in PostScript file '%s'... \n", name); pr();
         map=allocate_map(num_loci);
 	get_one_order(seq,map);
 	init_rec_fracs(map); 	
@@ -94,7 +94,7 @@ command draw_map()
 
     } on_exit { 
         if (msg==CANTOPEN) { 
-	    sf(ps,"Can't create output file '%s'",name); error(ps);
+	    sprintf(ps, "Can't create output file '%s'", name); error(ps);
 	} else if (msg==CANTCLOSE) {
 	    error("\nCan't close file - disk is full?"); 
 	} else {
@@ -175,27 +175,27 @@ command compare()
 	   tried++;
        }
        if (tried==0)
-	 { sf(ps,COMPARE_NONE,three_pt_threshold); pr(); abort_command(); }
+	 { sprintf(ps, COMPARE_NONE, three_pt_threshold); pr(); abort_command(); }
 
        map=get_best_map(list); best=map->log_like; i=1;
        if (threshold!=VERY_UNLIKELY) {/* can you say "abstraction violation" */
 	   while (i<list->num_maps && 
 		  list->map_list[i]->log_like>(best+threshold)) i++;
 	   num_to_print=i;
-	   sf(ps,BEST_THRESH,maybe_s(num_to_print),-threshold); pr();
+	   sprintf(ps, BEST_THRESH, maybe_s(num_to_print), -threshold); pr();
        } else {
 	   num_to_print=min(maps_to_save,tried);
-	   if (num_to_print>1) sf(ps,BEST_ORDERS,num_to_print);
+	   if (num_to_print>1) sprintf(ps, BEST_ORDERS, num_to_print);
 	     else strcpy(ps,BEST_ORDER);
 	   pr();
        }
-       if (excluded>0) { sf(ps,N_EXCLUDED,excluded); pr(); }
+       if (excluded>0) { sprintf(ps, N_EXCLUDED, excluded); pr(); }
        print(":\n");
        print_list(list,num_to_print);
 
        print("order1 is set");
        for (i=0; i<map->num_loci; i++) {
-	   /* sf(ps,"%s ",rag(loc2str(map->locus[i]))); pr(); */
+	   /* sprintf(ps,"%s ",rag(loc2str(map->locus[i]))); pr(); */
 	   if (i==0) order_first[0]=map->locus[i]; 
 	     else order_next[prev]= map->locus[i]; /* lint warning is OK */
 	   prev=map->locus[i];
@@ -240,8 +240,8 @@ command ripple()
 	  setup_3pt_data(map0->locus,map0->num_loci,-three_pt_threshold);
 
 	print(MAP_DIVIDER);
-	sf(ps,"Window-size: %d  Log-likelihood Threshold: %.2lf\n",
-	   window,thresh); pr();
+	sprintf(ps, "Window-size: %d  Log-likelihood Threshold: %.2lf\n",
+            window, thresh); pr();
 	print("Comparing maps with ALL flanking markers...\n\n");
 	for (i=0; i<=n_loci-window; i++) {
 	    clean_list(list); map=get_map_to_bash(list);
@@ -277,8 +277,8 @@ command ripple()
 		   list->map_list[k]->log_like>(best-thresh)) k++;
 
 	    if (!same || k>1) {
-		sf(ps,"\nbest order%s:",maybe_s(k)); pr();
-		if (excluded>0) { sf(ps," (%d excluded)",excluded); pr(); }
+		sprintf(ps, "\nbest order%s:", maybe_s(k)); pr();
+		if (excluded>0) { sprintf(ps, " (%d excluded)", excluded); pr(); }
 		nl(); print_list(list,k); nl();	
 	    } else print("ok\n");
 	}
@@ -329,7 +329,7 @@ command try()
 		if (!stoken(&markers,sREQUIRED,token))
 		  error("expected a locus after '['");
 		if (!is_a_locus(token,&n,&err) || !nullstr(err))
-		  { sf(ps,"'%s' is not a locus",token); error(ps); }
+		  { sprintf(ps, "'%s' is not a locus", token); error(ps); }
 		if (num_total==raw.num_markers) error(TRY_TOO_MANY);
 		next=0;
 		new_marker[num_tries][next++]=n;
@@ -337,7 +337,7 @@ command try()
 		while (stoken(&markers,sREQUIRED,token)) {
 		    if (streq(token,"]")) break;
 		    if (!is_a_locus(token,&m,&err) || !nullstr(err))
-		      { sf(ps,"'%s' is not a locus",token); error(ps); }
+		      { sprintf(ps, "'%s' is not a locus", token); error(ps); }
 		    if (num_total==raw.num_markers) error(TRY_TOO_MANY);
 		    marker_to_try[num_total++]=m;
 		    if (next==MAX_PAIRED) error(TRY_TOO_MANY);
@@ -351,7 +351,7 @@ command try()
 		if (!stoken(&markers,sREQUIRED,token))
 		  error("expected a locus after '<'");
 		if (!is_a_locus(token,&n,&err) || !nullstr(err))
-		  { sf(ps,"'%s' is not a locus",token); error(ps); }
+		  { sprintf(ps, "'%s' is not a locus", token); error(ps); }
 		if (num_total==raw.num_markers) error(TRY_TOO_MANY);
 		next=0;	
 		new_marker[num_tries][next++]=n;
@@ -359,7 +359,7 @@ command try()
 		while (stoken(&markers,sREQUIRED,token)) {
 		    if (streq(token,">")) break;
 		    if (!is_a_locus(token,&m,&err) || !nullstr(err))
-		      { sf(ps,"'%s' is not a locus",token); error(ps); }
+		      { sprintf(ps, "'%s' is not a locus", token); error(ps); }
 		    if (num_total==raw.num_markers) error(TRY_TOO_MANY);
 		    marker_to_try[num_total++]=m;
 		    if (next==MAX_PAIRED) error(TRY_TOO_MANY);
@@ -376,7 +376,7 @@ command try()
 		
 	    } else {
 		if (!is_a_locus(token,&n,&err) || !nullstr(err))
-		  { sf(ps,"'%s' is not a locus",token); error(ps); }
+		  { sprintf(ps, "'%s' is not a locus", token); error(ps); }
 		if (num_total==raw.num_markers) error(TRY_TOO_MANY);
 		new_marker[num_tries][0]=n;
 		marker_to_try[num_total++]=n;
@@ -421,7 +421,7 @@ command try()
 		     j++, i++) {
 		    if (!try_marker(new_marker[j],map,list[i],
 				    exclude_interval[i],zero_placement[i],&n))
-		      { sf(ps,TRY_NONE,rag(loc2str(marker_to_try[j]))); pr(); }
+		      { sprintf(ps, TRY_NONE, rag(loc2str(marker_to_try[j]))); pr(); }
 		}
 		nl();
 		print_trys(list,map,exclude_interval,new_marker,i,
@@ -554,18 +554,18 @@ command order_maker()
     nomore_args(0);
     seed_like= -seed_like;
 
-    sf(ps,LINK_CRITERIA,lodbound,rag(rf2str(thetabound))); pr();
-    sf(ps,START_CRITERIA,seed_size,-seed_like,seed_tries); pr();
+    sprintf(ps, LINK_CRITERIA, lodbound, rag(rf2str(thetabound))); pr();
+    sprintf(ps, START_CRITERIA, seed_size, -seed_like, seed_tries); pr();
 
-    sf(ps,INF_CRITERIA,npt_min_indivs,
-       (npt_codominant ? " (codominant only)":""),
-       rag(rf2str(npt_min_theta))); pr();
+    sprintf(ps, INF_CRITERIA, npt_min_indivs,
+            (npt_codominant ? " (codominant only)":""),
+            rag(rf2str(npt_min_theta))); pr();
     if (npt_threshold==npt_first_threshold) /* globals */
-      sf(ps,"Placement Threshold %.2lf, Npt-Window %d\n",npt_threshold,
-	 npt_window);
+      sprintf(ps, "Placement Threshold %.2lf, Npt-Window %d\n", npt_threshold,
+              npt_window);
     else 
-      sf(ps,"Placement Threshold-1 %.2lf, Threshold-2 %.2lf, Npt-Window %d\n",
-	 npt_first_threshold,npt_threshold,npt_window);
+      sprintf(ps, "Placement Threshold-1 %.2lf, Threshold-2 %.2lf, Npt-Window %d\n",
+              npt_first_threshold, npt_threshold, npt_window);
     pr();
     
     run {
@@ -593,12 +593,12 @@ command order_maker()
 		print(MAP_DIVIDER);
 		inv_isort(linkage_group,group_size);
 		groups_done++;
-		sf(ps,"Linkage group %d, %d Markers:\n",groups_done,
-		   group_size); pr();
+		sprintf(ps, "Linkage group %d, %d Markers:\n", groups_done,
+                group_size); pr();
 		for (i=0; i<group_size; i++) {
 		    num=linkage_group[i];
-		    sf(ps,"%4d %s%s",num+1,raw.locus_name[num],
-		       (use_haplotypes && haplotyped(num) ? "+":""));
+		    sprintf(ps, "%4d %s%s", num + 1, raw.locus_name[num],
+                    (use_haplotypes && haplotyped(num) ? "+":""));
 		    pad_to_len(ps,14); pr();
 		    if (i==group_size-1 || i%5==4) nl(); else print("  ");
 		}
@@ -606,9 +606,9 @@ command order_maker()
 
 		if (group_size<3) { 
 		    print("Group is too small to map.\n"); 
-		    sf(ps,"order%d= ",groups_done); pr();
+		    sprintf(ps, "order%d= ", groups_done); pr();
 		    for (i=0; i<group_size; i++) {
-			sf(ps,"%s ",rag(loc2str(linkage_group[i]))); pr();
+			sprintf(ps, "%s ", rag(loc2str(linkage_group[i]))); pr();
 			if (i==0) order_first[groups_done-1]=linkage_group[i];
 			else order_next[prev]=linkage_group[i]; 
 			prev=linkage_group[i]; /* lint warning is OK */
@@ -632,8 +632,8 @@ command order_maker()
 		else {
 		    print("Most informative subset: ");
 		    for (i=0; i<subset_size; i++) {
-			sf(ps,"%d%s",(subset[i])+1,
-			   (use_haplotypes && haplotyped(subset[i]) ? "+":""));
+			sprintf(ps, "%d%s", (subset[i]) + 1,
+                    (use_haplotypes && haplotyped(subset[i]) ? "+":""));
 			pr(); if (i<subset_size-1) print(" ");
 		    }
 		    nl();
@@ -664,30 +664,30 @@ command order_maker()
 
 		if (num_unplaced>0) {
 		    /* extend_order is chatty, prints map and places at end */
-		    nl(); sf(ps,ORDER_AT,npt_first_threshold); pr();
+		    nl(); sprintf(ps, ORDER_AT, npt_first_threshold); pr();
 		    extend_order(order,unplaced,&num_unplaced,
 				 -npt_first_threshold,TRUE);
 
 		    if (npt_first_threshold!=npt_threshold && num_unplaced>0) {
 			print(SUB_DIVIDER);
- 			sf(ps,ORDER_AT,npt_threshold); pr();
+ 			sprintf(ps, ORDER_AT, npt_threshold); pr();
 			extend_order(order,unplaced,&num_unplaced,
 				     -npt_threshold,FALSE);
 		    }
 		}
 
 		nl();
-		sf(ps,"order%d= ",groups_done); pr();
+		sprintf(ps, "order%d= ", groups_done); pr();
 		for (i=0; i<order->num_loci; i++) {
-		    sf(ps,"%s ",rag(loc2str(order->locus[i]))); pr();
+		    sprintf(ps, "%s ", rag(loc2str(order->locus[i]))); pr();
 		    if (i==0) order_first[groups_done-1]=order->locus[i];
 		      else order_next[prev]=order->locus[i]; 
 		    prev=order->locus[i]; /* lint warning is OK */
 		}
 		nl();
-		sf(ps,"other%d= ",groups_done); pr();
+		sprintf(ps, "other%d= ", groups_done); pr();
 		for (i=0; i<num_unplaced; i++) {
-		    sf(ps,"%s ",rag(loc2str(unplaced[i]->locus))); pr();
+		    sprintf(ps, "%s ", rag(loc2str(unplaced[i]->locus))); pr();
 		    if (i==0) unorder_first[groups_done-1]=unplaced[i]->locus;
 		      else order_next[prev]=unplaced[i]->locus;
 		    prev=unplaced[i]->locus; /* lint warning is OK */
@@ -698,8 +698,8 @@ command order_maker()
 		if (print_all_maps) for (i=0; i<num_unplaced; i++)
 		  if (unplaced[i]->best_map->num_loci>0) {
 		      print(SUB_DIVIDER);
-		      sf(ps,"Best placement of %s:",
-			 rag(loc2str(unplaced[i]->locus)));
+		      sprintf(ps, "Best placement of %s:",
+                      rag(loc2str(unplaced[i]->locus)));
 		      print_special_map(unplaced[i]->best_map,ps,
 					order->num_loci,order->locus);
 		  }
@@ -741,11 +741,11 @@ command greedy()
     crunch_locus_list(locus,&num_loci,CRUNCH_WARNINGS,ANY_CHROMS,IN_ARGS);
     
     if (npt_threshold==npt_first_threshold) /* globals */
-      sf(ps,"Placement Threshold %.2lf, Npt-Window %d\n",
-	 npt_threshold,npt_window);
+      sprintf(ps, "Placement Threshold %.2lf, Npt-Window %d\n",
+              npt_threshold, npt_window);
     else 
-      sf(ps,"Placement Threshold-1 %.2lf, Threshold-2 %.2lf, Npt-Window %d\n",
-	 npt_first_threshold,npt_threshold,npt_window);
+      sprintf(ps, "Placement Threshold-1 %.2lf, Threshold-2 %.2lf, Npt-Window %d\n",
+              npt_first_threshold, npt_threshold, npt_window);
     pr();
     
     if (num_order>=MAX_MAP_LOCI) error("starting order is too big");
@@ -774,27 +774,27 @@ command greedy()
 	for (i=0; i<num_loci; i++) unplaced[i]->locus=locus[i];
 	num_unplaced=num_loci;
 
-	sf(ps,"%d Markers to order:\n",total); pr();
+	sprintf(ps, "%d Markers to order:\n", total); pr();
 	for (i=0; i<total; i++) {
 	    num=all_loci[i];
-	    sf(ps,"%4d %s%s",num+1,raw.locus_name[num],
-	       (use_haplotypes && haplotyped(num) ? "+":""));
+	    sprintf(ps, "%4d %s%s", num + 1, raw.locus_name[num],
+                (use_haplotypes && haplotyped(num) ? "+":""));
 	    pad_to_len(ps,14); pr();
 	    if (i==total-1 || i%5==4) nl(); else print("  ");
 	}
 
-	nl(); sf(ps,ORDER_AT,npt_first_threshold); pr();
+	nl(); sprintf(ps, ORDER_AT, npt_first_threshold); pr();
 	extend_order(order,unplaced,&num_unplaced,-npt_first_threshold,TRUE);
 
 	if (npt_first_threshold!=npt_threshold && num_unplaced>0) {
 	    print(SUB_DIVIDER);
-	    sf(ps,ORDER_AT,npt_threshold); pr();
+	    sprintf(ps, ORDER_AT, npt_threshold); pr();
 	    extend_order(order,unplaced,&num_unplaced,-npt_threshold,FALSE);
 	}
 	nl();
 	print("order1= ");
 	for (i=0; i<order->num_loci; i++) {
-	    sf(ps,"%s ",rag(loc2str(order->locus[i]))); pr();
+	    sprintf(ps, "%s ", rag(loc2str(order->locus[i]))); pr();
 	    if (i==0) order_first[0]=order->locus[i];
 	      else order_next[prev]=order->locus[i]; 
 	    prev=order->locus[i]; /* lint warning is OK */
@@ -802,7 +802,7 @@ command greedy()
 	nl();
 	print("other1= ");
 	for (i=0; i<num_unplaced; i++) {
-	    sf(ps,"%s ",rag(loc2str(unplaced[i]->locus))); pr();
+	    sprintf(ps, "%s ", rag(loc2str(unplaced[i]->locus))); pr();
 	    if (i==0) unorder_first[0]=unplaced[i]->locus;
 	      else order_next[prev]=unplaced[i]->locus;
 	    prev=unplaced[i]->locus;
@@ -813,7 +813,7 @@ command greedy()
 	if (print_all_maps) for (i=0; i<num_unplaced; i++)
 	  if (unplaced[i]->best_map->num_loci>0) {
 	      print(SUB_DIVIDER);
-	      sf(ps,"Best placement of %s:",rag(loc2str(unplaced[i]->locus)));
+	      sprintf(ps, "Best placement of %s:", rag(loc2str(unplaced[i]->locus)));
 	      print_special_map(unplaced[i]->best_map,ps,
 				order->num_loci,order->locus);
 	  }

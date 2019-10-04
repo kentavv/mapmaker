@@ -205,8 +205,8 @@ char *temp;
 	    itoken(&ln, iREQUIRED, &num_loc);
 	    raw.chrom_n_loci[i] = num_loc;
 	    if (!print_mapm_loci) {
-		if (DUMMY_LOCI) sf(ps,"%d-%d",t_loc+2,t_loc+num_loc+1);
-		else sf(ps, "%d-%d",t_loc+1,t_loc+num_loc);
+		if (DUMMY_LOCI) sprintf(ps, "%d-%d", t_loc + 2, t_loc + num_loc + 1);
+		else sprintf(ps, "%d-%d", t_loc + 1, t_loc + num_loc);
 		strcat(all_str,ps);
 		strcat(all_str," ");
 	    }
@@ -232,7 +232,7 @@ char *temp;
 		    }
 		    order[j] = loc;
 		    if (print_mapm_loci) {
-			sf(ps,"%d ",loc+1);
+			sprintf(ps, "%d ", loc + 1);
 			strcat(current_chrom, ps);
 		    } 
 		    j++;
@@ -259,7 +259,7 @@ char *temp;
 		    }
 		    order[j] = loc;
 		    if (print_mapm_loci) {
-		       sf(ps,"%d ",loc);
+		       sprintf(ps, "%d ", loc);
 		       strcat(current_chrom, ps);
 		       } 
 		    j++;
@@ -415,35 +415,35 @@ FILE *fp;
     int i,j,loci_tot,map_tot;
     
     run {
-        sf(ps,"%d mapmaker trait data\n",raw.filenumber);
+        sprintf(ps, "%d mapmaker trait data\n", raw.filenumber);
 	fpr(fp);
-	sf(ps,"%d\n", raw.n_traits);
+	sprintf(ps, "%d\n", raw.n_traits);
 	fpr(fp);
 
 	for(i=0;i<raw.n_traits;i++) {
-	    sf(ps,"*%-9s",raw.trait_name[i]);fpr(fp);
+	    sprintf(ps, "*%-9s", raw.trait_name[i]);fpr(fp);
 
 	    if (!nullstr(raw.trait_eqn[i])) 
-	      { sf(ps," =%s\n",raw.trait_eqn[i]);fpr(fp); }
+	      { sprintf(ps, " =%s\n", raw.trait_eqn[i]);fpr(fp); }
 
 	    for(j=0;j<raw.n_indivs;j++) {
 		if(j % 5 == 0 && j != 0)
 		  fprint(fp,"\n          ");
-		sf(ps,"%12.3lf ", raw.trait[j][i]);fpr(fp);
+		sprintf(ps, "%12.3lf ", raw.trait[j][i]);fpr(fp);
 	    }
 	    fnl(fp);
 	}
 
 	fprint(fp,"#QTL only variables:\n");
-	sf(ps,"*Print mapm loci: %d\n", print_mapm_loci);fpr(fp);
-	sf(ps,"*Like tolerance: %lf\n",like_tolerance);fpr(fp);
-	sf(ps,"*Brute force: %d\n",brute_force);fpr(fp);
-	sf(ps,"*Max intervals: %d\n",max_intervals);fpr(fp);
-	sf(ps,"*Max continuous vars: %d\n",max_continuous_vars);fpr(fp);
-	sf(ps,"*Max wiggles: %d\n",max_wiggles);fpr(fp);
-	sf(ps,"*Max compares: %d\n",max_compares);fpr(fp);
-	sf(ps,"*Default units: %d\n",units); fpr(fp);
-	sf(ps,"*Chromosomes: %d\n", raw.n_chroms);
+	sprintf(ps, "*Print mapm loci: %d\n", print_mapm_loci);fpr(fp);
+	sprintf(ps, "*Like tolerance: %lf\n", like_tolerance);fpr(fp);
+	sprintf(ps, "*Brute force: %d\n", brute_force);fpr(fp);
+	sprintf(ps, "*Max intervals: %d\n", max_intervals);fpr(fp);
+	sprintf(ps, "*Max continuous vars: %d\n", max_continuous_vars);fpr(fp);
+	sprintf(ps, "*Max wiggles: %d\n", max_wiggles);fpr(fp);
+	sprintf(ps, "*Max compares: %d\n", max_compares);fpr(fp);
+	sprintf(ps, "*Default units: %d\n", units); fpr(fp);
+	sprintf(ps, "*Chromosomes: %d\n", raw.n_chroms);
 	fpr(fp);
 	loci_tot = 0;map_tot = 0;
 	for (i=0;i<raw.n_chroms;i++) {
@@ -451,18 +451,18 @@ FILE *fp;
 		loci_tot++;
 		map_tot++;
 	    }
-	    sf(ps, "chr%d %d\n", i+1, raw.chrom_n_loci[i]); fpr(fp);
+	    sprintf(ps, "chr%d %d\n", i + 1, raw.chrom_n_loci[i]); fpr(fp);
 	    for(j=0;j<raw.chrom_n_loci[i];j++) {
 		if(j % 18 == 0 && j != 0)
 		  fprint(fp,"\n");
-		sf(ps, "%d ",order[loci_tot]);fpr(fp);
+		sprintf(ps, "%d ", order[loci_tot]);fpr(fp);
 		loci_tot++;
 	    }
 	    fnl(fp);
 	    for(j=0;j<raw.chrom_n_loci[i]-1;j++) {
 		if(j % 12 == 0 && j != 0)
 		  fprint(fp,"\n");
-		sf(ps, "%.4lf ",map_space[map_tot]);fpr(fp);
+		sprintf(ps, "%.4lf ", map_space[map_tot]);fpr(fp);
 		map_tot++;
 	    }
 	    fnl(fp);
@@ -470,21 +470,21 @@ FILE *fp;
 	    fprint(fp,"0\n");
 	    fprint(fp,"0\n");
 	}
-	sf(ps,"*Number of contexts: %d\n",num_contexts);
+	sprintf(ps, "*Number of contexts: %d\n", num_contexts);
 	fpr(fp);
-	sf(ps,"*Active context: %d\n",active_context);
+	sprintf(ps, "*Active context: %d\n", active_context);
 	fpr(fp);
 	fnl(fp);
 	for(i = 0; i < num_contexts; i++) {
-	    sf(ps,"*Context %d\n",i+1);  fpr(fp);
-	    sf(ps,"*Trait: %d\n",trait); fpr(fp);
-	    sf(ps,"*Named Sequences: %d\n",
-	       count_table_entries(context[i]->named_sequences));
+	    sprintf(ps, "*Context %d\n", i + 1);  fpr(fp);
+	    sprintf(ps, "*Trait: %d\n", trait); fpr(fp);
+	    sprintf(ps, "*Named Sequences: %d\n",
+                count_table_entries(context[i]->named_sequences));
 	    fpr(fp);
 	    
 	    save_table(context[i]->named_sequences,fp,INDEX_BY_NAME);
-	    sf(ps,"*Sequence history: %d\n",
-	       count_table_entries(context[i]->sequence_history));
+	    sprintf(ps, "*Sequence history: %d\n",
+                count_table_entries(context[i]->sequence_history));
 	    fpr(fp);
 	    save_table(context[i]->sequence_history,fp,INDEX_BY_NUMBER);
 	}
@@ -505,7 +505,7 @@ int indivs, t_loc, n_loci, *order;
     matrix(temp_set,n_loci,80,char);
     for(i=0;i<t_loc;i++) {
 	if (order[i] == -1) {
-	    sf(ps,"ter%d",num_of_terms);
+	    sprintf(ps, "ter%d", num_of_terms);
 	    num_of_terms++;
 	    strcpy(raw.locus_name[i],ps);
 	    for(k=0;k<indivs;k++)
@@ -555,7 +555,7 @@ real read_map_distance(FILE *fp/*int num*/)
         if (map_dist > 0.5) {
 	    map_dist= unhaldane_cm(map_dist);
       }
-/*	sf(ps,"%-3d %lf\n",num,raw.map_dist[num]); print(ps);   */
+/*	sprintf(ps,"%-3d %lf\n",num,raw.map_dist[num]); print(ps);   */
 	rrange(&map_dist,MIN_REC_FRAC,MAX_REC_FRAC);	
     return(map_dist);
     }
@@ -722,7 +722,7 @@ int num;
 	  bar= (int) (raw.map_dist[num] + 0.499);
 	  raw.map_dist[num]= unkosambi((real) bar);
 	}
-/*	sf(ps,"%-3d %lf\n",num,raw.map_dist[num]); print(ps);   */
+/*	sprintf(ps,"%-3d %lf\n",num,raw.map_dist[num]); print(ps);   */
 	rrange(&raw.map_dist[num],MIN_REC_FRAC,MAX_REC_FRAC);	
 }
 
@@ -783,20 +783,20 @@ void crunch_data() /* side effects the raw data struct */
 
 	  for_locus_genotypes(raw.data_type,geno) {
 	      if (fabs(l[geno]-r[geno])>=0.01) 
-		{ sf(ps,PROBS_NOT_EQ,i+1,k+2,geno); pr(); }
+		{ sprintf(ps, PROBS_NOT_EQ, i + 1, k + 2, geno); pr(); }
 	      left+=l[geno]; right+=r[geno];
 	  }
-	  if (fabs(left-1.0)>=0.01) { sf(ps,PROBS_NOT_1,i+1,k+1); pr(); }
-	  if (fabs(right-1.0)>=0.01) { sf(ps,PROBS_NOT_1,i+1,k+2); pr(); }
+	  if (fabs(left-1.0)>=0.01) { sprintf(ps, PROBS_NOT_1, i + 1, k + 1); pr(); }
+	  if (fabs(right-1.0)>=0.01) { sprintf(ps, PROBS_NOT_1, i + 1, k + 2); pr(); }
 
-	 /* sf(ps,"Indiv = %d Locus = %d left=%lf right=%lf\n",i+1,k+2,
+	 /* sprintf(ps,"Indiv = %d Locus = %d left=%lf right=%lf\n",i+1,k+2,
 	     left,right); pr();*/
 	  /* for_interval_genotypes(raw.data_type,foo) 
-	    { sf(ps,"geno %d: left_int_prob=%lf right_int_prob=%lf\n",
+	    { sprintf(ps,"geno %d: left_int_prob=%lf right_int_prob=%lf\n",
 		 foo,indiv_probs[0][foo],indiv_probs[1][foo]); pr(); }
 		 */
 	  /* for_locus_genotypes(raw.data_type,foo) 
-	    { sf(ps,"geno %d lcp=%lf rcp=%lf\n",foo,
+	    { sprintf(ps,"geno %d lcp=%lf rcp=%lf\n",foo,
 		 raw.left_cond_prob[i][k+1][foo],
 		 raw.right_cond_prob[i][k+1][foo]); pr(); }
 		 */

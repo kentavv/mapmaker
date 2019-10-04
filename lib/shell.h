@@ -45,7 +45,7 @@ void maybe_set_long();  /* args: long *var, low_bound, high_bound; */
 void maybe_set_int();   /* args: long *var, low_bound, high_bound; */
 
 /* These all call abort_command(), which sends SOFTABORT */
-void error();        /* args: char *msg; prints "error: <msg>\n" and aborts */
+void error(const char *errmsg);        /* args: char *msg; prints "error: <msg>\n" and aborts */
 void usage_error();  /* args: int args; 1..n; -1 => unknown; use arg_num! */
 void more_args();    /* args: int args; is #of args present */
 void nomore_args();  /* args: int args; is #of args present */

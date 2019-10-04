@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.11)
 project(mapmaker C)
 
-set(CMAKE_C_STANDARD 90)
+set(CMAKE_C_STANDARD 11)
 
 if (NOT CMAKE_BUILD_TYPE)
     message(STATUS "No build type selected, default to Release")

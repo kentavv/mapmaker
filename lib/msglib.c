@@ -39,27 +39,27 @@ char *BADEQN_errmsg;
 int   BADEQN_errpos;
 
 
-void strmsg_default(str) char *str;
+void strmsg_default(char *str)
  { str[0]='\0'; }
 void strmsg_MATHERROR(str) char *str;
- { sf(str,"error type=%-60s\narg1=%lf\narg2=%lf",
-      MATHERROR_type,MATHERROR_arg1,MATHERROR_arg2); }
+ { sprintf(str, "error type=%-60s\narg1=%lf\narg2=%lf",
+           MATHERROR_type, MATHERROR_arg1, MATHERROR_arg2); }
 void strmsg_NOMEMORY(str) char *str;
- { sf(str,"cell size=%d\nnum cells=%d",NOMEMORY_cell_size,NOMEMORY_num_cells);}
+ { sprintf(str, "cell size=%d\nnum cells=%d", NOMEMORY_cell_size, NOMEMORY_num_cells);}
 void strmsg_CANTOPEN(str) char *str;
- { sf(str,"filename=%-60s\nmode=%c",CANTOPEN_path,CANTOPEN_modechar); }
+ { sprintf(str, "filename=%-60s\nmode=%c", CANTOPEN_path, CANTOPEN_modechar); }
 void strmsg_IOERROR(str) char *str;
- { sf(str,"filename=%-60s\nline=%-60s\nerror=%-60s",
-     IOERROR_filename,truncstr(IOERROR_linecopy,60),IOERROR_errmsg); }
+ { sprintf(str, "filename=%-60s\nline=%-60s\nerror=%-60s",
+           IOERROR_filename, truncstr(IOERROR_linecopy,60), IOERROR_errmsg); }
 void strmsg_SYSERROR(str) char *str;
- { sf(str,"errmsg=%-60s",SYSERROR_errmsg); }
+ { sprintf(str, "errmsg=%-60s", SYSERROR_errmsg); }
 
 jmp_buf stk[TRAP_DEPTH];     /* stack of message traps */
 int lvl;       	             /* trap stack pointer */
 int last; 		     /* last msg num assigned */
 char **mname;                /* [msg] => name string */
-void (*(maction[MSGS]))();   /* [msg] => function which does whatever */
-void (*(mstrmsg[MSGS]))();   /* [msg] => function which sets its (char*) arg */
+void (*(maction[MSGS]))(int);   /* [msg] => function which does whatever */
+void (*(mstrmsg[MSGS]))(char *);   /* [msg] => function which sets its (char*) arg */
 void sighandle(); 
 
 void msg_init()
@@ -124,9 +124,8 @@ int lvl_plus_plus()
   
 
 
-void sender(num)
-int num;
-{ 
+void sender(int num)
+{
   if (num==0) return;
 
   if (num>0 && num<MSGS) msg=num; else msg=CRASH;
@@ -142,7 +141,7 @@ void punter(/*int num*/)
 void trapper(num) int num;
 { void do_trap(); msg=num; do_trap(); } /* do_trap() is in syscode.c */
 
-void default_action(num) int num;
+void default_action(int num)
 { msg=num; untrapped_msg(); abnormal_exit(); }
 
 

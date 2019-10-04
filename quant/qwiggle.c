@@ -668,7 +668,7 @@ int *wiggle, *order;
     }
 	
     if (*wiggle<first_wiggle || *wiggle>=num_wiggles) {
-	sf(ps,WIGGLE_NUM,*wiggle+1,first_wiggle+1,num_wiggles); 
+	sprintf(ps, WIGGLE_NUM, *wiggle + 1, first_wiggle + 1, num_wiggles); 
 	error(ps); 
     }
     if (wiggles[*wiggle]==NULL) send(CRASH);
@@ -676,9 +676,9 @@ int *wiggle, *order;
     if (order_set) 
 	if (*order>=wiggles[*wiggle]->num_orders) {
 	    if (wiggles[*wiggle]->num_orders==1) 
-	      sf(ps,ORDER_ONE,*wiggle+1,*order+1,*wiggle+1,*wiggle+1);
-	    else sf(ps,ORDER_NUM,*wiggle+1,*order+1,*wiggle+1,*wiggle+1,
-	       wiggles[*wiggle]->num_orders); 
+	      sprintf(ps, ORDER_ONE, *wiggle + 1, *order + 1, *wiggle + 1, *wiggle + 1);
+	    else sprintf(ps, ORDER_NUM, *wiggle + 1, *order + 1, *wiggle + 1, *wiggle + 1,
+                     wiggles[*wiggle]->num_orders); 
 	    error(ps); 
 	}
 }
@@ -715,7 +715,7 @@ int *compare,*contig;
     }
 
     if(*compare == first_compare || *compare >= num_compares) {
-	sf(ps,COMPARE_NUM,*compare+1,first_compare+1,num_compares);
+	sprintf(ps, COMPARE_NUM, *compare + 1, first_compare + 1, num_compares);
 	error(ps);
     }
     if(compares[*compare]==NULL) send(CRASH);
@@ -723,10 +723,10 @@ int *compare,*contig;
     if(contig_set)
       if(*contig>=compares[*compare]->num_contigs) {
 	  if(compares[*compare]->num_contigs==1)
-	    sf(ps,ORDER_ONE_COMP,*compare+1,*contig+1,*compare+1,*compare+1);
+	    sprintf(ps, ORDER_ONE_COMP, *compare + 1, *contig + 1, *compare + 1, *compare + 1);
 	  else
-	    sf(ps,ORDER_NUM_COMP,*compare+1,*contig+1,*compare+1,*compare+1,
-	       compares[*compare]->num_contigs);
+	    sprintf(ps, ORDER_NUM_COMP, *compare + 1, *contig + 1, *compare + 1, *compare + 1,
+                compares[*compare]->num_contigs);
 	  error(ps);
       }
 }
@@ -770,9 +770,9 @@ WIGGLE_INTERVAL *interval;
 
     /* save other data points (if any) */
     for(i = 0; i < interval->num_points; i++) {
-	sf(ps,"%.4lf %.3lf %.3lf %.3lf %.4lf\n",interval->point[i]->qtl_pos,
-	   interval->point[i]->qtl_weight, interval->point[i]->qtl_dominance,
-	   interval->point[i]->lod_score, interval->point[i]->var_explained);
+	sprintf(ps, "%.4lf %.3lf %.3lf %.3lf %.4lf\n", interval->point[i]->qtl_pos,
+            interval->point[i]->qtl_weight, interval->point[i]->qtl_dominance,
+            interval->point[i]->lod_score, interval->point[i]->var_explained);
 	fpr(fp);
     }
 }
@@ -784,32 +784,32 @@ QTL_MAP *map;
 {
     int i;
 
-    sf(ps,"%d %d %d %d %d\n",map->trait,map->num_intervals,map->max_intervals,
-       map->num_continuous_vars,map->max_continuous_vars);
+    sprintf(ps, "%d %d %d %d %d\n", map->trait, map->num_intervals, map->max_intervals,
+            map->num_continuous_vars, map->max_continuous_vars);
     fpr(fp);
 
     for(i = 0; i < map->num_intervals; i++) {
-	sf(ps,"%d %d %.3lf %.3lf %.3lf %.3lf %.3lf\n", map->left[i],
-	   map->right[i], map->interval_len[i], map->qtl_pos[i],
-	   map->qtl_weight[i], map->qtl_dominance[i], map->fix_pos[i]);
+	sprintf(ps, "%d %d %.3lf %.3lf %.3lf %.3lf %.3lf\n", map->left[i],
+            map->right[i], map->interval_len[i], map->qtl_pos[i],
+            map->qtl_weight[i], map->qtl_dominance[i], map->fix_pos[i]);
 	fpr(fp);
-	sf(ps,"%.4lf %d %.4lf %.4lf %.4lf\n", map->constraint[i].backx_weight,
-	   map->constraint[i].interx_type, map->constraint[i].a,
-	   map->constraint[i].b, map->constraint[i].c);
+	sprintf(ps, "%.4lf %d %.4lf %.4lf %.4lf\n", map->constraint[i].backx_weight,
+            map->constraint[i].interx_type, map->constraint[i].a,
+            map->constraint[i].b, map->constraint[i].c);
 	fpr(fp);
     }
 
     for(i = 0; i < map->num_continuous_vars; i++) {
-	sf(ps,"%d %lf %lf\n",map->cont_var[i],map->cont_var_weight[i],
-	   map->fix_cont_var_weight[i]);
+	sprintf(ps, "%d %lf %lf\n", map->cont_var[i], map->cont_var_weight[i],
+            map->fix_cont_var_weight[i]);
 	fpr(fp);
     }
 
 
-    sf(ps,"%.4lf %.4lf %.4lf %.4lf %.4lf %.4lf %.4lf %.4lf %.4lf %.4lf\n",
-       map->mu, map->sigma_sq, map->var_explained, map->chi_sq,
-       map->null_mu, map->null_sigma_sq, map->null_log_like,
-       map->log_like, map->no_data_like, map->abs_log_like);
+    sprintf(ps, "%.4lf %.4lf %.4lf %.4lf %.4lf %.4lf %.4lf %.4lf %.4lf %.4lf\n",
+            map->mu, map->sigma_sq, map->var_explained, map->chi_sq,
+            map->null_mu, map->null_sigma_sq, map->null_log_like,
+            map->log_like, map->no_data_like, map->abs_log_like);
     fpr(fp);
 }
 

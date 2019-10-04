@@ -62,9 +62,9 @@ char *BADTRAIT_errmsg;
 void ps_MATINV();
 void ps_BADDATA();
 
-void ps_MATINV()  { sf(ps,"diff= %lf",MATINV_diff); }
-void ps_BADDATA() { sf(ps,"line=\"%s\"\nerror=%s",
-		       truncstr(BADDATA_ln,60),truncstr(BADDATA_error,70)); }
+void ps_MATINV()  { sprintf(ps, "diff= %lf", MATINV_diff); }
+void ps_BADDATA() { sprintf(ps, "line=\"%s\"\nerror=%s",
+                            truncstr(BADDATA_ln,60), truncstr(BADDATA_error,70)); }
 
 void top_init()
 { 
@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
                 if ((append_it && !photo_to_file(file_arg[PHOTO_FILE_ARG], APPEND)) ||
                     (!append_it && !photo_to_file(file_arg[PHOTO_FILE_ARG], WRITE)))
                     send(CANTOPEN);
-                sf(ps, "photo is on: file is '%s'\n", photo_file);
+                sprintf(ps, "photo is on: file is '%s'\n", photo_file);
                 pr();
             } on_error { print("error opening photo file\n"); }
     }
@@ -165,20 +165,20 @@ int lines, cols;
 {
     char tr[16], file[PATH_LENGTH+1];
 
-    if (!data_loaded()) { sf(line[0],LINE0,"","<none>"); } else { 
+    if (!data_loaded()) { sprintf(line[0], LINE0, "", "<none>"); } else { 
 	nstrcpy(file,raw.file,cols-55); 
-	sf(line[0],LINE0,"obsolete",file); 
+	sprintf(line[0], LINE0, "obsolete", file); 
     }
 
     if (!data_loaded() || trait<0 || trait>raw.n_traits) strcpy(tr,"");
-      else sf(tr,"%d (%s)",trait+1,raw.trait_name[trait]);
+      else sprintf(tr, "%d (%s)", trait + 1, raw.trait_name[trait]);
     if (!log_open) strcpy(file,"<off>"); 
       else nstrcpy(file,photo_file,cols-55);
-    sf(line[1],LINE1,tr,(units ? "haldane cM":"rec-fracs"),file);
+    sprintf(line[1], LINE1, tr, (units ? "haldane cM" : "rec-fracs"), file);
 
     if (!data_loaded() || ints==NULL) strcpy(line[2],"sequence: ");
-      else sf(line[2],LINE2,context[active_context]->seq_history_num,
-	      ints_string);
+      else sprintf(line[2], LINE2, context[active_context]->seq_history_num,
+                   ints_string);
 }    
 
 
@@ -295,10 +295,7 @@ GENETICS *genetics;
 }
 
 
-int add_continuous_var(map,trait,fix_weight)
-QTL_MAP *map;
-int trait;
-real fix_weight; 
+int add_continuous_var(QTL_MAP *map, int trait, real fix_weight)
 {
     int i;
     if (map==NULL || map->num_continuous_vars>=map->max_continuous_vars) 
@@ -512,17 +509,17 @@ bool need_trait, will_call_qctm;
 
     if (data_type!=NO_DATA && !data_loaded()) error(eNEED_DATA);
     if (data_type==INTERCROSS && raw.data_type!=INTERCROSS) 
-      { sf(ps,eNEED_INTERX,com); error(ps); }
+      { sprintf(ps, eNEED_INTERX, com); error(ps); }
     if (data_type==BACKCROSS && raw.data_type!=BACKCROSS) 
-      { sf(ps,eNEED_BACKX,com); error(ps); }
+      { sprintf(ps, eNEED_BACKX, com); error(ps); }
 
     if (need_seq!=NOSEQ) {
 	if (ints==NULL) error(eNEED_INTS);
 	if (!reset_state(ints,(need_seq==WIGSEQ),&num_intervals,
 		&num_continuous_vars,&num_orders,&num_ints_to_wiggle)) 
-	  { sf(ps,eWRONG_SEQ,com); error(ps); }
+	  { sprintf(ps, eWRONG_SEQ, com); error(ps); }
 	if (need_seq==ONEINT && num_intervals!=1) 
-	  { sf(ps,eONE_INT,com); error(ps); } /* FROB */
+	  { sprintf(ps, eONE_INT, com); error(ps); } /* FROB */
 	if (free_genetics==NULL) array(free_genetics,abs(max_intervals),bool);
 	get_seq_free_genetics(ints,free_genetics);
     }
@@ -577,7 +574,7 @@ char *errmsg;  /* side-effect with a message if FALSE */
     } else if (itoken(&str,iREQUIRED,num)) {
 	/* --*num; valid_locus_num now handles this */
 	if (!valid_locus_num(num)) {
-	    sf(errmsg,eNLOCI,raw.n_loci); 
+	    sprintf(errmsg, eNLOCI, raw.n_loci); 
 	    return(FALSE);
 	} else if (!nullstr(str)) { /* check for only one token */
 	    strcpy(errmsg,eNLOCUSTOKS); return(FALSE);
@@ -591,19 +588,19 @@ char *errmsg;  /* side-effect with a message if FALSE */
 	if (!valid_name(name)) 
 	  { strcpy(errmsg,"illegal name"); return(FALSE); }
 	if (len(name)>NAME_LEN) 
-	  { sf(errmsg,eNAMETOOLONG,name,NAME_LEN); return(FALSE); }
+	  { sprintf(errmsg, eNAMETOOLONG, name, NAME_LEN); return(FALSE); }
 	if (!nullstr(str)) { /* check for only one token */
 	    strcpy(errmsg,eNLOCUSTOKS); return(FALSE);
 	} else {
 	    if (!isa_locus_name(name,num,&exact)) {
-		if (*num==0) sf(errmsg,eLOCUSNAME,name);
-		else /* *num>=2 */ sf(errmsg,eNAMEAMBIG,name); 
+		if (*num==0) sprintf(errmsg, eLOCUSNAME, name);
+		else /* *num>=2 */ sprintf(errmsg, eNAMEAMBIG, name); 
 		return(FALSE);
 	    }
 	    if (!exact && (isa_trait_name(name,&match,&exact) ||
 			   isa_seq_name(name,&match,&exact))) {
-		    if (match>0) sf(errmsg,eNAMEAMBIG,name);
-		    else sf(errmsg,eLOCUSNAME,name);
+		    if (match>0) sprintf(errmsg, eNAMEAMBIG, name);
+		    else sprintf(errmsg, eLOCUSNAME, name);
 		    return(FALSE);
 	    }
 	    return(TRUE); 
@@ -634,10 +631,10 @@ char *errmsg; /* side-effect with a message if FALSE */
         --*num; 
 	if (!valid_trait_num(*num)) {
 	    if (raw.n_traits==1) strcpy(errmsg,eONETRAIT); 
-	    else sf(errmsg,eNTRAITS,raw.n_traits); 
+	    else sprintf(errmsg, eNTRAITS, raw.n_traits); 
 	    return(FALSE);
 	} else if (nullstr(raw.trait_name[*num])) { 
-	    sf(errmsg,eTRAITKILLED,*num+1); return(FALSE);
+	    sprintf(errmsg, eTRAITKILLED, *num + 1); return(FALSE);
 	} else if (!nullstr(str)) { /* check for only one token */
 	    strcpy(errmsg,eNTRAITTOKS); return(FALSE);
 	} else  return(TRUE);
@@ -650,19 +647,19 @@ char *errmsg; /* side-effect with a message if FALSE */
 	if (!valid_name(name)) 
 	  { strcpy(errmsg,"illegal name"); return(FALSE); }	  
 	if (len(name)>NAME_LEN) 
-	  { sf(errmsg,eNAMETOOLONG,name,NAME_LEN); return(FALSE); }
+	  { sprintf(errmsg, eNAMETOOLONG, name, NAME_LEN); return(FALSE); }
 	if (!nullstr(str)) { /* check for only one token */
 	    strcpy(errmsg,eNTRAITTOKS); return(FALSE);
 	} else {
 	    if (!isa_trait_name(name,num,&exact)) {
-		if (*num==0) sf(errmsg,eTRAITNAME,name);
-		else /* *num>=2 */ sf(errmsg,eNAMEAMBIG,name); 
+		if (*num==0) sprintf(errmsg, eTRAITNAME, name);
+		else /* *num>=2 */ sprintf(errmsg, eNAMEAMBIG, name); 
 		return(FALSE);
 	    }
 	    if (!exact && (isa_locus_name(str,&match,&exact) ||
 			   isa_seq_name(str,&match,&exact))) {
-		    if (match>0) sf(errmsg,eNAMEAMBIG,name);
-		    else sf(errmsg,eTRAITNAME,name);
+		    if (match>0) sprintf(errmsg, eNAMEAMBIG, name);
+		    else sprintf(errmsg, eTRAITNAME, name);
 		    return(FALSE);
 	    }
 	    return(TRUE); 
@@ -700,13 +697,13 @@ char *errmsg;  /* side-effect with a message if FALSE */
 	if (!valid_name(name)) 
 	  { strcpy(errmsg,"illegal name"); return(FALSE); }
 	if (len(name)>NAME_LEN) 
-	  { sf(errmsg,eNAMETOOLONG,name,NAME_LEN); return(FALSE); }
+	  { sprintf(errmsg, eNAMETOOLONG, name, NAME_LEN); return(FALSE); }
 	else if (!nullstr(str)) /* check for only one token */
 	  { strcpy(errmsg,eNTRAITTOKS); return(FALSE); }
 	else if ((isa_trait_name(name,&match,&exact) && exact) ||
 		 (isa_locus_name(name,&match,&exact) && exact) || 
 		 (isa_seq_name(name,&match,&exact) && exact)) 
-	  { sf(errmsg,eNAMEINUSE,name); return(FALSE); }
+	  { sprintf(errmsg, eNAMEINUSE, name); return(FALSE); }
 	return(TRUE);
 	
     } else { /* !itoken && !stoken */
@@ -811,7 +808,7 @@ char *str;
 	send(BADTRAIT);
     } 
     trait= trait_num;
-    sf(trait_string,"%d (%s)",trait+1,raw.trait_name[trait]);
+    sprintf(trait_string, "%d (%s)", trait + 1, raw.trait_name[trait]);
 }
 
 

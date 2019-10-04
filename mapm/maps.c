@@ -664,43 +664,43 @@ MAP *map;
 {
     int i, j;
 
-    sf(ps,"*%s %d %d %d %d %.3lf\n",
-       map->map_name,map->num_loci,map->unlink,map->sex_specific,
-       map->allow_errors,map->log_like); fpr(fp);
+    sprintf(ps, "*%s %d %d %d %d %.3lf\n",
+            map->map_name, map->num_loci, map->unlink, map->sex_specific,
+            map->allow_errors, map->log_like); fpr(fp);
 
     for (i=0; i<map->num_loci; i++) {
         if (i%10==0 && i!=0 && i!=map->num_loci-1) fnl(fp);
-	sf(ps,"%d ",map->locus[i]); fpr(fp);
+	sprintf(ps, "%d ", map->locus[i]); fpr(fp);
     }
     fnl(fp);
 
     for (i=0; i<map->num_loci-1; i++) {
         if (i%10==0 && i!=0) fnl(fp);
-	sf(ps,"%6.4lf ",map->rec_frac[i][MALE]); fpr(fp);
+	sprintf(ps, "%6.4lf ", map->rec_frac[i][MALE]); fpr(fp);
     }
     fnl(fp);
 
     if (raw.data_type==CEPH && map->sex_specific) {
         for(i=0; i<map->num_loci-1; i++) {
 	    if (i%10==0 && i!=0) fnl(fp);
-	    sf(ps,"%6.4lf ",map->rec_frac[i][FEMALE]); fpr(fp);
+	    sprintf(ps, "%6.4lf ", map->rec_frac[i][FEMALE]); fpr(fp);
 	}
 	fnl(fp);
     }
 
     for(i=0; i<map->num_loci-1; i++) {
         if (i%20==0 && i!=0 && i!=map->num_loci-1) fnl(fp);
-	sf(ps,"%d ",map->fix_interval[i]); fpr(fp);
+	sprintf(ps, "%d ", map->fix_interval[i]); fpr(fp);
     }
     fnl(fp);
 
     if (raw.data_type==F2 && map->allow_errors) {
         for (i=0; i<map->num_loci; i++) {
-	    sf(ps,"errors %.7lf\n",map->error_rate[i]); fpr(fp);
+	    sprintf(ps, "errors %.7lf\n", map->error_rate[i]); fpr(fp);
 	    if (i==0 || i==map->num_loci-1) continue;  /* not ends */
 	    for (j=0; j<raw.data.f2.num_indivs; j++) {
 	        if (j%10==0 && j!=0) fnl(fp);
-		sf(ps,"%.3lf ",map->error_lod[i][j]);
+		sprintf(ps, "%.3lf ", map->error_lod[i][j]);
 		fpr(fp);
 	    }
 	    fnl(fp);

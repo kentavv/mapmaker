@@ -335,10 +335,10 @@ GENO_PROBS *expected_recs;             /* side-effected */
        and rec_like */
 
 if (debug_qctm) { /* DEBUGGING CODE */
-    sf(ps,"qtl_pos: %lf\n",qtl_pos[0]); pr();
-    sf(ps,"qtl_weight: %lf\n",qtl_weight[0]); pr();
-    sf(ps,"mu: %lf\n",*mu); pr();
-    sf(ps,"sigma_sq: %lf\n",*sigma_sq); pr(); 
+    sprintf(ps, "qtl_pos: %lf\n", qtl_pos[0]); pr();
+    sprintf(ps, "qtl_weight: %lf\n", qtl_weight[0]); pr();
+    sprintf(ps, "mu: %lf\n", *mu); pr();
+    sprintf(ps, "sigma_sq: %lf\n", *sigma_sq); pr(); 
 } 
 
     /*** Init expected_genotype, expected_recs, S_matrix and rec_probs ***/
@@ -357,11 +357,11 @@ if (debug_qctm) { /* DEBUGGING CODE */
     for (i=0; i<n_individuals; i++) {
 
 if (debug_qctm) {
-    sf(ps,"===== indiv %d \n",i); print(ps);
+    sprintf(ps, "===== indiv %d \n", i); print(ps);
     for (j=0; j<n_intervals; j++) {
-	sf(ps,"interval %d probs:\n",j); pr(); z=0;
+	sprintf(ps, "interval %d probs:\n", j); pr(); z=0;
 	for_interval_genotypes(raw.data_type,y) {
-	    sf(ps,"%2d %lf   ",y,data->genotype_prob[i][j][y]); pr(); z++;
+	    sprintf(ps, "%2d %lf   ", y, data->genotype_prob[i][j][y]); pr(); z++;
 	    if (z%4==0 && y!=0) nl();
 	}
 	if (z%4!=0) nl();
@@ -448,14 +448,14 @@ if (debug_qctm) {
 if (debug_qctm) { /* DEBUGGING CODE */
     int g, q;
     print("expected_geno: "); for (n=0; n<n_genotype_vars; n++) 
-      { sf(ps,"%lf  ",expected_genotype[i][n]); print(ps); } nl();
-    sf(ps,"indiv_like:    %lf   indiv_rec_like:\n",indiv_like); print(ps); 
+      { sprintf(ps, "%lf  ", expected_genotype[i][n]); print(ps); } nl();
+    sprintf(ps, "indiv_like:    %lf   indiv_rec_like:\n", indiv_like); print(ps); 
     for (j=0; j<n_intervals; j++) {
 	for_locus_genotypes(raw.data_type,q) {
 	    for_interval_genotypes(raw.data_type,g)
-	      { sf(ps,"[%d][%d]  ",g,q); pr(); } nl();
+	      { sprintf(ps, "[%d][%d]  ", g, q); pr(); } nl();
 	    for_interval_genotypes(raw.data_type,g)
-	      { sf(ps,"%7.5lf ",indiv_rec_like[j][g][q]); pr(); } nl();
+	      { sprintf(ps, "%7.5lf ", indiv_rec_like[j][g][q]); pr(); } nl();
 	}
     }
 }
@@ -565,12 +565,12 @@ if (debug_qctm) { /* DEBUGGING CODE */
     int x;
     x=(raw.data_type==INTERCROSS ? 2:1);
     for (j=0; j<n_intervals; j++) {
-	sf(ps,"poss_geno=%d cont=(%3.1lf %3.1lf) int_like=%lf rec_like:\n",
-	   qtl_genotype[j],contribution[x*j],contribution[x*j+1],int_like[j]);
+	sprintf(ps, "poss_geno=%d cont=(%3.1lf %3.1lf) int_like=%lf rec_like:\n",
+            qtl_genotype[j], contribution[x*j], contribution[x*j+1], int_like[j]);
 	pr(); 
     }
-    sf(ps,"total_int_like=%lf norml=%lf total=%lf\n=====\n",
-       *total_int_like,normal_like,*total_like); pr();
+    sprintf(ps, "total_int_like=%lf norml=%lf total=%lf\n=====\n",
+            *total_int_like, normal_like, *total_like); pr();
 } 
 
 }
@@ -604,11 +604,11 @@ GENO_PROBS *trans_prob;
 
 if (debug_qctm) {
     for (j=0; j<n_intervals; j++) {
-	sf(ps,"rec_probs for interval %d rf=%lf\n",j,interval_rf[j]); pr();
+	sprintf(ps, "rec_probs for interval %d rf=%lf\n", j, interval_rf[j]); pr();
 	for_interval_genotypes(raw.data_type,geno) { 
-	    sf(ps,"%2d ",geno); pr();
+	    sprintf(ps, "%2d ", geno); pr();
 	    for_locus_genotypes(raw.data_type,qtl) 
-	      { sf(ps,"[%d] %lf ",qtl,trans_prob[j][geno][qtl]); pr(); } nl();
+	      { sprintf(ps, "[%d] %lf ", qtl, trans_prob[j][geno][qtl]); pr(); } nl();
 	}
     }
 }
@@ -811,7 +811,7 @@ int i; /* the interval# */
 	    start= 0.0;
 	    inc= (haldane_cm(interval_rf[i])/(DIVS-1)); 
 	    if (print_brute_force) {
-		sf(ps,PrBF1,i,interval_rf[i],qtl_pos[i]); 
+		sprintf(ps,PrBF1,i,interval_rf[i],qtl_pos[i]); 
 		print(ps);
 	    }
 	    max_pos=do_brute_force(start,inc,interval_rf[i],
@@ -830,7 +830,7 @@ int i; /* the interval# */
 	    }
 	    
 	    if (print_iter && !print_brute_force) {
-		sf(ps,PrI,i,interval_rf[i],
+		sprintf(ps,PrI,i,interval_rf[i],
 		   guess_pos(expected_recs,i,interval_rf[i]),
 		   qtl_pos[i]); print(ps);
 	    }
@@ -849,7 +849,7 @@ int interval, do_print, *unimodal;
 	    if (!rrange(&pos, MIN_REC_FRAC, MAX_FRAC_OF_RF*theta)) continue;
 	    pos_likes(pos,expected_recs,interval,theta,&d,&d2,&f);
 	    if (do_print) {
-		sf(ps,PrBF2,pos,f,dip);print(ps); 
+		sprintf(ps,PrBF2,pos,f,dip);print(ps); 
 	    }
 	    if (f>max_like) { 
 		max_like=f; max_pos=pos; max_j=j; 
@@ -857,7 +857,7 @@ int interval, do_print, *unimodal;
 	    } else if (f<max_like) dip= TRUE;
 	}
 	if (do_print) {
-	    sf(ps,PrBF3,max_pos,max_like); 
+	    sprintf(ps,PrBF3,max_pos,max_like); 
 	    print(ps); 
         }
 	if (max_like==VERY_UNLIKELY) { send(CRASH); }

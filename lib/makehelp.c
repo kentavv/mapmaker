@@ -120,7 +120,7 @@ void parse_error(msg,punt)
 char *msg;
 int punt; /* 0= no, 1= this-entry, 2= entirely */
 {
-    sf(ps,"%s  ",msg); pr();
+    sprintf(ps, "%s  ", msg); pr();
     if (punt>0) do nextstr(); while (str[0]!='@');
     if (punt==2) send(QUIT);
 }
@@ -147,7 +147,7 @@ char *name;
 
     close_file(man);
 
-    sf(ps,"%s done\n",name); pr();
+    sprintf(ps, "%s done\n", name); pr();
 }
 
 
@@ -160,7 +160,7 @@ char *argv[];
     lib_init();
 
     if (argc!=5) {
-	sf(ps,"usage: %s source code help doc dir\n",argv[0]);
+	sprintf(ps, "usage: %s source code help doc dir\n", argv[0]);
 	fprint(stderr,ps);
 	abnormal_exit();
     }
@@ -194,7 +194,7 @@ char *argv[];
 	fwrite(code,"/* MAPMAKER help code file - do not edit! */ \n\n");
 	fwrite(code,"#define INC_LIB \n#define INC_SHELL \n");
 	fwrite(code,"#include \"system.h\" \n\n");
-	/* sf(ps,"char help_filename[]= \"%s\";\n\n",final_hlp_name);
+	/* sprintf(ps,"char help_filename[]= \"%s\";\n\n",final_hlp_name);
 	   fwrite(code,ps); */
 	fwrite(code,"void make_help_entries()\n{\n");
 
@@ -219,7 +219,7 @@ char *argv[];
 	    while (nullstr(str)) nextstr();
 
 	    if (str[0]!='@' || sscanf(str+1,"%s",type)!=1) {
-		sf(ps,"error:  bad header:%s\n",str); pr(); 
+		sprintf(ps, "error:  bad header:%s\n", str); pr(); 
 		close_files(argv[0]);
 		return(1);
 	    } else if (streq(type,"end")) { 
@@ -241,7 +241,7 @@ char *argv[];
 
 	    strcpy(name,str+i); despace(name);
 	    nextstr();
-	    sf(ps,"\t%s...  ",name); pr(); flush();
+	    sprintf(ps, "\t%s...  ", name); pr(); flush();
 	    
 	    if      (streq(type,"cmd"))   parse_entry(CMD,name,abbreviation); 
 	    else if (streq(type,"opt"))   parse_entry(OPT,name,abbreviation); 
@@ -348,12 +348,12 @@ char *name, *abbrev;
     entry_type[entries]=kind;
 
     if (kind==TOP) {
-	sf(ps,"%cTOPIC %s\n",'@',key); fwrite(hlp,ps);
+	sprintf(ps, "%cTOPIC %s\n", '@', key); fwrite(hlp, ps);
 	pos+= (long)(len(name)+1+6)+LINE_BREAK_LEN; /* after writing above! */
 	topic++; strcpy(section[topic],description); position[topic]=pos;
     } else {
 	/* write code, doc file entries */
-	sf(ps,"%c%s\n",'@',key); fwrite(hlp,ps);
+	sprintf(ps, "%c%s\n", '@', key); fwrite(hlp, ps);
 	pos+= (long)(len(name)+1)+LINE_BREAK_LEN; /* after writing above! */
 	write_mkhelp(key,abbrev,pos,prefix,num_args,description,arguments,
 		     defaults,topic,kind);
@@ -396,13 +396,13 @@ int topic, kind;
 	case PAR: strcpy(temp,"PAR"); break;
 	case HLP: strcpy(temp,"HLP"); break;
     }
-    sf(ps," mkhelp(\"%s\",\"%s\",%ldl,%s,%d,%s,%d,\n",
-       cmd,abbrev,pos,
-       (prefix==EXACTLY ? "EXACTLY":(prefix==UPTO ? "UPTO":"ATLEAST")),
-       num_args,temp,topic); fpr(code);
-    sf(ps,"        \"%s\",\n", desc); fpr(code);
-    sf(ps,"        \"%s\",\n", args); fpr(code);
-    sf(ps,"        \"%s\");\n",defs); fpr(code);
+    sprintf(ps, " mkhelp(\"%s\",\"%s\",%ldl,%s,%d,%s,%d,\n",
+            cmd, abbrev, pos,
+            (prefix==EXACTLY ? "EXACTLY":(prefix==UPTO ? "UPTO":"ATLEAST")),
+            num_args, temp, topic); fpr(code);
+    sprintf(ps, "        \"%s\",\n", desc); fpr(code);
+    sprintf(ps, "        \"%s\",\n", args); fpr(code);
+    sprintf(ps, "        \"%s\");\n", defs); fpr(code);
     /* need to add sequence, results, etc */
 }
 
@@ -416,7 +416,7 @@ void write_topics_and_end()
     fnl(code);
     for (i=0, s=1; i<entries; i++) if (entry_type[i]==TOP) {
 	strcpy(temp,section[s]); /* uppercase(temp); */
-	sf(ps," mktopic(%d,\"%s\",TOP,%ldl);\n",s,temp,position[s]);
+	sprintf(ps, " mktopic(%d,\"%s\",TOP,%ldl);\n", s, temp, position[s]);
 	fpr(code); s++;
     }
     fprint(code,"}\n");
@@ -438,10 +438,10 @@ void man_new_page()
       { page=start_page; lines=PAGE_LINES; 
 	ps_page=1; ps_page_start(man,ps_page); return; }
 
-    sf(p,PAGE_NUM,abs(page)); if (page>0) page++; else page--;
+    sprintf(p, PAGE_NUM, abs(page)); if (page > 0) page++; else page--;
     ps_page++;
-    sf(temp,"%s",title);
-    sf(foot,FOOTER,temp,chapter_title,p);
+    sprintf(temp, "%s", title);
+    sprintf(foot, FOOTER, temp, chapter_title, p);
     
     fprintf(man,"GS %d %d moveto /Courier FF 9 SF F (%s)S GR\n",
 	    LEFT_MARGIN,FOOT_MARGIN,foot);
@@ -457,7 +457,7 @@ void man_new_page()
       { fprintf(man,"\n"); page=start_page; lines=PAGE_LINES; return; }
 
     while (lines>0) { fprintf(man,"\n"); lines--; }
-    sf(p,PAGE_NUM,abs(page)); if (page>0) page++; else page--;
+    sprintf(p,PAGE_NUM,abs(page)); if (page>0) page++; else page--;
     fprintf(man,"\n\n\n");
     sprintf(temp,"%s",title);
     fprintf(man,FOOTER,temp,chapter_title,p);
@@ -561,10 +561,10 @@ bool has_description;
     else strcpy(temp1,"???");
     strcpy(temp0,name); uppercase(temp0);
     if (nullstr(abbreviation)) temp2[0]='\0';
-    else sf(temp2," (abbreviation '%s')",abbreviation);
+    else sprintf(temp2, " (abbreviation '%s')", abbreviation);
 
 #ifndef _TEXT_MANUAL
-    sf(templine,"%s %s%s",temp0,temp1,temp2);
+    sprintf(templine, "%s %s%s", temp0, temp1, temp2);
     fprintf(man,"GS %d %d moveto /Courier-Bold FF 10 SF F (%s)S GR\n",
 	    LEFT_MARGIN,(lines*FONT_SIZE)+TOP_MARGIN,ps_string(templine));
     fprintf(man,"GS .5 LW %d %d moveto /Courier-Bold FF 10 SF F (%s)US GR\n",
@@ -572,7 +572,7 @@ bool has_description;
     lines-=2;
 
     if (!nullstr(description)) {
-        sf(templine,"Summary:     %s",description);
+        sprintf(templine, "Summary:     %s", description);
         fprintf(man,"GS %d %d moveto /Courier FF 10 SF F (%s)S GR\n",
 		LEFT_MARGIN,(lines*FONT_SIZE)+TOP_MARGIN,
 		ps_string(templine));
@@ -586,14 +586,14 @@ bool has_description;
 	lines--; blank=TRUE; 
     }
     else if (!nullstr(arguments)) {
-        sf(templine,"Argument%s:%s   %s",maybe_s(n),maybe_sp(n),arguments);
+        sprintf(templine, "Argument%s:%s   %s", maybe_s(n), maybe_sp(n), arguments);
 	fprintf(man,"GS %d %d moveto /Courier FF 10 SF F (%s)S GR\n",
 		LEFT_MARGIN,(lines*FONT_SIZE)+TOP_MARGIN,ps_string(templine));
 	lines--;
 	blank=TRUE;
 
 	if (!nullstr(defaults)) {
-	  sf(templine,"Default%s:%s    %s",maybe_s(n),maybe_sp(n),defaults);
+	  sprintf(templine, "Default%s:%s    %s", maybe_s(n), maybe_sp(n), defaults);
 	  fprintf(man,"GS %d %d moveto /Courier FF 10 SF F (%s)S GR\n",
 		  LEFT_MARGIN,(lines*FONT_SIZE)+TOP_MARGIN,
 		  ps_string(templine));
@@ -643,7 +643,7 @@ bool has_description;
     strcpy(upcase,description); uppercase(upcase);
 
 #ifndef _TEXT_MANUAL
-    sf(templine,"(%d) %s",topic,upcase);
+    sprintf(templine, "(%d) %s", topic, upcase);
     fprintf(man,"GS %d %d moveto /Courier-Bold FF 10 SF F (%s)S GR\n",
 	    LEFT_MARGIN,(lines*FONT_SIZE)+TOP_MARGIN,ps_string(templine));
     fprintf(man,"GS .5 LW %d %d moveto /Courier-Bold FF 10 SF F (%s)US GR\n",
@@ -667,7 +667,7 @@ void man_write_contents()
     strcpy(upcase,title); uppercase(upcase);
 
 #ifndef _TEXT_MANUAL
-    sf(templine,"%s COMMAND REFERENCE:",upcase);
+    sprintf(templine, "%s COMMAND REFERENCE:", upcase);
     fprintf(man,"GS %d %d moveto /Courier-Bold FF 10 SF F (%s)S GR\n",
 	    LEFT_MARGIN,(lines*FONT_SIZE)+TOP_MARGIN,ps_string(templine));
 #else
@@ -681,19 +681,19 @@ void man_write_contents()
 	    case TOP:
 	      man_write_line("");
 	      strcpy(upcase,section[s]); uppercase(upcase);
-	      sf(temp," %s\\(%d\\) %s ",(s>=10 ? "":" "),s,upcase); s++; break;
+	      sprintf(temp, " %s\\(%d\\) %s ", (s >= 10 ? "" : " "), s, upcase); s++; break;
 	    case CMD: 
 	      strcpy(upcase,entry[i]); uppercase(upcase);
-	      sf(temp,"      %s Command ",upcase); break;
+	      sprintf(temp, "      %s Command ", upcase); break;
 	    case OPT:
 	      strcpy(upcase,entry[i]); uppercase(upcase);
-	      sf(temp,"      %s Option ",upcase); break;
+	      sprintf(temp, "      %s Option ", upcase); break;
 	    case PAR:
 	      strcpy(upcase,entry[i]); uppercase(upcase);
-	      sf(temp,"      %s Parameter ",upcase); break;
+	      sprintf(temp, "      %s Parameter ", upcase); break;
 	    case HLP:
 	      strcpy(upcase,entry[i]); uppercase(upcase);
-	      sf(temp,"      %s Information ",upcase); break;
+	      sprintf(temp, "      %s Information ", upcase); break;
 	}
 	for (k=len(temp); k<CONTENTS_LEFT; k++) temp[k]='.';
 	sprintf(temp+k," %d",entry_page[i]);
@@ -705,7 +705,7 @@ void man_write_contents()
     strcpy(upcase,title); uppercase(upcase);
 
 #ifndef _TEXT_MANUAL
-    sf(templine,"%s QUICK REFERENCE:",upcase);
+    sprintf(templine, "%s QUICK REFERENCE:", upcase);
     fprintf(man,"GS %d %d moveto /Courier-Bold FF 10 SF F (%s)S GR\n",
 	    LEFT_MARGIN,(lines*FONT_SIZE)+TOP_MARGIN,ps_string(templine));
     lines-=1;
@@ -718,10 +718,10 @@ void man_write_contents()
 	if (entry_type[i]==TOP) {
 	    man_write_line("");
 	    strcpy(upcase,section[s]); uppercase(upcase);
-	    sf(temp,"%s\\(%d\\) %s ",(s>=10 ? "":""),s,upcase); s++;
+	    sprintf(temp, "%s\\(%d\\) %s ", (s >= 10 ? "" : ""), s, upcase); s++;
 	    man_write_line(temp);
 	} else {
-	    sf(temp,"%s%s",entry[i],(entry_type[i]==HLP ? "*":""));
+	    sprintf(temp, "%s%s", entry[i], (entry_type[i] == HLP ? "*" : ""));
 	    for (k=len(temp); k<MAX_COM_NAME_LEN+1; k++) temp[k]='.';
 	    sprintf(temp+k,"%s",cmd_description[i]);
 	    man_write_line(temp);
@@ -729,7 +729,7 @@ void man_write_contents()
     }
     man_write_line("");
     man_write_line("");
-    sf(temp,"* = reference information only - not a command");
+    sprintf(temp, "* = reference information only - not a command");
     man_write_line(temp);
     man_write_line("");
     man_new_page();

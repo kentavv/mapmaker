@@ -46,6 +46,11 @@ bool test_perm();
 void swap_for_dash();
 void unswap_for_dash();
 
+bool try_right(char **str /* may be side-effected */, QTL_SEQ_OPTION *opt /* may be side-effected */);
+bool get_order(QTL_SEQUENCE *p, bool wiggle, QTL_MAP *map);
+int ichoose(int n, int k); /* Best algorithm for small k */
+int add_continuous_var(QTL_MAP *map, int trait, real fix_weight);
+
 char *seqtoken, *seqerr, *seqtoken_ptr;
 
 #define LEFT_ANGLE	"<"
@@ -225,7 +230,7 @@ char **str;
 	NEXT_TOKEN_
 	if (itoken(&seqtoken,iREQUIRED,&repeat)) {
 	    if (!irange(&repeat,1,max_intervals)) 
-	      { sf(seqerr,err_REPEATNUM,max_intervals); FAIL_(seqerr) }
+	      { sprintf(seqerr, err_REPEATNUM, max_intervals); FAIL_(seqerr) }
 	    NEXT_TOKEN_
 	    if (!streq(lowercase(seqtoken),WORD_OF)) FAIL_(err_REPEATDEL)
 	    NEXT_TOKEN_
@@ -365,9 +370,7 @@ int left, right;
 }
 
 
-bool try_right(str,opt)
-char **str;  /* may be side-effected */
-QTL_SEQ_OPTION *opt; /* may be side-effected */
+bool try_right(char **str /* may be side-effected */, QTL_SEQ_OPTION *opt /* may be side-effected */)
 {
     int num;
     char right[TOKLEN+1];
@@ -598,11 +601,8 @@ bool *free; /* [#intervals] should be alloced - elts are side-effected */
 }
 
 
-bool get_order(p,wiggle,map)
-QTL_SEQUENCE *p;
-bool wiggle;
-QTL_MAP *map;
-{ 
+bool get_order(QTL_SEQUENCE *p, bool wiggle, QTL_MAP *map)
+{
     int i, j;
     real fix_pos;
     GENETICS test_genetics;
@@ -922,7 +922,7 @@ char *str;
 	    if (print_mapm_loci) {
 		self_delimiting=ptr_to("[]+:-|");
 		if (itoken(&tok,iREQUIRED,&num)) {
-		    sf(ps,"%d",num);
+		    sprintf(ps, "%d", num);
 		    strcat(new_str,ps);
 		    strcat(new_str," ");
 		} else if (get_named_entry(tok,&dummy,&expansion,
@@ -935,7 +935,7 @@ char *str;
 			      strcat(temp_str,super_exp);
 			    while (itoken(&temp_str,iREQUIRED,&num)) {
 				if (temp_str[0] == '\0') break; /* huh ? */
-				sf(ps,"%d",num);
+				sprintf(ps, "%d", num);
 				strcat(new_str,ps);
 				strcat(new_str," ");
 			    }
@@ -944,7 +944,7 @@ char *str;
 		    else {
 			while(itoken(&expansion,iREQUIRED,&num)) {
 			    if (expansion[0] == '\0') break;
-			    sf(ps,"%d",num);
+			    sprintf(ps, "%d", num);
 			    strcat(new_str,ps);
 			    strcat(new_str, " ");
 			}
@@ -1073,7 +1073,7 @@ bool forget;
 	/* forgets old names */
 	if(forget) {
 	    while(TRUE) {
-		sf(name,"%s%d",prefix,i+i);
+		sprintf(name, "%s%d", prefix, i + i);
 		if(!delete_named_entry(name,
 		   context[active_context]->named_sequences,&fail))
 		  break;
@@ -1082,7 +1082,7 @@ bool forget;
 	}
 	else {  /* else count up to see where to start numbering */
 	    while(TRUE) {
-		sf(name,"%s%d",prefix,count+1);
+		sprintf(name, "%s%d", prefix, count + 1);
 		if(!get_named_entry(name,&real_name,&seq_str,
 		   context[active_context]->named_sequences,&fail))
 		  break;
@@ -1091,16 +1091,16 @@ bool forget;
 	}
 	/* Now, create the new names */
 	for(peaks = 0; peak != NULL; peak = peak->next, peaks++) {
-	   sf(seq_to_name,"%s +%s",
-	      interval_str(peak->left,peak->right,FALSE),
-	      dist_str(peak->qtl_pos,FALSE));
+	   sprintf(seq_to_name, "%s +%s",
+               interval_str(peak->left,peak->right,FALSE),
+               dist_str(peak->qtl_pos,FALSE));
 	   if(!streq(genetics_str(&peak->map->constraint
 				  [peak->map->num_intervals-1],TRUE),"free")) {
-	       sf(ps," :%s",genetics_str(&peak->map->constraint
-				  [peak->map->num_intervals-1],TRUE));
+	       sprintf(ps, " :%s", genetics_str(&peak->map->constraint
+				  [peak->map->num_intervals-1], TRUE));
 	       strcat(seq_to_name,ps);
 	   }
-	   sf(name,"%s%d",prefix,count+peaks+1);
+	   sprintf(name, "%s%d", prefix, count + peaks + 1);
 	   name_sequence(name,seq_to_name,&err);
        }
     } on_exit {

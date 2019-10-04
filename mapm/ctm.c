@@ -355,7 +355,7 @@ MAP *map;
 			     exp_observations);
 	if (n_loci==2 && iter==0) null_like=new_like;
 
-	/* sf(ps,"iter: %2d  like=%lf  thetas: %lf %lf\n",iter,new_like,
+	/* sprintf(ps,"iter: %2d  like=%lf  thetas: %lf %lf\n",iter,new_like,
 	   map->rec_frac[0][0],map->rec_frac[one][0]); pr(); */
 if (testing) { /********** DEBUGGING CODE **********/
 	test_dump(obs_prob,max_observations,"obs_prob");
@@ -370,8 +370,8 @@ if (testing) { /********** DEBUGGING CODE **********/
 
 if (testing) { /********** MORE DEBUGGING CODE **********/
 #define ss sufficient_stats
-	sf(ps,"ss: R/NR %lf N %lf | %lf %lf\n",ss[0]->recs,ss[0]->norecs,
-	   ss[one]->recs,ss[one]->norecs); pr();
+	sprintf(ps, "ss: R/NR %lf N %lf | %lf %lf\n", ss[0]->recs, ss[0]->norecs,
+            ss[one]->recs, ss[one]->norecs); pr();
 } /********** END OF DEBUGGING CODE **********/
 
 	hmm_make_new_map(sufficient_stats,new_like,map);
@@ -1091,7 +1091,7 @@ real ***obs_prob, ***exp_observations;  /* [locus][observation][state] */
 #ifdef DEBUGGING
 	test_dump0(left_prob,"left_prob");
 	test_dump0(right_prob,"right_prob");
-	sf(ps,"my_trans-indiv %d ",indiv);
+	sprintf(ps,"my_trans-indiv %d ",indiv);
 	test_dump(indiv_transitions,max_states,ps); 
 	r= n= 0.0;
 	for (lstate=0; lstate<max_states; lstate++) 

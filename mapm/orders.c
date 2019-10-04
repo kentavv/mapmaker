@@ -638,15 +638,15 @@ bool find_seed_order(bool is_subset, int *locus, int num_loci, int size, int max
     try=0;
     temp_map->num_loci=size; map->num_loci=0;
 
-    if (is_subset) sf(ps,SEARCH_INF,size,num_loci); 
-      else sf(ps,SEARCH_ALL,size,num_loci);
+    if (is_subset) sprintf(ps, SEARCH_INF, size, num_loci); 
+      else sprintf(ps, SEARCH_ALL, size, num_loci);
     pr();
 
     if (size==num_loci) {
 	for (i=0; i<num_loci; i++) temp_map->locus[i]=locus[i];
 	keep_user_amused("subset",try+1,0);
 	if (good_seed(map,temp_map,thresh)) return(TRUE);
-	sf(ps,SEED_FAILED,-thresh); pr();
+	sprintf(ps, SEED_FAILED, -thresh); pr();
 	return(FALSE);
 
     } else if (size==num_loci-1) {
@@ -658,7 +658,7 @@ bool find_seed_order(bool is_subset, int *locus, int num_loci, int size, int max
 	    if (good_seed(map,temp_map,thresh)) return(TRUE);
 	    if (try>max_tries) break;
 	}
-	sf(ps,SEED_FAILED,-thresh); pr();
+	sprintf(ps, SEED_FAILED, -thresh); pr();
 	return(FALSE);
 	
     } else /* size << num_loci */ {
@@ -686,10 +686,10 @@ bool find_seed_order(bool is_subset, int *locus, int num_loci, int size, int max
 	    for (k=0; k<size; k++) temp[try][k]=temp_map->locus[k];
 	    keep_user_amused("subset",++try,0);
 	    /* for (i=0; i<size; i++)
-	       { sf(ps,"%d ",temp_map->locus[i]+1); pr(); } nl(); */
+	       { sprintf(ps,"%d ",temp_map->locus[i]+1); pr(); } nl(); */
 	    if (good_seed(map,temp_map,thresh)) return(TRUE);
 	} while(try<=max_tries);
-	sf(ps,SEED_FAILED,-thresh); pr();
+	sprintf(ps, SEED_FAILED, -thresh); pr();
 	return(FALSE);
     }
 }
@@ -712,7 +712,7 @@ bool good_seed(MAP *map,MAP *temp_map, real thresh)
     }
     if (best==VERY_UNLIKELY) return(FALSE);
     else if (best2==VERY_UNLIKELY || best2-best<thresh) {
-	sf(ps,"Got one at log-likelihood %.2lf\n",best-best2); pr();
+	sprintf(ps, "Got one at log-likelihood %.2lf\n", best - best2); pr();
 	return(TRUE); 
     } else return(FALSE);
 }
@@ -732,7 +732,7 @@ bool good_seed(MAP *map,MAP *temp_map, real thresh)
 "Three-point analysis excludes %d %smarker%s from all intervals\n"
 
 #define sf_locnum(locus,paren) \
-  sf(ps,"%s%d%s%s",(paren ? "(":""),(locus)+1, \
+  sprintf(ps,"%s%d%s%s",(paren ? "(":""),(locus)+1, \
      (use_haplotypes && haplotyped(locus) ? "+":""),(paren ? ")":""))
      
 void extend_order(placed,unplaced,num_unplaced,npt_thresh,print_anyway)
@@ -770,19 +770,19 @@ bool print_anyway;
 	while (*num_unplaced>0)
 	  if (!extend_order_by_1(placed,unplaced,num_unplaced,npt_thresh,
 				 &contradiction,placements,temp_map)) {
-	      sf(ps,"No unique placements for %d %smarker%s\n",
-		 *num_unplaced,(placed_any ? "remaining ":""),
-		 maybe_s(*num_unplaced)); pr();
+	      sprintf(ps, "No unique placements for %d %smarker%s\n",
+                  *num_unplaced, (placed_any ? "remaining ":""),
+                  maybe_s(*num_unplaced)); pr();
 	      if (contradiction==TRUE) {
-		  sf(ps,"Three-point analysis allows no %s.\n",
-		     (placed_any ? "further ordering":"orders at all")); pr();
+		  sprintf(ps, "Three-point analysis allows no %s.\n",
+                  (placed_any ? "further ordering":"orders at all")); pr();
 	      } else if (contradiction==MAYBE) {
 		  print("Maximum number of loci in one map reached.\n");
 	      }
 	      break;
 	  } else placed_any=TRUE;
 	if (*num_unplaced==0)
-	  { sf(ps,"Uniquely ordered all %d markers\n\n",total); pr(); }
+	  { sprintf(ps, "Uniquely ordered all %d markers\n\n", total); pr(); }
 	
 	if (print_anyway || placed_any) {
 	    init_not_fixed(placed); 
@@ -988,9 +988,9 @@ int index, *num_unplaced;
     }
     
 #ifndef DEBUGGING
-    if (how>0)                        { sf(ps,"Npt-%d:\t ",how); pr(); }
+    if (how>0)                        { sprintf(ps, "Npt-%d:\t ", how); pr(); }
 #else
-    if (how>0)                        { sf(ps,"Npt:\t "); pr(); }
+    if (how>0)                        { sprintf(ps,"Npt:\t "); pr(); }
 #endif
       else if (how==BY_3PT) 		print("3pt:     ");
       else if (how==BY_NPT_ENDS) 	print("Npt-End: ");
@@ -1140,9 +1140,9 @@ int **temp_order;     /* used as a temp 1,2=frame, 3..., n... w/places */
 	       n_orders,n_in_order,&temp_order[n],&n_orders);
 
     for (i=0; i<n_orders; i++) { 
-	sf(ps,"   %d->\t",i+1); pr();
+	sprintf(ps,"   %d->\t",i+1); pr();
 	for (j=0; j<n_in_order+1; j++) 
-	  { sf(ps,"%d ",temp_order[n+i][j]); pr(); }
+	  { sprintf(ps,"%d ",temp_order[n+i][j]); pr(); }
 	nl();
     }
 

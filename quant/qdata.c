@@ -125,9 +125,9 @@ DATA *data;		/* side-effected */
       { error("trait(s) are all missing data for all individuals."); }
 
    /* for (i=0; i<raw.n_indivs; i++) {   DEBUGGING CODE
-	sf(ps,"indiv %d\n",i); pr();
+	sprintf(ps,"indiv %d\n",i); pr();
 	for (j=0; j<9; j++) {
-	    sf(ps,"%6.4lf ",data->genotype_prob[i][0][j]); pr();
+	    sprintf(ps,"%6.4lf ",data->genotype_prob[i][0][j]); pr();
 	}
 	nl();
     } */

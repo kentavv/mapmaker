@@ -29,7 +29,7 @@ void print_lod_line();
 void print_2pt_criteria(str,lod,theta)
 char *str;
 real lod, theta;
-{ sf(ps,"%s at min LOD %.2lf, max Distance %s",str,lod,rag(rf2str(theta))); 
+{ sprintf(ps, "%s at min LOD %.2lf, max Distance %s", str, lod, rag(rf2str(theta))); 
   pr(); }
 
 void parse_2pt_criteria(argptr,lod,theta)
@@ -99,7 +99,7 @@ command group()
 	    if (group_size>=2) {
 		inv_isort(linkage_group,group_size);
 		if (num_linkage_groups>0) print(GROUP_DIVIDER); else nl();
-		sf(ps,"group%d= ",num_linkage_groups+1); pr();
+		sprintf(ps, "group%d= ", num_linkage_groups + 1); pr();
 		for (i=0; i<group_size; i++) {
 		    print(rag(loc2str(linkage_group[i]))); print(" ");
 		    my_group[linkage_group[i]]= num_linkage_groups;
@@ -180,7 +180,7 @@ command haplotype()
 	    for (i=0; i<raw.num_markers; i++) loci[i]=i;
 	}
 	if (delete_haplo_groups(loci,num_loci,changed,&num_changed)) {
-	    sf(ps,HAP_DEL_NOTE,(num_loci==raw.num_markers ? "all":"these"));
+	    sprintf(ps, HAP_DEL_NOTE, (num_loci == raw.num_markers ? "all" : "these"));
 	    pr();
 	}
 	if (find_em) {
@@ -195,9 +195,9 @@ command haplotype()
 					 &num_haplo,obs1,obs2);
 			if (num_haplo>=2) {
 			    setup_haplo_group(haplo_group,num_haplo);
-			    sf(ps,"Haplotype Group %2d: %s= [",
-			       ++num_haplo_groups,
-			       locname(haplo_first[haplo_group[0]],TRUE));
+			    sprintf(ps, "Haplotype Group %2d: %s= [",
+                        ++num_haplo_groups,
+                        locname(haplo_first[haplo_group[0]],TRUE));
 			    pr();
 			    for (i=0; i<num_haplo; i++) {
 				if (i!=0) print(" ");
@@ -247,7 +247,7 @@ command unhaplotype()
 	array(changed,2*raw.num_markers,int);
 
 	if (delete_haplo_groups(loci,num_loci,changed,&num_changed))
-	  { sf(ps,HAP_DEL_NOTE,"these"); pr(); }
+	  { sprintf(ps, HAP_DEL_NOTE, "these"); pr(); }
 	else print("No haplotype groups to delete\n");
 	if (num_changed>0) {
 	    sort_loci(changed,num_changed);
@@ -372,7 +372,7 @@ command near_locus()
 		if (print_biglod(a,b,lodbound,thetabound,sex_specific,
 				 assignment_chrom(locus[i]))) n++;
 	    }
-	    if (n==0) { sf(ps," %-10s no linked markers\n",loc2str(a)); pr(); }
+	    if (n==0) { sprintf(ps, " %-10s no linked markers\n", loc2str(a)); pr(); }
 	}
     } on_exit {
 	unarray(trial_locus,int);
@@ -397,7 +397,7 @@ command near_chrom() /* should move to auto_cmd.c? */
 	alloc_list_of_all_loci(seq,&locus,&num_loci);
 	crunch_locus_list(locus,&num_loci,CRUNCH_WARNINGS,ANY_CHROMS,IN_SEQ);
 	if (chrom==NO_CHROM) strcpy(str,"Linked Markers in Data Set");
-	else sf(str,"Linked Markers on Chromosome %s",chrom2str(chrom));
+	else sprintf(str, "Linked Markers on Chromosome %s", chrom2str(chrom));
 	print_2pt_criteria(str,lodbound,thetabound); nl();
 	if (!sex_specific) print(NOSEX_BIGLODS); else print(SEX_BIGLODS);
 
@@ -410,7 +410,7 @@ command near_chrom() /* should move to auto_cmd.c? */
 		    print_biglod(a,b,lodbound,thetabound,sex_specific,
 				 assignment_chrom(b)))
 		  n++;
-	    if (n==0) { sf(ps," %-10s no linked markers\n",loc2str(a)); pr(); }
+	    if (n==0) { sprintf(ps, " %-10s no linked markers\n", loc2str(a)); pr(); }
 	}
     } on_exit {
 	unarray(locus,int);
@@ -484,20 +484,20 @@ int chrom;
     if (!sex) {
         if (!get_two_pt(i,j,&lod,&theta)) return(FALSE);
         if (lod>=lodbound && theta<=thetabound) {
-	    sf(ps," %-10s %-10s %s   %s  %s",loc2str(i),loc2str(j),
-	       rsd(5.2,theta),rsd(5.2,lod),rsd(6.2,cm_dist(theta))); pr();
-	    if (chrom!=NO_CHROM) { sf(ps,"   (%s)",chrom2str(chrom)); pr(); }
+	    sprintf(ps, " %-10s %-10s %s   %s  %s", loc2str(i), loc2str(j),
+                rsd(5.2,theta), rsd(5.2,lod), rsd(6.2,cm_dist(theta))); pr();
+	    if (chrom!=NO_CHROM) { sprintf(ps, "   (%s)", chrom2str(chrom)); pr(); }
 	    nl();
 	    return(TRUE);
 	} else return(FALSE);
     } else { /* sex */
         if (!get_sex_two_pt(i,j,&lod,&thetam,&thetaf)) return(FALSE);
         if (lod>=lodbound && (thetam<=thetabound || thetaf<=thetabound)) {
-	    sf(ps," %-10s %-10s  %s    %s   %s    %s    %s",
-	       loc2str(i),loc2str(j),
-	       rsd(5.2,thetam),rsd(5.2,thetaf),rsd(5.2,lod),
-           rsd(6.2,cm_dist(thetam)),rsd(6.2,cm_dist(thetaf))); pr();
-	    if (chrom!=NO_CHROM) { sf(ps,"   (%s)",chrom2str(chrom)); pr(); }
+	    sprintf(ps, " %-10s %-10s  %s    %s   %s    %s    %s",
+                loc2str(i), loc2str(j),
+                rsd(5.2,thetam), rsd(5.2,thetaf), rsd(5.2,lod),
+                rsd(6.2,cm_dist(thetam)), rsd(6.2,cm_dist(thetaf))); pr();
+	    if (chrom!=NO_CHROM) { sprintf(ps, "   (%s)", chrom2str(chrom)); pr(); }
 	    nl();
 	    return(TRUE);
 	} else return(FALSE);
@@ -525,7 +525,7 @@ int *locus1, *locus2, num_loci1, num_loci2, how;
 	  print("      ");
 	  for (across=0; across<num_across; across++) {
 	      if (across!=across_to_print) {
-		  sf(ps,"%s ",loc2str(locus1[across]));
+		  sprintf(ps, "%s ", loc2str(locus1[across]));
 		  print(ps);
 	      }
 	  }
@@ -533,16 +533,16 @@ int *locus1, *locus2, num_loci1, num_loci2, how;
 	  /* hack in names to look nice but also fit as before */
 	  line1 = get_temp_string();
 	  line2 = get_temp_string();
-	  sf(line1,"         ");
-	  sf(line2,"            ");
+	  sprintf(line1, "         ");
+	  sprintf(line2, "            ");
 	  for (across=0; across<num_across; across++) {
 	      if (across!=across_to_print) {
 		  if (across%2==0) {
-		      sf(ps,"%s   ",loc2str(locus1[across]));
+		      sprintf(ps, "%s   ", loc2str(locus1[across]));
 		      strcat(line1,ps);
 		      strcat(line2,"   ");
 		  } else {
-		      sf(ps,"%s",loc2str(locus1[across]));
+		      sprintf(ps, "%s", loc2str(locus1[across]));
 		      strcat(line2,ps);
 		  }
 	      }
@@ -580,9 +580,9 @@ int loc, *toploc, topnum, how, topref, downref;
 	for (across=0; across<stop_at; across++) {
 	    if (sex_specific) {
 	        if (get_sex_two_pt(loc,toploc[across],&lod,&thetam,&thetaf))
-		    sf(ps," %s",rf2str(thetam));
+		    sprintf(ps, " %s", rf2str(thetam));
 		else
-		    sf(ps,"      ");
+		    sprintf(ps, "      ");
 		print(ps);
 	    } else {
 		/* print for UNLINKED_TWO_PT Similarly, test all return values
@@ -590,19 +590,19 @@ int loc, *toploc, topnum, how, topref, downref;
 	    }
         }
     }
-    sf(ps,"\n%s",loc2str(loc));
+    sprintf(ps, "\n%s", loc2str(loc));
     print(ps);
     for (across=0; across<stop_at; across++) {
 	if (sex_specific) {
 	    if (get_sex_two_pt(loc,toploc[across],&lod,&thetam,&thetaf))
-	        sf(ps,"%s ",rf2str(thetaf));
+	        sprintf(ps, "%s ", rf2str(thetaf));
 	    else
-	        sf(ps,"  -   ");
+	        sprintf(ps, "  -   ");
 	} else {
 	    if (get_two_pt(loc,toploc[across],&lod,&theta))
-		sf(ps,"%s ",rf2str(theta));
+		sprintf(ps, "%s ", rf2str(theta));
 	    else
-		sf(ps,"  -   ");
+		sprintf(ps, "  -   ");
 	}
 	print(ps);
     }
@@ -611,14 +611,14 @@ int loc, *toploc, topnum, how, topref, downref;
     for (across=0; across<stop_at; across++) {
 	if (sex_specific) { 
 	    if (get_sex_two_pt(loc, toploc[across], &lod, &thetam, &thetaf))
-	        sf(ps," %s",rsd(5.2,lod));
+	        sprintf(ps, " %s", rsd(5.2, lod));
 	    else
-	        sf(ps,"      ");
+	        sprintf(ps, "      ");
 	} else {
 	    if (get_two_pt(loc,toploc[across],&lod,&theta))
-	        sf(ps," %s",rsd(5.2,lod));
+	        sprintf(ps, " %s", rsd(5.2, lod));
 	    else
-	        sf(ps,"      ");
+	        sprintf(ps, "      ");
 	}
 	print(ps);
     }
@@ -651,13 +651,13 @@ command three_point()
     num_links= triplet_num_links;
 
     print_2pt_criteria("Linkage Groups",lodbound2,thetabound2); nl();
-    sf(ps,THREE_HEAD,lodbound3,rag(rf2str(thetabound3)),num_links); pr();
+    sprintf(ps, THREE_HEAD, lodbound3, rag(rf2str(thetabound3)), num_links); pr();
     if (triplet_error_rate==0.0) print("'triple error detection' is off.\n");
     else if (triplet_error_rate==LOCUS_ERROR_RATE)
       print("'triple error detection' is on.\n");
     else {
 	print("'triple error detection' in three-point analysis is on.\n");
-	sf(ps,"'error probability' for all loci is fixed at %.2lf%%.\n",
+	sprintf(ps, "'error probability' for all loci is fixed at %.2lf%%.\n",
 	   triplet_error_rate*100.0);
     }
     /* add: args! (what should they be?) pre-allocating 3pt, use_3pt=off msg,
@@ -687,13 +687,13 @@ command three_point()
 	    }
 	} while(num_unlinked>0);
 
-	if (num_groups==0) { sf(ps,THREE_NO_GRPS); pr(); abort_command(); }
+	if (num_groups==0) { sprintf(ps, THREE_NO_GRPS); pr(); abort_command(); }
 	else if (num_trips==0) {
-	    sf(ps,THREE_NO_TRIPS,num_groups,maybe_s(num_groups)); pr(); 
+	    sprintf(ps, THREE_NO_TRIPS, num_groups, maybe_s(num_groups)); pr(); 
 	    abort_command();
 	} /* else */
-	sf(ps,THREE_DO_THIS,num_trips,maybe_s(num_trips),num_groups,
-	   maybe_s(num_groups)); pr();
+	sprintf(ps, THREE_DO_THIS, num_trips, maybe_s(num_trips), num_groups,
+            maybe_s(num_groups)); pr();
 
 	if (!print_names) {
 print("\n                    log-likelihood differences\n");
@@ -722,19 +722,19 @@ print(  " count  markers                        a-b-c  b-a-c  a-c-b\n");
 			compute_3pt(three_seq,TRIPLET_SEX,triplet_error_rate,
 				    three_like,map);
 			if (!print_names) {
-			    sf(ps,"%5d:  %d %d %d",++num_trips,
+			    sprintf(ps, "%5d:  %d %d %d", ++num_trips,
 			       three_locus[0]+1,three_locus[1]+1,
 			       three_locus[2]+1);
 			    pad_to_len(ps,23); pr();
 			} else {
-			    sf(ps,"%5d:  %s %s %s",++num_trips,
-			       raw.locus_name[three_locus[0]],
-			       raw.locus_name[three_locus[1]],
-			       raw.locus_name[three_locus[2]]);
+			    sprintf(ps, "%5d:  %s %s %s", ++num_trips,
+                        raw.locus_name[three_locus[0]],
+                        raw.locus_name[three_locus[1]],
+                        raw.locus_name[three_locus[2]]);
 			    pad_to_len(ps,38); pr();
 			}
-			sf(ps,"%s %s %s\n",rsd(6.2,three_like[0]),
-			   rsd(6.2,three_like[1]),rsd(6.2,three_like[2]));
+			sprintf(ps, "%s %s %s\n", rsd(6.2, three_like[0]),
+                    rsd(6.2,three_like[1]), rsd(6.2,three_like[2]));
 			pr();
 		    }
 		}
@@ -774,8 +774,8 @@ command suggest_subset()
     nomore_args(0);
 
     print_2pt_criteria("Informative Subgroups",lodbound,thetabound); nl();
-    sf(ps,INF_CRITERIA,npt_min_indivs,(npt_codominant ? " (codominant)":""),
-       rag(rf2str(npt_min_theta))); pr();
+    sprintf(ps, INF_CRITERIA, npt_min_indivs, (npt_codominant ? " (codominant)" : ""),
+            rag(rf2str(npt_min_theta))); pr();
     
     run {
 	alloc_list_of_all_loci(seq,&loci,&num_loci);
@@ -795,7 +795,7 @@ command suggest_subset()
 		if (groups_done!=0) print(GROUP_DIVIDER);
 		sort_loci(linkage_group,group_size);
 		groups_done++;
-		sf(ps,"Linkage group %d: ",groups_done); pr();
+		sprintf(ps, "Linkage group %d: ", groups_done); pr();
 		for (i=0; i<group_size; i++) {
 		    print(rag(loc2str(linkage_group[i]))); 
 		    if (i!=group_size-1) print(" ");
@@ -810,11 +810,11 @@ command suggest_subset()
 		else if (subset_size==group_size) 
 		  print("All markers are informative.\n");
 		else { 
-		    sf(ps,"%d Marker%s in informative subset:\n",
-		       subset_size,maybe_s(subset_size)); pr();
+		    sprintf(ps, "%d Marker%s in informative subset:\n",
+                    subset_size, maybe_s(subset_size)); pr();
 		}
 		
-		sf(ps,"order%d= ",groups_done); pr();
+		sprintf(ps, "order%d= ", groups_done); pr();
 		if (subset_size==0) print("none");
 		for (i=0; i<subset_size; i++) {
 		    print(rag(loc2str(subset[i]))); 

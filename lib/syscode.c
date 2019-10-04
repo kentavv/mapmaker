@@ -27,6 +27,8 @@
 
 /*********************** C-Library Extensions ********************************/
 
+bool check_file_arg(int num, char *arg, char *name, char *type, char *def_ext, char *prog, char *mode);
+
 /***** Time functions *****/
 /* Note that time() and ctime() seem to be the only portable time functions.
    However, time() returns different types with different C compilers! */
@@ -177,7 +179,7 @@ bool rename_file(original_name,new_name)
 char *original_name, *new_name;
 {
 #ifdef _SYS_DOS
-    sf(ps,"copy %s %s",original_name,new_name);
+    sprintf(ps,"copy %s %s",original_name,new_name);
     if (system(ps)==0) return(TRUE);
     else return(FALSE);
 #else
@@ -372,7 +374,7 @@ char *str; /* side-effected, so it must be big enough */
     return(FALSE);
 #else
     if (!use_gnu_readline) return(FALSE);
-    sf(str,"GNU Readline Copyright 1988-1989, Free Software Foundation");
+    sprintf(str,"GNU Readline Copyright 1988-1989, Free Software Foundation");
     return(TRUE);
 #endif
 }
@@ -562,6 +564,7 @@ bool check_tty_lines() /* return TRUE and set tty_lines if changed */
     if (screen && ioctl(fileno(stdout),TIOCGWINSZ,&thesize)==0)
       tty_lines= thesize.ws_row;
 #endif
+    return FALSE;
 }
 
 
@@ -578,7 +581,7 @@ char Tcmd[100];
 #define ansi_del_prev_ln()   lib_puts(out,"\033[99D\033[K\033[1A\033[K")
 #define ansi_boing()         lib_puts(out,"\007")
 void ansi_cursor_left(i,s) int i; char *s;
-{ if(i<0) sf(Tcmd,"\033[99D\033[K%s",s); else sf(Tcmd,"\033[%dD\033[K%s",i,s); 
+{ if(i<0) sprintf(Tcmd, "\033[99D\033[K%s", s); else sprintf(Tcmd, "\033[%dD\033[K%s", i, s);
   lib_puts(out,Tcmd); }
 
 #define hp_tty_init()        lib_puts(out,"\n\033&d@\n")
@@ -587,7 +590,7 @@ void ansi_cursor_left(i,s) int i; char *s;
 #define hp_del_prev_ln()     lib_puts(out,"\033&a0C\033K\033A\033K")
 #define hp_boing()           lib_puts(out,"\007")
 void hp_cursor_left(i,s) int i; char *s;
-{ if(i<0) sf(Tcmd,"\033&a0C\033K%s",s); else sf(Tcmd,"\033&a-%dC\033K%s",i,s); 
+{ if(i<0) sprintf(Tcmd, "\033&a0C\033K%s", s); else sprintf(Tcmd, "\033&a-%dC\033K%s", i, s);
   lib_puts(out,Tcmd); }
 
 /* These should be filled in for the Mac's ThinkC "console package" */
@@ -797,9 +800,7 @@ char *argv[];
 }
 
 
-bool check_file_arg(num,arg,name,type,def_ext,prog,mode)
-int num;
-char *arg, *name, *type, *def_ext, *prog, *mode;
+bool check_file_arg(int num, char *arg, char *name, char *type, char *def_ext, char *prog, char *mode)
 {
     char file[PATH_LENGTH+1];
     FILE *fp;
@@ -829,6 +830,7 @@ char *arg, *name, *type, *def_ext, *prog, *mode;
 	default: 
 	  relay; 
     }
+    return FALSE;
 }
 
 

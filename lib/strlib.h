@@ -299,7 +299,6 @@ char *rsn();  /* args: real format, num_to_print; */
 char *rsd();  /* args: real format, num_to_print; */
 
 /* other output formating stuff... */ 
-#define sf sprintf 
 char *binary(); /* args: int num_to_print, num_bits; char *str; */
 
 /* macro char *maynl();  args: int chars; 

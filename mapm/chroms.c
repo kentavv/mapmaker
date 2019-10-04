@@ -112,10 +112,10 @@ MAP *new;   /* warning: side-effected! */
     for (j=0; j<new->num_loci; j++) {
 	/* force_haplo_sanity(new->locus+j,TRUE); */
 	if (!assigned(new->locus[j])) {
-	    sf(ps,FRAME_NO_CHROM,loc2str(new->locus[j])); error(ps);
+	    sprintf(ps, FRAME_NO_CHROM, loc2str(new->locus[j])); error(ps);
 	} else if ((other=assignment_chrom(new->locus[j]))!=chrom) {
-	    sf(ps,FRAME_OTHER_CHROM,chrom2str(chrom),loc2str(new->locus[j]),
-	       chrom2str(other)); error(ps);
+	    sprintf(ps, FRAME_OTHER_CHROM, chrom2str(chrom), loc2str(new->locus[j]),
+                chrom2str(other)); error(ps);
 	}
     }
 
@@ -262,7 +262,7 @@ bool fix_frames;
     int old;
 
     /* if (!force_haplo_sanity(&locus,FALSE)) { 
-	sf(ps,ASS_INSANE,loc2str(locus)); pr();
+	sprintf(ps,ASS_INSANE,loc2str(locus)); pr();
 	return(FALSE);
     } */
       
@@ -270,17 +270,17 @@ bool fix_frames;
     old= assignment_chrom(locus);
 
     if (anchor_locus(locus) && old!=chrom) {
-	sf(ps,ASS_ANCHOR,loc2str(locus),chrom2str(old)); pr();
+	sprintf(ps, ASS_ANCHOR, loc2str(locus), chrom2str(old)); pr();
 	return(FALSE); /* don't touch assignment */
     }
     if (framework_marker(locus) && old!=chrom) {
 	/* includes chrom==NO_CHROM case, eg unassigning */
 	if (!fix_frames) {
 	    if (chrom==NO_CHROM) 
-	      sf(ps,ASS_UNFRAME,loc2str(locus),chrom2str(old));
+	      sprintf(ps, ASS_UNFRAME, loc2str(locus), chrom2str(old));
 	    else 
-	      sf(ps,ASS_REFRAME,loc2str(locus),chrom2str(old),
-		 chrom2str(chrom));
+	      sprintf(ps, ASS_REFRAME, loc2str(locus), chrom2str(old),
+                  chrom2str(chrom));
 	    pr();
 	    return(FALSE);
 	} else {
@@ -292,7 +292,7 @@ bool fix_frames;
 	    assignment[locus]->linked_to= NO_LOCUS;
 	    assignment[locus]->modified= TRUE;
 	    /* no need to unplace - it's (still) a framework marker */
-	    sf(ps,ASS_ISFRAME,loc2str(locus),chrom2str(old)); pr();
+	    sprintf(ps, ASS_ISFRAME, loc2str(locus), chrom2str(old)); pr();
 	    return(FALSE); /* ??? */
 	}
     }
@@ -326,11 +326,11 @@ char *msg; /* pre-empts other message, only for A_PROBLEM as yet */
 	if (!nullstr(msg)) /* problem state: use this msg */
 	  strcpy(ps,msg);
 	else if (anchor_locus(locus))
-	  sf(ps,ASS_UNANCH,loc2str(locus),chrom2str(assignment_chrom(locus)));
+	  sprintf(ps, ASS_UNANCH, loc2str(locus), chrom2str(assignment_chrom(locus)));
 	else if (assigned(locus)) 
-	  sf(ps,ASS_UNASS,loc2str(locus),chrom2str(assignment_chrom(locus)));
+	  sprintf(ps, ASS_UNASS, loc2str(locus), chrom2str(assignment_chrom(locus)));
 	else 
-	  sf(ps,ASS_NONE,loc2str(locus));
+	  sprintf(ps, ASS_NONE, loc2str(locus));
 	pr();
 	unplace_this(locus,NO_CHROM,M_UNKNOWN,FALSE);
 
@@ -338,26 +338,26 @@ char *msg; /* pre-empts other message, only for A_PROBLEM as yet */
 	if (assigned(locus) && assignment_chrom(locus)!=chrom) { /* changed */
 	    if (framework_marker(locus)) send(CRASH);
 	    if (state==A_ATTACH) /* no lod state */
-	      sf(ps,CHG_ATTACH,loc2str(locus),chrom2str(chrom),
-		    chrom2str(assignment_chrom(locus)));
+	      sprintf(ps, CHG_ATTACH, loc2str(locus), chrom2str(chrom),
+                  chrom2str(assignment_chrom(locus)));
 	    else if (state==A_FRAMEWORK) send(CRASH);
 	    else if (state==A_BORDERLINE)
-	      sf(ps,CHG_BORDER,loc2str(locus),chrom2str(chrom),lod,
-		 chrom2str(assignment_chrom(locus)));
+	      sprintf(ps, CHG_BORDER, loc2str(locus), chrom2str(chrom), lod,
+                  chrom2str(assignment_chrom(locus)));
 	    else /* state==A_ASSIGNED */
-	      sf(ps,CHG_ASSIGN,loc2str(locus),chrom2str(chrom),lod,
-		 chrom2str(assignment_chrom(locus)));
+	      sprintf(ps, CHG_ASSIGN, loc2str(locus), chrom2str(chrom), lod,
+                  chrom2str(assignment_chrom(locus)));
 	    unplace_this(locus,NO_CHROM,M_UNKNOWN,FALSE);
 
 	} else { /* assignment has not been changed */
 	    if (state==A_ATTACH) /* no lod states */
-	      sf(ps,ASS_ATTACH,loc2str(locus),chrom2str(chrom)); 
+	      sprintf(ps, ASS_ATTACH, loc2str(locus), chrom2str(chrom)); 
 	    else if (state==A_FRAMEWORK) /* no lod states */
-	      sf(ps,ASS_FRAME,loc2str(locus),chrom2str(chrom)); 
+	      sprintf(ps, ASS_FRAME, loc2str(locus), chrom2str(chrom)); 
 	    else if (state==A_BORDERLINE) 
-	      sf(ps,ASS_BORDER,loc2str(locus),chrom2str(chrom),lod);
+	      sprintf(ps, ASS_BORDER, loc2str(locus), chrom2str(chrom), lod);
 	    else
-	      sf(ps,ASS_ASSIGN,loc2str(locus),chrom2str(chrom),lod);
+	      sprintf(ps, ASS_ASSIGN, loc2str(locus), chrom2str(chrom), lod);
 	}
 	pr();
     }
@@ -399,11 +399,11 @@ int chrom, *locus, num_loci; /* maybe 0 */
     for (j=0; j<num_loci; j++) {
 	old_chrom=(assigned(locus[j]) ? assignment_chrom(locus[j]):NO_CHROM);
 	if (old_chrom!=chrom && framework_marker(locus[j])) {
-	    sf(ps,ANCHOR_ISFRAME,loc2str(locus[j]),chrom2str(old_chrom),chrom2str(chrom));
+	    sprintf(ps, ANCHOR_ISFRAME, loc2str(locus[j]), chrom2str(old_chrom), chrom2str(chrom));
 	    error(ps);
 	}
 	if (old_chrom!=chrom && anchor_locus(locus[j])) {
- 	    sf(ps,ANCHOR_ISANCH,loc2str(locus[j]),chrom2str(old_chrom),chrom2str(chrom));
+ 	    sprintf(ps, ANCHOR_ISANCH, loc2str(locus[j]), chrom2str(old_chrom), chrom2str(chrom));
 	    error(ps);
 	}
     }
@@ -424,7 +424,7 @@ int chrom, *locus, num_loci; /* maybe 0 */
     for (j=0; j<num_loci; j++) {
 	if (assigned(locus[j]) && assignment_chrom(locus[j])!=chrom)
 	  unplace_this(locus[j],NO_CHROM,M_UNKNOWN,FALSE);
-	sf(ps,ANCHOR_ISNOW,loc2str(locus[j]),chrom2str(chrom)); pr();
+	sprintf(ps, ANCHOR_ISNOW, loc2str(locus[j]), chrom2str(chrom)); pr();
 	assignment[locus[j]]->chromosome= chrom;
 	assignment[locus[j]]->status=     A_ANCHOR;
 	assignment[locus[j]]->LODscore=   NO_LOD;
@@ -557,9 +557,9 @@ int num_groups;
     if (pos_lod>=lodbound && alt_chrom!=NO_CHROM && 
 	((state=assignment_state(locus))!=A_FRAMEWORK && state!=A_ATTACH)) {
 	/* really linked, but there is evidence of linkage to other chroms */
-	sf(temp,ASS_MULTI,loc2str(locus),
-	   chrom2str(pos_chrom),pos_lod,
-	   chrom2str(alt_chrom),alt_lod);
+	sprintf(temp, ASS_MULTI, loc2str(locus),
+            chrom2str(pos_chrom), pos_lod,
+            chrom2str(alt_chrom), alt_lod);
 	assign_this(locus,A_PROBLEM,NO_CHROM,NO_LOD,NO_THETA,NO_LOCUS,temp);
 	return(TRUE);
 
@@ -641,23 +641,23 @@ int locus, chrom;
        is called by place or place_together */
 
     if (!force_haplo_sanity(&locus,FALSE)) {
-	sf(ps,PLACE_INSANE,locus+1,locname(locus,TRUE));
+	sprintf(ps, PLACE_INSANE, locus + 1, locname(locus, TRUE));
 	pr(); return(FALSE);
 
     } else if (framework_marker(locus)) {
-	sf(ps,PLACE_ISFRAME,locus+1,locname(locus,TRUE),
-	   chrom2str(assignment_chrom(locus)));	pr(); 
+	sprintf(ps, PLACE_ISFRAME, locus + 1, locname(locus, TRUE),
+            chrom2str(assignment_chrom(locus)));	pr(); 
 	/* unplace_this(locus,NO_CHROM,M_UNKNOWN,FALSE); WHY? */
 	return(FALSE);
 
     } else if (!assigned(locus)) {
-	sf(ps,PLACE_NOTASS,locus+1,locname(locus,TRUE)); pr();
+	sprintf(ps, PLACE_NOTASS, locus + 1, locname(locus, TRUE)); pr();
 	/* unplace_this(locus,NO_CHROM,M_UNKNOWN,FALSE); */
 	return(FALSE);
 
     } else if (chrom!=ANY_CHROM && !assigned_to(locus,chrom)) {
 	/* not used yet */
-	sf(ps,PLACE_NOTCHR,locus+1,locname(locus,TRUE),chrom2str(chrom)); pr();
+	sprintf(ps, PLACE_NOTCHR, locus + 1, locname(locus, TRUE), chrom2str(chrom)); pr();
 	/* unplace_this(locus,NO_CHROM,M_UNKNOWN,FALSE); */
 	return(FALSE);
 
@@ -701,7 +701,7 @@ bool *excluded;  /* used as a temp for npt_exclusions() */
 		placement[locus]->num_intervals= 0;
 		placement[locus]->threshold= 0.0;
 		placement[locus]->status= M_PROBLEM;
-		sf(ps,PLACE_TOOMANY,locus+1,locname(locus,TRUE)); pr();
+		sprintf(ps, PLACE_TOOMANY, locus + 1, locname(locus, TRUE)); pr();
 		return(0);
 	    }
 	}
@@ -714,29 +714,29 @@ bool *excluded;  /* used as a temp for npt_exclusions() */
 
     if (off_end) {
 	placement[locus]->status= (error_lod!=NO_ERRORS ? M_ERROR:M_OFFEND);
-	sf(ps,PLACE_OFFEND,locus+1,locname(locus,TRUE),witherr,
-	   (off_end==2 ? "*either* ":""),sgn,support);
+	sprintf(ps, PLACE_OFFEND, locus + 1, locname(locus, TRUE), witherr,
+            (off_end==2 ? "*either* ":""), sgn, support);
 	pr();
 	/* print the errors? */
 
     } else if (good==1) {
 	if (zero) {
 	    placement[locus]->status=(error_lod!=NO_ERRORS ? M_ERROR:M_ZERO);
-	    sf(ps,PLACE_ZERO,locus+1,locname(locus,TRUE),witherr,
-	       sgn,support); pr();
+	    sprintf(ps, PLACE_ZERO, locus + 1, locname(locus, TRUE), witherr,
+                sgn, support); pr();
 
 	} else {
 	    placement[locus]->status=(error_lod!=NO_ERRORS ? M_ERROR:M_UNIQUE);
-	    sf(ps,PLACE_UNIQUE,locus+1,locname(locus,TRUE),witherr,
-	       sgn,support); pr();
+	    sprintf(ps, PLACE_UNIQUE, locus + 1, locname(locus, TRUE), witherr,
+                sgn, support); pr();
 	}
 
     } else { /* good>1 */
 	sgn2=ptr_to("=");
 	if (second_best==NO_LIKE) { sgn2=ptr_to("<"); second_best=-5.0; }
 	placement[locus]->status= (error_lod!=NO_ERRORS ? M_ERROR:M_REGION);
-	sf(ps,PLACE_REGION,locus+1,locname(locus,TRUE),witherr,good,
-	   sgn,support,sgn2,second_best); 
+	sprintf(ps, PLACE_REGION, locus + 1, locname(locus, TRUE), witherr, good,
+            sgn, support, sgn2, second_best); 
 	pr();
 	/* print possible errors? */
     }
@@ -758,11 +758,11 @@ bool verbose;
     placement[locus]->status= status;
     if (verbose) {
 	if (status==M_PROBLEM)
-	  { sf(ps,PLACE_PROBLEM,locus+1,locname(locus,TRUE)); pr(); }
+	  { sprintf(ps, PLACE_PROBLEM, locus + 1, locname(locus, TRUE)); pr(); }
 	else if (status==M_FRAMEWORK)
-	  { sf(ps,PLACE_FRAMEWORK,locus+1,locname(locus,TRUE)); pr(); }
+	  { sprintf(ps, PLACE_FRAMEWORK, locus + 1, locname(locus, TRUE)); pr(); }
 	else
-	  { sf(ps,PLACE_UNKNOWN,locus+1,locname(locus,TRUE)); pr(); }
+	  { sprintf(ps, PLACE_UNKNOWN, locus + 1, locname(locus, TRUE)); pr(); }
     }
 }
 
@@ -814,14 +814,14 @@ int *changed, num_changed; /* changed markers */
 
     for (i=0; i<num_changed; i++) {
 	n=changed[i];
-	sf(ps,"%-8s - unassigned and unplaced (changed)\n",
-	   locname(n,FALSE)); pr();
+	sprintf(ps, "%-8s - unassigned and unplaced (changed)\n",
+            locname(n,FALSE)); pr();
     }
     for (i=0; i<num_changed; i++) {
 	n=changed[i];
 	if (assignment[n]->status==A_ANCHOR) {
-	    sf(ps,"warning: %s WAS an anchor locus for chromosome %s\n",
-	       locname(n,FALSE),chrom2str(assignment[n]->chromosome)); pr();
+	    sprintf(ps, "warning: %s WAS an anchor locus for chromosome %s\n",
+                locname(n,FALSE), chrom2str(assignment[n]->chromosome)); pr();
 	}
     }
     for (i=0; i<num_changed; i++) {
@@ -847,8 +847,8 @@ int *changed, num_changed; /* changed markers */
 
     for (j=0; j<chromosome->num_maps; j++) 
       if (bash[j] && chromosome->map_list[j]->num_loci>0) {
-	  sf("chromosome %s framework cleared, all loci unplaced\n",
-	     chrom2str(j)); pr();
+	  sprintf("chromosome %s framework cleared, all loci unplaced\n",
+              chrom2str(j)); pr();
 	map=get_map_to_bash(chromosome);
 	clean_map(map); /* num_loci -> 0 */
 	set_chrom_frame(j,map);
@@ -899,30 +899,30 @@ FILE *fp;
 {
     int locus, i, j;
 
-    sf(ps,"*Chromosomes: %d\n", chromosome->num_maps); fpr(fp);
+    sprintf(ps, "*Chromosomes: %d\n", chromosome->num_maps); fpr(fp);
     for (i=0; i < chromosome->num_maps; i++) {
         write_map(fp, chromosome->map_list[i]);
     }
    
     fprint(fp,"*Assignments and Placements:\n");
     for (locus=0; locus< raw.num_markers; locus++) {
-        sf(ps,"*%-8s %2d",raw.locus_name[locus],assignment[locus]->status); 
+        sprintf(ps, "*%-8s %2d", raw.locus_name[locus], assignment[locus]->status); 
 	fpr(fp);
 	if (assignment[locus]->status==M_UNKNOWN) { fnl(fp); continue; }
 
-	sf(ps," %d %d %f %f | %d %f %f %d %d \n",
-	   assignment[locus]->chromosome, assignment[locus]->linked_to, 
-	   assignment[locus]->LODscore,   assignment[locus]->theta,
-	   placement[locus]->status,      placement[locus]->threshold,
-	   placement[locus]->error_lod,	  placement[locus]->single_error,
-	   placement[locus]->num_intervals); fpr(fp);
+	sprintf(ps, " %d %d %f %f | %d %f %f %d %d \n",
+            assignment[locus]->chromosome, assignment[locus]->linked_to,
+            assignment[locus]->LODscore, assignment[locus]->theta,
+            placement[locus]->status, placement[locus]->threshold,
+            placement[locus]->error_lod, placement[locus]->single_error,
+            placement[locus]->num_intervals); fpr(fp);
 
 	if (placement[locus]->num_intervals==0) continue;
 
 	for (j=0; j < placement[locus]->num_intervals; j++) {
-	    sf(ps," %d %f %f",
-	       placement[locus]->interval[j], placement[locus]->like_ratio[j],
-	       placement[locus]->distance[j]); fpr(fp);
+	    sprintf(ps, " %d %f %f",
+                placement[locus]->interval[j], placement[locus]->like_ratio[j],
+                placement[locus]->distance[j]); fpr(fp);
 	}
 	fnl(fp);
     }

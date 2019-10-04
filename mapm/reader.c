@@ -105,7 +105,7 @@ bool add_nums;
 #ifdef HAVE_CEPH
     if (raw.data_type==CEPH) {
 	if (add_nums) 
-	 sf(str,"CEPH data (%d families, %d loci)",
+	 sprintf(str,"CEPH data (%d families, %d loci)",
 	     raw.data.ceph.num_families,raw.num_markers);
        else 
 	  strcpy(str,"CEPH data");
@@ -150,9 +150,9 @@ bool *exists;
     fp=NULL;
     run {
 	fp=open_file(tmpname,WRITE);
-	sf(ps,SAVING_TO,type,name); pr(); flush();
+	sprintf(ps, SAVING_TO, type, name); pr(); flush();
     } except_when(CANTOPEN) {
-	sf(ps,NOT_SAVING_TO,name); pr(); nl();
+	sprintf(ps, NOT_SAVING_TO, name); pr(); nl();
 	abort_command();
     }
 
@@ -187,7 +187,7 @@ bool israw;
     if (data_loaded()) send(CRASH);
     num_traits=0; trait=NULL; trait_name=NULL;
 
-    sf(ps,"%sing data from file '%s'... ",(israw ? "prepar":"load"),filename);
+    sprintf(ps, "%sing data from file '%s'... ", (israw ? "prepar" : "load"), filename);
     pr(); flush();
 
     if (!israw) ntype=read_data_file_header(fp,filename); /* sets raw.stuff */
@@ -222,12 +222,12 @@ bool israw;
 	fp2=NULL;
         fp2=open_file(name,READ);
 	if (read_magic_number(fp2,type)) {
-	    sf(ps,LOADING_FROM,type,name); pr(); flush();
+	    sprintf(ps, LOADING_FROM, type, name); pr(); flush();
 	    read_order_data(fp2);
 	    read_mapping_data(fp2);
 	    read_status(fp2);
 	    print("ok\n");
-	} else { sf(ps,NOT_LOADING_FROM,type,name); pr(); }
+	} else { sprintf(ps, NOT_LOADING_FROM, type, name); pr(); }
 	close_file(fp2);
     } except_when(CANTOPEN) { } /* need a better handler */
 
@@ -236,10 +236,10 @@ bool israw;
 	fp2=NULL;
 	fp2=open_file(name,READ);
 	if (read_magic_number(fp2,type)) {
-	    sf(ps,LOADING_FROM,type,name); pr(); flush();
+	    sprintf(ps, LOADING_FROM, type, name); pr(); flush();
 	    read_two_pt(fp2);
 	    print("ok\n");
-	} else { sf(ps,NOT_LOADING_FROM,type,name); pr(); }
+	} else { sprintf(ps, NOT_LOADING_FROM, type, name); pr(); }
 	close_file(fp2);
     } except_when(CANTOPEN) { } /* need a better handler */
 
@@ -248,10 +248,10 @@ bool israw;
 	fp2=NULL;
         fp2=open_file(name,READ);
         if (read_magic_number(fp2,type)) {
-	    sf(ps,LOADING_FROM,type,name); pr(); flush();
+	    sprintf(ps, LOADING_FROM, type, name); pr(); flush();
 	    read_three_pt(fp2);
 	    print("ok\n");
-	} else { sf(ps,NOT_LOADING_FROM,type,name); pr(); }
+	} else { sprintf(ps, NOT_LOADING_FROM, type, name); pr(); }
 	close_file(fp2);
     } except_when(CANTOPEN) { } /* need a better handler */
 }
@@ -588,15 +588,15 @@ FILE *fp;
     else if (raw.data.f2.cross_type==F3_SELF)
       fprint(fp,"prepared data f3\n");
     
-    sf(header,"%d %d %d\n",raw.filenumber,raw.data.f2.num_indivs,
-       raw.num_markers); fprint(fp,header);
+    sprintf(header, "%d %d %d\n", raw.filenumber, raw.data.f2.num_indivs,
+            raw.num_markers); fprint(fp,header);
     
     for (i=0; i<raw.num_markers; i++) {
-	sf(ps,"*%-10s   ", raw.locus_name[i]);
+	sprintf(ps, "*%-10s   ", raw.locus_name[i]);
 	fpr(fp);
 	for (j=0; j<raw.data.f2.num_indivs; j++) {
 	    if (j%50==0 && j!=0) fprint(fp,"\n        ");
-	    sf(ps,"%c",raw.data.f2.allele[i][j]);
+	    sprintf(ps, "%c", raw.data.f2.allele[i][j]);
 	    fpr(fp);
 	    }
 	fnl(fp);
@@ -642,24 +642,24 @@ char *symbol;
 
     /* make sure name starts with '*' */
     if (name[0]!='*') {
-        sf(badstr,"name does not have '*' or too many indivs in locus %s\n",
-	   raw.locus_name[locus_num > 0 ? locus_num-1 :0]);
+        sprintf(badstr, "name does not have '*' or too many indivs in locus %s\n",
+                raw.locus_name[locus_num > 0 ? locus_num-1 :0]);
 	baddata(badstr);
     }
     if (len(name)<2) {
-        sf(badstr,"expected locus name after '*', following locus %s\n",
-	   raw.locus_name[locus_num > 0 ? locus_num-1 : 0]);
+        sprintf(badstr, "expected locus name after '*', following locus %s\n",
+                raw.locus_name[locus_num > 0 ? locus_num-1 : 0]);
 	baddata(badstr);
     }
     if (!strin(NAME_FIRST_CHARS,name[1])) {
-        sf(badstr,"illegal first character in locus name %s\n",name+1);
+        sprintf(badstr, "illegal first character in locus name %s\n", name + 1);
 	baddata(badstr);
     }
     for (i=2; name[i]!='\0'; i++) {
 	if (name[i]=='-') name[i]='_';
         else if (!strin(NAME_CHARS,name[i])) {
-	    sf(badstr,"illegal character '%c' in locus name %s",
-	       name[i],name+1);
+	    sprintf(badstr, "illegal character '%c' in locus name %s",
+                name[i],name+1);
 	    baddata(badstr);
 	}
     }
@@ -667,7 +667,7 @@ char *symbol;
     /* make sure marker name is not a duplicate */
     for (j=0; j<locus_num; j++) {
 	if (xstreq(name+1,raw.locus_name[locus_num])) {
-	    sf(badstr,"two loci with the same name: %s",name+1);
+	    sprintf(badstr, "two loci with the same name: %s", name + 1);
 	    baddata(badstr);
 	}
     }
@@ -687,10 +687,10 @@ char *symbol;
 	}
 	if (!parse_char(&ln,symbol,SKIPWHITE,&c)) {
 	    if (c=='#') { strcpy(ln,""); continue; }
-	    else if (c=='*') sf(badstr,"not enough data points for locus %s",
-				raw.locus_name[locus_num]);
-	    else sf(badstr,"illegal genotype character '%c' in locus %s",
-		    c,raw.locus_name[locus_num]);
+	    else if (c=='*') sprintf(badstr, "not enough data points for locus %s",
+                                 raw.locus_name[locus_num]);
+	    else sprintf(badstr, "illegal genotype character '%c' in locus %s",
+                     c, raw.locus_name[locus_num]);
 	    baddata(badstr);
 	} else {
 	    converted= symbol_value(c,symbol);
@@ -699,8 +699,8 @@ char *symbol;
 	}
     }
     if (!nullstr(ln) && !parse_char(&ln,"#",SKIPWHITE,&c)) {
-	sf(badstr,"too many data points for locus %s",
-	   raw.locus_name[locus_num]); baddata(badstr);
+	sprintf(badstr, "too many data points for locus %s",
+            raw.locus_name[locus_num]); baddata(badstr);
     }
     scale_seg_dist(locus_num);
 }
@@ -730,24 +730,24 @@ int trait_num;
     strcpy(tempstr,name);
     /* make sure name starts with '*' */
     if (tempstr[0] != '*') {
-        sf(badstr,"trait does not have '*' or too many indivs in trait %s.\n",
-	   trait_name[trait_num > 0 ? trait_num-1 : 0]);
+        sprintf(badstr, "trait does not have '*' or too many indivs in trait %s.\n",
+                trait_name[trait_num > 0 ? trait_num-1 : 0]);
 	baddata(name);
     }
     if ((templen=len(tempstr)) < 2) {
-        sf(badstr,"expected trait name after '*', following trait %s\n",
-	   trait_name[trait_num > 0 ? trait_num-1 : 0]);
+        sprintf(badstr, "expected trait name after '*', following trait %s\n",
+                trait_name[trait_num > 0 ? trait_num-1 : 0]);
 	baddata(badstr);
     }
     if (!strin(NAME_FIRST_CHARS,tempstr[1])) {
-        sf(badstr,"illegal first character in trait name %s\n",tempstr);
+        sprintf(badstr, "illegal first character in trait name %s\n", tempstr);
 	baddata(badstr);
     }
 
     for (i=2; i<templen; i++) {
         if (!strin(NAME_CHARS,tempstr[i])) {
-	    sf(badstr,"illegal character '%c' in trait name %s",
-	       tempstr[i],tempstr);
+	    sprintf(badstr, "illegal character '%c' in trait name %s",
+                tempstr[i], tempstr);
 	    baddata(badstr);
 	}
     }
@@ -758,7 +758,7 @@ int trait_num;
         strcpy(temp2,trait_name[j]);
 	crunch(tempstr); crunch(temp2);
 	if (!strcmp(tempstr,temp2)) {
-	    sf(badstr,"two traits with the same name: %s",tempstr);
+	    sprintf(badstr, "two traits with the same name: %s", tempstr);
 	    baddata(badstr);
 	}
     }
@@ -773,7 +773,7 @@ int trait_num;
 	    if (stoken(&ln,sREQUIRED,tok) && strcmp(tok,"-")) {
 	        
 	        if (tok[0] == '*') {
-		    sf(badstr,"not enough indivs in trait %s\n",name+1);
+		    sprintf(badstr, "not enough indivs in trait %s\n", name + 1);
 		    baddata(badstr);
 		}
 		if (tok[0] == '#') {
@@ -810,8 +810,8 @@ int trait_num;
 #endif
 		if (did_we_do_eqn == 1) { strcpy(ln,""); break; }
 		else {
-		  sf(badstr,"error in reading trait information for trait %s",
-		     name);
+		  sprintf(badstr, "error in reading trait information for trait %s",
+                  name);
 		  baddata(badstr);
 		}
 	    }
@@ -849,10 +849,10 @@ FILE *fp;
     fprintf(fp,"%d\n",num_traits);
 
     for(i = 0; i < num_traits; i++) {
-        sf(ps,"*%-10s",trait_name[i]); fpr(fp);
+        sprintf(ps, "*%-10s", trait_name[i]); fpr(fp);
 	for(j = 0; j < raw.data.f2.num_indivs; j++) {
 	    if(j % 5 == 0 && j != 0) fprintf(fp,"\n          ");
-	    sf(ps,"%12.3lf ",trait[i][j]); fpr(fp);
+	    sprintf(ps, "%12.3lf ", trait[i][j]); fpr(fp);
 	}
 	fnl(fp);
     }

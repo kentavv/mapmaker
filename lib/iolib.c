@@ -559,8 +559,7 @@ char *new_log_mode; /* use a #define as for open_file() */
 }
 
 
-void print(str)
-char *str;		/* Sends IOERROR if an error occurs */
+void print(const char *str) /* Sends IOERROR if an error occurs */
 /* Linebuf should never have an embedded '\n' (only one at the end, maybe) 
    and should only have as many chars as can fit on the rest of the line. 
    Print interprets tabs and newlines, and punts any other control chars. */
@@ -846,8 +845,8 @@ bool verbose;
     } except_when(CANTOPEN) retoin=FALSE;
 
     if (verbose) {
-	if (!retoin) sf(ps,"error: Unable to open input file '%s'\n",fname);
-	else sf(ps,"\n\t...Running commands from input file '%s'...\n",fname);
+	if (!retoin) sprintf(ps, "error: Unable to open input file '%s'\n", fname);
+	else sprintf(ps, "\n\t...Running commands from input file '%s'...\n", fname);
 	pr();
     }
     return(retoin);

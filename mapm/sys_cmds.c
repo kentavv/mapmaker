@@ -49,10 +49,10 @@ bool prev_data;
     FILE *fp;
     run {
 	if (!make_filename(name,mode,ext))   
-	  { sf(ps,BAD_FILENAME,name); error(ps); }
+	  { sprintf(ps, BAD_FILENAME, name); error(ps); }
         fp=open_file(name,READ);
     } except_when(CANTOPEN)
-      { sf(ps,LOAD_CANTOPEN,name,(prev_data ? PREV_KEPT:"")); error(ps); }
+      { sprintf(ps, LOAD_CANTOPEN, name, (prev_data ? PREV_KEPT : "")); error(ps); }
     return(fp);
 }
 
@@ -103,16 +103,16 @@ bool prev_data, raw;
 	    strcpy(run_file,name); 
 	    make_filename(run_file,FORCE_EXTENSION,PREP_EXT);
 	    if (!redirect_input(run_file,FALSE)) {
-		sf(ps,"unable to run file '%s'... skipping initialization\n",
-		   run_file); pr();
+		sprintf(ps, "unable to run file '%s'... skipping initialization\n",
+                run_file); pr();
 		try_to_unload(fp,FALSE,TRUE,FALSE,TRUE); /* saves data */
 	    } else {
-		sf(ps,"running initialization commands from file '%s'...\n",
-		   run_file); pr();
+		sprintf(ps, "running initialization commands from file '%s'...\n",
+                run_file); pr();
 	    }
 	}
     } on_error {
-	sf(ps,LOAD_ERROR,(prev_data ? PREV_LOST:"")); pr();
+	sprintf(ps, LOAD_ERROR, (prev_data ? PREV_LOST : "")); pr();
 	if (msg!=CANTCLOSE) close_file(fp);
 	if (msg==BADDATA) { print(BADDATA_reason); nl(); } 
 	  else trapped_msg();
@@ -126,7 +126,7 @@ void mapm_data_info(fp)
 FILE *fp;
 {
     if (!data_loaded()) return;
-    sf(ps,DATA_LOADED,raw.filename,data_info(TRUE)); fpr(fp);
+    sprintf(ps, DATA_LOADED, raw.filename, data_info(TRUE)); fpr(fp);
 }
 
 
@@ -146,7 +146,7 @@ command new_load_data()
     
     if (nullstr(name)) {
 	if (!prev_data) print("no data are loaded\n");
-	else { sf(ps,DATA_LOADED,raw.filename,data_info(TRUE)); pr(); }
+	else { sprintf(ps, DATA_LOADED, raw.filename, data_info(TRUE)); pr(); }
     } else {
 	fp=try_to_open(name,FORCE_EXTENSION,DATA_EXT,prev_data);
 	if (prev_data) try_to_unload(fp,TRUE,auto_save,TRUE,just_prepared);
@@ -189,7 +189,7 @@ command new_save_data()
     /* want to change this so it sets raw.filename only AFTER it writes OK */
 
     if (new_name && !make_filename(name,FORCE_EXTENSION,DATA_EXT))
-      { sf(ps,BAD_FILENAME,name); error(ps); }
+      { sprintf(ps, BAD_FILENAME, name); error(ps); }
 
     run {
 	if (new_name) { strcpy(old,raw.filename); strcpy(raw.filename,name); }
@@ -215,13 +215,13 @@ command set_class()
 
     mapm_ready(ANY_DATA,1,LIST_SEQ,NULL);
     get_one_arg(stoken,sREQUIRED,name);
-    if (!isa_class(name,&classnum)) { sf(ps,NOT_A_CLASS,name); error(ps); }
+    if (!isa_class(name,&classnum)) { sprintf(ps, NOT_A_CLASS, name); error(ps); }
 
     run {
 	alloc_list_of_all_loci(seq,&locus,&n_loci);
 	for (i=0; i<n_loci; i++) class[locus[i]]= classnum;
-	sf(ps,"markers in sequence will now be considered in class '%s'\n",
-	   class_name[classnum]); pr();
+	sprintf(ps, "markers in sequence will now be considered in class '%s'\n",
+            class_name[classnum]); pr();
     } on_exit {
 	unarray(locus,int);
 	relay_messages;
@@ -238,7 +238,7 @@ command make_classes()
 
     while (stoken(&uncrunched_args,sREQUIRED,name))
       if (!make_new_class(name,&errmsg)) 
-	{ sf(ps,CANT_MAKE_CLASS,name,errmsg); pr(); }
+	{ sprintf(ps, CANT_MAKE_CLASS, name, errmsg); pr(); }
 	
     print("classes defined: "); print_class_names(); nl();
 }
@@ -260,8 +260,8 @@ command set_age()
     run {
 	alloc_list_of_all_loci(seq,&locus,&n_loci);
 	for (i=0; i<n_loci; i++) modified[locus[i]]= mod;
-	sf(ps,"markers in sequence will now be considered %s\n",
-	   (mod ? "new":"old")); pr();
+	sprintf(ps, "markers in sequence will now be considered %s\n",
+            (mod ? "new":"old")); pr();
 
     } on_exit {
 	unarray(locus, int);
@@ -287,7 +287,7 @@ command set_error_rate()
     run {
 	alloc_list_of_all_loci(seq,&locus,&n_loci);
 	for (i=0; i<n_loci; i++) error_rate[locus[i]]= prob;
-	sf(ps,ERROR_PROB_IS,rate); pr();
+	sprintf(ps, ERROR_PROB_IS, rate); pr();
 
     } on_exit {
 	unarray(locus, int);
@@ -316,9 +316,9 @@ command make_note()
 	    print("\nNotes:\n");
 	    for (i=0; i<n_loci; i++) {
 		if (nullstr(note[locus[i]])) 
-		  sf(ps,NOTE_FORM,loc2str(locus[i]),"<no note>");
+		  sprintf(ps, NOTE_FORM, loc2str(locus[i]), "<no note>");
 		else 
-		  sf(ps,NOTE_FORM,loc2str(locus[i]),note[locus[i]]);
+		  sprintf(ps, NOTE_FORM, loc2str(locus[i]), note[locus[i]]);
 		pr();
 	    }
 
@@ -328,10 +328,10 @@ command make_note()
 	      error("note args error"); /* FIX */
 	    print("\nNote:\n");
 	    if (nullstr(note[n])) 
-	      sf(ps,NOTE_FORM,loc2str(n),"<no note>");
+	      sprintf(ps, NOTE_FORM, loc2str(n), "<no note>");
 	    else 
 
-	      sf(ps,NOTE_FORM,loc2str(n),note[n]);
+	      sprintf(ps, NOTE_FORM, loc2str(n), note[n]);
 	    pr();
 
 	} else {
@@ -379,7 +379,7 @@ command expand_sequence()
     run {
 	if (nullstr(args)) {
 	    if (current_chrom==NO_CHROM) strcpy(new_seq,seq_string);
-	      else sf(new_seq,"%s: %s",chrom2str(current_chrom),seq_string);
+	      else sprintf(new_seq, "%s: %s", chrom2str(current_chrom), seq_string);
 	} else nstrcpy(new_seq,args,MAX_SEQ_LEN);
 	set_current_seq(new_seq,TRUE);
 	print_sequence();
@@ -404,17 +404,17 @@ command edit_sequence()
 	/* if edit_line cannot be called, an error is sent */
 	set_seq=TRUE; strcpy(prompt,"sequence= ");
 	if (current_chrom==NO_CHROM) strcpy(new_seq,seq_string);
-	  else sf(new_seq,"%s: %s",chrom2str(current_chrom),seq_string);
+	  else sprintf(new_seq, "%s: %s", chrom2str(current_chrom), seq_string);
     } else {
 	get_one_arg(stoken,sREQUIRED,name);
 	if (is_an_old_sequence(name,&value,&err)) {
 	    set_seq=TRUE; strcpy(prompt,"sequence= ");
 	    strcpy(new_seq,value);
 	} else if (is_a_named_sequence(name,&value)) { /* NOT special! */
-	    set_seq=FALSE; sf(prompt,"%s= ",name);
+	    set_seq=FALSE; sprintf(prompt, "%s= ", name);
 	    strcpy(new_seq,value);
 	} else {
-	    sf(ps,"'%s' is not a user-defined name or an old sequence",name);
+	    sprintf(ps, "'%s' is not a user-defined name or an old sequence", name);
 	    error(ps);
 	}
     }
@@ -457,7 +457,7 @@ command let()
     if (nullstr(seq)) strcpy(seq,"none");
     strcpy(new_seq,seq);
     if (!name_sequence(name,new_seq,&err,FALSE)) error(err);
-    sf(ps,"%s= %s\n",name,new_seq); pr();
+    sprintf(ps, "%s= %s\n", name, new_seq); pr();
 }
 
 
@@ -478,10 +478,10 @@ command let_expanding()
 	if (!is_a_sequence(name,&seq,&err)) send(CRASH);
     } else {
 	if (!is_a_sequence(name,&seq,&err))
-	  { sf(ps,"name '%s' is not defined",name); error(ps); }
+	  { sprintf(ps, "name '%s' is not defined", name); error(ps); }
 	/* but it may be a special sequence: name_sequence will catch this */
     }
-    sf(ps,"%s= %s\n",name,seq); pr();
+    sprintf(ps, "%s= %s\n", name, seq); pr();
 }
 
 
@@ -503,7 +503,7 @@ command forget()
     get_one_arg(stoken,sREQUIRED,name);
 
     if (!unname_sequence(name,&errmsg)) {
-	sf(ps,"cannot forget name '%s'\n%s",name,errmsg);
+	sprintf(ps, "cannot forget name '%s'\n%s", name, errmsg);
 	error(ps);
     } else print("ok\n");
 }
@@ -542,8 +542,8 @@ command new_delete()
 		i++;
 	    }
 	    if (!found) {
-		sf(ps,"warning: locus %s (%s) not found in the sequence\n",
-		   locus_num,locus_name); pr();
+		sprintf(ps, "warning: locus %s (%s) not found in the sequence\n",
+                locus_num, locus_name); pr();
 	    }
 	}
 	untokenize_seq(new_seq,seq_tokens,num_seq_tokens);
@@ -612,8 +612,8 @@ command new_insert()
 		xstreq(locus_name,seq_tokens[i])) { found=TRUE; break; }
 	    else i++;
 	}
-	if (!found) { sf(ps,"locus %s (%s) not found in the sequence",
-			 locus_num,locus_name); error(ps); }
+	if (!found) { sprintf(ps, "locus %s (%s) not found in the sequence",
+                          locus_num, locus_name); error(ps); }
 
 	for (j=num_seq_tokens-1; j>i; j--)
 	  strcpy(seq_tokens[j+1],seq_tokens[j]);
@@ -655,7 +655,7 @@ command translate()
 		if (haplotype_subordinate(locus[i])) c='*';
 		else if (haplotyped(locus[i])) c='+';
 	    }
-	    sf(ps,"%4d %s%c",locus[i]+1,raw.locus_name[locus[i]],c);
+	    sprintf(ps, "%4d %s%c", locus[i] + 1, raw.locus_name[locus[i]], c);
 	    pad_to_len(ps,14); pr();
 	    if (i==num_loci-1 || i%5==4) nl(); else print("  ");
 	}

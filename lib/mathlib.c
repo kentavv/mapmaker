@@ -65,8 +65,7 @@ int ipow(int x, int i)	/* Return 2 to the i-th power 0<=i<=INTBITS (15) */
 	return(result);
 }
 
-int ichoose(n,k) /* Best algorithm for small k */
-int n, k;
+int ichoose(int n, int k) /* Best algorithm for small k */
 {
     long a, b, Ln, Lk, L1, Lx;
 
@@ -151,7 +150,7 @@ real scale_limit_quantization; 	/* for present, ignored */
     else stars_per=REAL(max_stars)/REAL(largest_bucket);
 
     for (j=0; j<num_buckets; j++) {
-	sf(ps,"%6.3lf | ",((real)j)*scale+(scale/2.0)+min_data); print(ps);
+	sprintf(ps, "%6.3lf | ", ((real)j) * scale + (scale / 2.0) + min_data); print(ps);
 	stars= INT(REAL(bucket[j]) * stars_per);
 	irange(&stars,0,max_stars);
 	if (bucket[j]>0 && stars<1) print(":");
