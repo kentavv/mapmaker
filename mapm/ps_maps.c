@@ -227,7 +227,7 @@ int chrom;
 real scale;
 {
     int i, j, k, l, num_crunched, interval, marker;
-    double map_length, interval_length, ps_length, dist;
+    double interval_length, ps_length, dist;
     char *loc_str, **placed_markers=NULL;
     MAP *frame;
 

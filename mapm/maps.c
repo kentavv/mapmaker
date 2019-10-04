@@ -167,8 +167,8 @@ MAP *map;
 { 
     int i;
     for (i=0; i<map->num_loci-1; i++)
-      map->rec_frac[i][MALE]= map->rec_frac[i][MALE]= NOT_FIXED;
-    init_for_ctm(map,sex_specific,use_error_rate,TRUE); 
+      map->rec_frac[i][FEMALE]= map->rec_frac[i][MALE]= NOT_FIXED;
+    init_for_ctm(map,sex_specific,use_error_rate,TRUE);
 }
 
 

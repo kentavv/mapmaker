@@ -57,6 +57,8 @@ bool restore_triple();
 void save_triple();
 bool same_2_loop();
 
+bool get_triple(int locus1, int locus2, int locus3, real *d1, real *d2, real *d3);
+
 #define UNFILLED 9999.0
 
 
@@ -541,9 +543,7 @@ real *d1,*d2,*d3;
 }
 
 
-bool get_triple(locus1,locus2,locus3,d1,d2,d3)
-int locus1,locus2,locus3;
-real *d1,*d2,*d3;
+bool get_triple(int locus1, int locus2, int locus3, real *d1, real *d2, real *d3)
 {
     TRIPLE_LIST *p;
 

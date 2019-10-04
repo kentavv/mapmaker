@@ -20,6 +20,10 @@
 #include "system.h"
 #include "shell.h" /* just to get the decl of error()? */
 
+bool get_home_directory(char *buf);
+bool get_code_directory(char *buf);
+bool get_directory(char *buf);
+
 /***** globals- see descriptions in iolib.h *****/
 char *ps, *ps_, *ln, *ln_; 
 bool logging, more_mode, more, ignore_eof, scrollback;
@@ -314,7 +318,6 @@ void fgetdataln(fp,count) /* ln is side-effected */
 FILE *fp;
 int *count;
 {
-    int i;
     char *p;
 
     if (fp==stdin) { getln("? "); if (count!=NULL) ++*count; return; }
@@ -386,8 +389,7 @@ bool dump_held_lines()
    always start dumping into the left column. Thus clear_screen works right. */
 {
     int i;
-    bool did_early_more;
-    
+
     if (held[hold_count][0]!='\0') 
       { hold_count++; held[hold_count][len(held[hold_count])-1]='\n'; }
     if (hold_count==0) return(TRUE);
@@ -655,7 +657,6 @@ char *str;
 bool temp_print(simple_str,fancy_str)
 char *simple_str, *fancy_str;
 {
-    int i, chrs, pos;
     char *str;
 
     /* If the last print command was not temp_print(), we must first get the
@@ -780,7 +781,7 @@ void do_more() { flush_and_force_nl(TRUE); more_break_pending=TRUE; }
 
 void review_memory() 
 {
-    int i, old_photo, old_more, start, num, old_memory;
+    int i, old_photo, start, num, old_memory;
 
     if (memory_end==0 && !memory_wrapped) return;
     if (more_break_pending) if (!really_do_more()) send(INTERRUPT);
@@ -903,7 +904,7 @@ int length;
 
 /* edit_line(): essentially the same rules as input() */
 
-bool edit_line(prompt,str,length,initial)
+void edit_line(prompt,str,length,initial)
 char *prompt, *str;
 int length;			
 char *initial;

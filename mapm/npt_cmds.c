@@ -19,6 +19,8 @@
 /* internal procedures and variables */
 bool try_marker();
 
+bool find_seed_order(bool is_subset, int *locus, int num_loci, int size, int max_tries, real thresh, MAP *map, MAP *temp_map, bool **temp /* [num_loci][num_loci] */);
+
 /* ERROR KLUDGE Stuff */
 #define ESTEPS  200
 #define ESTART  (-9.9)
@@ -301,7 +303,7 @@ command try()
     int *marker_to_try=NULL, **new_marker=NULL, num_to_try_at_once, num_tries;
     int num_seq_loci, num_intervals, first_marker, i, j, n, m, next;
     int num_total, max_paired;
-    bool **exclude_interval=NULL, **zero_placement=NULL, *is_locus_paired=NULL;
+    bool **exclude_interval=NULL, **zero_placement=NULL;
     char *err, token[TOKLEN+1];
 
     void expand_seq_names();      /* KLUDGE from sequence.c, gotta do better */

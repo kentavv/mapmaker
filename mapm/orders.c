@@ -16,6 +16,8 @@
 #define INC_MISC
 #include "mapm.h"
 
+bool good_seed(MAP *map,MAP *temp_map, real thresh);
+
 #define set_excluded(a,b,c) \
   three_pt_excluded[three_pt_index[a]][three_pt_index[b]][three_pt_index[c]] \
     =EXCLUDED /* OBSOLETE? */
@@ -624,13 +626,7 @@ int *subset, *num;
   "Searching for a starting order containing %d of all %d loci...\n"
 #define MAX_SAFETY 100
 
-bool find_seed_order(is_subset,locus,num_loci,size,max_tries,thresh,map,
-		     temp_map,temp)
-bool is_subset;
-int *locus, num_loci, size, max_tries;
-real thresh;
-MAP *map, *temp_map;
-bool **temp; /* [num_loci][num_loci] */
+bool find_seed_order(bool is_subset, int *locus, int num_loci, int size, int max_tries, real thresh, MAP *map, MAP *temp_map, bool **temp /* [num_loci][num_loci] */)
 {
     int try, pick, match, safety, i, j, k;
     /* size must be >=num_loci; if size==num_loci, there is only one choice.
@@ -699,9 +695,7 @@ bool **temp; /* [num_loci][num_loci] */
 }
 
 
-bool good_seed(map,temp_map,thresh)
-MAP *map, *temp_map;
-real thresh;
+bool good_seed(MAP *map,MAP *temp_map, real thresh)
 {
     real best2=VERY_UNLIKELY, best=VERY_UNLIKELY;
     

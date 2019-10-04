@@ -36,7 +36,7 @@ TWO_PT_DATA *two_pt;
 bool sexflag;
 {
     LOCUS locus;
-    real conv_like, unconv_like, theta;
+    real conv_like, unconv_like;
     RECVECTOR **rec_frac;
     if (raw.data_type!=F2) send(CRASH);
 
@@ -68,13 +68,13 @@ real *conv_like, *unconv_like;
     int i;
     int indiv;
     int x, y;
-    real old_log_like, new_log_like, likelihood, recs;
-    real theta, pr_zero, pr_one, pr_two;
+    real recs;
+    real theta, pr_zero, pr_one;
     int pairs[3];  /* pairs: [0]=A-A, B-B; [1]=A-B; [2]=no data */
     
     for(i=0; i<3; i++)
         pairs[i]=0;
-    theta=startrecombs;
+//    theta=startrecombs;
     for(indiv=0; indiv<raw.data.f2.num_indivs; indiv++) {
         x=raw.data.f2.allele[locus.Entry[0]][indiv];
 	y=raw.data.f2.allele[locus.Entry[1]][indiv];
@@ -125,7 +125,7 @@ real *conv_like, *unconv_like;
     char x, y;
     real old_log_like, new_log_like, likelihood, numerator;
     real theta, recs;
-    real matrix1[3], matrix2[3], prob[6][4];
+    real prob[6][4];
 
     theta=startrecombs;
     probinit(prob);

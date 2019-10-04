@@ -250,7 +250,7 @@ void add_to_parsed_eqn(mark, parsed_eqn, parsed_token,new_size,the_index)
 EQUATION **parsed_eqn;
 int mark,parsed_token, *new_size, *the_index;
 {
-    int t, var_index;
+    int t;
         
     if (mark == VARIABLE) {
 	parsed_eqn[*the_index]->is_a = mark;
@@ -348,7 +348,7 @@ int *size;
 void postfix(parsed_eqn, postfixed)
 EQUATION **parsed_eqn, **postfixed;
 {
-    int i,kj,parsed_index=0, temp_index=0, post_index=0;
+    int i,parsed_index=0, temp_index=0, post_index=0;
     EQUATION **temp_eqn;
     
     array(temp_eqn,MAX_EQN_SIZE,EQUATION*);
@@ -400,7 +400,6 @@ EQUATION **postfixed;
 real (*value_find)();
 {
     int i, missing = FALSE;
-    char *symbol;
     real number_to_use,c,exponent, divisor, var_push,subtract, value_lookup();
     i=0;
     stack_pointer = 0;

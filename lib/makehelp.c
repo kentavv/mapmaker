@@ -409,7 +409,7 @@ int topic, kind;
 
 void write_topics_and_end()
 {
-    int i, s, k;
+    int i, s;
     STRING temp;
     if (!make_man) return;
 

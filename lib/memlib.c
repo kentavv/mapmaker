@@ -35,13 +35,12 @@ CALLOC_NUM_TYPE num;
 SIZEOF_TYPE cell_sizeof;
 {
 	CALLOC_PTR_TO *p;	
-	long chars;
 
 	if (num==REALLY_1) num=1;
 	else if (num<=0) send(CRASH); 
 	else num++; /* paranoia */ 
 
-	chars=num*cell_sizeof;
+//	long chars=num*cell_sizeof;
 	/* Note that this test will be inadequate if word-aligning
 	   causes things to take up more space than their sizeof()! */
 	/* if (chars > 65472L) send(CRASH);  64K-64 bytes max KLUDGE */

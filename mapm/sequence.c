@@ -1377,9 +1377,7 @@ bool is_a_named_locus(char *str /* must be a single token, downcased */, int *n)
 }
 
 
-bool is_a_named_sequence(str,seq)  /* internal use only */
-char *str;
-char **seq;
+bool is_a_named_sequence(char *str, char **seq)  /* internal use only */
 {
     char *foo; int fail;
     return (get_named_entry(str,&foo,seq,the_context->named_sequences,&fail));

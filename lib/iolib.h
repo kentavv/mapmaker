@@ -416,5 +416,5 @@ bool do_gnu_readline();
 bool do_gnu_edit();
 bool gnu_copyright();
 
-bool edit_line(); /* make real decl above */
+void edit_line(); /* make real decl above */
 

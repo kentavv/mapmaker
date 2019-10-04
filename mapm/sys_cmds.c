@@ -20,6 +20,9 @@ FILE *try_to_open();
 void try_to_unload();
 void try_to_load();
 
+bool is_an_old_sequence();
+bool is_a_named_sequence(char *str, char **seq);  /* internal use only */
+
 #define SAVE_ERR1 \
  "\nAn error occured while saving data: previous data remain loaded\n"
 #define SAVE_ERR2 \

@@ -424,7 +424,7 @@ char *filename, *symbol;
 	    while (white(ln[0])  && ln[0]!='\0') ln++;
 	    if (first && xstreq(str,"case")) 
 	      { uppercase_genotypes=FALSE; continue; }
-	    if (first && xstreq(str,"symbols") || xstreq(str,"symbols:")) {
+	    if ((first && xstreq(str,"symbols")) || xstreq(str,"symbols:")) {
 		if (nullstr(ln)) baddata(SYM_SYMBOLS);
 		  else continue;
 	    }

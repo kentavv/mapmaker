@@ -63,7 +63,7 @@ char *time_string()    /* return ptr to "" if fail */
 bool shell_command(cmd) 
 char *cmd; 
 { 
-    bool success, had_curses;
+    bool success;
     success=FALSE;
 
 #ifdef NO_SYSTEM_FUNC
@@ -71,7 +71,7 @@ char *cmd;
 #else
 /* NEED WIMP HOOK */
 #ifdef HAVE_CURSES
-    had_curses= curses;
+    bool had_curses= curses;
     if (curses) curses_end();  /* DO SOMETHING */
 #endif
 #ifndef VMS
@@ -91,14 +91,14 @@ char *cmd;
 bool subshell()
 {
         char *shell_name, cmd[120];
-	bool success=FALSE, had_curses;
+	bool success=FALSE;
 	
 #ifdef NO_SYSTEM_FUNC
     return(FALSE);
 #else
 /* NEED WIMP HOOK */
 #ifdef HAVE_CURSES
-	had_curses= curses;
+	bool had_curses= curses;
 	if (curses) curses_end();  /* DO SOMETHING */
 #endif
 #ifdef TRY_SHELL_VAR
@@ -138,8 +138,7 @@ char *dir;
     return(FALSE); 
 }
 
-bool get_directory(buf)
-char *buf;
+bool get_directory(char *buf)
 { 
     if (buf==NULL) send(CRASH);
 #ifdef HAVE_GETCWD
@@ -148,8 +147,7 @@ char *buf;
     return(FALSE); 
 }
 
-bool get_home_directory(buf)
-char *buf;
+bool get_home_directory(char *buf)
 { 
     char *dir;
     if (buf==NULL) send(CRASH);
@@ -160,8 +158,7 @@ char *buf;
     return(FALSE);
 }
 
-bool get_code_directory(buf)
-char *buf;
+bool get_code_directory(char *buf)
 { 
     char *dir;
     if (buf==NULL) send(CRASH);
@@ -231,7 +228,7 @@ void untrapped_msg() /* DO NOT ASSUME THAT MSGNAME IS SET! */
 {
     /* if (msg!=IOERROR) flush(); most are disk errors */
     if (msg<1 || msg>MSGS) 
-      { fprintf(stderr, "Untrapped error %d (???)\n",msg); exit(1); }
+      { fprintf(stderr, "Untrapped error %d (?)\n",msg); exit(1); }
     fprintf(stderr,"Untrapped error %d (%s)\n",msg,mname[msg]);
     (*(mstrmsg[msg]))(ps_); fprintf(stderr,ps_); fprintf(stderr,"\n");
 }
@@ -240,7 +237,7 @@ void trapped_msg() /* DO NOT ASSUME THAT MSGNAME IS SET! */
 {
     /* if (msg!=IOERROR) flush(); most are disk errors */
     if (msg<1 || msg>MSGS) 
-      { fprintf(stderr,"Error %d (???)\n",msg); exit(1); }
+      { fprintf(stderr,"Error %d (?)\n",msg); exit(1); }
     fprintf(stderr,"Error %d (%s)\n",msg,mname[msg]);
     (*(mstrmsg[msg]))(ps_); fprintf(stderr,ps_); fprintf(stderr,"\n");
 }
@@ -252,7 +249,7 @@ void trapped_msg() /* DO NOT ASSUME THAT MSGNAME IS SET! */
 void verbose_untrapped_msg() /* DO NOT ASSUME THAT MSGNAME IS SET! */
 {
   fprintf(stderr,"*** Drats! An unhandled internal error occured. ***\n");
-  if (msg<1 || msg>MSGS) { fprintf(stderr,"error #%d (???)\n",msg); exit(1); }
+  if (msg<1 || msg>MSGS) { fprintf(stderr,"error #%d (?)\n",msg); exit(1); }
     else fprintf(stderr,"Error message #%d (%s) was sent.\n",msg,mname[msg]);
   (*(mstrmsg[msg]))(ps_); fprintf(stderr,ps_); 
   if (!nullstr(ps_)) fprintf(stderr,"\n");
@@ -742,7 +739,7 @@ void get_cmd_line_args(argc_ptr,argv)
 int *argc_ptr;
 char *argv[];
 {
-    int i, n;
+    int i;
 
     for (i=1; i<*argc_ptr; i++) {
 	if (argv[i][0]!=ARG_CHAR) {
@@ -983,7 +980,7 @@ char *where;
     more= old_more;  scrollback= old_scrollback;
     clear_screen();
 
-    if (where==NULL) where=ptr_to("???");
+    if (where==NULL) where=ptr_to("?");
     fprintf(stderr,"\nwarning: curses failed in %-50s\n",where);
     fprintf(stderr,"attempting to continue in line mode...\n\n");
     flush();

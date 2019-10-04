@@ -23,6 +23,7 @@ void assign_probs();
 void make_genotype_arrays();
 int map_function;
 
+bool valid_trait_num();
 
 /********* FUNCTIONS TO DEAL WITH THE DATA AND MAP STRUCTS FOR QCTM *********/
 	
@@ -191,7 +192,7 @@ QTL_MAP *map; 	/* side-effected */
 	      case F3DOMINANT:  a=1.0; b= -2.0; c=0.0; break;
 	      case F3RECESSIVE: a=1.0; b=  2.0; c=0.0; break;
 	      case ADDITIVE:    a=0.0; b=  1.0; c=0.0; break;
-	      case TEST_MODELS: send(CRASH); /* should never make it to here */
+	      case TEST_MODELS: send(CRASH); break; /* should never make it to here */
 	      case FIXED:	/* a and b should be set, and c is ignored */
 	      			map->qtl_weight[i]= 0.0; 
 	      			map->qtl_dominance[i]= 0.0; break;

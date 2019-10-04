@@ -94,7 +94,8 @@ TABLE *p;
 int count_table_entries(p)
 TABLE *p;
 { int i; TABLE_ENTRY *q;
-  for (i=0, q=p->list; q!=NULL; q=q->next) i++; return(i); }
+  for (i=0, q=p->list; q!=NULL; q=q->next) i++;
+  return(i); }
   
 
 TABLE_ENTRY *get_entry_to_bash(p)
@@ -124,8 +125,7 @@ void put_named_entry(name,str,p)
 char *name, *str;
 TABLE *p; /* side-effected */
 {
-    TABLE_ENTRY *last, *match, *q;
-    int num_matched;
+    TABLE_ENTRY *last, *q;
 
     if (!p->named_entries || !valid_name(name)) send(CRASH);
 
@@ -158,7 +158,6 @@ TABLE *p; /* side-effected */
 flag *fail_reason; /* side-effected */
 {
     TABLE_ENTRY *q;
-    int num_matched;
 
     /* Changed to allow only exact matches */
     if (!p->named_entries || !is_a_token(name)) send(CRASH);
@@ -179,7 +178,6 @@ TABLE *p;
 flag *fail_reason;
 {
     TABLE_ENTRY *match, *match_prev, *q;
-    int num_matched;
 
     if (!p->named_entries || !is_a_token(name)) send(CRASH);
     for (match=match_prev=NULL, q=p->list; q!=NULL; q=q->next) {
@@ -188,12 +186,13 @@ flag *fail_reason;
 	    break;
 	} else match_prev=match;
     }
-    *fail_reason=NAME_DOESNT_MATCH; return(FALSE);
+    *fail_reason=NAME_DOESNT_MATCH;
+    return(FALSE);
 
-    if (match_prev==NULL) p->list=p->list->next; /* if its the first entry */
-        else match_prev->next=match->next;       /* delete from list */
-    match->next=p->unused; p->unused=match; /* add q to unused list */
-    return(TRUE);
+//    if (match_prev==NULL) p->list=p->list->next; /* if its the first entry */
+//        else match_prev->next=match->next;       /* delete from list */
+//    match->next=p->unused; p->unused=match; /* add q to unused list */
+//    return(TRUE);
 }
 
 
@@ -233,10 +232,12 @@ TABLE *p;
 }
 
 
+#if 0
 bool delete_numbered_entry(num,p)
 int num;
 TABLE *p;
 { send(CRASH); /* NOT IMPLEMENTED */ }
+#endif
 
 
 void save_table(p,fp,index)
@@ -244,9 +245,6 @@ TABLE *p;
 FILE *fp;
 int index;
 {
-    char *str,*name;
-    int num;
-
     if(index == INDEX_BY_NAME) {
 	for(Te=p->list; Te!=NULL; Te=Te->next) {
 	    sf(ps,"%s %s\n",Te->id.name,Te->string);
@@ -263,9 +261,9 @@ int index;
 void load_table(p,fp,index,num_entries)
 TABLE *p;
 FILE *fp;
-int index;
+int index, num_entries;
 {
-    char *str=NULL, *ptr, name[TOKLEN+1], *err;
+    char *str=NULL, *ptr, name[TOKLEN+1];
     int num,i;
 
     run {

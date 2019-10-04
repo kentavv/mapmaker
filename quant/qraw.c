@@ -22,6 +22,8 @@
 //#undef CRASH
 #include "qtl.h"
 
+int field(char **p_str, int length, char *val);   /* OBSOLETE */
+
 /* External statics */
 RAW raw;
 int **make_interval_genotype; 
@@ -143,7 +145,7 @@ char *temp;
     int name_len=80, checker, mapm_loci;
     int n_indivs, n_loci, n_traits, random_check1, random_check2, num_entries;
     real rf;
-    char **name,*err;
+    char *name,*err;
     char num_of_chroms[TOKLEN+1];
     char all_str[5*SEQ_LEN], current_chrom[SEQ_LEN];
     char default_intercross_chars[10], default_backcross_chars[10];
@@ -494,7 +496,7 @@ FILE *fp;
 
 void read_map_locus(fp,indivs,t_loc,order,n_loci)
 FILE *fp;
-int indivs, n_loci, *order;
+int indivs, t_loc, n_loci, *order;
 /* could send BADDATA or IOERROR */
 {
     

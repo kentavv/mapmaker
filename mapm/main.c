@@ -51,23 +51,30 @@ int main(int argc, char *argv[])
     prep_init();
 #endif
 
-    if (!nullstr(file_arg[PHOTO_FILE_ARG])) run {
-	nl();
-	if ((append_it &&  !photo_to_file(file_arg[PHOTO_FILE_ARG],APPEND)) ||
-	    (!append_it && !photo_to_file(file_arg[PHOTO_FILE_ARG],WRITE)))
-	  send(CANTOPEN);
-	sf(ps,"photo is on: file is '%s'\n",photo_file); pr();
-    } on_error { print("error opening photo file\n"); }
+    if (!nullstr(file_arg[PHOTO_FILE_ARG])) {
+        run {
+                nl();
+                if ((append_it && !photo_to_file(file_arg[PHOTO_FILE_ARG], APPEND)) ||
+                    (!append_it && !photo_to_file(file_arg[PHOTO_FILE_ARG], WRITE)))
+                    send(CANTOPEN);
+                sf(ps, "photo is on: file is '%s'\n", photo_file);
+                pr();
+            } on_error { print("error opening photo file\n"); }
+    }
 
-    if (!nullstr(file_arg[LOAD_FILE_ARG])) run {
-	nl();
-	fp=open_file(file_arg[LOAD_FILE_ARG],READ);
-	try_to_load(fp,file_arg[LOAD_FILE_ARG],FALSE,prep_it); /*verbose*/
-    } on_error { print("error opening load or prep file\n"); }
+    if (!nullstr(file_arg[LOAD_FILE_ARG])) {
+        run {
+                nl();
+                fp = open_file(file_arg[LOAD_FILE_ARG], READ);
+                try_to_load(fp, file_arg[LOAD_FILE_ARG], FALSE, prep_it); /*verbose*/
+            } on_error { print("error opening load or prep file\n"); }
+    }
 
-    if (!nullstr(file_arg[RUN_FILE_ARG])) run {
-	redirect_input(file_arg[RUN_FILE_ARG],TRUE); /*verbose*/
-    } on_error { print("error opening run file\n"); }
+    if (!nullstr(file_arg[RUN_FILE_ARG])) {
+        run {
+                redirect_input(file_arg[RUN_FILE_ARG], TRUE); /*verbose*/
+            } on_error { print("error opening run file\n"); }
+    }
 
     command_loop();
     /* screen_end(); */

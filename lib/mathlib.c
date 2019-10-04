@@ -56,8 +56,7 @@ int x,i;
 	return(result);
 }
 
-int ipow(x,i)	/* Return 2 to the i-th power 0<=i<=INTBITS (15) */
-int i;
+int ipow(int x, int i)	/* Return 2 to the i-th power 0<=i<=INTBITS (15) */
 {
 	int result; int j;
 	
@@ -223,6 +222,7 @@ int length;
 { int i; for (i=0; i<length; i++) to[i]=from[i]; }
 
 
+/*
 void dummy_math_calls()
 {
     real x,y,z; x=y=z=0.5;
@@ -246,6 +246,7 @@ void dummy_math_calls()
     x=acos(y);
     x=atan(y);
 }
+*/
 
 
 real two_sigma_sq; 
@@ -337,7 +338,7 @@ real **m_inverse;
    its left square will be left with the result (ignore the right side) */
 {
     int row, col, c, twice_size;
-    real diff, value;
+    real value;
     
     twice_size= 2 * size;
     for (row=0; row<size; row++)

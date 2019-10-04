@@ -181,8 +181,7 @@ int xstreq(s1,s2)	/* !!! currently broken !!! */
 char *s1, *s2;
 {
     int i, j, preceeding_space;
-    char c, d;
-	
+
     i=0; j=0; 
     while (white(s1[i]) || trash(s1[j])) i++;
     while (white(s2[j]) || trash(s2[j])) j++;
@@ -212,7 +211,8 @@ char *truncstr(str,length)
 char *str;
 int length;
 { if (str==NULL) send(CRASH);
-  if (len(str)>length) str[length]='\0'; return(str); }
+  if (len(str)>length) str[length]='\0';
+  return(str); }
   
 
 char *pad_to_len(str,length)
@@ -550,10 +550,7 @@ char *str;
 }
   
 
-int field(p_str, length, val)   /* OBSOLETE */
-char **p_str;
-int length;
-char *val;
+int field(char **p_str, int length, char *val)   /* OBSOLETE */
 {
 	if (len(*p_str)<length) return(FALSE);
 	nstrcpy(val,*p_str,length);

@@ -42,6 +42,12 @@ void qtl_top();
 char *genetics_str();
 DATA *map_data; /* allocated max_intervals long - used for scratch space */
 
+bool isa_locus_name(char *str, int *num /* the locus# if TRUE, else the #matched if FALSE */, bool *exact);
+bool isa_seq_name(char *str, int *num /* the #matched if FALSE - undefined if true */, bool *exact);
+bool isa_trait_name(char *str, int *num /* the trait# if TRUE, else the #matched if FALSE */, bool *exact);
+
+void make_help_entries();
+
 /********** Message definitions for QTL **********/
 char *BADDATA_ln;
 char *BADDATA_error;
@@ -116,18 +122,23 @@ int main(int argc, char *argv[])
 
     run { help_file=open_file("qtl.help",READ); } except_when(CANTOPEN) {}
 
-    if (!nullstr(file_arg[PHOTO_FILE_ARG])) run {
-        nl();
-	if ((append_it && !photo_to_file(file_arg[PHOTO_FILE_ARG],APPEND)) ||
-	    (!append_it && !photo_to_file(file_arg[PHOTO_FILE_ARG],WRITE)))
-	  send(CANTOPEN);
-	sf(ps,"photo is on: file is '%s'\n",photo_file); pr();
-    } on_error { print("error opening photo file\n"); }
+    if (!nullstr(file_arg[PHOTO_FILE_ARG])) {
+        run {
+                nl();
+                if ((append_it && !photo_to_file(file_arg[PHOTO_FILE_ARG], APPEND)) ||
+                    (!append_it && !photo_to_file(file_arg[PHOTO_FILE_ARG], WRITE)))
+                    send(CANTOPEN);
+                sf(ps, "photo is on: file is '%s'\n", photo_file);
+                pr();
+            } on_error { print("error opening photo file\n"); }
+    }
 
-    if (!nullstr(file_arg[RUN_FILE_ARG],READ)) run {
-        redirect_input(file_arg[RUN_FILE_ARG],TRUE);
-    } on_error { print("error opening run file\n"); }
-        
+    if (!nullstr(file_arg[RUN_FILE_ARG],READ)) {
+        run {
+                redirect_input(file_arg[RUN_FILE_ARG], TRUE);
+            } on_error { print("error opening run file\n"); }
+    }
+
     command_loop();
     /* screen_end(); */
     exit_main();
@@ -736,10 +747,7 @@ int *num;
 
 /* Lower-level */
 
-bool isa_trait_name(str,num,exact)
-char *str;
-int *num; /* the trait# if TRUE, else the #matched if FALSE */
-bool *exact;
+bool isa_trait_name(char *str, int *num /* the trait# if TRUE, else the #matched if FALSE */, bool *exact)
 {
     int i, n_matched;
 
@@ -755,10 +763,7 @@ bool *exact;
 }
 
 
-bool isa_locus_name(str,num,exact)
-char *str;
-int *num; /* the locus# if TRUE, else the #matched if FALSE */
-bool *exact;
+bool isa_locus_name(char *str, int *num /* the locus# if TRUE, else the #matched if FALSE */, bool *exact)
 {
     int i, n_matched;
 
@@ -778,10 +783,7 @@ bool *exact;
 }
 
 
-bool isa_seq_name(str,num,exact)
-char *str;
-int *num; /* the #matched if FALSE - undefined if true */
-bool *exact;
+bool isa_seq_name(char *str, int *num /* the #matched if FALSE - undefined if true */, bool *exact)
 {
     char *seq, *full_name;
     int err;

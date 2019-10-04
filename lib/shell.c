@@ -358,7 +358,7 @@ char *description, *arguments, *defaults;
 bool valid_name(str) /* checks the syntax of names */
 char *str;
 { 
-  int i;  char *token;
+  int i;
 
   if (!is_a_token(str)) return(FALSE);
   if (strin(NAME_TAG_CHARS,str[0])) str++;
@@ -379,7 +379,7 @@ char *line;
 char **rest; /* side-effected */
 bool help_ok;
 { 
-    int i, j, n_tokens, last_match;
+    int i, n_tokens, last_match;
     char *foo;
     extern char **tokens, **remaining; /* temps */
     extern int *matched, num_matched;
@@ -477,7 +477,7 @@ int com_matches(in_tokens,com_tokens,num_to_match,exact)
 char **in_tokens, **com_tokens;
 int num_to_match, *exact;
 {
-    int i,j;
+    int i;
 	
     for (i=0, *exact=TRUE; i<num_to_match; i++) 
       if (!matches(in_tokens[i],com_tokens[i])) return(FALSE);
@@ -509,8 +509,10 @@ char *line; /* line IS side-effected */
 	/* maxstrins(line," ",MAXLINE); */
 	maxstrins(line,str,MAXLINE); 
 	despace(line);
-	print("="); if (cmd_history_num>9) print("=");
-	if (cmd_history_num>99) print("="); print("> ");
+	print("=");
+	if (cmd_history_num>9) print("=");
+	if (cmd_history_num>99) print("=");
+	print("> ");
 	print(line); nl();
 	expand_history_references(line);
 
@@ -1041,7 +1043,7 @@ command help()
 
 		    if (!nullstr(cmd[i]->abbreviation)) 
 		      sf(str,"%s (%s)",cmd[i]->name,cmd[i]->abbreviation);
-		    else sf(str,"%s",cmd[i]->name,"");
+		    else sf(str,"%s",cmd[i]->name);
 		    if (!nullstr(cmd[i]->cmd_help)) {
 			for (k=len(str); k<HELP_LEFT; k++) str[k]='.'; 
 			str[HELP_LEFT]='\0';
@@ -1058,7 +1060,7 @@ command help()
 		      { print("\nOTHER COMMANDS:\n"); got_any=TRUE; }
 		    if (!nullstr(cmd[i]->abbreviation))
 		      sf(ps,"%s (%s)\n",cmd[i]->name,cmd[i]->abbreviation);
-		    else sf(ps,"%s\n",cmd[i]->name,"");
+		    else sf(ps,"%s\n",cmd[i]->name);
 		    pr();
 		}
 	    }
