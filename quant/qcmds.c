@@ -315,12 +315,12 @@ command set_intervals()
     
     qtl_ready(ANY_DATA,NOSEQ,NOTRAIT,NOQCTM);
     if (nullstr(args)) {
-	sf(ps,"The sequence is%s%s'\n",
-	   (len(ints_string)<55 ? " '":":\n'"),ints_string); pr();
+	sprintf(ps, "The sequence is%s%s'\n",
+            (len(ints_string)<55 ? " '":":\n'"), ints_string); pr();
 
     } else if (set_qtl_sequence(args,errmsg,&errpos)) {
-	sf(ps,"The sequence is now%s%s'",
-	   (len(ints_string)<55 ? " '":":\n'"),ints_string); 
+	sprintf(ps, "The sequence is now%s%s'",
+            (len(ints_string)<55 ? " '":":\n'"), ints_string); 
 	maybe_ok(ps);
 
     } else {
@@ -346,7 +346,7 @@ command show_seq_history()
 	i=Te->id.num;  cmd_str=Te->string; 
 	if (i>=first_to_print && i<context[active_context]->seq_history_num) {
 	    if(!printed_any){print("Previous sequences:\n"); printed_any=TRUE;} 
-	    sf(ps,"%3d  ",i+1); pr(); print(cmd_str); nl(); 
+	    sprintf(ps, "%3d  ", i + 1); pr(); print(cmd_str); nl(); 
 	}
     }
     if (!printed_any) print("No sequences have yet been entered.\n");
@@ -363,12 +363,12 @@ command set_trait()
 
 	} else { /* there was an argument */
 	    set_trait_spec(args);
-	    sf(ps,"The current trait is now: %s",trait_str());
+	    sprintf(ps, "The current trait is now: %s", trait_str());
 	    maybe_ok(ps);
 	} 
     }
     except_when(BADTRAIT) {
-	sf(ps,"Bad trait name or number specified.\n%s",BADTRAIT_errmsg); 
+	sprintf(ps, "Bad trait name or number specified.\n%s", BADTRAIT_errmsg); 
 	error(ps);
     }
 }
@@ -385,15 +385,15 @@ command translate()
     print(BIG_DIVIDER); print("LOCI:\n");
     for (i=0; i<raw.n_loci; i++) {
 	if ((printed++)%5==0) nl();
-	sf(ps,"%3d %-10s ",raw.original_locus[i],raw.locus_name[i]); pr();
+	sprintf(ps, "%3d %-10s ", raw.original_locus[i], raw.locus_name[i]); pr();
     }
     nl();
 
 /*    nl(); print("\nTRAITS:\n"); printed=0;
     for (i=0; i<raw.n_traits; i++) {
 	if ((printed++)%5==0) nl();
-	if (nullstr(raw.trait_name[i])) sf(ps,"%3d <deleted>  ",i+1);
-	  else sf(ps,"%3d %-10s ",i+1,raw.trait_name[i]); 
+	if (nullstr(raw.trait_name[i])) sprintf(ps,"%3d <deleted>  ",i+1);
+	  else sprintf(ps,"%3d %-10s ",i+1,raw.trait_name[i]); 
 	pr();
     } nl(); */
     print(BIG_DIVIDER);
@@ -401,11 +401,11 @@ command translate()
     /* Old code - what to do if there are args? 
     while (stoken(&args,sREQUIRED,temp)) { 
 	if (valid_locus_str(temp,&i,&errmsg)) {
-	    sf(ps," locus %d %-10s\n",i+1,raw.locus_name[i]); print(ps);
+	    sprintf(ps," locus %d %-10s\n",i+1,raw.locus_name[i]); print(ps);
 	} else if (valid_trait_str(temp,&i,&errmsg)) {
-	    sf(ps," trait %d %-10s\n",i+1,raw.trait_name[i]); print(ps);
+	    sprintf(ps," trait %d %-10s\n",i+1,raw.trait_name[i]); print(ps);
 	} else {
-	    sf(ps," Error: \"%s\" doesn't match, or is ambiguous.\n",
+	    sprintf(ps," Error: \"%s\" doesn't match, or is ambiguous.\n",
 	       temp); print(ps);
 	}
     } */
@@ -465,7 +465,7 @@ command qtl_like()
     
     for_all_orders(ints,map,perm) {
 	 like= qtl_map_like(map); 
-	sf(ps,"like= %-7.2lf\n",like); pr();
+	sprintf(ps,"like= %-7.2lf\n",like); pr();
     } */
 }
 
@@ -530,22 +530,22 @@ command show_best()
     op=compares[compare]; nl();
 
     if (contig<0) {
-	sf(ps,SAVED_COMP_BEST,maybe_s(op->num_contigs),compare+1,1); pr();
+	sprintf(ps, SAVED_COMP_BEST, maybe_s(op->num_contigs), compare + 1, 1); pr();
 	if (op->num_contigs>1)
-	  { sf(ps,SAVED_COMP_COMPS,compare+1,op->num_contigs); pr(); }
-	sf(ps,SAVED_COMP_TRAIT,op->trait+1,raw.trait_name[op->trait]); pr();
+	  { sprintf(ps, SAVED_COMP_COMPS, compare + 1, op->num_contigs); pr(); }
+	sprintf(ps, SAVED_COMP_TRAIT, op->trait + 1, raw.trait_name[op->trait]); pr();
 	print_old_seq(op->seq_string); 
-	sf(ps,SAVED_COMP_THRESH,threshold,falloff); pr();
+	sprintf(ps, SAVED_COMP_THRESH, threshold, falloff); pr();
 	for (i=0; i<op->num_contigs; i++) {
-	    nl(); sf(ps,SAVED_COMP_NUM,compare+1,i+1); pr(); 
+	    nl(); sprintf(ps, SAVED_COMP_NUM, compare + 1, i + 1); pr(); 
 	    print_best_saved_maps(compare,i,threshold,falloff);
 	}
 
     } else {
-	sf(ps,SAVED_COMP_BEST,"",compare+1,contig+1); pr();
-	sf(ps,SAVED_COMP_TRAIT,op->trait+1,raw.trait_name[op->trait]); pr();
+	sprintf(ps, SAVED_COMP_BEST, "", compare + 1, contig + 1); pr();
+	sprintf(ps, SAVED_COMP_TRAIT, op->trait + 1, raw.trait_name[op->trait]); pr();
 	print_old_seq(op->seq_string); 
-	sf(ps,SAVED_COMP_THRESH,threshold,falloff); pr(); 
+	sprintf(ps, SAVED_COMP_THRESH, threshold, falloff); pr(); 
 	nl(); print_best_saved_maps(compare,contig,threshold,falloff);
     }
 }
@@ -571,19 +571,19 @@ command show_compare()
     op=compares[compare]; nl();
 
     if (contig<0) {
-	sf(ps,SAVED_COMP_WHICH,maybe_s(op->num_contigs),compare+1,1); pr();
+	sprintf(ps, SAVED_COMP_WHICH, maybe_s(op->num_contigs), compare + 1, 1); pr();
 	if (op->num_contigs>1)
-	  { sf(ps,SAVED_COMP_COMPS,compare+1,op->num_contigs); pr(); }
-	sf(ps,SAVED_COMP_TRAIT,op->trait+1,raw.trait_name[op->trait]); pr();
+	  { sprintf(ps, SAVED_COMP_COMPS, compare + 1, op->num_contigs); pr(); }
+	sprintf(ps, SAVED_COMP_TRAIT, op->trait + 1, raw.trait_name[op->trait]); pr();
 	print_old_seq(op->seq_string); 
 	for (i=0; i<op->num_contigs; i++) {
-	    nl(); sf(ps,SAVED_COMP_NUM,compare+1,i+1); pr(); 
+	    nl(); sprintf(ps, SAVED_COMP_NUM, compare + 1, i + 1); pr(); 
 	    print_saved_maps(compare,i);
 	}
 
     } else {
-	sf(ps,SAVED_COMP_WHICH,"",compare+1,contig+1); pr();
-	sf(ps,SAVED_COMP_TRAIT,op->trait+1,raw.trait_name[op->trait]); pr();
+	sprintf(ps, SAVED_COMP_WHICH, "", compare + 1, contig + 1); pr();
+	sprintf(ps, SAVED_COMP_TRAIT, op->trait + 1, raw.trait_name[op->trait]); pr();
 	print_old_seq(op->seq_string); 
 	nl(); print_saved_maps(compare,contig);
     }
@@ -609,7 +609,7 @@ command wiggle()
     
     if (print_scans) {
 	nl(); print_trait(2); print_seq();
-	sf(ps,THRESHOLD_AND_SCALE,threshold,scale); pr();
+	sprintf(ps, THRESHOLD_AND_SCALE, threshold, scale); pr();
     }
     run { 
 	wiggle=allocate_wiggle_struct(trait,ints,ints_string,num_intervals,
@@ -647,8 +647,8 @@ command wiggle()
 	if (print_scans)
 	  print_wiggle_interval(NULL); nl(); /* line on the bottom */
 	if (wiggle>=0) {
-	    if (num_orders==1) sf(ps,WIGGLE_STORED,wiggle+1); 
-	    else sf(ps,WIGGLES_STORED,wiggle+1,wiggle+1,num_orders);
+	    if (num_orders==1) sprintf(ps, WIGGLE_STORED, wiggle + 1); 
+	    else sprintf(ps, WIGGLES_STORED, wiggle + 1, wiggle + 1, num_orders);
 	    pr();
 	}
     } on_exit {
@@ -681,10 +681,10 @@ command list_wiggles()
     else if (order<0 && wiggles[wiggle]->num_orders==1) order=0;
     op=wiggles[wiggle]; nl();
 
-    sf(ps,SAVED_WIGGLE_WIG,maybe_s(op->num_orders),wiggle+1,1); pr();
+    sprintf(ps, SAVED_WIGGLE_WIG, maybe_s(op->num_orders), wiggle + 1, 1); pr();
     if (op->num_orders>1) 
-      { sf(ps,SAVED_WIGGLE_WIGS,wiggle+1,op->num_orders); pr(); }
-    sf(ps,SAVED_WIGGLE_TRAIT,op->trait+1,raw.trait_name[op->trait]); pr();
+      { sprintf(ps, SAVED_WIGGLE_WIGS, wiggle + 1, op->num_orders); pr(); }
+    sprintf(ps, SAVED_WIGGLE_TRAIT, op->trait + 1, raw.trait_name[op->trait]); pr();
     print_old_seq(op->seq_string); nl(); 
     print_saved_wiggle(wiggle);
 }
@@ -710,17 +710,17 @@ command show_wiggle()
     op=wiggles[wiggle]; nl();
 
     if (order<0) { 
-	sf(ps,SAVED_WIGGLE_WIG,maybe_s(op->num_orders),wiggle+1,1); pr();
+	sprintf(ps, SAVED_WIGGLE_WIG, maybe_s(op->num_orders), wiggle + 1, 1); pr();
 	if (op->num_orders>1) 
-	  { sf(ps,SAVED_WIGGLE_WIGS,wiggle+1,op->num_orders); pr(); }
-	sf(ps,SAVED_WIGGLE_TRAIT,op->trait+1,raw.trait_name[op->trait]); pr();
+	  { sprintf(ps, SAVED_WIGGLE_WIGS, wiggle + 1, op->num_orders); pr(); }
+	sprintf(ps, SAVED_WIGGLE_TRAIT, op->trait + 1, raw.trait_name[op->trait]); pr();
 	print_old_seq(op->seq_string); nl(); 
 	print_saved_wiggle(wiggle);
     } else {
-	sf(ps,SAVED_WIGGLE_WIG,"",wiggle+1,order+1); pr();
-	sf(ps,SAVED_WIGGLE_TRAIT,op->trait+1,raw.trait_name[op->trait]); pr();
+	sprintf(ps, SAVED_WIGGLE_WIG, "", wiggle + 1, order + 1); pr();
+	sprintf(ps, SAVED_WIGGLE_TRAIT, op->trait + 1, raw.trait_name[op->trait]); pr();
 	print_old_seq(op->seq_string); 
-	sf(ps,THRESHOLD_AND_SCALE,threshold,scale); pr(); 
+	sprintf(ps, THRESHOLD_AND_SCALE, threshold, scale); pr(); 
 	nl(); print_wiggle_left_seq(op->data[order][0]->map);
 	last= op->data[order][0]->map->num_intervals-1;
 	print_wiggle_genetics(&op->data[order][0]->map->constraint[last]);
@@ -756,21 +756,21 @@ command show_peaks()
     get_wiggle_nums(arg,&wiggle,&order);
     if (wiggle<0) { wiggle=num_wiggles-1; order=wiggles[wiggle]->num_orders-1;}
     else if (order<0 && wiggles[wiggle]->num_orders==1) order=0;
-    if (order<0) { sf(ps,WHICH_WIGGLE,wiggle+1,wiggle+1,wiggle+1,
+    if (order<0) { sprintf(ps, WHICH_WIGGLE, wiggle + 1, wiggle + 1, wiggle + 1,
 		      wiggles[wiggle]->num_orders-1); error(ps); }
 
     run {
 	array(name, NAME_LEN+1, char);
 	peaks=find_wiggle_peaks(wiggle,order,threshold,-2.0,falloff,2.0,TRUE); 
 	nl(); 
-	sf(ps,PEAKS_TITLE,wiggle+1,order+1,wiggles[wiggle]->trait+1,
-	   raw.trait_name[wiggles[wiggle]->trait]); pr();
+	sprintf(ps, PEAKS_TITLE, wiggle + 1, order + 1, wiggles[wiggle]->trait + 1,
+            raw.trait_name[wiggles[wiggle]->trait]); pr();
 	print_old_seq(wiggles[wiggle]->seq_string);
 	print_wiggle_left_seq(wiggles[wiggle]->data[order][0]->map);
 	last= wiggles[wiggle]->data[order][0]->map->num_intervals-1;
 	print_wiggle_genetics(
 	  &wiggles[wiggle]->data[order][0]->map->constraint[last]);
-	sf(ps,PEAKS_PARAMS,threshold,falloff); pr(); nl(); 
+	sprintf(ps, PEAKS_PARAMS, threshold, falloff); pr(); nl(); 
 
 	for (peak=0, p=peaks; p!=NULL; p=p->next, peak++) 
 	  print_peak(p,peak);
@@ -779,8 +779,8 @@ command show_peaks()
 	    nstrcpy(name,raw.trait_name[wiggles[wiggle]->trait],7);
 	    strcat(name,".");
 	    name_peaks(peaks,name,TRUE);
-	    if (peak==1) sf(ps,PEAKS_NAME,name);
-	    else sf(ps,PEAKS_NAMES,name,name,peak+1);
+	    if (peak==1) sprintf(ps, PEAKS_NAME, name);
+	    else sprintf(ps, PEAKS_NAMES, name, name, peak + 1);
 	} else print(PEAKS_NONE);
 
     } when_aborting { free_wiggle_peaks(peaks); unarray(name, char) }
@@ -805,9 +805,9 @@ command new_show_map()
 	for(i = 0; i < map->num_intervals; i++) {
 	    dist = map_length(map->left[i], map->right[i]);
 	    if(dist <= .490) {
-		sf(ps," %s   %5.1lf cM   %4.1lf %%\n",
-		   interval_str(map->left[i],map->right[i],TRUE),
-		   haldane_cm(dist),dist*100.0);
+		sprintf(ps, " %s   %5.1lf cM   %4.1lf %%\n",
+                interval_str(map->left[i],map->right[i],TRUE),
+                haldane_cm(dist),dist*100.0);
 		pr();
 	    }
 	    else {
@@ -843,17 +843,17 @@ command show_test_wiggle()
     if (wiggle<0) { wiggle=num_wiggles-1; order=wiggles[wiggle]->num_orders-1;}
     if (!isa_test_wiggle(wiggle)) error(TEST_ISNT);
     if (order<0 && wiggles[wiggle]->num_orders==NUM_MODELS) order=0;
-    if (order<0) { sf(ps,WHICH_WIGGLE,wiggle+1,wiggle+1,wiggle+1,
+    if (order<0) { sprintf(ps, WHICH_WIGGLE, wiggle + 1, wiggle + 1, wiggle + 1,
 		      wiggles[wiggle]->num_orders-1); error(ps); }
 
 	order= (order/NUM_MODELS)*NUM_MODELS; /* first order for this test */
 	nl(); 
-	sf(ps,TEST_TITLE,wiggles[wiggle]->trait+1,
-	   raw.trait_name[wiggles[wiggle]->trait]); pr();
+	sprintf(ps, TEST_TITLE, wiggles[wiggle]->trait + 1,
+            raw.trait_name[wiggles[wiggle]->trait]); pr();
 	print_old_seq(wiggles[wiggle]->seq_string);
 	print_wiggle_left_seq(wiggles[wiggle]->data[order][0]->map);
-	sf(ps,TEST_PARAMS,wiggle+1,order+1,wiggle+1,order+NUM_MODELS,
-	   threshold); pr(); nl(); 
+	sprintf(ps, TEST_PARAMS, wiggle + 1, order + 1, wiggle + 1, order + NUM_MODELS,
+            threshold); pr(); nl(); 
 	print_test_wiggle_order(wiggle,order,threshold);
 
 }
@@ -882,7 +882,7 @@ command make_trait()
     if (!nstoken(&name,sREQUIRED,name_to_check,NAME_LEN)) usage_error(2);
 
     if (!valid_new_trait_name(name_to_check,errmsg)) 
-	{ sf(ps,TRAIT_BADNAME,name_to_check,errmsg); error(ps); }
+	{ sprintf(ps, TRAIT_BADNAME, name_to_check, errmsg); error(ps); }
 
     trait_redone = FALSE;
     for (i=0;i<raw.n_traits;i++) {
@@ -915,7 +915,7 @@ command make_trait()
 	strcpy(raw.trait_eqn[trait_index],eqn);
 	if (!trait_redone) raw.n_traits++;
 
-	nl(); sf(ps,TRAIT_MADE,trait_index+1,name_to_check); pr(); nl();
+	nl(); sprintf(ps, TRAIT_MADE, trait_index + 1, name_to_check); pr(); nl();
 	array(normal_array,raw.n_indivs,real); 
 	adjusted_array_size = raw.n_indivs;
 	for (i=0,j=0; i<raw.n_indivs; i++) {
@@ -953,7 +953,7 @@ command predict()
     if (nullstr(args)) usage_error(0); 
     if (!nstoken(&args,sREQUIRED,name,NAME_LEN)) usage_error(2);
     if (!valid_new_trait_name(name,errmsg)) 
-	{ sf(ps,TRAIT_BADNAME,name,errmsg); error(ps); }
+	{ sprintf(ps, TRAIT_BADNAME, name, errmsg); error(ps); }
 
     for (i=0, trait_redone = FALSE; i<raw.n_traits; i++) 
       if (nullstr(raw.trait_name[i])) 
@@ -972,7 +972,7 @@ command predict()
 	    raw.trait[i][trait_index]= model_prediction(map,i);
 	}
     }
-    nl(); sf(ps,TRAIT_MADE,trait_index+1,name); pr(); nl();
+    nl(); sprintf(ps, TRAIT_MADE, trait_index + 1, name); pr(); nl();
     if (!trait_redone) raw.n_traits++;
     strcpy(raw.trait_name[trait_index],name);
     strcpy(raw.trait_eqn[trait_index],ints_string);
@@ -999,8 +999,8 @@ command dump_scan()
     if(wiggle<0) { wiggle=num_wiggles-1;order=wiggles[wiggle]->num_orders-1;}
     else if (order<0 && wiggles[wiggle]->num_orders==1) order = 0;
 
-    sf(name,"scan.%d",wiggle);
-    sf(ps,"dumping to '%s'\n",name); pr();
+    sprintf(name, "scan.%d", wiggle);
+    sprintf(ps, "dumping to '%s'\n", name); pr();
     fp= open_file(name,WRITE);
     op= wiggles[wiggle];
     data = op->data[order];
@@ -1095,8 +1095,8 @@ command list_traits()
     
     print(BIG_DIVIDER); print("TRAITS:\n\n");
     for(i=0; i< raw.n_traits; i++) {
-	if (nullstr(raw.trait_name[i])) sf(ps, "%3d <deleted>  ",i+1);
-	else sf(ps,"%3d %-10s %s ",i+1,raw.trait_name[i],raw.trait_eqn[i]);
+	if (nullstr(raw.trait_name[i])) sprintf(ps, "%3d <deleted>  ", i + 1);
+	else sprintf(ps, "%3d %-10s %s ", i + 1, raw.trait_name[i], raw.trait_eqn[i]);
 	pr();nl();
     }
     print(BIG_DIVIDER);
@@ -1118,9 +1118,9 @@ command show_trait()
       else { if (trait<0) error(SHOW_WHAT); else t=trait; }
 
     run {
-	sf(ps,"\nTrait %d (%s)",t+1,raw.trait_name[t]); pr();
+	sprintf(ps, "\nTrait %d (%s)", t + 1, raw.trait_name[t]); pr();
 	if (!nullstr(raw.trait_eqn[t])) 
-	  { sf(ps,"='%s'",raw.trait_eqn[t]); pr(); }
+	  { sprintf(ps, "='%s'", raw.trait_eqn[t]); pr(); }
 	print(":\n\n");
 	array(normal_array,raw.n_indivs,real);
 	adjusted_array_size = raw.n_indivs;
@@ -1157,8 +1157,8 @@ command forget_trait()
     if (!valid_trait_str(trait_name,&t,errmsg)) error(errmsg);
     if (raw.n_traits==1) error("There is only one trait in the data set!\n.");
 
-    sf(ps,"Deleting trait %d (%s)",t+1,raw.trait_name[t]); pr();
-    if (!nullstr(raw.trait_eqn[t])) { sf(ps,"='%s'",raw.trait_eqn[t]); pr(); }
+    sprintf(ps, "Deleting trait %d (%s)", t + 1, raw.trait_name[t]); pr();
+    if (!nullstr(raw.trait_eqn[t])) { sprintf(ps, "='%s'", raw.trait_eqn[t]); pr(); }
     print("\n");
     getln("Are you sure you want to delete it? [no] ");
     if (!parse_char(&ln,"y",TRUE,&c)) return;
@@ -1184,18 +1184,18 @@ command forget_compare()
     qtl_ready(ANY_DATA,NOSEQ,NOTRAIT,NOQCTM);
     get_one_arg(itoken,iREQUIRED,&comp_number); 
     if (comp_number > num_compares) error(errmsg);
-    sf (ps,"Deleting compare %d \n",comp_number);pr();
+    sprintf (ps, "Deleting compare %d \n", comp_number);pr();
     i=comp_number-1;
-    sf(ps,COMP_LIST_TITLE,(print_names ? "     ":"")); pr();
+    sprintf(ps, COMP_LIST_TITLE, (print_names ? "     " : "")); pr();
     if(print_names)
-      sf(ps,COMP_LIST_NAMES,i+1,(compares[i]->num_contigs==1 
+      sprintf(ps, COMP_LIST_NAMES, i + 1, (compares[i]->num_contigs == 1 
 				 ? "1" : "x"),
-	 raw.trait_name[compares[i]->trait],
-	 compares[i]->seq_string);
+              raw.trait_name[compares[i]->trait],
+              compares[i]->seq_string);
     else
-      sf(ps,COMP_LIST_NUMS,i+1,(compares[i]->num_contigs==1 
+      sprintf(ps, COMP_LIST_NUMS, i + 1, (compares[i]->num_contigs == 1 
 				? "1" : "x"),
-	 compares[i]->trait+1,compares[i]->seq_string);
+	 compares[i]->trait+1, compares[i]->seq_string);
     pr();
     print("\n");
     getln("Are you sure you want to delete it? [no] ");
@@ -1210,7 +1210,7 @@ command forget_all_compares()
     char c;
     
     qtl_ready(ANY_DATA,NOSEQ,NOTRAIT,NOQCTM);
-    sf (ps, "\nDeleting ALL compares!\n");pr();
+    sprintf (ps, "\nDeleting ALL compares!\n");pr();
     getln("\nAre you sure you want to delete them? [no] ");
     if (!parse_char(&ln,"y",TRUE,&c)) return;
     for (i=0;i<num_compares;i++) {
@@ -1230,15 +1230,15 @@ command forget_scan()
     qtl_ready(ANY_DATA,NOSEQ,NOTRAIT,NOQCTM);
     get_one_arg(itoken,iREQUIRED,&scan_number);
     if (scan_number > num_wiggles) error(errmsg);
-    sf(ps,"Deleting scan %d \n",scan_number);pr();
+    sprintf(ps, "Deleting scan %d \n", scan_number);pr();
     t=scan_number-1;
-    sf(ps,WIG_LIST_TITLE,(print_names ? "      ":""));pr();
+    sprintf(ps, WIG_LIST_TITLE, (print_names ? "      " : ""));pr();
     op=wiggles[t];
     if (print_names)
-      sf(ps,WIG_LIST_NAMES,t+1,(op->num_orders==1 ? "1":"x"),
-	 raw.trait_name[op->trait],op->seq_string);
-    else sf(ps,WIG_LIST_NUMS,t+1,(op->num_orders==1 ? "1":"x"),
-	    op->trait+1,op->seq_string);
+      sprintf(ps, WIG_LIST_NAMES, t + 1, (op->num_orders == 1 ? "1" : "x"),
+              raw.trait_name[op->trait], op->seq_string);
+    else sprintf(ps, WIG_LIST_NUMS, t + 1, (op->num_orders == 1 ? "1" : "x"),
+	    op->trait+1, op->seq_string);
     pr();
     print("\n");
     getln("Are you sure you want to delete it? [no] ");
@@ -1253,7 +1253,7 @@ command forget_all_scans()
     int i;
     
     qtl_ready(ANY_DATA,NOSEQ,NOTRAIT,NOQCTM);
-    sf (ps, "Deleting ALL saved scan results!\n");pr();
+    sprintf (ps, "Deleting ALL saved scan results!\n");pr();
     getln("\nAre you sure you want to delete them? [no] ");
     if (!parse_char(&ln,"y",TRUE,&c)) return;
     for (i=0;i<num_wiggles;i++) {
@@ -1281,7 +1281,7 @@ command names()
     /* This is a KLUDGE for now until we write a macro which ports. */
     for (Te=context[active_context]->named_sequences->list; Te!=NULL;
 	 Te=Te->next) {
-	sf(ps,"%-12s= %s\n",Te->id.name,Te->string);
+	sprintf(ps, "%-12s= %s\n", Te->id.name, Te->string);
 	print(ps);
     }
 }
@@ -1295,9 +1295,9 @@ command forget()
     if(stoken(&args,sREQUIRED,name)) {
 	if(!delete_named_entry(name,context[active_context]->named_sequences,&fail)) {
 	    if(fail == NAME_DOESNT_MATCH)
-	      sf(ps,"%s is not a defined name",name);
+	      sprintf(ps, "%s is not a defined name", name);
 	    else
-	      sf(ps,"%s is an ambiguous name",name);
+	      sprintf(ps, "%s is an ambiguous name", name);
 	    error(ps);
 	}
     }
@@ -1349,9 +1349,9 @@ command load_data()
 	if (!data_loaded()) print(NO_LOADED_DATA); else {
 	    strcpy(tfile,raw.file);
 	    make_filename(tfile,FORCE_EXTENSION,TRAIT_EXT);
-	    sf(ps,LOADED_DATA,raw.file,tfile,"",raw.n_indivs,
-	       (raw.data_type==BACKCROSS ? "backcross":"intercross"),
-	       raw.n_loci,raw.n_traits,maybe_s(raw.n_traits)); pr();
+	    sprintf(ps, LOADED_DATA, raw.file, tfile, "", raw.n_indivs,
+                (raw.data_type==BACKCROSS ? "backcross":"intercross"),
+                raw.n_loci, raw.n_traits, maybe_s(raw.n_traits)); pr();
 	}
 	
     } else { /* !nullstr */
@@ -1393,9 +1393,9 @@ command load_data()
 	    crunch_data();
 	    allocate_qtl_struct(raw.max_traits*2,raw.max_traits*2);
 
-	    sf(ps,LOADED_DATA,dfile,tfile,"",raw.n_indivs,
-	       (raw.data_type==BACKCROSS ? "backcross":"intercross"),
-	       raw.n_loci-dum_loc,raw.n_traits,maybe_s(raw.n_traits)); pr();
+	    sprintf(ps, LOADED_DATA, dfile, tfile, "", raw.n_indivs,
+                (raw.data_type==BACKCROSS ? "backcross":"intercross"),
+	       raw.n_loci-dum_loc, raw.n_traits, maybe_s(raw.n_traits)); pr();
 	    if (raw.n_traits==1) trait=0; else trait= NOTRAIT;
 	    update_top();
 	    if(!altered_chroms)
@@ -1403,10 +1403,10 @@ command load_data()
 
 	} on_exit {
 	    if (msg==CANTOPEN) {
-		sf(ps,"error: unable to open data file\n"); pr();
+		sprintf(ps, "error: unable to open data file\n"); pr();
 	    } else if (msg==BADDATA) {
-		sf(ps,"error: unable to load data from file\nline %d:",
-		   BADDATA_line_num); pr();
+		sprintf(ps, "error: unable to load data from file\nline %d:",
+                BADDATA_line_num); pr();
 		print(BADDATA_error); nl();
 		strcpy(raw.file,"");
 	    } 
@@ -1499,13 +1499,13 @@ command save_status()
     make_filename(name3, FORCE_EXTENSION, QTL_OLD);
     run {
 	fp = open_file(name2, WRITE);
-	sf(ps,"Now saving %s...\n",name);  pr();
+	sprintf(ps, "Now saving %s...\n", name);  pr();
 	save_qtl_files(fp);
 	close_file(fp);
 	if (rename_file(name,name3)) rename_file(name2,name);
     } except {
 	when CANTOPEN:
-	    sf(ps,"Can't open %s.\n",name);  pr(); /* fall through */
+	    sprintf(ps, "Can't open %s.\n", name);  pr(); /* fall through */
 	default:
 	    rename_file(name3,name);
 	    if(msg == INTERRUPT) send(INTERRUPT);
@@ -1520,13 +1520,13 @@ command save_status()
     make_filename(name3, FORCE_EXTENSION, TRAIT_OLD);
     run {
 	fp = open_file(name2, WRITE);
-	sf(ps,"Now saving %s...\n",name);  pr();
+	sprintf(ps, "Now saving %s...\n", name);  pr();
 	save_traitfile(fp);
 	close_file(fp);
 	if (rename_file(name,name3)) rename_file(name2,name);
     } except {
 	when CANTOPEN:
-	    sf(ps,"Can't open fle '%s'.\n",name);  pr(); /* fall through */
+	    sprintf(ps, "Can't open fle '%s'.\n", name);  pr(); /* fall through */
 	default:
 	    rename_file(name3,name);
 	    if(msg == INTERRUPT) send(INTERRUPT);
@@ -1606,7 +1606,7 @@ void load_qtl_files()
 		load_compare(fp);
 	    }
 	
-	    sf(ps,"QTL map data in file '%s' have been loaded.\n",name);
+	    sprintf(ps, "QTL map data in file '%s' have been loaded.\n", name);
 	    pr();
 	}
 	close_file(fp);
@@ -1616,7 +1616,7 @@ void load_qtl_files()
 	  print("Unable to load any saved QTL map data.\n");
 	  msg=0; break; /* No .qtls file - WHY IS THIS MSG=0 NEEDED??? */
 	default:
-	  sf(ps,QTL_LD_ERROR1,name); pr();
+	  sprintf(ps, QTL_LD_ERROR1, name); pr();
 	  print(QTL_LD_ERROR2); print(QTL_LD_ERROR3);
 	  close_file(fp);
     }
@@ -1634,14 +1634,14 @@ command tester()
     /* left_rf= rmaxf(MIN_REC_FRAC,min(pos,MAX_FRAC_OF_RF*theta));
     right_rf= (theta - left_rf)/(1 - 2*left_rf); */
 
-    sf(ps,"left_rf=%lf right_rf=%lf\n",left_rf,right_rf); pr();
+    sprintf(ps, "left_rf=%lf right_rf=%lf\n", left_rf, right_rf); pr();
     for (left=0; left<4; left++) 
       for (right=0; right<4; right++) {	
 	f2_sum=f3_sum= 0.0;
 	x=y=z= 0.0;
 	raw.f3=TRUE; c=transition_prob(INTERCROSS,left,right,theta);
 	/* raw.f3=FALSE; z=transition_prob(INTERCROSS,left,right,theta); */
-	sf(ps,"left=%d  right=%d  F2-prob=%lf  F3-prob=%lf\n",left,right,z,c); pr();
+	sprintf(ps, "left=%d  right=%d  F2-prob=%lf  F3-prob=%lf\n", left, right, z, c); pr();
 	for (qtl=0; qtl<4; qtl++) {
 	    raw.f3=TRUE; f3_sum+= 
 	      ((a=transition_prob(INTERCROSS,left,qtl,left_rf)) *
@@ -1649,9 +1649,9 @@ command tester()
 	    /* raw.f3=FALSE; f2_sum+= 
 	      ((x=transition_prob(INTERCROSS,left,qtl,left_rf)) *
 	       (y=transition_prob(INTERCROSS,qtl,right,right_rf))) /z; */
-	    sf(ps,"qtl= %d  F2: L=%lf R=%lf  F3: L=%lf R=%lf\n",qtl,x,y,a,b); pr();
+	    sprintf(ps, "qtl= %d  F2: L=%lf R=%lf  F3: L=%lf R=%lf\n", qtl, x, y, a, b); pr();
 	}		
-	sf(ps,"==== F2 sum= %lf  F3 sum=%lf\n",f2_sum,f3_sum); pr();
+	sprintf(ps, "==== F2 sum= %lf  F3 sum=%lf\n", f2_sum, f3_sum); pr();
     }
 }
 

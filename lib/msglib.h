@@ -63,14 +63,14 @@ void trapped_msg();
 void verbose_untrapped_msg();
 
 /* Possible send_procs - happen when we call send(MSG); args: message msg; */
-void sender();	
+void sender(int num);
 void trapper();
 void punter();
-void default_action(); /* DON'T USE */
+void default_action(int num); /* DON'T USE */
 
 /* Possible message_procs in msglib.c. These produce an error message string  
    for untrapped messages. */
-void strmsg_default();
+void strmsg_default(char *);
 void strmsg_NOMEMORY();
 void strmsg_MATHERROR();
 void strmsg_CANTOPEN();
@@ -80,7 +80,8 @@ void strmsg_SYSERROR();
 extern jmp_buf stk[];   		
 extern int lvl;
 extern bool exiting1;
-extern void (*(maction[]))(), (*(mstrmsg[]))();   /* args: int msg; */
+extern void (*(maction[]))(int);
+extern void (*(mstrmsg[]))(char *);
 #define MSGS 	    50
 #define MSGNAMLEN   39
 #define TRAP_DEPTH  100

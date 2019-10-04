@@ -289,14 +289,14 @@ command set_cm_func()
     get_one_arg(stoken,"",type);
 
     if (nullstr(type)) {
-	sf(ps,"centimorgan function: %s\n",map_func_name()); pr();
+	sprintf(ps, "centimorgan function: %s\n", map_func_name()); pr();
 	return;
     }
     /* assume here that the mapfunc names have different first letters */
     for (i=0; i<num_map_functions; i++)
       if (matches(type,maps[i].name)) {
 	  map_func(i);
-	  sf(ps,"centimorgan function: %s\n",map_func_name()); pr();
+	  sprintf(ps, "centimorgan function: %s\n", map_func_name()); pr();
 	  return;
       }
     error("unknown function name\nexpected either 'Haldane' or 'Kosambi'");
@@ -337,10 +337,10 @@ command set_default_linkage()
 	if (have_theta) default_theta=theta;
     }
 
-    sf(ps,DEF_LINK_LOD,default_lod); pr();
-    if (units!=RECFRACS) sf(ps,DEF_LINK_THETA,"centimorgan distance",
+    sprintf(ps, DEF_LINK_LOD, default_lod); pr();
+    if (units!=RECFRACS) sprintf(ps, DEF_LINK_THETA, "centimorgan distance",
 		      ((*mapfunction->rec_to_dist)(default_theta))*100.0);
-    else sf(ps,DEF_LINK_THETA,"recombination-fraction",default_theta);
+    else sprintf(ps, DEF_LINK_THETA, "recombination-fraction", default_theta);
     pr();
 }
 
@@ -380,12 +380,12 @@ command set_3pt_linkage()
 	if (have_theta) triplet_theta=theta;
 	if (have_num)   triplet_num_links=num;
     }
-    sf(ps,DEF_3PT_LOD,triplet_lod); pr();
-    if (units!=RECFRACS) sf(ps,DEF_3PT_THETA,"centimorgan distance",
+    sprintf(ps, DEF_3PT_LOD, triplet_lod); pr();
+    if (units!=RECFRACS) sprintf(ps, DEF_3PT_THETA, "centimorgan distance",
 		      ((*mapfunction->rec_to_dist)(triplet_theta))*100.0);
-    else sf(ps,DEF_3PT_THETA,"recombination-fraction",triplet_theta);
+    else sprintf(ps, DEF_3PT_THETA, "recombination-fraction", triplet_theta);
     pr();
-    sf(ps,DEF_3PT_NUM,triplet_num_links); pr();
+    sprintf(ps, DEF_3PT_NUM, triplet_num_links); pr();
 }
 
 #define TRIP_THRESH \
@@ -407,7 +407,7 @@ command set_3pt_threshold()
 	three_pt_threshold=like;
 	if (have_num) three_pt_window=wind;
     }
-    sf(ps,TRIP_THRESH,three_pt_threshold,three_pt_window); pr();
+    sprintf(ps, TRIP_THRESH, three_pt_threshold, three_pt_window); pr();
 }
 
 #define SET_3ERR_USAGE \
@@ -430,7 +430,7 @@ command set_3pt_errors()
       print("'triple error detection' is on.\n");
     else {
 	print("'triple error detection' in three-point analysis is on.\n");
-	sf(ps,"'error probability' for all loci is fixed at %.2lf%%.\n",
+	sprintf(ps, "'error probability' for all loci is fixed at %.2lf%%.\n",
 	   triplet_error_rate*100.0);
     }
 }
@@ -469,9 +469,9 @@ command set_npt_threshold()
 	  else npt_first_threshold=max(npt_first_threshold,npt_threshold);
     }
     if (npt_threshold==npt_first_threshold)
-      { sf(ps,NPT_THRESH1,npt_threshold,npt_window); pr(); }
+      { sprintf(ps, NPT_THRESH1, npt_threshold, npt_window); pr(); }
     else 
-      { sf(ps,NPT_THRESH2,npt_threshold,npt_window,npt_first_threshold);pr(); }
+      { sprintf(ps, NPT_THRESH2, npt_threshold, npt_window, npt_first_threshold);pr(); }
 }
 
 
@@ -508,8 +508,8 @@ command set_inf_threshold()
 	if (have_indivs) npt_min_indivs=indivs;
 	if (have_cd)     npt_codominant=codom;
     }
-    sf(ps,INF_THRESHS,rag(rf2str(npt_min_theta)),npt_min_indivs,
-       (npt_codominant ? "\n(codominant markers only)":"")); pr();
+    sprintf(ps, INF_THRESHS, rag(rf2str(npt_min_theta)), npt_min_indivs,
+            (npt_codominant ? "\n(codominant markers only)":"")); pr();
 }
 
 
@@ -555,8 +555,8 @@ command set_error_lod_thresh()
 	}
 	error_lod_thresh=t1; error_single_thresh=t2; error_net_thresh=t3;
     }
-    sf(ps,ERROR_THRESHES,error_lod_thresh,error_single_thresh,
-       error_net_thresh); pr();
+    sprintf(ps, ERROR_THRESHES, error_lod_thresh, error_single_thresh,
+            error_net_thresh); pr();
 }
 
 
@@ -734,53 +734,53 @@ FILE *fp;
 
     fprint(fp,"*MapmakerStatusInfo:\n");
 
-    sf(ps,"*PrintNames: %d\n",print_names); fpr(fp);
-    sf(ps,"*Tolerance: %lf\n",tolerance); fpr(fp);
-    sf(ps,"*Units: %d\n",units); fpr(fp);
-    sf(ps,"*MapFunc: %d\n",map_func_num()); fpr(fp);
+    sprintf(ps, "*PrintNames: %d\n", print_names); fpr(fp);
+    sprintf(ps, "*Tolerance: %lf\n", tolerance); fpr(fp);
+    sprintf(ps, "*Units: %d\n", units); fpr(fp);
+    sprintf(ps, "*MapFunc: %d\n", map_func_num()); fpr(fp);
 
-    sf(ps,"*DefaultLOD: %lf\n",default_lod); fpr(fp);
-    sf(ps,"*DefaultTheta: %lf\n",default_theta); fpr(fp);
+    sprintf(ps, "*DefaultLOD: %lf\n", default_lod); fpr(fp);
+    sprintf(ps, "*DefaultTheta: %lf\n", default_theta); fpr(fp);
 
-    sf(ps,"*UseThreePoint: %d\n",use_three_pt); fpr(fp);
-    sf(ps,"*TripletLOD: %lf\n",triplet_lod); fpr(fp);
-    sf(ps,"*TripletTheta: %lf\n",triplet_theta); fpr(fp);
-    sf(ps,"*TripletNumLinks: %d\n",triplet_num_links); fpr(fp);
-    sf(ps,"*ThreePointThreshold: %lf\n",three_pt_threshold); fpr(fp);
-    sf(ps,"*ThreePointWindow: %d\n",three_pt_window); fpr(fp);
-    sf(ps,"*TripletErrorRate: %lf\n",triplet_error_rate); fpr(fp);
+    sprintf(ps, "*UseThreePoint: %d\n", use_three_pt); fpr(fp);
+    sprintf(ps, "*TripletLOD: %lf\n", triplet_lod); fpr(fp);
+    sprintf(ps, "*TripletTheta: %lf\n", triplet_theta); fpr(fp);
+    sprintf(ps, "*TripletNumLinks: %d\n", triplet_num_links); fpr(fp);
+    sprintf(ps, "*ThreePointThreshold: %lf\n", three_pt_threshold); fpr(fp);
+    sprintf(ps, "*ThreePointWindow: %d\n", three_pt_window); fpr(fp);
+    sprintf(ps, "*TripletErrorRate: %lf\n", triplet_error_rate); fpr(fp);
 
-    sf(ps,"*NptThreshold: %lf\n",npt_threshold); fpr(fp);
-    sf(ps,"*NptFirstThreshold: %lf\n",npt_first_threshold); fpr(fp);
-    sf(ps,"*NptWindow: %d\n",npt_window); fpr(fp);
-    sf(ps,"*NptMinIndivs: %d\n",npt_min_indivs); fpr(fp);
-    sf(ps,"*NptCodominant: %d\n",npt_codominant); fpr(fp);
-    sf(ps,"*NptMinTheta: %lf\n",npt_min_theta); fpr(fp);
-    sf(ps,"*PrintAllMaps: %d\n",print_all_maps); fpr(fp);
+    sprintf(ps, "*NptThreshold: %lf\n", npt_threshold); fpr(fp);
+    sprintf(ps, "*NptFirstThreshold: %lf\n", npt_first_threshold); fpr(fp);
+    sprintf(ps, "*NptWindow: %d\n", npt_window); fpr(fp);
+    sprintf(ps, "*NptMinIndivs: %d\n", npt_min_indivs); fpr(fp);
+    sprintf(ps, "*NptCodominant: %d\n", npt_codominant); fpr(fp);
+    sprintf(ps, "*NptMinTheta: %lf\n", npt_min_theta); fpr(fp);
+    sprintf(ps, "*PrintAllMaps: %d\n", print_all_maps); fpr(fp);
 
-    sf(ps,"*UseErrorRate: %d\n",use_error_rate); fpr(fp);
-    sf(ps,"*ErrorLodThreshold: %lf\n",error_lod_thresh); fpr(fp);
-    sf(ps,"*ErrorSingleThreshold: %lf\n",error_single_thresh); fpr(fp);
-    sf(ps,"*ErrorNetThreshold: %lf\n",error_net_thresh); fpr(fp);
+    sprintf(ps, "*UseErrorRate: %d\n", use_error_rate); fpr(fp);
+    sprintf(ps, "*ErrorLodThreshold: %lf\n", error_lod_thresh); fpr(fp);
+    sprintf(ps, "*ErrorSingleThreshold: %lf\n", error_single_thresh); fpr(fp);
+    sprintf(ps, "*ErrorNetThreshold: %lf\n", error_net_thresh); fpr(fp);
 
-    sf(ps,"*Contexts: %d\n",num_contexts); fpr(fp);
-    sf(ps,"*ActiveContext: %d\n",active_context); fpr(fp);
+    sprintf(ps, "*Contexts: %d\n", num_contexts); fpr(fp);
+    sprintf(ps, "*ActiveContext: %d\n", active_context); fpr(fp);
     fnl(fp);
 
     for (i=0; i<num_contexts; i++) {
-      sf(ps,"*Context %d\n",i+1); fpr(fp);
-      sf(ps,"*SexSpecific: %d\n",context[i]->sex_specific); fpr(fp);
-      sf(ps,"*CompressDNA: %d\n",context[i]->compress_DNA); fpr(fp);
+      sprintf(ps, "*Context %d\n", i + 1); fpr(fp);
+      sprintf(ps, "*SexSpecific: %d\n", context[i]->sex_specific); fpr(fp);
+      sprintf(ps, "*CompressDNA: %d\n", context[i]->compress_DNA); fpr(fp);
       if (raw.data_type==CEPH) usenum=context[i]->use_number; else usenum=0;
-      sf(ps,"*UseNum: %d\n",usenum); fpr(fp);
-      sf(ps,"*MaxProblemSize: %ld\n",context[i]->max_problem_size); fpr(fp);
+      sprintf(ps, "*UseNum: %d\n", usenum); fpr(fp);
+      sprintf(ps, "*MaxProblemSize: %ld\n", context[i]->max_problem_size); fpr(fp);
       
-      sf(ps,"*SavedNames: %d\n",
-	 count_table_entries(context[i]->named_sequences)); fpr(fp);
+      sprintf(ps, "*SavedNames: %d\n",
+              count_table_entries(context[i]->named_sequences)); fpr(fp);
       save_table(context[i]->named_sequences,fp,INDEX_BY_NAME);
 	    
-      sf(ps,"*SequenceHistory: %d\n",
-	 count_table_entries(context[i]->sequence_history)); fpr(fp);
+      sprintf(ps, "*SequenceHistory: %d\n",
+              count_table_entries(context[i]->sequence_history)); fpr(fp);
       save_table(context[i]->sequence_history,fp,INDEX_BY_NUMBER);
     }
 }

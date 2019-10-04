@@ -247,12 +247,12 @@ int index;
 {
     if(index == INDEX_BY_NAME) {
 	for(Te=p->list; Te!=NULL; Te=Te->next) {
-	    sf(ps,"%s %s\n",Te->id.name,Te->string);
+	    sprintf(ps, "%s %s\n", Te->id.name, Te->string);
 	    fpr(fp);
 	}
     } else {  /* INDEX_BY_NUMBER */
 	for(Te=p->list; Te!=NULL; Te=Te->next) {
-	    sf(ps,"%d %s\n",Te->id.num,Te->string);
+	    sprintf(ps, "%d %s\n", Te->id.num, Te->string);
 	    fpr(fp);
 	}
     }

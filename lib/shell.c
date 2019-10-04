@@ -103,10 +103,10 @@ print(
 print(centering("",FALSE));
 print(centering(the_program,FALSE));
 if (!nullstr(the_version)) 
-  { sf(line,"(version %s)",the_version); print(centering(line,FALSE)); }
+  { sprintf(line, "(version %s)", the_version); print(centering(line, FALSE)); }
 print(centering("",FALSE));
-sf(line,"Copyright %s, Whitehead Institute for Biomedical Research",
-   the_copyright); print(centering(line,FALSE));
+sprintf(line, "Copyright %s, Whitehead Institute for Biomedical Research",
+        the_copyright); print(centering(line,FALSE));
 if (gnu_copyright(line)) print(centering(line,TRUE));
 
 print(
@@ -149,12 +149,12 @@ void photo_banner()
  123456789012345678901234567890123456789012345678901234567890123456789012 */
 lib_puts(photo,
  "************************************************************************\n");
-sf(ps,"* Output from:                                %24s *\n",time_string()); 
+sprintf(ps, "* Output from:                                %24s *\n", time_string());
 lib_puts(photo,ps);
 
 lib_puts(photo,centering("",FALSE));
 lib_puts(photo,centering(the_program,FALSE));
-sf(ver,"(version %s)",the_version); lib_puts(photo,centering(ver,FALSE));
+sprintf(ver, "(version %s)", the_version); lib_puts(photo, centering(ver, FALSE));
 lib_puts(photo,centering("",FALSE));
 lib_puts(photo,
  "************************************************************************\n");
@@ -235,7 +235,7 @@ char *program, *version, *copyright, *help_filename;
 
 char *default_prompt(s)
 char *s; 
-{ sf(s,"\n%d> ",cmd_history_num+1); return(s); }
+{ sprintf(s, "\n%d> ", cmd_history_num + 1); return(s); }
 
 
 void mktopic(num,nam,code,description_index)
@@ -317,22 +317,22 @@ char *description, *arguments, *defaults;
 
     if (i<0 || !nullstr(rest)) {
 	if (code!=HLP) {
-	    sf(ps,"warning: attempt to make help for non-command '%s'\n",
-	       cmd_name); pr();
+	    sprintf(ps, "warning: attempt to make help for non-command '%s'\n",
+                cmd_name); pr();
 	    return;
 	} else i=mkcommand(cmd_name,abbrev,NULL,HLP);
     }
 
     if (!streq(cmd[i]->name,cmd_name)) {
-	sf(ps,"warning: names disagree for command '%s'\n",cmd_name); 
+	sprintf(ps, "warning: names disagree for command '%s'\n", cmd_name);
 	pr();
     }
     if (code!=cmd[i]->code) {
-	sf(ps,"warning: type codes disagree for command '%s'\n",cmd_name);
+	sprintf(ps, "warning: type codes disagree for command '%s'\n", cmd_name);
 	pr();
     }
     if (!streq(cmd[i]->abbreviation,abbrev)) {
-	sf(ps,"warning: abbreviations disagree for command '%s'\n",cmd_name);
+	sprintf(ps, "warning: abbreviations disagree for command '%s'\n", cmd_name);
 	pr();
     }
 
@@ -428,18 +428,18 @@ bool help_ok;
 
     if (num_matched==1) { 
 	for (j=0; j<command_num; j++) 
-	  if (matched[j]) sf(ps,"matched command '%s'\n",cmd[j]->name);
+	  if (matched[j]) sprintf(ps, "matched command '%s'\n", cmd[j]->name);
 	pr();
 
     } else if (num_matched>1) {
-	sf(ps,"ambiguous command%s: could be any of the following:\n",
-	   (help_ok ? " or help topic":"")); pr();
+	sprintf(ps, "ambiguous command%s: could be any of the following:\n",
+            (help_ok ? " or help topic":"")); pr();
 	for (j=0; j<command_num; j++) 
 	  if (matched[j]) { print("\t"); print(cmd[j]->name); nl();
 	}
 
     } else { /* num_matched==0 */
-	sf(ps,"unrecognized command%s: '",(help_ok ? " or help topic":"")); 
+	sprintf(ps, "unrecognized command%s: '", (help_ok ? " or help topic" : ""));
 	pr();
 	if (len(rest)>LINE-25) strcpy(&rest[LINE-28],"..."); 
 	print(rest); print("'\n");
@@ -521,12 +521,12 @@ char *line; /* line IS side-effected */
 	for(Te=cmd_history->list; Te!=NULL; Te=Te->next)
 	  { first=Te->id.num; break; } /*NOTREACHED*/ 
 	if (cmd_history_num>1)
-	  sf(ps,"%s\nUse a number from %d to %d.",HIST_RANGE,
-	     first+1,cmd_history_num);
+	  sprintf(ps, "%s\nUse a number from %d to %d.", HIST_RANGE,
+	     first+1, cmd_history_num);
 	else if (cmd_history_num==1) 
-	  sf(ps,"%s\nThe only valid command number yet is 1.",HIST_RANGE);
+	  sprintf(ps, "%s\nThe only valid command number yet is 1.", HIST_RANGE);
 	else if (cmd_history_num==0) 
-	  sf(ps,"%s\nNo commands have yet been entered.",HIST_RANGE);
+	  sprintf(ps, "%s\nNo commands have yet been entered.", HIST_RANGE);
 	error(ps); return; /* never returns from here */
     }
 }
@@ -619,8 +619,7 @@ void command_loop()
 void abort_command() { send(SOFTABORT); }
 
 
-void error(errmsg) /* guaranteed not to use ps */
-char *errmsg;
+void error(const char *errmsg) /* guaranteed not to use ps */
 { print("error: "); print(errmsg); nl(); abort_command(); }
 
 
@@ -634,7 +633,7 @@ bool *var;
 	else if(streq(temp,"off")) *var=FALSE;
 	else set_usage_error("either 'on' or 'off'");
     }
-    sf(ps,"'%s' is %s.\n",com, *var ? "on" : "off"); pr();
+    sprintf(ps, "'%s' is %s.\n", com, *var ? "on" : "off"); pr();
 }
 
 
@@ -646,11 +645,11 @@ real fmt;
 	
     if (!nullstr(args)) {
 	if (!rtoken(&args,rREQUIRED,&temp) || !rrange(&temp,lbound,hbound)) {
-	    sf(ps,"a real number from %s to %s",rs(fmt,lbound),rs(fmt,hbound));
+	    sprintf(ps, "a real number from %s to %s", rs(fmt, lbound), rs(fmt, hbound));
 	    set_usage_error(ps); 
 	} else *var= temp;
     }
-    sf(ps,"'%s' is %s\n",com,rs(fmt,*var)); pr();
+    sprintf(ps, "'%s' is %s\n", com, rs(fmt, *var)); pr();
 }
 
 
@@ -662,11 +661,11 @@ long *var, lbound, hbound;
 	if (!nullstr(args)) {
 	    if (!ltoken(&args,lREQUIRED,&temp) ||
 		!lrange(&temp,lbound,hbound)) {
-		   sf(ps,"an integer number from %ld to %ld",lbound,hbound);
+		   sprintf(ps, "an integer number from %ld to %ld", lbound, hbound);
 		   set_usage_error(ps);
 	    } else *var= temp;
 	}
-	sf(ps,"'%s' is %ld\n",com,*var); pr();
+	sprintf(ps, "'%s' is %ld\n", com, *var); pr();
 }
 
 
@@ -678,11 +677,11 @@ int *var, lbound, hbound;
 	if (!nullstr(args)) {
 	    if (!itoken(&args,iREQUIRED,&temp) ||
 		!irange(&temp,lbound,hbound)) {
-		   sf(ps,"an integer number from %d to %d",lbound,hbound);
+		   sprintf(ps, "an integer number from %d to %d", lbound, hbound);
 		   set_usage_error(ps);
 	    } else *var= temp;
 	}
-	sf(ps,"'%s' is %d\n",com,*var); pr();
+	sprintf(ps, "'%s' is %d\n", com, *var); pr();
 }
 
 
@@ -702,22 +701,22 @@ void usage_error(num)
 int num; /* num args given, maybe <0 */
 { 
     if (cmd[com_num]->num_args==0) 
-      sf(ps,"error: The '%s' command takes no arguments.\n",com);
+      sprintf(ps, "error: The '%s' command takes no arguments.\n", com);
     else 
-      sf(ps,"error: Missing%s argument(s) for the '%s' command.\n",
-	 (num!=0 ? " or invalid":""),com); 
+      sprintf(ps, "error: Missing%s argument(s) for the '%s' command.\n",
+              (num!=0 ? " or invalid":""), com);
     pr();
 
     if (cmd[com_num]->num_args!=0) {
 	if (!nullstr(cmd[com_num]->args_help))
-	  { sf(ps,"expected:  %s\n",cmd[com_num]->args_help); pr(); }
+	  { sprintf(ps, "expected:  %s\n", cmd[com_num]->args_help); pr(); }
 	if (!nullstr(cmd[com_num]->def_help))
-	  { sf(ps,"default%s %s\n",(cmd[com_num]->num_args==1 ? ": ":"s:"),
-	       cmd[com_num]->def_help); pr(); }
+	  { sprintf(ps, "default%s %s\n", (cmd[com_num]->num_args == 1 ? ": " : "s:"),
+                cmd[com_num]->def_help); pr(); }
     }
 
     if (cmd[com_num]->help_key!=HELPLESS)
-      { sf(ps,"type 'help %s' for details.\n",com); pr(); }
+      { sprintf(ps, "type 'help %s' for details.\n", com); pr(); }
 
     abort_command(); 
 }      
@@ -735,20 +734,20 @@ int n; /* for now, a dummy arg */
     if (nullstr(args)) return; /* all is OK, otherwise... */
     
     if (num==0) 
-      sf(ps,"error: The '%s' command takes no arguments.\n",com);
+      sprintf(ps, "error: The '%s' command takes no arguments.\n", com);
     else if (num>0)
-      sf(ps,TOOMANY,com,(mode==EXACTLY ? "" : "up to "),num,maybe_s(num));
-    else /* num<0 */ sf(ps,"error: Too many arguments.\n");
+      sprintf(ps, TOOMANY, com, (mode == EXACTLY ? "" : "up to "), num, maybe_s(num));
+    else /* num<0 */ sprintf(ps, "error: Too many arguments.\n");
     pr();
     
     if (!nullstr(cmd[com_num]->args_help))
       { print("expected: "); print(cmd[com_num]->args_help); nl(); }
     
     if (!nullstr(cmd[com_num]->def_help))
-      { sf(ps,"default%s: %s\n",maybe_s(num),cmd[com_num]->args_help); pr(); }
+      { sprintf(ps, "default%s: %s\n", maybe_s(num), cmd[com_num]->args_help); pr(); }
     
     if (cmd[com_num]->help_key!=HELPLESS)
-      { sf(ps,"Type 'help %s' for details.\n",com); pr(); }
+      { sprintf(ps, "Type 'help %s' for details.\n", com); pr(); }
     
     abort_command();
 }
@@ -763,18 +762,18 @@ int num; /* num args given, maybe <0 */
 
     if (!nullstr(args)) usage_error(-1); /* instead */
 
-    sf(ps,"error: Missing argument%s.\n",maybe_s(want-num)); pr();
-    sf(ps,"The '%s' command requires %s%d argument%s.\n",com,
-       mode==EXACTLY ? "" : "at least ",want,maybe_s(want)); pr();
+    sprintf(ps, "error: Missing argument%s.\n", maybe_s(want - num)); pr();
+    sprintf(ps, "The '%s' command requires %s%d argument%s.\n", com,
+       mode==EXACTLY ? "" : "at least ", want, maybe_s(want)); pr();
     
     if (!nullstr(cmd[com_num]->args_help))
       { print("expected: "); print(cmd[com_num]->args_help); nl(); }
     
     if (!nullstr(cmd[com_num]->def_help))
-      { sf(ps,"default%s: %s\n",maybe_s(num),cmd[com_num]->args_help); pr(); }
+      { sprintf(ps, "default%s: %s\n", maybe_s(num), cmd[com_num]->args_help); pr(); }
     
     if (cmd[com_num]->help_key!=HELPLESS)
-      { sf(ps,"Type 'help %s' for details.\n",com); pr(); }
+      { sprintf(ps, "Type 'help %s' for details.\n", com); pr(); }
 
     abort_command();
 }
@@ -790,7 +789,7 @@ char *val, *def;
       { print("default:  "); print(def); nl(); }
 
   if (cmd[com_num]->help_key!=HELPLESS)
-    { sf(ps,"try typing 'help %s' for details\n",com); pr(); }
+    { sprintf(ps, "try typing 'help %s' for details\n", com); pr(); }
 
   abort_command(); 
 }      
@@ -803,10 +802,10 @@ char *str;
 int mode, num;
 { if (nullstr(str)) return;
   else if (num>0)
-    sf(ps,"error: %s\n %s %d value%s were expected\n",EXTRA_INPUT,
-       (mode==EXACTLY ? "only" : "up to"),
-       num,maybe_s(num));
-  else sf(ps,"%s\n",EXTRA_INPUT);
+    sprintf(ps, "error: %s\n %s %d value%s were expected\n", EXTRA_INPUT,
+            (mode==EXACTLY ? "only" : "up to"),
+            num, maybe_s(num));
+  else sprintf(ps, "%s\n", EXTRA_INPUT);
   pr(); print("try 'help "); print(com); print("' for details\n"); 
   abort_command();
 }
@@ -817,9 +816,9 @@ char *str;
 int mode, num;
 { if (!nullstr(str)) return;
   else if (num>0)
-    sf(ps,"error: missing input\n%s %d value%s expected\n",
-       (mode==EXACTLY ? "":"at least"),num,(num>1 ? "s were":" was")); 
-  else sf(ps,"error: missing input\n");
+    sprintf(ps, "error: missing input\n%s %d value%s expected\n",
+            (mode==EXACTLY ? "":"at least"), num, (num>1 ? "s were":" was"));
+  else sprintf(ps, "error: missing input\n");
   pr(); print("try 'help "); print(com); print("' for details\n"); 
   abort_command();
 }
@@ -881,12 +880,12 @@ int iter, max_iter;
     if (iter==0) { 
 	usertime(TRUE);
 	/* only need to do the simples the first time */
-	if (max_iter==0) sf(simple,"computing %s%s",thing,"s");
-	  else sf(simple,"computing %d %s%s",max_iter,thing,maybe_s(max_iter));
+	if (max_iter==0) sprintf(simple, "computing %s%s", thing, "s");
+	  else sprintf(simple, "computing %d %s%s", max_iter, thing, maybe_s(max_iter));
     } else strcpy(simple,"foo");
 
-    if (max_iter==0) sf(fancy,"%s %d",thing,iter);
-      else sf(fancy,"%s %d of %d",thing,iter,max_iter);
+    if (max_iter==0) sprintf(fancy, "%s %d", thing, iter);
+      else sprintf(fancy, "%s %d of %d", thing, iter, max_iter);
 
     if (iter==0 || usertime(FALSE)>1.0)
       { temp_print(simple,fancy); usertime(TRUE); }
@@ -909,7 +908,7 @@ command show_cmd_history()
 	i=Te->id.num;  cmd_str=Te->string; 
 	if (i>=first_to_print && i<cmd_history_num) {
 	    if(!printed_any){print("Previous commands:\n"); printed_any=TRUE;} 
-	    sf(ps,"%3d  ",i+1); pr(); print(cmd_str); nl(); 
+	    sprintf(ps, "%3d  ", i + 1); pr(); print(cmd_str); nl();
 	}
     }
     if (!printed_any) print("No commands have yet been entered.\n");
@@ -926,8 +925,8 @@ command quit()
 	run getln("save data before quitting? [yes] ");
 	except { 
 	    when ENDOINPUT: ln[0]='y'; break;
-	    when INTERRUPT: abort_command();
-	    default: 	    relay;
+	    when INTERRUPT: abort_command(); break;
+	    default: 	    relay; break;
 	}
 	if (!stoken(&ln,sREQUIRED,token) || !matches(token,"no")) {
 	    if (!((*quit_save_hook)(TRUE))) return; /* if saving fails */
@@ -966,7 +965,7 @@ command do_photo()
 
     if (streq(file_name,"off")) { 
 	photo_to_file("","");
-	sf(ps,"'%s' is off.\n",com); pr();
+	sprintf(ps, "'%s' is off.\n", com); pr();
 	return;
 
     } else if (streq(file_name,"on")) {
@@ -974,21 +973,21 @@ command do_photo()
 
     } else if (!nullstr(file_name)) {
 	if (!make_filename(file_name,DEFAULT_EXTENSION,"out")) 
-	  sf(ps,"error: Bad photo file name");
+	  sprintf(ps, "error: Bad photo file name");
 	if (!photo_to_file(file_name,"a")) 
-	  sf(ps,"error: Unable to open photo file '%s'\n",file_name); 
+	  sprintf(ps, "error: Unable to open photo file '%s'\n", file_name);
 	else {
 	    photo_banner(); 
-	    if (photo_update_top_hook && update_top()) sf(ps,"ok\n");
-	    else sf(ps,"'%s' is on: file is '%s'\n",com,photo_file); 
+	    if (photo_update_top_hook && update_top()) sprintf(ps, "ok\n");
+	    else sprintf(ps, "'%s' is on: file is '%s'\n", com, photo_file);
 	}
 	pr(); return;
 
     } else { /* no args */
 	if (log_open) {
 	    fflush(photo);
-	    sf(ps,"'%s' is on: file is '%s'\n",com,photo_file); 
-	} else sf(ps,"'%s' is off\n",com);
+	    sprintf(ps, "'%s' is on: file is '%s'\n", com, photo_file);
+	} else sprintf(ps, "'%s' is off\n", com);
 	pr(); return;
     }
 }
@@ -1026,12 +1025,12 @@ command help()
 
 	if (nullstr(args)) { /**** Print Help Table ****/
 	    print(HELP_DIVIDER); 
-	    sf(ps,"%s Commands and Options:\n",the_program); pr();
+	    sprintf(ps, "%s Commands and Options:\n", the_program); pr();
 	    for (j=1; j<MAX_COM_TOPICS; j++) { /* NOT j<=MAX_COM_TOPICS! */
 		if (nullstr(topic_name[j]) || wizard_only(topic_code[j]))
 		  continue;
 		strcpy(name,topic_name[j]); uppercase(name);
-		sf(ps,"\n(%d) %s:\n",j,name); pr();
+		sprintf(ps, "\n(%d) %s:\n", j, name); pr();
 		for (n=0; n<help_entries; n++) {
 		    for (i=0, got_it=FALSE; i<command_num; i++) {
 			if (cmd[i]->help_entry!=n) continue;
@@ -1042,12 +1041,12 @@ command help()
 		    if (!got_it) continue; /* for n */
 
 		    if (!nullstr(cmd[i]->abbreviation)) 
-		      sf(str,"%s (%s)",cmd[i]->name,cmd[i]->abbreviation);
-		    else sf(str,"%s",cmd[i]->name);
+		      sprintf(str, "%s (%s)", cmd[i]->name, cmd[i]->abbreviation);
+		    else sprintf(str, "%s", cmd[i]->name);
 		    if (!nullstr(cmd[i]->cmd_help)) {
 			for (k=len(str); k<HELP_LEFT; k++) str[k]='.'; 
 			str[HELP_LEFT]='\0';
-			sf(ps,HELP_FORMAT,str,cmd[i]->cmd_help); pr();
+			sprintf(ps, HELP_FORMAT, str, cmd[i]->cmd_help); pr();
 		    } else { /* no cmd_help */
 			print(str); nl();
 		    }
@@ -1059,8 +1058,8 @@ command help()
 		    if (!got_any) 
 		      { print("\nOTHER COMMANDS:\n"); got_any=TRUE; }
 		    if (!nullstr(cmd[i]->abbreviation))
-		      sf(ps,"%s (%s)\n",cmd[i]->name,cmd[i]->abbreviation);
-		    else sf(ps,"%s\n",cmd[i]->name);
+		      sprintf(ps, "%s (%s)\n", cmd[i]->name, cmd[i]->abbreviation);
+		    else sprintf(ps, "%s\n", cmd[i]->name);
 		    pr();
 		}
 	    }
@@ -1071,12 +1070,12 @@ command help()
 	    
 	} else if (itoken(&args,iREQUIRED,&i)) { /**** a topic num ****/
 	    if (i<=0 || i>MAX_COM_TOPICS || nullstr(topic_name[i])) {
-		unhold(); sf(ps,NOT_A_TOPIC,i); pr();
+		unhold(); sprintf(ps, NOT_A_TOPIC, i); pr();
 		print(MOREHELP0); print(MOREHELP1); print(MOREHELP2);
 	    } else {
 		print(HELP_DIVIDER);
 		strcpy(name,topic_name[i]); uppercase(name);
-		sf(ps,"(%d) %s\n\n",i,name); pr();
+		sprintf(ps, "(%d) %s\n\n", i, name); pr();
 		if (help_file==NULL) print(NO_HELP_FILE);
 		else if (topic_help_key[i]==HELPLESS) print(NO_HELP_KEY);
 		else {
@@ -1107,23 +1106,23 @@ command help()
 		else if (!help_only(cmd[i]->code))    strcpy(str,"Command");
 		else                                 strcpy(str,"Information");
 		if (!nullstr(cmd[i]->abbreviation))
-		  sf(ps,"%s %s (abbreviation: '%s')\n",name,str,
-		     cmd[i]->abbreviation);
-		  else sf(ps,"%s %s\n",name,str);
+		  sprintf(ps, "%s %s (abbreviation: '%s')\n", name, str,
+                  cmd[i]->abbreviation);
+		  else sprintf(ps, "%s %s\n", name, str);
 		pr(); nl();
 
 		if (!nullstr(cmd[i]->cmd_help)) 
-		  { sf(ps,"Description: %s\n",cmd[i]->cmd_help); pr(); } 
+		  { sprintf(ps, "Description: %s\n", cmd[i]->cmd_help); pr(); }
 		if (cmd[i]->topic!=0) 
-		  { sf(ps,"Help Topic:  (%d) %s\n",cmd[i]->topic,
-		       topic_name[cmd[i]->topic]); pr(); }
+		  { sprintf(ps, "Help Topic:  (%d) %s\n", cmd[i]->topic,
+                    topic_name[cmd[i]->topic]); pr(); }
 		if (cmd[i]->num_args==0) print("No Arguments\n");
 		else if (!nullstr(cmd[i]->args_help)) {
-		    sf(ps,"Argument%s   %s\n",s_or_space_colon,
-		       cmd[i]->args_help); pr();
+		    sprintf(ps, "Argument%s   %s\n", s_or_space_colon,
+                    cmd[i]->args_help); pr();
 		    if (!nullstr(cmd[i]->def_help)) {
-			sf(ps,"Default%s    %s\n",s_or_space_colon,
-			   cmd[i]->def_help); pr();
+			sprintf(ps, "Default%s    %s\n", s_or_space_colon,
+                    cmd[i]->def_help); pr();
 		    }
 		}
 
@@ -1153,8 +1152,8 @@ command about()
     int n;
 	
     print(HELP_DIVIDER);
-    sf(ps,"%s version %s, Copyright %s Whitehead Institute\n",
-       the_program,the_version,the_copyright); pr();
+    sprintf(ps, "%s version %s, Copyright %s Whitehead Institute\n",
+            the_program, the_version, the_copyright); pr();
     if (gnu_copyright(ps)) { pr(); nl(); }
     print("All rights reserved.\n"); nl();
 
@@ -1197,16 +1196,16 @@ command cd_command()
     
     if (nullstr(dir_name)) {
 	if (get_directory(dir_name)) 
-	  { sf(ps,"The current directory is '%s'\n",dir_name); pr(); }
+	  { sprintf(ps, "The current directory is '%s'\n", dir_name); pr(); }
 	else error("Can't get current directory name");
 
     } else { /* !nullstr(dir_name) */
 	if (change_directory(dir_name)) {
 	    if (get_directory(dir_name)) {
-		sf(ps,"The current directory is now '%s'\n",dir_name); pr(); 
+		sprintf(ps, "The current directory is now '%s'\n", dir_name); pr();
 	    } else print("ok\n");
 	} else { 
-	    sf(ps,"Can't change to directory '%s'",dir_name); 
+	    sprintf(ps, "Can't change to directory '%s'", dir_name);
 	    error(ps); 
 	}
     }
@@ -1223,7 +1222,7 @@ command system_command()
 	      lib_puts(photo,"\n        ...System Output Omitted...\n");
 	    print("\nOK\n");
 	} else {
-	    sf(ps,"Unable to run command '%s'",truncstr(args,40)); 
+	    sprintf(ps, "Unable to run command '%s'", truncstr(args, 40));
 	    error(ps);
 	}
 

@@ -669,11 +669,11 @@ void init_print_info()
 	    p->leading_spaces= total_spaces- decimal_places -1;
 	    p->max_neg_number= -0.5 * 1.0/exp10((real)decimal_places);
 
-	    sf(p->pr_format_str,"%%-%d.%dlf",total_spaces,decimal_places);
-	    sf(p->prn_pos_format_str," %%-%d.%dlf",
-	       total_spaces-1,decimal_places);
+	    sprintf(p->pr_format_str, "%%-%d.%dlf", total_spaces, decimal_places);
+	    sprintf(p->prn_pos_format_str, " %%-%d.%dlf",
+	       total_spaces-1, decimal_places);
 	    p->prn_neg_format_str= p->pr_format_str;
-	    sf(p->prd_format_str,"%%%d.%dlf",total_spaces,decimal_places);
+	    sprintf(p->prd_format_str, "%%%d.%dlf", total_spaces, decimal_places);
 	}
     }
 }

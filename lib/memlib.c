@@ -47,7 +47,7 @@ SIZEOF_TYPE cell_sizeof;
 
 	if ((p=calloc((CALLOC_NUM_TYPE)num,cell_sizeof))==NULL) {
 	      if (TRUE || verbose_mem) { /* KLUDGE */
-		   sf(ps_,ALLOC_FAIL_MSG,num,cell_sizeof,n_alloced);
+		   sprintf(ps_, ALLOC_FAIL_MSG, num, cell_sizeof, n_alloced);
 		   print(ps_);
 		}
 		NOMEMORY_num_cells= (int)num; 

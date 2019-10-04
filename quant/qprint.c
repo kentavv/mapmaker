@@ -98,11 +98,11 @@ bool *free_genetics;
     /* hold(6+map->num_intervals); */
     map_printer(map,print_genetics); nl();
     df_per= (raw.data_type==INTERCROSS ? 2:1);
-    sf(ps,LIKE_LINE,map->chi_sq,df_per*map->num_intervals,map->log_like); pr();
-    sf(ps,VAR_LINE,map->mu,map->sigma_sq,map->var_explained*100.0); pr();
+    sprintf(ps, LIKE_LINE, map->chi_sq, df_per * map->num_intervals, map->log_like); pr();
+    sprintf(ps, VAR_LINE, map->mu, map->sigma_sq, map->var_explained * 100.0); pr();
     
-    /*	sf(ps,EXTRA_LINE1,map->abs_log_like,map->no_data_like); pr();
-	sf(ps,EXTRA_LINE2,map->null_log_like,
+    /*	sprintf(ps,EXTRA_LINE1,map->abs_log_like,map->no_data_like); pr();
+	sprintf(ps,EXTRA_LINE2,map->null_log_like,
 	map->no_data_like-map->null_log_like); pr(); */
 }
 
@@ -115,7 +115,7 @@ bool print_genetics;
     char *trait_string= get_temp_string();
 	
     if (map->num_intervals>0) {
-	sf(ps,INT_TITLE_LINE,map->num_intervals>1 ? "S":" ",
+	sprintf(ps, INT_TITLE_LINE, map->num_intervals > 1 ? "S" : " ",
 	   print_names ? "            ":""); pr();
 	if (print_genetics) print(GENETICS_TITLE);
 	print(WEIGHT_TITLE);
@@ -123,16 +123,16 @@ bool print_genetics;
 	nl();
     }
      for (i=0; i<map->num_intervals; i++) {
-	sf(ps,INT_LINE,interval_str(map->left[i],map->right[i],TRUE),
-	   dist_str(map->interval_len[i],FALSE),
-	   dist_str(map->qtl_pos[i],FALSE)); pr();
+	sprintf(ps, INT_LINE, interval_str(map->left[i], map->right[i], TRUE),
+            dist_str(map->interval_len[i],FALSE),
+            dist_str(map->qtl_pos[i],FALSE)); pr();
 	if (print_genetics) { 
-	    sf(ps,GENETICS_FORMAT,genetics_str(&map->constraint[i],FALSE)); 
+	    sprintf(ps, GENETICS_FORMAT, genetics_str(&map->constraint[i], FALSE)); 
 	    pr();
 	}
-	sf(ps,WEIGHT_FORMAT,rsn(7.5,map->qtl_weight[i])); pr();
+	sprintf(ps, WEIGHT_FORMAT, rsn(7.5, map->qtl_weight[i])); pr();
 	if (raw.data_type==INTERCROSS) 
-	  { sf(ps,DOM_FORMAT,rsn(7.5,map->qtl_dominance[i])); pr(); }
+	  { sprintf(ps, DOM_FORMAT, rsn(7.5, map->qtl_dominance[i])); pr(); }
 	nl();
     }
 
@@ -142,17 +142,17 @@ bool print_genetics;
     }
     for (i=0; i<map->num_continuous_vars; i++) {
 	if (map->cont_var[i]==EPISTASIS_TERM) strcpy(trait_string,"epistasis");
-	else sf(trait_string,"%d (%s)",map->cont_var[i]+1,
-	   raw.trait_name[map->cont_var[i]]);
+	else sprintf(trait_string, "%d (%s)", map->cont_var[i] + 1,
+                 raw.trait_name[map->cont_var[i]]);
 	   
-	sf(ps,CV_LINE,trait_string,rsn(7.5,map->cont_var_weight[i])); pr();
+	sprintf(ps, CV_LINE, trait_string, rsn(7.5, map->cont_var_weight[i])); pr();
     }
 }
 
 
 void print_short_title() /* FROB */
 {
-    sf(ps,INT_TITLE_LINE," ",print_names ? "            ":""); pr();
+    sprintf(ps, INT_TITLE_LINE, " ", print_names ? "            " : ""); pr();
     print(WEIGHT_TITLE);
     if (raw.data_type==INTERCROSS) print(DOM_TITLE);
     print(LOD_TITLE);
@@ -167,13 +167,13 @@ real threshold, scale;
     int i, n, last;
     last= map->num_intervals-1;
 
-    sf(ps,INT_LINE,interval_str(map->left[last],map->right[last],TRUE),
-       dist_str(map->interval_len[last],FALSE),
-       dist_str(map->qtl_pos[last],FALSE)); pr();
-    sf(ps,WEIGHT_FORMAT,rsn(7.5,map->qtl_weight[last])); pr();
+    sprintf(ps, INT_LINE, interval_str(map->left[last], map->right[last], TRUE),
+            dist_str(map->interval_len[last],FALSE),
+            dist_str(map->qtl_pos[last],FALSE)); pr();
+    sprintf(ps, WEIGHT_FORMAT, rsn(7.5, map->qtl_weight[last])); pr();
     if (raw.data_type==INTERCROSS) 
-      { sf(ps,DOM_FORMAT,rsn(7.5,map->qtl_dominance[last])); pr(); }
-    sf(ps,LOD_FORMAT,map->var_explained*100.0,map->log_like); pr();
+      { sprintf(ps, DOM_FORMAT, rsn(7.5, map->qtl_dominance[last])); pr(); }
+    sprintf(ps, LOD_FORMAT, map->var_explained * 100.0, map->log_like); pr();
     if (map->log_like>=threshold) {
 	n= ((int)((map->log_like-threshold)/scale))+1;
 	if (n>SHORT_MAP_MAX_STARS) n=SHORT_MAP_MAX_STARS;
@@ -189,11 +189,11 @@ QTL_MAP *map;
 real delta_log_like;
 {
 	print(ITER_DIVIDER);
-	sf(ps,"iteration #%d:\n",iter+1); print(ps);
+	sprintf(ps, "iteration #%d:\n", iter + 1); print(ps);
 	map_printer(map,FALSE);
-	sf(ps,ITER_LINE,map->log_like,delta_log_like);
+	sprintf(ps, ITER_LINE, map->log_like, delta_log_like);
 	print(ps);
-	sf(ps,VAR_LINE,map->mu,map->sigma_sq,map->var_explained*100.0); 
+	sprintf(ps, VAR_LINE, map->mu, map->sigma_sq, map->var_explained * 100.0); 
 	print(ps);
 }
 
@@ -205,8 +205,8 @@ void print_null_iteration(map)
 QTL_MAP *map;
 {
 	print(ITER_DIVIDER);
-	sf(ps,NULL_MAP_LINE,map->null_log_like,map->null_sigma_sq,
-	      map->no_data_like);
+	sprintf(ps, NULL_MAP_LINE, map->null_log_like, map->null_sigma_sq,
+            map->no_data_like);
 	print(ps);
 }
 
@@ -225,31 +225,31 @@ int n_individuals, n_genotype_vars, n_continuous_vars, n_intervals;
     nl();
     print("expected_genotype:\nindiv");
     for (n=0; n<num+1; n++) 
-      { sf(ps,"  %-2d   ",n); pr(); } nl();
+      { sprintf(ps, "  %-2d   ", n); pr(); } nl();
     for (i=0; i<n_individuals; i++) {
-	sf(ps,"%-4d ",i); pr();
+	sprintf(ps, "%-4d ", i); pr();
 	for (n=0; n<num+1; n++)
-	    { sf(ps,"%-6.3lf ",expected_genotype[i][n]); pr(); }
+	    { sprintf(ps, "%-6.3lf ", expected_genotype[i][n]); pr(); }
 	nl();
     }
 
     print("\nS_matrix:\n   ");
-    for (n=0; n<num+1; n++) { sf(ps,"  %-2d   ",n); pr(); } nl();
+    for (n=0; n<num+1; n++) { sprintf(ps, "  %-2d   ", n); pr(); } nl();
     for (n=0; n<num+1; n++) {
-	sf(ps,"%-2d ",n); pr();
+	sprintf(ps, "%-2d ", n); pr();
 	for (m=0; m<num+1; m++) 
-	  { sf(ps,"%-6.2lf ",S_matrix[n][m]); pr(); }
+	  { sprintf(ps, "%-6.2lf ", S_matrix[n][m]); pr(); }
 	nl();
     }
 
     print("\nexpected recs: ");
     for (j=0; j<n_intervals; j++) {
-	sf(ps,"interval %d:\n",j); pr();
+	sprintf(ps, "interval %d:\n", j); pr();
 	for_locus_genotypes(raw.data_type,q) {
 	    for_interval_genotypes(raw.data_type,g)      
-	      { sf(ps,"[%d][%d]  ",g,q); pr(); } nl();
+	      { sprintf(ps, "[%d][%d]  ", g, q); pr(); } nl();
 	    for_interval_genotypes(raw.data_type,g)
-	      { sf(ps,"%7.5lf ",expected_recs[j][g][q]); pr(); } nl();
+	      { sprintf(ps, "%7.5lf ", expected_recs[j][g][q]); pr(); } nl();
 	}
     }
     nl();
@@ -302,11 +302,11 @@ QTL_MAP *map;
 	else strcpy(ps,F2_NULL_WIGGLE); 
     } else {
 	i= map->num_intervals-1;
-	sf(ps,
-	   (raw.data_type==BACKCROSS ? B1_WIGGLE_INTERVAL:F2_WIGGLE_INTERVAL),
-	   interval_str(map->left[i],map->right[i],FALSE),
-	   dist_str(map_length(map->left[i],map->right[i]),FALSE),
-	   units_str(FALSE)); 
+	sprintf(ps,
+            (raw.data_type==BACKCROSS ? B1_WIGGLE_INTERVAL:F2_WIGGLE_INTERVAL),
+            interval_str(map->left[i],map->right[i],FALSE),
+            dist_str(map_length(map->left[i],map->right[i]),FALSE),
+            units_str(FALSE)); 
     }
     pr();
 }
@@ -322,13 +322,13 @@ real base_like, scale;
     i= map->num_intervals-1;
 
     if (raw.data_type==BACKCROSS)
-      sf(ps,B1_WIGGLE_MAP,dist_str(map->qtl_pos[i],TRUE),
-	 rsn(6.3,map->qtl_weight[i]),
-	 map->var_explained*100.0,rsd(7.3,map->log_like));
+      sprintf(ps, B1_WIGGLE_MAP, dist_str(map->qtl_pos[i], TRUE),
+              rsn(6.3,map->qtl_weight[i]),
+	 map->var_explained*100.0, rsd(7.3,map->log_like));
     else /* data_type==INTERCROSS */
-      sf(ps,F2_WIGGLE_MAP,dist_str(map->qtl_pos[i],TRUE),
-	    rsn(6.3,map->qtl_weight[i]),rsn(6.3,map->qtl_dominance[i]),
-	    map->var_explained*100.0,rsd(7.3,map->log_like));
+      sprintf(ps, F2_WIGGLE_MAP, dist_str(map->qtl_pos[i], TRUE),
+              rsn(6.3,map->qtl_weight[i]), rsn(6.3,map->qtl_dominance[i]),
+	    map->var_explained*100.0, rsd(7.3,map->log_like));
     pr();
 
     if (map->log_like>base_like) {
@@ -372,16 +372,16 @@ void print_saved_wiggles()
     WIGGLE_OPERATION *op;
 
     if (first_wiggle==num_wiggles) return;
-    sf(ps,WIG_LIST_TITLE,(print_names ? "     ":"")); pr();
+    sprintf(ps, WIG_LIST_TITLE, (print_names ? "     " : "")); pr();
     for (i=first_wiggle; i<num_wiggles; i++) {
 	if ((op=wiggles[i])==NULL) send(CRASH);
 	if (op->data == NULL)
-	  sf(ps,"  <deleted>\n");
+	  sprintf(ps, "  <deleted>\n");
 	else if (print_names) 
-	  sf(ps,WIG_LIST_NAMES,i+1,(op->num_orders==1 ? "1":"x"),
-	     raw.trait_name[op->trait],op->seq_string);
-	else sf(ps,WIG_LIST_NUMS,i+1,(op->num_orders==1 ? "1":"x"),
-		op->trait+1,op->seq_string);
+	  sprintf(ps, WIG_LIST_NAMES, i + 1, (op->num_orders == 1 ? "1" : "x"),
+              raw.trait_name[op->trait], op->seq_string);
+	else sprintf(ps, WIG_LIST_NUMS, i + 1, (op->num_orders == 1 ? "1" : "x"),
+		op->trait+1, op->seq_string);
 	pr(); 
     }
 } 
@@ -402,9 +402,9 @@ int wiggle;
     print(ORD_LIST_TITLE);
     k=op->num_intervals-1;
     for (i=0; i<op->num_orders; i++) {
-	sf(ps,ORD_LIST_FORM,wiggle+1,i+1,
-	   genetics_str(&op->data[i][0]->map->constraint[k],FALSE),
-	   left_seq_str(op->data[i][0]->map));
+	sprintf(ps, ORD_LIST_FORM, wiggle + 1, i + 1,
+            genetics_str(&op->data[i][0]->map->constraint[k],FALSE),
+            left_seq_str(op->data[i][0]->map));
 	pr();
     }
 }
@@ -432,13 +432,13 @@ real base_like, scale;
 	for (j=0; j<data[i]->num_points; j++) {
 	    point=data[i]->point[j];
 	    if (raw.data_type==BACKCROSS)
-	      sf(ps,B1_WIGGLE_MAP,dist_str(point->qtl_pos,TRUE),
-		 rsn(6.3,point->qtl_weight),point->var_explained*100.0,
-		 rsd(7.3,point->lod_score));
+	      sprintf(ps, B1_WIGGLE_MAP, dist_str(point->qtl_pos, TRUE),
+                  rsn(6.3,point->qtl_weight),point->var_explained*100.0,
+                  rsd(7.3,point->lod_score));
 	    else /* data_type==INTERCROSS */
-	      sf(ps,F2_WIGGLE_MAP,dist_str(point->qtl_pos,TRUE),
-		 rsn(6.3,point->qtl_weight),rsn(6.3,point->qtl_dominance),
-		 point->var_explained*100.0,rsd(7.3,point->lod_score));
+	      sprintf(ps, F2_WIGGLE_MAP, dist_str(point->qtl_pos, TRUE),
+                  rsn(6.3,point->qtl_weight), rsn(6.3,point->qtl_dominance),
+		 point->var_explained*100.0, rsd(7.3,point->lod_score));
 	    pr();
 	    if (point->lod_score>base_like) {
 		stars=
@@ -466,22 +466,22 @@ int num;
     char *i;
     
     print_map_divider();
-    sf(ps,PEAK_TITLE,num+1); pr();
+    sprintf(ps, PEAK_TITLE, num + 1); pr();
     print(PEAK_L_CONF);
     if (peak->backward_pos==OFF_END) {
 	i=interval_str(peak->backward_left,peak->backward_right,FALSE);
-	sf(ps,PEAK_NOBOUND,i); pr();
+	sprintf(ps, PEAK_NOBOUND, i); pr();
     } else { 
 	i=interval_str(peak->backward_left,peak->backward_right,FALSE);
-	sf(ps,PEAK_BOUND,i,dist_str(peak->backward_pos,FALSE)); pr();
+	sprintf(ps, PEAK_BOUND, i, dist_str(peak->backward_pos, FALSE)); pr();
     }
     print(PEAK_R_CONF);
     if (peak->forward_pos==OFF_END) {
 	i=interval_str(peak->forward_left,peak->forward_right,FALSE);
-	sf(ps,PEAK_NOBOUND,i); pr();
+	sprintf(ps, PEAK_NOBOUND, i); pr();
     } else { 
 	i=interval_str(peak->forward_left,peak->forward_right,FALSE);
-	sf(ps,PEAK_BOUND,i,dist_str(peak->forward_pos,FALSE)); pr();
+	sprintf(ps, PEAK_BOUND, i, dist_str(peak->forward_pos, FALSE)); pr();
     }
     nl();
     if (peak->map==NULL) send(CRASH); /* KLUDGE for now */
@@ -527,21 +527,21 @@ real threshold;
 {
     real lod; lod= point[FREE]->lod_score;
 
-    sf(ps,TEST_WIGGLE_MAP1,
-       dist_str(point[FREE]->qtl_pos,TRUE),
-       rsn(6.3,point[FREE]->qtl_weight),
-       rsn(6.3,point[FREE]->qtl_dominance),
+    sprintf(ps, TEST_WIGGLE_MAP1,
+            dist_str(point[FREE]->qtl_pos,TRUE),
+            rsn(6.3,point[FREE]->qtl_weight),
+            rsn(6.3,point[FREE]->qtl_dominance),
        point[FREE]->var_explained*100.0,
-       rsd(6.2,point[FREE]->lod_score)); pr();
+            rsd(6.2,point[FREE]->lod_score)); pr();
 
-    sf(ps,TEST_WIGGLE_MAP2,
+    sprintf(ps, TEST_WIGGLE_MAP2,
        point[DOMINANT]->var_explained*100.0,
-       rsd(6.2,point[DOMINANT]->lod_score-lod),
+            rsd(6.2,point[DOMINANT]->lod_score-lod),
        point[RECESSIVE]->var_explained*100.0,
-       rsd(6.2,point[RECESSIVE]->lod_score-lod),
+            rsd(6.2,point[RECESSIVE]->lod_score-lod),
        point[ADDITIVE]->var_explained*100.0,
-       rsd(6.2,point[ADDITIVE]->lod_score-lod),
-       (lod+0.00499>=threshold ? "*\n":"\n")); pr(); 
+            rsd(6.2,point[ADDITIVE]->lod_score-lod),
+            (lod+0.00499>=threshold ? "*\n":"\n")); pr(); 
 }
 
 
@@ -553,9 +553,9 @@ QTL_MAP *map;
     if (map==NULL) return;
 
     last= map->num_intervals-1;
-    sf(ps,TEST_WIGGLE_INTERVAL1,
-       interval_str(map->left[last],map->right[last],FALSE),
-       dist_str(map->interval_len[last],FALSE),units_str(FALSE)); pr();
+    sprintf(ps, TEST_WIGGLE_INTERVAL1,
+            interval_str(map->left[last],map->right[last],FALSE),
+            dist_str(map->interval_len[last],FALSE), units_str(FALSE)); pr();
     for (i=len(ps);i<77; i++) print(" ");
     print("|\n"); print(TEST_WIGGLE_DIVIDER); nl();
 }
@@ -603,7 +603,7 @@ real threshold;
 
 void print_trait(for_num_maps) 
 int for_num_maps;
-{ sf(ps,"QTL map%s for trait %s:\n",maybe_s(for_num_maps),trait_str()); pr(); }
+{ sprintf(ps, "QTL map%s for trait %s:\n", maybe_s(for_num_maps), trait_str()); pr(); }
 
 
 void print_seq()
@@ -618,7 +618,7 @@ char *str;
 char *trait_str()
 {
     char *str= get_temp_string(); 
-    sf(str,"%d (%s)",trait+1, raw.trait_name[trait]); 
+    sprintf(str, "%d (%s)", trait + 1, raw.trait_name[trait]); 
     return(str);
 }
     
@@ -629,16 +629,16 @@ bool fill;
 {
     char *str= get_temp_string();
     if (print_mapm_loci) {
-	if (!print_names) sf(str,"%d-%d",raw.original_locus[left],
-			     raw.original_locus[right]);
-	else sf(str,"%s-%s",raw.locus_name[left],
-		raw.locus_name[right]);
+	if (!print_names) sprintf(str, "%d-%d", raw.original_locus[left],
+                              raw.original_locus[right]);
+	else sprintf(str, "%s-%s", raw.locus_name[left],
+                 raw.locus_name[right]);
 	if (fill) pad_to_len(str,print_names ? 21:9);
 	return(str);
     }
     else {
-	if (!print_names) sf(str,"%d-%d",left+1,right+1);
-	else sf(str,"%s-%s",raw.locus_name[left],raw.locus_name[right]);
+	if (!print_names) sprintf(str, "%d-%d", left + 1, right + 1);
+	else sprintf(str, "%s-%s", raw.locus_name[left], raw.locus_name[right]);
 	if (fill) pad_to_len(str,print_names ? 21:9);
 	return(str);
     }
@@ -651,10 +651,10 @@ bool fill; /* unused? */
     char *str; str=get_temp_string();
 
     if (units == CENTIMORGANS) {
-	if (fill) sf(str,"%-5.1lf",haldane_cm(rec_frac));
-	  else sf(str,"%-3.1lf",haldane_cm(rec_frac));
+	if (fill) sprintf(str, "%-5.1lf", haldane_cm(rec_frac));
+	  else sprintf(str, "%-3.1lf", haldane_cm(rec_frac));
 	str[5]='\0'; /* just in case */
-    } else sf(str,"%-5.3lf",rec_frac);
+    } else sprintf(str, "%-5.3lf", rec_frac);
 
     return(str);
 }
@@ -683,7 +683,7 @@ bool verbose;
 
     else if (raw.data_type==BACKCROSS) {
 	if (genetics->backx_weight==DONT_FIX) strcpy(str,"free");
-	else if (verbose) sf(str,"W=%-5.3lf",genetics->backx_weight);
+	else if (verbose) sprintf(str, "W=%-5.3lf", genetics->backx_weight);
 	else strcpy(str,"fixed");
 
     } else if (raw.data_type==INTERCROSS)
@@ -697,13 +697,13 @@ bool verbose;
 	  case TEST_MODELS:     strcpy(str,"try");         break;
 	  case CONSTRAINED: 	
 	      if (!verbose) strcpy(str,"constrain");
-	      else sf(str,"constraints: A=%-4.2lf B=%-4.2lf C=%-4.2lf",
-		      genetics->a,genetics->b,genetics->c);
+	      else sprintf(str, "constraints: A=%-4.2lf B=%-4.2lf C=%-4.2lf",
+                       genetics->a, genetics->b, genetics->c);
 	      break;
 	  case FIXED:
 	      if (!verbose) strcpy(str,"fixed"); 
-	      else sf(str,"fixed: A=%-5.3lf D=%-5.3lf",genetics->a,
-		      genetics->b);
+	      else sprintf(str, "fixed: A=%-5.3lf D=%-5.3lf", genetics->a,
+                       genetics->b);
 	      break;
 	  default: send(CRASH);
       }
@@ -771,11 +771,11 @@ real offset;
     right=imaxf(5+columns,15);
 
     if (num<0) { /* header only */
-	sf(ps,TINY_TITLE1,n_ints>1 ? "S":" "); pr(); to_column(right); 
-	sf(ps,TINY_TITLE2,(offset>0.0 ? "LIKE-DIFF":"LOG-LIKE")); pr();
+	sprintf(ps, TINY_TITLE1, n_ints > 1 ? "S" : " "); pr(); to_column(right); 
+	sprintf(ps, TINY_TITLE2, (offset > 0.0 ? "LIKE-DIFF" : "LOG-LIKE")); pr();
 
     } else { /* print the map */
-	sf(ps,TINY_LINE1,num+1); pr();
+	sprintf(ps, TINY_LINE1, num + 1); pr();
 	for (i=0; i<map->num_intervals; i++) {
 	    interval= interval_str(map->left[i],map->right[i],FALSE);
 	    print(interval); print(" ");
@@ -783,7 +783,7 @@ real offset;
 	      print("\n    ");
 	}
 	to_column(right);	    
-	sf(ps,TINY_LINE2,map->var_explained*100.0,map->log_like-offset); pr();
+	sprintf(ps, TINY_LINE2, map->var_explained * 100.0, map->log_like - offset); pr();
     }
 }
 
@@ -801,17 +801,17 @@ void print_saved_compares()
     COMPARE_OPERATION *op;
 
     if(first_compare == num_compares)  return;
-    sf(ps,COMP_LIST_TITLE,(print_names ? "     ":"")); pr();
+    sprintf(ps, COMP_LIST_TITLE, (print_names ? "     " : "")); pr();
     for(i=first_compare; i<num_compares; i++) {
 	if ((op=compares[i]) == NULL) send(CRASH);
 	if (op->data==NULL) 
-	  sf(ps,"  This compare (number%d) has been deleted!\n",i+1);
+	  sprintf(ps, "  This compare (number%d) has been deleted!\n", i + 1);
 	else if(print_names)
-	  sf(ps,COMP_LIST_NAMES,i+1,(op->num_contigs==1 ? "1" : "x"),
-	     raw.trait_name[op->trait],op->seq_string);
+	  sprintf(ps, COMP_LIST_NAMES, i + 1, (op->num_contigs == 1 ? "1" : "x"),
+              raw.trait_name[op->trait], op->seq_string);
 	else
-	  sf(ps,COMP_LIST_NUMS,i+1,(op->num_contigs==1 ? "1" : "x"),
-	     op->trait+1,op->seq_string);
+	  sprintf(ps, COMP_LIST_NUMS, i + 1, (op->num_contigs == 1 ? "1" : "x"),
+	     op->trait+1, op->seq_string);
 	pr();
     }
 }
@@ -864,7 +864,7 @@ real threshold, falloff;
 
 	bad_maps_yet=good_maps_printed=FALSE;
 	if (best>=threshold) { 
-	    sf(ps,GOOD_MAPS_TITLE,(falloff<0.0 ? "threshold minus ":"")); pr();
+	    sprintf(ps, GOOD_MAPS_TITLE, (falloff < 0.0 ? "threshold minus " : "")); pr();
 	    print_map_divider();
 	    good_maps_printed=TRUE;
 	}
@@ -873,14 +873,14 @@ real threshold, falloff;
 	    map=op->data[like_index[i]]->map;
 	    if (good_maps_printed && ((falloff>=0.0 && map->log_like>falloff)||
 		    (falloff<0.0 && map->log_like > best+falloff))) {
-		sf(ps,COMP_MAP_TOP,i+1,map->log_like-best); pr(); nl();
+		sprintf(ps, COMP_MAP_TOP, i + 1, map->log_like - best); pr(); nl();
 		print_qtl_map(map,NULL);
 		print_map_divider();
 	    } else {
 		if (!bad_maps_yet) {
 		    if (good_maps_printed) nl(); 
-		    sf(ps,BAD_MAPS_TITLE,
-		       (falloff<0.0 ? "threshold minus ":"")); pr();
+		    sprintf(ps, BAD_MAPS_TITLE,
+                    (falloff<0.0 ? "threshold minus ":"")); pr();
 		    print_tiny_map(map,-1,0.0); /* title */
 		    bad_maps_yet=TRUE;
 		}
@@ -916,7 +916,7 @@ int compare, contig;
 	if ((like=op->data[i]->map->log_like)>best) best=like;
     }
     
-    sf(ps,SAVED_BEST_LIKE,best); pr(); nl();
+    sprintf(ps, SAVED_BEST_LIKE, best); pr(); nl();
     print_tiny_map(op->data[0]->map,-1,1.0); /* title */
     
     for (i=start; i<op->num_orders; i++) {
@@ -942,7 +942,7 @@ QTL_MAP *map;
     print("Enter weight for cont-vars:\n");
     for (i=0; i<map->num_continuous_vars; i++) {
 	if (map->cont_var[i]==EPISTASIS_TERM) strcpy(ps,"epistasis: ");
-	else sf(ps,"%d (%s): ",map->cont_var[i]+1,raw.trait_name[map->cont_var[i]]);
+	else sprintf(ps, "%d (%s): ", map->cont_var[i] + 1, raw.trait_name[map->cont_var[i]]);
 	getln(ps);
 	if (!rtoken(&ln,rREQUIRED,&map->cont_var_weight[i]))
 	  error("bad weight!");

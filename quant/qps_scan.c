@@ -53,7 +53,7 @@ real threshold;
     array(notch, MAX_CHROM_LOC, real);
     matrix(label, MAX_CHROM_LOC, NAME_LEN+1, char);
     filename = get_temp_string();
-    sf(filename,"scan%d_%d.ps",wiggle+1,order+1);
+    sprintf(filename, "scan%d_%d.ps", wiggle + 1, order + 1);
     fp = fopen(filename,"w");
 
     ps_file_start(fp);
@@ -82,19 +82,19 @@ real threshold;
     yscale = rminf(50.0, 400.0/highest);
 
     trait_str = get_temp_string();
-    sf(trait_str,"LOD score - Trait %d (%s)", op->trait+1, 
-       raw.trait_name[op->trait]);
-    if(!print_names) sf(label[0],"%d",
-       raw.original_locus[data[0]->map->left[data[0]->map->num_intervals-1]]);
-    else             sf(label[0],"%s",
-       raw.locus_name[data[0]->map->left[data[0]->map->num_intervals-1]]);
+    sprintf(trait_str, "LOD score - Trait %d (%s)", op->trait + 1,
+            raw.trait_name[op->trait]);
+    if(!print_names) sprintf(label[0], "%d",
+                             raw.original_locus[data[0]->map->left[data[0]->map->num_intervals-1]]);
+    else             sprintf(label[0], "%s",
+                             raw.locus_name[data[0]->map->left[data[0]->map->num_intervals-1]]);
     for (i=0; i<op->num_wiggled_intervals; i++) {
         if (i>0) { 
 	    notch[num_notches++] = count*2.0; 
-	    if (!print_names) sf(label[num_notches],"%d",
-   raw.original_locus[data[i-1]->map->right[data[i-1]->map->num_intervals-1]]);
-	    else              sf(label[num_notches],"%s",
-   raw.locus_name[data[i-1]->map->right[data[i-1]->map->num_intervals-1]]);
+	    if (!print_names) sprintf(label[num_notches], "%d",
+                                  raw.original_locus[data[i-1]->map->right[data[i-1]->map->num_intervals-1]]);
+	    else              sprintf(label[num_notches], "%s",
+                                  raw.locus_name[data[i-1]->map->right[data[i-1]->map->num_intervals-1]]);
 	}
         if (i>0 && !data[i]->contig) {
 	    /* a page is done */
@@ -103,10 +103,10 @@ real threshold;
 	    ps_page_end(fp);
 	    pagenum++;
 	    ps_page_start(fp, pagenum);
-	    if(!print_names) sf(label[0],"%d",
-	raw.original_locus[data[i]->map->left[data[i]->map->num_intervals-1]]);
-	    else             sf(label[0],"%s",
-	raw.locus_name[data[i]->map->left[data[i]->map->num_intervals-1]]);
+	    if(!print_names) sprintf(label[0], "%d",
+                                 raw.original_locus[data[i]->map->left[data[i]->map->num_intervals-1]]);
+	    else             sprintf(label[0], "%s",
+                                 raw.locus_name[data[i]->map->left[data[i]->map->num_intervals-1]]);
 	    count = 0; num_notches = 0;
 	    best = 0.0;
 	}
@@ -121,10 +121,10 @@ real threshold;
 
     /* dump last page */
     notch[num_notches++] = count*2.0; 
-    if(!print_names) sf(label[num_notches],"%d",
-   raw.original_locus[data[i-1]->map->right[data[i-1]->map->num_intervals-1]]);
-    else             sf(label[num_notches],"%s",
-   raw.locus_name[data[i-1]->map->right[data[i-1]->map->num_intervals-1]]);
+    if(!print_names) sprintf(label[num_notches], "%d",
+                             raw.original_locus[data[i-1]->map->right[data[i-1]->map->num_intervals-1]]);
+    else             sprintf(label[num_notches], "%s",
+                             raw.locus_name[data[i-1]->map->right[data[i-1]->map->num_intervals-1]]);
 
     draw_axes(fp, notch, num_notches, label, trait_str, threshold);
     do_bezier(fp, xval, yval, count, 0.0, 0.0, SOLID_LINE);
@@ -133,8 +133,8 @@ real threshold;
     ps_file_end(fp);
 
     fclose(fp);
-    sf(ps,"scan %d.%d saved in PostScript file '%s'\n",
-       wiggle+1,order+1,filename); pr();
+    sprintf(ps, "scan %d.%d saved in PostScript file '%s'\n",
+       wiggle+1,order+1, filename); pr();
     unarray(xval, real);
     unarray(yval, real);
     unarray(notch, real);
@@ -412,7 +412,7 @@ real threshold;
     array(notch, MAX_CHROM_LOC, real);
     matrix(label, MAX_CHROM_LOC, NAME_LEN+1, char);
     filename = get_temp_string();
-    sf(filename,"scan%d_x.ps",wiggle+1);
+    sprintf(filename, "scan%d_x.ps", wiggle + 1);
     fp = fopen(filename,"w");
 
     ps_file_start(fp);
@@ -435,19 +435,19 @@ real threshold;
     yscale = rminf(50.0, 400.0/highest);
 
     trait_str = get_temp_string();
-    sf(trait_str,"LOD score - Trait %d (%s)", op->trait+1, 
-       raw.trait_name[op->trait]);
-    if (!print_names) sf(label[0],"%d",
-raw.original_locus[op->data[0][0]->map->left[op->data[0][0]->map->num_intervals-1]]);
-    else              sf(label[0],"%s",
-raw.locus_name[op->data[0][0]->map->left[op->data[0][0]->map->num_intervals-1]]);
+    sprintf(trait_str, "LOD score - Trait %d (%s)", op->trait + 1,
+            raw.trait_name[op->trait]);
+    if (!print_names) sprintf(label[0], "%d",
+                              raw.original_locus[op->data[0][0]->map->left[op->data[0][0]->map->num_intervals-1]]);
+    else              sprintf(label[0], "%s",
+                              raw.locus_name[op->data[0][0]->map->left[op->data[0][0]->map->num_intervals-1]]);
     for (i=0; i<op->num_wiggled_intervals; i++) {
         if (i>0) { 
 	    notch[num_notches++] = count*2.0; 
-	    if (!print_names) sf(label[num_notches],"%d",
-raw.original_locus[op->data[0][i-1]->map->right[op->data[0][i-1]->map->num_intervals-1]]);
-	    else              sf(label[num_notches],"%s",
-raw.locus_name[op->data[0][i-1]->map->right[op->data[0][i-1]->map->num_intervals-1]]);
+	    if (!print_names) sprintf(label[num_notches], "%d",
+                                  raw.original_locus[op->data[0][i-1]->map->right[op->data[0][i-1]->map->num_intervals-1]]);
+	    else              sprintf(label[num_notches], "%s",
+                                  raw.locus_name[op->data[0][i-1]->map->right[op->data[0][i-1]->map->num_intervals-1]]);
 	}
         if (i>0 && !op->data[0][i]->contig) {
 
@@ -467,10 +467,10 @@ raw.locus_name[op->data[0][i-1]->map->right[op->data[0][i-1]->map->num_intervals
 	    ps_page_end(fp);
 	    pagenum++;
 	    ps_page_start(fp, pagenum);
-	    if (!print_names) sf(label[0],"%d",
-raw.original_locus[op->data[0][i]->map->left[op->data[0][i]->map->num_intervals-1]]);
-	    else              sf(label[0],"%s",
-raw.locus_name[op->data[0][i]->map->left[op->data[0][i]->map->num_intervals-1]]);
+	    if (!print_names) sprintf(label[0], "%d",
+                                  raw.original_locus[op->data[0][i]->map->left[op->data[0][i]->map->num_intervals-1]]);
+	    else              sprintf(label[0], "%s",
+                                  raw.locus_name[op->data[0][i]->map->left[op->data[0][i]->map->num_intervals-1]]);
 	    count = 0; num_notches = 0;
 	    best = 0.0;
 	}
@@ -486,10 +486,10 @@ raw.locus_name[op->data[0][i]->map->left[op->data[0][i]->map->num_intervals-1]])
     }
 
     notch[num_notches++] = count*2.0; 
-    if (!print_names) sf(label[num_notches],"%d",
-raw.original_locus[op->data[0][i-1]->map->right[op->data[0][i-1]->map->num_intervals-1]]);
-    else              sf(label[num_notches],"%s",
-raw.locus_name[op->data[0][i-1]->map->right[op->data[0][i-1]->map->num_intervals-1]]);
+    if (!print_names) sprintf(label[num_notches], "%d",
+                              raw.original_locus[op->data[0][i-1]->map->right[op->data[0][i-1]->map->num_intervals-1]]);
+    else              sprintf(label[num_notches], "%s",
+                              raw.locus_name[op->data[0][i-1]->map->right[op->data[0][i-1]->map->num_intervals-1]]);
     draw_axes(fp, notch, num_notches, label, trait_str, threshold);
     for (order=0; order<op->num_orders; order++) 
       do_bezier(fp, xval[order], yval[order], count, 0.0, 0.0, 
@@ -510,7 +510,7 @@ raw.locus_name[op->data[0][i-1]->map->right[op->data[0][i-1]->map->num_intervals
     ps_file_end(fp);
 
     fclose(fp);
-    sf(ps,"scan %d.x saved in PostScript file '%s'\n",wiggle+1,filename); pr();
+    sprintf(ps, "scan %d.x saved in PostScript file '%s'\n", wiggle + 1, filename); pr();
     unarray(xval, real);
     unarray(yval, real);
     unarray(notch, real);

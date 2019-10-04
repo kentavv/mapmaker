@@ -122,11 +122,11 @@ MAP *map;
     scale = ps_scale(map_length);
 
     for(i = 0; i < map->num_loci - 1; i++) {
-	sf(loc_str,"%s",ps_loc_str(map->locus[i]));
+	sprintf(loc_str, "%s", ps_loc_str(map->locus[i]));
         interval_length = cm_dist(map->rec_frac[i][0]);
 	while(interval_length < 1.0) {
 	    i++;
-	    sf(ps,"  %s",ps_loc_str(map->locus[i]));
+	    sprintf(ps, "  %s", ps_loc_str(map->locus[i]));
 	    strcat(loc_str, ps);
 	    if(i == map->num_loci-1) {
 	        interval_length = LAST_INTERVAL;
@@ -250,27 +250,27 @@ real scale;
 	  }
 	  if(interval == 0) {
 	      if(dist <= ZERO_DIST) {
-		  sf(ps,"()(%s)%c ",ps_loc_str(i),
+		  sprintf(ps, "()(%s)%c ", ps_loc_str(i),
 		     (placement[marker]->status==M_UNIQUE)?'1':'2');
 		  strcat(placed_markers[1],ps);
 	      } else {
-		  sf(ps,"(%.1lf)(%s)%c ",cm_dist(dist),ps_loc_str(i),
+		  sprintf(ps, "(%.1lf)(%s)%c ", cm_dist(dist), ps_loc_str(i),
 		     (placement[marker]->status==M_UNIQUE)?'1':'2');
 		  strcat(placed_markers[0],ps);
 	      }
 	  } else {
 	      if(dist <= ZERO_DIST) { 
-		  sf(ps,"()(%s)%c ",ps_loc_str(i),
+		  sprintf(ps, "()(%s)%c ", ps_loc_str(i),
 		     (placement[marker]->status==M_UNIQUE)?'1':'2');
 		  strcat(placed_markers[interval],ps);
 
 	      } else if(interval != frame->num_loci &&
 			frame->rec_frac[interval-1][0] - dist <= ZERO_DIST) {
-		  sf(ps,"()(%s)%c ",ps_loc_str(i),
+		  sprintf(ps, "()(%s)%c ", ps_loc_str(i),
 		     (placement[marker]->status==M_UNIQUE)?'1':'2');
 		  strcat(placed_markers[interval+1],ps);
 	      } else {
-		  sf(ps,"(%.1lf)(%s)%c ",cm_dist(dist),ps_loc_str(i),
+		  sprintf(ps, "(%.1lf)(%s)%c ", cm_dist(dist), ps_loc_str(i),
 		     (placement[marker]->status==M_UNIQUE)?'1':'2');
 		  strcat(placed_markers[interval],ps);
 	      }
@@ -296,7 +296,7 @@ real scale;
 
     for(i = 0; i < frame->num_loci - 1; i++) {
         loc_str = get_temp_string();
-	sf(loc_str,"%s",ps_frame_str(frame->locus[i]));
+	sprintf(loc_str, "%s", ps_frame_str(frame->locus[i]));
         interval_length = cm_dist(frame->rec_frac[i][0]);
 	num_crunched = 0;
 	while(interval_length < 1.0) {
@@ -319,10 +319,10 @@ real scale;
 	    for(l = k; l < num_crunched; l++) dist += cm_dist(frame->rec_frac[i-(l+1)][0]);
  
 	    if(dist <= ZERO_DIST) {
-	        sf(ps,"()(%s)0 ",ps_loc_str(frame->locus[i-k]));
+	        sprintf(ps, "()(%s)0 ", ps_loc_str(frame->locus[i - k]));
 		strcat(placed_markers[i+1],ps);
 	    } else {
-		sf(ps,"(%.1lf)(%s)0 ",dist,ps_loc_str(frame->locus[i-k]));
+		sprintf(ps, "(%.1lf)(%s)0 ", dist, ps_loc_str(frame->locus[i - k]));
 		strcat(placed_markers[i+1],ps);
 	    }
 	}
@@ -330,7 +330,7 @@ real scale;
 	if (haplotyped(frame->locus[i])) {
 	    for (j=haplo_first[frame->locus[i]]; j!=NO_CHROM; j=haplo_next[j]){
 	        if (j!=haplo_first[frame->locus[i]]) {
-		    sf(ps,"()(%s)0 ",ps_loc_str(j));
+		    sprintf(ps, "()(%s)0 ", ps_loc_str(j));
 		    strcat(placed_markers[i+1],ps);
 		}
 	    }
@@ -358,7 +358,7 @@ real scale;
 	if (haplotyped(frame->locus[i])) {
 	    for (j=haplo_first[frame->locus[i]]; j!=NO_CHROM; j=haplo_next[j]){
 	        if (j!=haplo_first[frame->locus[i]]) {
-		    sf(ps,"()(%s)0 ",ps_loc_str(j));
+		    sprintf(ps, "()(%s)0 ", ps_loc_str(j));
 		    strcat(placed_markers[i+1],ps);
 		}
 	    }

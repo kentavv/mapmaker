@@ -154,9 +154,9 @@ void print_badseq()
 void print_sequence()
 {
     if (the_seq_history_num==0) { print("sequence not set\n"); return; }
-    sf(ps,"sequence #%d= ",the_seq_history_num); pr();
+    sprintf(ps, "sequence #%d= ", the_seq_history_num); pr();
     if (current_chrom!=NO_CHROM) 
-      { sf(ps,"%s: ",chrom2str(current_chrom)); pr(); }
+      { sprintf(ps, "%s: ", chrom2str(current_chrom)); pr(); }
     if (!nullstr(seq_string)) print(seq_string); else print("none");
     nl();
 }
@@ -343,11 +343,11 @@ char term_char;
 		if (term_char!=NO_TERM_CHAR && token[0]==term_char) {
 		    *p=NULL; return; 
 		} else { 
-		    sf(msgstr,"mismatched '%c'",token[0]);
+		    sprintf(msgstr, "mismatched '%c'", token[0]);
 		    badseq(msgstr); 
 		}
 	    } else { /* not a RIGHT_ANYTHING, must be something else wrong */
-		sf(msgstr,"did not expect '%c'",token[0]);
+		sprintf(msgstr, "did not expect '%c'", token[0]);
 		badseq(msgstr); 
 	    }
 
@@ -835,7 +835,7 @@ bool expanded; /* if seq_str is set to the name-expanded seq or not */
 	despace(seq_string);
 
 	if (current_chrom!=NO_CHROM) {
-	    sf(chrom_name,"%s: ",chrom2str(current_chrom));
+	    sprintf(chrom_name, "%s: ", chrom2str(current_chrom));
 	    strins(maybe_seq,chrom_name);
 	}
 	add_to_seq_history(maybe_seq,TRUE);
@@ -861,7 +861,7 @@ int *num_loci;
     if (*num_loci>MAX_SEQ_LOCI) badseq("too many loci in sequence");
 
     if (current_chrom!=NO_CHROM) {
-	sf(chrom_name,"%s: ",chrom2str(current_chrom));
+	sprintf(chrom_name, "%s: ", chrom2str(current_chrom));
 	strins(rest,chrom_name);
     }
     add_to_seq_history(rest,FALSE);
@@ -891,7 +891,7 @@ int **loci, *num_loci; /* both side-effected */
 	if (nullstr(rest)) { *num_loci=0; return; }
     } except_when(BADSEQ) {
 	current_chrom= save_chrom;
-	sf(ps,"bad locus (sequence) arguments\n%s",BADSEQ_errmsg);
+	sprintf(ps, "bad locus (sequence) arguments\n%s", BADSEQ_errmsg);
 	error(ps);
     }
 
@@ -953,7 +953,7 @@ char **rest;
 	} else if (isa_chrom(name,chrom)) {
 	    if (nullstr(*rest)) strcpy(*rest,seq_string);
 	} else { 
-	    sf(ps,CHROM_NOT_EXISTS,name); badseq(ps);
+	    sprintf(ps, CHROM_NOT_EXISTS, name); badseq(ps);
 	}
 	if (strin(*rest,':')) badseq("':' is only used to select chromosome");
 
@@ -1004,7 +1004,7 @@ int *locus, num_loci, start_set, set_size;
 /******************* SEQUENCE TEXT HACKING ********************/
 
 #define mismatch_(pos,ch) \
- { BADSEQ_errpos=pos; sf(err_temp,"mismatched '%c'",ch); badseq(err_temp); }
+ { BADSEQ_errpos=pos; sprintf(err_temp,"mismatched '%c'",ch); badseq(err_temp); }
 
 int delete_comments(match_chr,str)
 /* Delete all parenthesized comments, dealing with levels of delimiters 
@@ -1212,18 +1212,18 @@ char **why_not; /* side-effected iff FALSE is returned */
     if (itoken(&str,iREQUIRED,&num)) {
 	*n=num-1;
 	if (!irange(n,0,raw.num_markers-1)) {
-	    sf(err_temp,"locus number '%d' out of valid range",num);
+	    sprintf(err_temp, "locus number '%d' out of valid range", num);
 	    *why_not=ptr_to(err_temp);
 	    return(FALSE);
 	} else return(TRUE);
 
     } else if (!valid_name(str)) {
-	sf(err_temp,"invalid name '%s'",str);
+	sprintf(err_temp, "invalid name '%s'", str);
 	*why_not=ptr_to(err_temp);
 	return(FALSE);
 
     } else if (!is_a_named_locus(str,n)) {
-	sf(err_temp,"name '%s' is not defined",str);
+	sprintf(err_temp, "name '%s' is not defined", str);
 	*why_not=ptr_to(err_temp);
 	return(FALSE);
     }
@@ -1278,13 +1278,13 @@ bool expanded;
 		expand_seq_hist(rest);
 		expand_seq_names(rest); /* needs current_chrom set */
 		if (current_chrom!=NO_CHROM) 
-		  sf(maybe_seq,"%s: %s",chrom2str(current_chrom),rest);
+		  sprintf(maybe_seq, "%s: %s", chrom2str(current_chrom), rest);
 		else strcpy(maybe_seq,rest);
 	    } else {
 		expand_seq_hist(str);
 		expand_seq_names(str); /* needs current_chrom set */
 		if (current_chrom!=NO_CHROM)
-		  sf(maybe_seq,"%s: %s",chrom2str(current_chrom),str);
+		  sprintf(maybe_seq, "%s: %s", chrom2str(current_chrom), str);
 		else strcpy(maybe_seq,str);
 	    }
 	} on_exit { current_chrom=save_chrom; relay_messages; }
@@ -1574,19 +1574,19 @@ char **why_not;  /* side-effected iff TRUE returned and *str=="" */
     last=seq_temp; last[0]='\0'; ordered_seq=TRUE; /* KLUDGE */
     for (i=0; i<n; i++) {
 	if (ordered_seq) {
-	    if (!print_names) sf(last,"%d",seq_locus[i]+1);
-	      else sf(last,"%s",raw.locus_name[seq_locus[i]]);
+	    if (!print_names) sprintf(last, "%d", seq_locus[i] + 1);
+	      else sprintf(last, "%s", raw.locus_name[seq_locus[i]]);
 	} else {
 	    contig=0; j=i;
 	    while (j!=n-1 && seq_locus[j+1]==seq_locus[j]+1) { j++; contig++; }
 	    if (contig<2) {
-		if (!print_names) sf(last,"%d",seq_locus[i]+1);
-		  else sf(last,"%s",raw.locus_name[seq_locus[i]]);
+		if (!print_names) sprintf(last, "%d", seq_locus[i] + 1);
+		  else sprintf(last, "%s", raw.locus_name[seq_locus[i]]);
 	    } else {
 		if (!print_names) 
-		  sf(last,"%d-%d",seq_locus[i]+1,seq_locus[j]+1);
-		  else sf(last,"%s-%s",raw.locus_name[seq_locus[i]],
-			  raw.locus_name[seq_locus[j]]);
+		  sprintf(last, "%d-%d", seq_locus[i] + 1, seq_locus[j] + 1);
+		  else sprintf(last, "%s-%s", raw.locus_name[seq_locus[i]],
+                       raw.locus_name[seq_locus[j]]);
 		i=j;
 	    }
 	}
@@ -1605,8 +1605,8 @@ void print_special_sequences()
     char name[10];
     
     if (current_chrom!=NO_CHROM) {
-	sf(ps,"Special Names (chromosome=%s):\n",chrom2str(current_chrom));
-    } else sf(ps,"Special Names:\n");
+	sprintf(ps, "Special Names (chromosome=%s):\n", chrom2str(current_chrom));
+    } else sprintf(ps, "Special Names:\n");
     pr();
 
     print_special_sequence("changed",FALSE);
@@ -1617,12 +1617,12 @@ void print_special_sequences()
     print_special_sequence("unassign",TRUE);
 
     for (i=0; i<num_groups-1; i++) /* groupN */
-      { sf(name,"group%d",i+1); print_special_sequence(name,FALSE); }
+      { sprintf(name, "group%d", i + 1); print_special_sequence(name, FALSE); }
     print_special_sequence("unlinked",FALSE);
 
     for (i=0; i<num_orders; i++) { /* orderN */
-	sf(name,"order%d",i+1); print_special_sequence(name,TRUE);
-	sf(name,"other%d",i+1); print_special_sequence(name,FALSE);
+	sprintf(name, "order%d", i + 1); print_special_sequence(name, TRUE);
+	sprintf(name, "other%d", i + 1); print_special_sequence(name, FALSE);
     }
 
     print(" others:    all, none, <chromosome-name>, etc.\n");
@@ -1637,7 +1637,7 @@ void print_user_sequences()
     for (Te=context[active_context]->named_sequences->list; Te!=NULL; 
 	 Te=Te->next) {
 	if (!any) { print("User Defined Names:\n"); any=TRUE; }
-	sf(ps," %s= ",Te->id.name); pad_to_len(ps,12); pr(); 
+	sprintf(ps, " %s= ", Te->id.name); pad_to_len(ps, 12); pr(); 
 	seq=Te->string;
 	if (nullstr(seq)) strcpy(line,"none"); else strcpy(line,seq);
 	if (len(line)>64) { truncstr(line,64); strcat(line,"..."); }
@@ -1666,7 +1666,7 @@ bool print_if_none;
     /* or ? if (nullstr(errmsg)) */
 
     if (print_if_none || !nullstr(seq)) {
-	sf(line," %s= ",name); pad_to_len(line,12); print(line);
+	sprintf(line, " %s= ", name); pad_to_len(line, 12); print(line);
 	if (nullstr(seq)) strcpy(line,"none"); else strcpy(line,seq);
 	if (len(seq)>64) { truncstr(line,64); strcat(line,"..."); }
 	print(line); nl();
@@ -1685,7 +1685,7 @@ int num_to_do;
 
     for (i=start; i<context[active_context]->seq_history_num-1; i++) {
 	get_numbered_entry(i,&str,context[active_context]->sequence_history);
-	sf(ps,"#%d= ",i+1); pad_to_len(ps,6); pr();
+	sprintf(ps, "#%d= ", i + 1); pad_to_len(ps, 6); pr();
 	strcpy(line,str);
 	if (len(str)>70) { truncstr(line,70); strcat(line,"..."); }
 	print(line); nl(); any=TRUE;

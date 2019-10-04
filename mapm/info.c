@@ -299,7 +299,7 @@ int num_total;
     three_pt_touched=FALSE;
     three_pt_data= NULL; 
 
-/*  sf(ps,"3pt stats - allocated: %d, deallocated: %d\n",
+/*  sprintf(ps,"3pt stats - allocated: %d, deallocated: %d\n",
        num_threes_allocated, num_threes_deallocated); pr(); */
 }
 
@@ -399,7 +399,7 @@ real d1,d2,d3;
 		for (p=three_pt_data->entry[locus1].next; p->locus2!=locus2;
 		     p=p->next) {}
 		if (p != t) {
-		    for (p; p->next_same2 != NULL; p= p->next_same2) {}
+		    for (; p->next_same2 != NULL; p= p->next_same2) {}
 		    p->next_same2= t;
 		}
 	    }
@@ -695,7 +695,7 @@ bool verbose;
     if (haplo_first[*locus]==NO_LOCUS || *locus==haplo_first[*locus]) 
       return(TRUE);
     if (verbose) 
-      { sf(ps,INSANE,loc2str(*locus),rag(loc2str(haplo_first[*locus])));pr(); }
+      { sprintf(ps, INSANE, loc2str(*locus), rag(loc2str(haplo_first[*locus])));pr(); }
     *locus=haplo_first[*locus]; 
     return(FALSE);    
 }
@@ -926,7 +926,7 @@ int num_markers;
     matrix(class_name, NUM_CLASSES, NAME_LEN+1, char);
     strcpy(class_name[0],"no_class");
     /* for (i=1; i<NUM_CLASSES; i++) sprintf(class_name[i],"class%d",i); */
-    for (i=1; i<NUM_CLASSES; i++) sprintf(class_name[i],""); 
+    for (i=1; i<NUM_CLASSES; i++) class_name[i] = '\0';
 }
 
 
@@ -956,13 +956,13 @@ FILE *fp;
 {
     int i, locus;
 
-    sf(ps,"*OrderInfo: %d %d\n",num_groups,num_orders); fpr(fp);
+    sprintf(ps, "*OrderInfo: %d %d\n", num_groups, num_orders); fpr(fp);
     for (locus=0; locus < raw.num_markers; locus++) {
-        sf(ps,"*%-8s %4d   %7.5lf %4d %4d %4d %4d %4d %4d %4d\n",
-	   raw.locus_name[locus],modified[locus],error_rate[locus],
-	   my_group[locus], haplo_first[locus], haplo_next[locus],
-	   order_first[locus], unorder_first[locus], order_next[locus], 
-	   class[locus]);
+        sprintf(ps, "*%-8s %4d   %7.5lf %4d %4d %4d %4d %4d %4d %4d\n",
+                raw.locus_name[locus], modified[locus], error_rate[locus],
+                my_group[locus], haplo_first[locus], haplo_next[locus],
+                order_first[locus], unorder_first[locus], order_next[locus],
+                class[locus]);
 	fpr(fp);
     }
     fprint(fp,"*Classes:\n");
@@ -1079,27 +1079,27 @@ FILE *fp;
       }
 
     if (n_unlinked>n_miss) missing_means_unlinked=TRUE;
-    sf(ps,"%d %d %d \n",n_real,n_unlinked,n_miss); fpr(fp);
+    sprintf(ps, "%d %d %d \n", n_real, n_unlinked, n_miss); fpr(fp);
 
     for (i=0; i<raw.num_markers-1; i++) {
 	for (j=0; j<=i; j++) {
 	    if (two_pt_data[i][j]==NULL) { 
 		if (!missing_means_unlinked) continue;
-		else sf(ps,"%d %d\n",i,j); fpr(fp);
+		else sprintf(ps, "%d %d\n", i, j); fpr(fp);
 	    } else if(two_pt_data[i][j] == UNLINKED_TWO_PT) {
 		if (missing_means_unlinked) continue;
-		sf(ps,"%d %d\n",i,j); fpr(fp);
+		sprintf(ps, "%d %d\n", i, j); fpr(fp);
 	    } else if (raw.data_type == F2) {
-		  sf(ps,"%d %d %.3lf %.3lf\n",i,j,
-		     two_pt_data[i][j]->theta[NOSEX],
-		     two_pt_data[i][j]->lodscore[NOSEX]); fpr(fp);
+		  sprintf(ps, "%d %d %.3lf %.3lf\n", i, j,
+                  two_pt_data[i][j]->theta[NOSEX],
+                  two_pt_data[i][j]->lodscore[NOSEX]); fpr(fp);
 	    } else {
-		sf(ps,"%d %d %.3lf %.3lf %.3lf %.3lf %.3lf\n",i,j, /* lf */
+		sprintf(ps, "%d %d %.3lf %.3lf %.3lf %.3lf %.3lf\n", i, j, /* lf */
 		   two_pt_data[i][j]->theta[NOSEX],
-		   two_pt_data[i][j]->lodscore[NOSEX],
-		   two_pt_data[i][j]->theta[MALE],
-		   two_pt_data[i][j]->theta[FEMALE],
-		   two_pt_data[i][j]->lodscore[SEXSPEC]); fpr(fp);
+                two_pt_data[i][j]->lodscore[NOSEX],
+                two_pt_data[i][j]->theta[MALE],
+                two_pt_data[i][j]->theta[FEMALE],
+                two_pt_data[i][j]->lodscore[SEXSPEC]); fpr(fp);
 	    }
 	}
     }
@@ -1127,15 +1127,15 @@ FILE *fp;
 
     for (i= 0; i < raw.num_markers; i++) {
         if (three_pt_data->entry[i].locus2 != NO_LOCUS) {
-	  sf(ps,"%d %d %d %.3lf %.3lf %.3lf\n",i,
-	     three_pt_data->entry[i].locus2,three_pt_data->entry[i].locus3,
-	     three_pt_data->entry[i].delta1,three_pt_data->entry[i].delta2,
-	     three_pt_data->entry[i].delta3);
+	  sprintf(ps, "%d %d %d %.3lf %.3lf %.3lf\n", i,
+              three_pt_data->entry[i].locus2, three_pt_data->entry[i].locus3,
+              three_pt_data->entry[i].delta1, three_pt_data->entry[i].delta2,
+              three_pt_data->entry[i].delta3);
 	  fpr(fp);
 	  p= three_pt_data->entry[i].next;	  
 	  while(p != NULL) {
-	    sf(ps,"%d %d %d %.3lf %.3lf %.3lf\n",i,p->locus2,p->locus3,
-	       p->delta1,p->delta2,p->delta3);
+	    sprintf(ps, "%d %d %d %.3lf %.3lf %.3lf\n", i, p->locus2, p->locus3,
+                p->delta1, p->delta2, p->delta3);
 	    fpr(fp);
 	    p= p->next;
 	  }

@@ -150,7 +150,7 @@ char title[10];
 {
     int i;
 
-    sf(ps,"%s  |",title);pr();
+    sprintf(ps, "%s  |", title);pr();
     for(i=0;i<intervals;i++) print("*");
     nl();
     return;

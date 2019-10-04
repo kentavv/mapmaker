@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
                 if ((append_it && !photo_to_file(file_arg[PHOTO_FILE_ARG], APPEND)) ||
                     (!append_it && !photo_to_file(file_arg[PHOTO_FILE_ARG], WRITE)))
                     send(CANTOPEN);
-                sf(ps, "photo is on: file is '%s'\n", photo_file);
+                sprintf(ps, "photo is on: file is '%s'\n", photo_file);
                 pr();
             } on_error { print("error opening photo file\n"); }
     }
@@ -129,12 +129,12 @@ int *seq_loci;
     int loci;
 
     if (data_type==NO_DATA && data_loaded())
-	{ sf(ps,IS_DATA_ERR,IS_DATA_ERR1,com); error(ps); }
+	{ sprintf(ps, IS_DATA_ERR, IS_DATA_ERR1, com); error(ps); }
     if (data_type!=MAYBE_DATA && !data_loaded()) error(NO_DATA_ERR);
     /* CHECK THESE! */
     if ((data_type==CEPH_DATA && raw.data_type!=CEPH) || 
 	(data_type==F2_DATA   && raw.data_type!=F2)) {
-	sf(ps,WRONG_DATA_ERR,com, 
+	sprintf(ps, WRONG_DATA_ERR, com, 
 	   data_type==CEPH ? "CEPH-type data" : "F2-type data"); 
 	error(ps);
     }
@@ -161,7 +161,7 @@ int *seq_loci;
 	    else error(NO_SEQ_ERR);
 	}
 	if (loci<min_seq_loci) {
-	    sf(ps,SHORT_SEQ_ERR,SHORT_SEQ_ERR1,com,min_seq_loci); 
+	    sprintf(ps, SHORT_SEQ_ERR, SHORT_SEQ_ERR1, com, min_seq_loci); 
 	    error(ps);
 	}
     }
@@ -172,7 +172,7 @@ int *seq_loci;
       case PERM_SEQ:   /* ordered seq - need to use for_all_orders() */
 	if (seq!=NULL) {
 	    if (!permutable(seq)) 
-	      { sf(ps,SEQ_PERM_ERR,com,SEQ_HELP); error(ps); }
+	      { sprintf(ps, SEQ_PERM_ERR, com, SEQ_HELP); error(ps); }
 	    crunch_locus_list(seq_locus,&loci,ORDER_ERRORS,TRUE,TRUE);
 	}
 	break;
@@ -184,25 +184,25 @@ int *seq_loci;
       case ONE_ORDER:  /* ordered seq - get_one_order() */
 	if (seq!=NULL) {
 	    if (permutable(seq)) 
-	      { sf(ps,SEQ_PERM_WARN,com,SEQ_HELP); pr(); nl(); nl(); }
+	      { sprintf(ps, SEQ_PERM_WARN, com, SEQ_HELP); pr(); nl(); nl(); }
 	    crunch_locus_list(seq_locus,&loci,ORDER_ERRORS,TRUE,TRUE);
 	}
 	break;
       case LIST_SEQ:   /* not ordered - alloc_ or get_list_of_all_loci() */
 	if (seq!=NULL) {
 	    if (permutable(seq)) 
-	      { sf(ps,SEQ_PERM_WARN,com,SEQ_HELP); pr(); nl(); nl(); }
+	      { sprintf(ps, SEQ_PERM_WARN, com, SEQ_HELP); pr(); nl(); nl(); }
 	    if (has_fixed_dists(seq)) 
-	      { sf(ps,SEQ_FIX_WARN,com,SEQ_HELP); pr(); nl(); nl(); }
+	      { sprintf(ps, SEQ_FIX_WARN, com, SEQ_HELP); pr(); nl(); nl(); }
 	    crunch_locus_list(seq_locus,&loci,CRUNCH_WARNINGS,TRUE,TRUE);
 	}
 	break;
       case UNCRUNCHED_LIST: /* not ordered, for assign and haplo commands */
 	if (seq!=NULL) {
 	    if (permutable(seq)) 
-	      { sf(ps,SEQ_PERM_WARN,com,SEQ_HELP); pr(); nl(); nl(); }
+	      { sprintf(ps, SEQ_PERM_WARN, com, SEQ_HELP); pr(); nl(); nl(); }
 	    if (has_fixed_dists(seq)) 
-	      { sf(ps,SEQ_FIX_WARN,com,SEQ_HELP); pr(); nl(); nl(); }
+	      { sprintf(ps, SEQ_FIX_WARN, com, SEQ_HELP); pr(); nl(); nl(); }
 	}
 	break;
       default: send(CRASH);
@@ -265,25 +265,25 @@ bool in_sequence; /* adjusts output: TRUE, FALSE, or MAYBE */
 
     if (verbose) { /* TRUE or MAYBE */
 	if (wrong_chrom) {
-	    sf(ps,WARN_CHROMOSOME,"error",
-	       (in_sequence ? "sequence contains":"can't use")); 
+	    sprintf(ps, WARN_CHROMOSOME, "error",
+                (in_sequence ? "sequence contains":"can't use")); 
 	    pr(); nl();
 	}
 	if (haplos_converted) {
-	    sf(ps,WARN_CONVERT,"warning",(in_sequence ? "in sequence ":""),
-	       (in_sequence==MAYBE ? "will be ":"")); 
+	    sprintf(ps, WARN_CONVERT, "warning", (in_sequence ? "in sequence " : ""),
+                (in_sequence==MAYBE ? "will be ":"")); 
 	    pr(); nl();
 	}
 	if (haplo_dups) {
-	    sf(ps,WARN_HAPLO_DUPS,(abort_on_error ? "error":"warning"),
-	       (in_sequence ? "in sequence ":""),
-	       (in_sequence==MAYBE ? "":"extras deleted"));
+	    sprintf(ps, WARN_HAPLO_DUPS, (abort_on_error ? "error" : "warning"),
+                (in_sequence ? "in sequence ":""),
+                (in_sequence==MAYBE ? "":"extras deleted"));
 	    pr(); nl();
 	}
 	if (other_dups) {
-	    sf(ps,WARN_DUPLICATES,(abort_on_error ? "error":"warning"),
-	       (in_sequence ? "in sequence ":""),
-	       (in_sequence==MAYBE ? "":"extras deleted"));
+	    sprintf(ps, WARN_DUPLICATES, (abort_on_error ? "error" : "warning"),
+                (in_sequence ? "in sequence ":""),
+                (in_sequence==MAYBE ? "":"extras deleted"));
 	    pr(); nl();
 	}
 	if ((abort_on_error && (haplos_converted || haplo_dups)) ||
@@ -313,7 +313,7 @@ bool allow_no_chrom;
 	if (!allow_no_chrom) error(CHROM_NOT_ANY);
 	else chrom=NO_CHROM;
     } else if (!isa_chrom(name,&chrom)) {
-	sf(ps,CHROM_NOT_EXISTS,name); error(ps);
+	sprintf(ps, CHROM_NOT_EXISTS, name); error(ps);
     }
     return(chrom);
 }
@@ -390,7 +390,7 @@ bool edges_ok;
 		print("\nintervals: ");
 		if (!edges_ok) { print(loc2str(-1)); print("    "); }
 		for (i=first; i<=last; i++) {
-		    sf(ps,"(%d)%s",i,i<10 ? " ":""); pr(); 
+		    sprintf(ps, "(%d)%s", i, i < 10 ? " " : ""); pr(); 
 		    print(loc2str(-1)); 
 		}
 		nl(); print(prompt); getln("[all] "); str=save_str=ln; 
@@ -405,7 +405,7 @@ bool edges_ok;
 		!irange(&interval,first,last)) {
 		    print("error in interval list '"); print(ps); print("'\n");
 		    space(19+imaxf(len(save_str)-len(str)-1,0)); print("^\n");
-		    sf(ps,GETI_BAD_NUM,first,last);
+		    sprintf(ps, GETI_BAD_NUM, first, last);
 		    pr(); abort_command();
 	    }
 	    to_interval= interval;
@@ -416,8 +416,8 @@ bool edges_ok;
 			print("'\n");
 			space(19+imaxf(len(save_str)-len(str)-1,0)); 
 			print("^\n");
-			sf(ps,"bad interval number: valid range is %d to %d\n",
-			   interval,last); pr(); abort_command();
+			sprintf(ps, "bad interval number: valid range is %d to %d\n",
+                    interval, last); pr(); abort_command();
 
 		    }
 	    }
@@ -478,16 +478,16 @@ int lines,cols;
 {
     char file[PATH_LENGTH+1];
 
-    if(!data_loaded()) { sf(line[0],LINE0,mapfunction->name,"<none>"); }
+    if(!data_loaded()) { sprintf(line[0],LINE0,mapfunction->name,"<none>"); }
     else { nstrcpy(file,raw.filename,cols-55);
-	   sf(line[0],LINE0,mapfunction->name,file); }
+	   sprintf(line[0],LINE0,mapfunction->name,file); }
     
     if(!log_open) { strcpy(file,"<off>"); }
     else { nstrcpy(file,photo_file,cols-36); }
 
-    sf(line[1],LINE1,(units == RECFRACS)?"rec-fracs":"cM",print_using(),file);
+    sprintf(line[1],LINE1,(units == RECFRACS)?"rec-fracs":"cM",print_using(),file);
     
-    sf(line[2],LINE2,context[active_context]->seq_history_num,seq_string);
+    sprintf(line[2],LINE2,context[active_context]->seq_history_num,seq_string);
 }
 #endif
 

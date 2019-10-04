@@ -162,7 +162,7 @@ int (*variable_lookup)(), *new_size, *the_index;
 		state = VALUE;
 	    } else if (rtoken(&token,rREQUIRED,&tok)) {
 		mark = NUMBER;
-		sf(ps,"%lf",tok);
+		sprintf(ps, "%lf", tok);
 		add_number(mark, parsed_eqn,ps,new_size,the_index);
 		state = OP;
 	    } else if (('a' <= *parsed_token && *parsed_token <= 'z') ||
