@@ -469,9 +469,9 @@ data-type abstraction!
 
 #ifndef NO_INCLUDE_HELPERS
 
-#define real    double
-#define bool	int
-#define flag	int
+typedef double  real;
+typedef int     flag;
+typedef int     bool;
 #define TRUE 	(1)
 #define FALSE	(0)
 #define MAYBE	(-1)
