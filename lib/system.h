@@ -477,8 +477,6 @@ typedef int     bool;
 #define MAYBE	(-1)
 /* rely on the system to define NULL */
 
-#include "histogrm.h"
-
 /* One of the lib_init() routines must be called before ANYTHING else
 is done, or the program will crash in wierd ways! In general, user's
 _init routines should come right after the lib_init() call and should
