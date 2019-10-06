@@ -1,3 +1,6 @@
+#ifndef _EQN_H_
+#define _EQN_H_
+
 /*****************************************************************************
 
  ######   ####   #    #          #    #
@@ -36,6 +39,29 @@ typedef struct {
     } val;
 } EQUATION;
 
+/***
+ *
+ * @param original_equation
+ * @param variable_lookup
+ * @return
+ *
+*************** The make equation subroutine **********************
+* args:  char *original_eqn, char **symbol_table, int table_len
+  inputted_eqn is a char pointer to the equation as inputted by the
+  user, **symbol_table is a pointer to an array of chars that contains
+  all variables in the expression, and table_len is the length of the
+  symbol table
+
+ The subroutine  **make_equation takes the inputted equation, and
+   converts it to an array of structures.  It returns a pointer to the
+   array of pointers.
+
+  Error handling - if an error occurs in make_equation, a string is
+    set that will tell what the error is will be sent to the routine send,
+    which is a back-checking routine.  If the occurs, I will also free all
+    arrays and pointers that have been malloced, and reinitialize all
+    internal variables
+*/
 EQUATION **make_equation(char *original_equation, int (*variable_lookup)());
 void parse_equation(char *original_equation, EQUATION **parsed_eqn, int (*variable_lookup)(), int *new_size, int *the_index);
 void add_number(int mark, EQUATION **parsed_eqn, char *parsed_token, int *new_size, int *the_index);
@@ -43,10 +69,28 @@ void add_to_parsed_eqn(int mark, EQUATION **parsed_eqn, int parsed_token, int *n
 void add_parenthesis(int *i, int par, int mark, EQUATION **parsed_eqn);
 void check_sizeof_array(int *size);
 void postfix(EQUATION **parsed_eqn, EQUATION **postfixed);
+
+/***
+ *
+ * @param postfixed
+ * @param value_find
+ * @return
+ ******************* evaluating the equation ************************
+
+ args: ELEMENT **parsed_equation, real *variable_values
+  parsed_equation is the pointer to the array of pointers to the
+  structures, and variable_value contains the value of each
+  variable in the equation.
+
+ Error handling - if a math error occurs, this will send the message
+   MATHERR, if any other type of error occurs, then it probably a coding
+   error that will have to be looked at, so the message CRASH will be sent
+*/
 real evaluate_equation (EQUATION **postfixed, real (*value_find)());
+
 real pop_stack(void) /* This function returns the top value from the stack */;
 real push_stack(real value_to_push);
-void eqn_init(void);
+void eqn_init(void);   /* Takes no arguments, it mallocs pasred and temp_eqn */
 int variable_lookup(char *item);
 real value_lookup(int index);
 
@@ -69,52 +113,14 @@ real value_lookup(int index);
 #define ATAN 13
 #define LEFT_P 14
 #define RIGHT_P 15
-extern char **variable_table;
-extern real *value_table;                   
-//void eqn_init();  /* Takes no arguments, it mallocs pasred and temp_eqn */
-extern int table_size;
-//real value_lookup();
-//int variable_lookup();
-/**************** The make equation subroutine ***********************/
-
-//EQUATION **make_equation();
- 
-/**** args:  char *original_eqn, char **symbol_table, int table_len 
-  inputted_eqn is a char pointer to the equation as inputted by the
-  user, **symbol_table is a pointer to an array of chars that contains
-  all variables in the expression, and table_len is the length of the
-  symbol table  ********/ 
-
-/* The subroutine  **make_equation takes the inputted equation, and
-   converts it to an array of structures.  It returns a pointer to the
-   array of pointers.  */
-
-/*  Error handling - if an error occurs in make_equation, a string is 
-    set that will tell what the error is will be sent to the routine send,
-    which is a back-checking routine.  If the occurs, I will also free all
-    arrays and pointers that have been malloced, and reinitialize all 
-    internal variables */
-
-/******************* evaluating the equation ************************/
-
-real evaluate_equation();
-
-/** args: ELEMENT **parsed_equation, real *variable_values
-  parsed_equation is the pointer to the array of pointers to the
-  structures, and variable_value contains the value of each 
-  variable in the equation. ******/ 
-
-/* Error handling - if a math error occurs, this will send the message
-   MATHERR, if any other type of error occurs, then it probably a coding
-   error that will have to be looked at, so the message CRASH will be sent*/
 
 /* Various important global variables */
 
-#define SIZEOF_STACK 100
 extern int stack_pointer;
-real val[SIZEOF_STACK];
-int eqnlen;
-int table_size;
-char **variable_table;
-real *value_table;
+extern real val[];
+extern int eqnlen;
+extern int table_size;
+extern char **variable_table;
+extern real *value_table;
 
+#endif

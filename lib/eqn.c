@@ -31,6 +31,13 @@
 int stack_pointer;
 /* int table_size; */
 
+#define SIZEOF_STACK 100
+real val[SIZEOF_STACK];
+int eqnlen;
+int table_size;
+char **variable_table;
+real *value_table;
+
 
 EQUATION **make_equation(char *original_equation, int (*variable_lookup)())
 {

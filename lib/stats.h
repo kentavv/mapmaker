@@ -1,3 +1,6 @@
+#ifndef _STATS_H_
+#define _STATS_H_
+
 /******************************************************************************
 
   ####    #####    ##     #####   ####           #    #
@@ -30,22 +33,13 @@ void quartile(NORMAL_TEST *normal_results, real *dist, int dist_size);
 void within(NORMAL_TEST *normal_results, real *dist, int dist_size);
 void print_normal(NORMAL_TEST *to_be_printed, real lamda);
 void box_cox(real start, real stop, real step, real *dist, int dist_size);
-static void print_histogram(int intervals, real title);
 void print_rhisto(real *dist, int dist_size);
-
-
-//void print_normal();
-//void box_cox();
-//NORMAL_TEST *check_normalcy();
-/* args real *dist, int dist_size  */
 
 /* The function normal_test will do several tests on an array of
    values to see how normal of a distribution it is.  As it makes
    a test, it will then store the results in a struct of type normal
    test.  The reason for this is that another function box-cox will be 
    used on the data to determine which is the most normal representation
-   of the data. ******************************************************/
+   of the data. */
 
-//void print_rhisto();
-
-
+#endif
