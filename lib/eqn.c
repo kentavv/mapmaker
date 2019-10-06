@@ -20,20 +20,11 @@
 #define LEFT_PAREN 1
 #define MISSING_PHENO -100000.0
 
-/* These are subroutines that I will call within make and evaluate */
-
-
-//void add_parenthesis(),add_number(),add_to_parsed_eqn(),postfix();
-/* char **variable_table; */
-/* real *value_table; */
-//void parse_equation(), check_sizeof_array();
-//real push_stack(), pop_stack();
-int stack_pointer;
-/* int table_size; */
+static int stack_pointer;
 
 #define SIZEOF_STACK 100
 real val[SIZEOF_STACK];
-int eqnlen;
+static int eqnlen;
 int table_size;
 char **variable_table;
 real *value_table;

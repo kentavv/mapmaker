@@ -116,9 +116,7 @@ real value_lookup(int index);
 
 /* Various important global variables */
 
-extern int stack_pointer;
 extern real val[];
-extern int eqnlen;
 extern int table_size;
 extern char **variable_table;
 extern real *value_table;
