@@ -30,8 +30,6 @@ add_compile_options(-Wall -Wextra -Wno-sign-compare)
 add_library(mylib STATIC
         lib/eqn.c
         lib/eqn.h
-        lib/histogrm.c
-        lib/histogrm.h
         lib/iolib.c
         lib/iolib.h
         lib/mathlib.c
@@ -48,6 +46,7 @@ add_library(mylib STATIC
         lib/strlib.c
         lib/strlib.h
         lib/syscode.c
+        lib/syscode.h
         lib/system.h
         lib/table.c
         lib/table.h

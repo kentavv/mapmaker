@@ -131,7 +131,7 @@ char *name;
 {
     close_file(file);
 
-    fwrite(hlp,"@end\n");
+    do_fwrite(hlp,"@end\n");
     close_file(hlp);
 
     write_topics_and_end();
@@ -187,16 +187,16 @@ char *argv[];
 	matrix(entry,MAX_COMMANDS,MAXLINE+1,char);
 
 	/* start help file 12345678901234567890123456789012345 */
-	fwrite(hlp,       "#MAPMAKER help file - do not edit!\n");
+	do_fwrite(hlp,       "#MAPMAKER help file - do not edit!\n");
 	pos= 34l + LINE_BREAK_LEN;
 	
 	/* code file */
-	fwrite(code,"/* MAPMAKER help code file - do not edit! */ \n\n");
-	fwrite(code,"#define INC_LIB \n#define INC_SHELL \n");
-	fwrite(code,"#include \"system.h\" \n\n");
+	do_fwrite(code,"/* MAPMAKER help code file - do not edit! */ \n\n");
+	do_fwrite(code,"#define INC_LIB \n#define INC_SHELL \n");
+	do_fwrite(code,"#include \"system.h\" \n\n");
 	/* sprintf(ps,"char help_filename[]= \"%s\";\n\n",final_hlp_name);
-	   fwrite(code,ps); */
-	fwrite(code,"void make_help_entries()\n{\n");
+	   do_fwrite(code,ps); */
+	do_fwrite(code,"void make_help_entries()\n{\n");
 
 	/* man file */
 	man_write_title();
@@ -348,12 +348,12 @@ char *name, *abbrev;
     entry_type[entries]=kind;
 
     if (kind==TOP) {
-	sprintf(ps, "%cTOPIC %s\n", '@', key); fwrite(hlp, ps);
+	sprintf(ps, "%cTOPIC %s\n", '@', key); do_fwrite(hlp, ps);
 	pos+= (long)(len(name)+1+6)+LINE_BREAK_LEN; /* after writing above! */
 	topic++; strcpy(section[topic],description); position[topic]=pos;
     } else {
 	/* write code, doc file entries */
-	sprintf(ps, "%c%s\n", '@', key); fwrite(hlp, ps);
+	sprintf(ps, "%c%s\n", '@', key); do_fwrite(hlp, ps);
 	pos+= (long)(len(name)+1)+LINE_BREAK_LEN; /* after writing above! */
 	write_mkhelp(key,abbrev,pos,prefix,num_args,description,arguments,
 		     defaults,topic,kind);
@@ -370,7 +370,7 @@ char *name, *abbrev;
 	    else strcpy(line,str);
 	  nextstr();
 	  if (!(nullstr(line) && str[0]=='@')) { /* punt last line if blank */
-	      fwrite(hlp,line); fnl(hlp);
+	      do_fwrite(hlp,line); fnl(hlp);
 	      pos+= (long)len(line) + LINE_BREAK_LEN;
 	      man_write_line(line);
 	  }

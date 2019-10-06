@@ -23,9 +23,20 @@ typedef struct normal_test {
     real within_two;
     real within_three;
   } NORMAL_TEST;
-void print_normal(); 
-void box_cox();
-NORMAL_TEST *check_normalcy();
+
+NORMAL_TEST *check_normalcy(real *dist, int dist_size);
+void skew(NORMAL_TEST *normal_results, real *dist, int dist_size);
+void quartile(NORMAL_TEST *normal_results, real *dist, int dist_size);
+void within(NORMAL_TEST *normal_results, real *dist, int dist_size);
+void print_normal(NORMAL_TEST *to_be_printed, real lamda);
+void box_cox(real start, real stop, real step, real *dist, int dist_size);
+static void print_histogram(int intervals, real title);
+void print_rhisto(real *dist, int dist_size);
+
+
+//void print_normal();
+//void box_cox();
+//NORMAL_TEST *check_normalcy();
 /* args real *dist, int dist_size  */
 
 /* The function normal_test will do several tests on an array of
@@ -35,6 +46,6 @@ NORMAL_TEST *check_normalcy();
    used on the data to determine which is the most normal representation
    of the data. ******************************************************/
 
-void print_rhisto();
+//void print_rhisto();
 
 

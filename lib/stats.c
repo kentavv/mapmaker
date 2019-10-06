@@ -17,13 +17,8 @@
 #define INC_HELP_DEFS
 #include "system.h"
 
-void within(), quartile(), skew();
-
-
-NORMAL_TEST *check_normalcy(dist, dist_size)
-real *dist;
-int dist_size;
-{ 
+NORMAL_TEST *check_normalcy(real *dist, int dist_size)
+{
     NORMAL_TEST *normal_results;
 
     single(normal_results, NORMAL_TEST);
@@ -33,10 +28,7 @@ int dist_size;
     return(normal_results);
 }
 
-void skew(normal_results, dist, dist_size)
-NORMAL_TEST *normal_results;
-real *dist;
-int dist_size;
+void skew(NORMAL_TEST *normal_results, real *dist, int dist_size)
 {
     real mean=0,second_moment=0,second_total=0,fourth_total=0;
     real third_moment=0,fourth_moment=0,third_total=0;
@@ -65,14 +57,10 @@ int dist_size;
 
     normal_results->skew = skewness;
     normal_results->kurt = kurt;
-    return;
 }
 
 
-void quartile(normal_results, dist, dist_size)
-NORMAL_TEST *normal_results;
-real *dist;
-int dist_size;
+void quartile(NORMAL_TEST *normal_results, real *dist, int dist_size)
 {
     real first_quart=0,third_quart=0,quart_ratio=0;
 
@@ -81,13 +69,9 @@ int dist_size;
     third_quart = dist[dist_size - dist_size/4];
     quart_ratio = (third_quart-first_quart)/(1.3490*normal_results->sigma);
     normal_results->quart_ratio = quart_ratio;
-    return;
 }
 
-void within(normal_results, dist, dist_size)
-NORMAL_TEST *normal_results;
-real *dist;
-int dist_size;
+void within(NORMAL_TEST *normal_results, real *dist, int dist_size)
 {
     int i;
     int one_fourth=0,one_half=0,one=0,two=0,three=0;
@@ -115,15 +99,12 @@ int dist_size;
     normal_results->within_one = (real)(one)/(real)(dist_size);
     normal_results->within_two = (real)(two)/(real)(dist_size);
     normal_results->within_three = (real)(three)/(real)(dist_size);
-    return;
 }
 
 
 
 
-void print_normal(to_be_printed, lamda)
-NORMAL_TEST *to_be_printed;
-real lamda;
+void print_normal(NORMAL_TEST *to_be_printed, real lamda)
 {
     
 
@@ -181,9 +162,7 @@ real lamda;
 }
     
 
-void box_cox(start,stop,step,dist,dist_size)
-real start,stop,step, *dist;
-int dist_size;
+void box_cox(real start, real stop, real step, real *dist, int dist_size)
 {
     int i;
     real lamda,*new_dist;
@@ -214,11 +193,9 @@ int dist_size;
 
 
 
-void print_histogram();
+static void print_histogram(int intervals, real title);
 
-void print_rhisto(dist, dist_size)
-real *dist;
-int dist_size;
+void print_rhisto(real *dist, int dist_size)
 {
     int i, intervals;
     int biggest, more_than_2=0, more_than_1_5=0;
@@ -292,22 +269,11 @@ int dist_size;
 }
 
 
-void print_histogram(intervals, title)
-int intervals;
-real title;
+void print_histogram(int intervals, real title)
 {
     int i;
 
     sprintf(ps, "%s  |", rsd(6.2, title));pr();
     for(i=0;i<intervals;i++) print("*");
     nl();
-    return;
 }
-
-
-
-
-
-
-
-

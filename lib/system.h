@@ -469,9 +469,9 @@ data-type abstraction!
 
 #ifndef NO_INCLUDE_HELPERS
 
-#define real    double
-#define bool	int
-#define flag	int
+typedef double  real;
+typedef int     flag;
+typedef int     bool;
 #define TRUE 	(1)
 #define FALSE	(0)
 #define MAYBE	(-1)
@@ -564,9 +564,9 @@ void get_cmd_line_args();  /* args: int *argc_ptr; char **argv;
 #include "eqn.h"
 #endif
 
-#ifdef INC_HISTO
-void make_histo(); /* that's all? */
-#endif
+//#ifdef INC_HISTO
+//void make_histo(); /* that's all? */
+//#endif
 
 #ifdef INC_STATS
 #include "stats.h"

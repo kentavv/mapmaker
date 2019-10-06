@@ -23,18 +23,16 @@
 /* These are subroutines that I will call within make and evaluate */
 
 
-void add_parenthesis(),add_number(),add_to_parsed_eqn(),postfix();
+//void add_parenthesis(),add_number(),add_to_parsed_eqn(),postfix();
 /* char **variable_table; */
 /* real *value_table; */
-void parse_equation(), check_sizeof_array();
-real push_stack(), pop_stack();
+//void parse_equation(), check_sizeof_array();
+//real push_stack(), pop_stack();
 int stack_pointer;
 /* int table_size; */
 
 
-EQUATION **make_equation(original_equation, variable_lookup)
-char *original_equation;
-int (*variable_lookup)();
+EQUATION **make_equation(char *original_equation, int (*variable_lookup)())
 {
     EQUATION **parsed_eqn, **postfixed;
     int i;
@@ -103,11 +101,7 @@ int (*variable_lookup)();
    proper form, i.e. nothing like 7 +* 2 or (^4 + 5).    ******************/
 
 
-void parse_equation(original_equation, parsed_eqn,
-			  variable_lookup,new_size,the_index)
-char *original_equation;
-EQUATION **parsed_eqn;
-int (*variable_lookup)(), *new_size, *the_index;
+void parse_equation(char *original_equation, EQUATION **parsed_eqn, int (*variable_lookup)(), int *new_size, int *the_index)
 {
     int i, mark, state;
     char parsed_token[TOKLEN+1];
@@ -224,10 +218,7 @@ int (*variable_lookup)(), *new_size, *the_index;
     return;
 }
 
-void add_number(mark, parsed_eqn, parsed_token, new_size,the_index)
-int mark, *new_size, *the_index;
-EQUATION **parsed_eqn;
-char *parsed_token;
+void add_number(int mark, EQUATION **parsed_eqn, char *parsed_token, int *new_size, int *the_index)
 {
     real new_number; /* is used to convert tokens into reals */
     
@@ -243,12 +234,8 @@ char *parsed_token;
     return;
 }
 
-void add_to_parsed_eqn(mark, parsed_eqn, parsed_token,new_size,the_index)
-
+void add_to_parsed_eqn(int mark, EQUATION **parsed_eqn, int parsed_token, int *new_size, int *the_index)
 /* This is is function that adds the structure to the array */
-
-EQUATION **parsed_eqn;
-int mark,parsed_token, *new_size, *the_index;
 {
     int t;
         
@@ -312,17 +299,14 @@ int mark,parsed_token, *new_size, *the_index;
     return;
 }
 
-void add_parenthesis(i, par, mark, parsed_eqn)
-int *i, mark, par;
-EQUATION **parsed_eqn;
+void add_parenthesis(int *i, int par, int mark, EQUATION **parsed_eqn)
 {
     parsed_eqn[*i]->is_a = mark;
     parsed_eqn[*i]->val.symbol = par;
     return;
 }
 
-void check_sizeof_array(size)
-int *size;
+void check_sizeof_array(int *size)
 {
    
     if (*size > MAX_EQN_SIZE) {
@@ -345,8 +329,7 @@ int *size;
   are added to the output array.  At the end, all other structures left 
   on the stack are popped and placed on the output array.            **/
 
-void postfix(parsed_eqn, postfixed)
-EQUATION **parsed_eqn, **postfixed;
+void postfix(EQUATION **parsed_eqn, EQUATION **postfixed)
 {
     int i,parsed_index=0, temp_index=0, post_index=0;
     EQUATION **temp_eqn;
@@ -395,9 +378,7 @@ EQUATION **parsed_eqn, **postfixed;
 
 /********************* EVALUATING THE EQUATION **********************/
 
-real evaluate_equation (postfixed, value_find)
-EQUATION **postfixed;
-real (*value_find)();
+real evaluate_equation (EQUATION **postfixed, real (*value_find)())
 {
     int i, missing = FALSE;
     real number_to_use,c,exponent, divisor, var_push,subtract, value_lookup();
@@ -508,15 +489,14 @@ real (*value_find)();
 
 
 
-real pop_stack() /* This function returns the top value from the stack */
+real pop_stack(void) /* This function returns the top value from the stack */
 {
     
     if (stack_pointer <= 0) send (CRASH);
     return(val[--stack_pointer]);
 }
 
-real push_stack(value_to_push)
-real value_to_push;
+real push_stack(real value_to_push)
 {
     
     if (stack_pointer > SIZEOF_STACK) 
@@ -524,15 +504,14 @@ real value_to_push;
     return(val[stack_pointer++] = value_to_push);
 }
 
-void eqn_init()
+void eqn_init(void)
 {
     matrix(variable_table,200,200,char);
     array(value_table,200,real);
     return;
 }
 
-int variable_lookup(item)
-char *item;
+int variable_lookup(char *item)
 {
    int i;
 
@@ -546,8 +525,7 @@ char *item;
    return(0); /* not reached */
 }
 
-real value_lookup(index)
-int index;
+real value_lookup(int index)
 {
     if (index < table_size)
       return(value_table[index]);
