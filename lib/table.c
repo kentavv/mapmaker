@@ -80,16 +80,6 @@ TABLE *p;
 }
 
 
-bool table_full(p)
-TABLE *p;
-{ return(p->unused==NULL && p->expands_by==0); }
-
-
-bool table_empty(p)
-TABLE *p;
-{ return(p->list != (TABLE_ENTRY*)NULL); }
-
-
 int count_table_entries(p)
 TABLE *p;
 { int i; TABLE_ENTRY *q;
@@ -187,11 +177,6 @@ flag *fail_reason;
     }
     *fail_reason=NAME_DOESNT_MATCH;
     return(FALSE);
-
-//    if (match_prev==NULL) p->list=p->list->next; /* if its the first entry */
-//        else match_prev->next=match->next;       /* delete from list */
-//    match->next=p->unused; p->unused=match; /* add q to unused list */
-//    return(TRUE);
 }
 
 
@@ -229,14 +214,6 @@ TABLE *p;
     *p_str= q->string;
     return(TRUE);
 }
-
-
-#if 0
-bool delete_numbered_entry(num,p)
-int num;
-TABLE *p;
-{ send(CRASH); /* NOT IMPLEMENTED */ }
-#endif
 
 
 void save_table(p,fp,index)
@@ -292,6 +269,3 @@ int index, num_entries;
 	relay_messages;
     }
 }
-
-
-

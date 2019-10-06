@@ -67,34 +67,10 @@ such string can be found, FALSE is returned. Otherwise,
 delete_numbered_entry() deletes the string from the table, while
 get_numbered_entry() side-effects *string to point to it. */
 
-bool table_full();          /* args: TABLE *p; */
-  /* TRUE iff the list is full AND it can't be expanded. */
-bool table_empty();         /* args: TABLE *p; */
 int  count_table_entries(); /* args: TABLE *p; */
 #define next_entry_number(table) ((table)->next_entry_num)
 
 bool valid_name(); /* args: char *name; */
-
-/* iterator macros:
-
-   for_all_numbered_entries()  args: TABLE *p; char *string; int num; 
-   for_all_named_entries()     args: TABLE *p; char *string, *name;
-
-Iterate over all entries in the table, setting num to the number or
-name to the name, and string to the string (note that these are NOT
-pointers to the side-effected variables, as is necessary in C
-functions). The loop always goes in a FIFO (first-in, first-out)
-fashion. Do not put one for_all...() loop inside another! */
-
-#define for_named_entries(Table,Str,Name) 				\
- for (Te=Table->list, Name=Te->id.name, Str=Te->string; 		\
-      Te!=NULL; 							\
-      Te=Te->next, Name=Te->id.name, Str=Te->string)
-
-#define for_numbered_entries(Table,Str,Num) 				\
- for (Te=Table->list, Num=Te->id.num, Str=Te->string; 			\
-      Te!=NULL; 							\
-      Te=Te->next, Num=Te->id.num, Str=Te->string)
 
 extern TABLE_ENTRY *Te;
 
@@ -105,7 +81,5 @@ extern TABLE *cmd_history;
 #define NAME_TAG_CHARS    "*"
 #define NUMBER_TAG_CHARS  "#"
 
-#define NAME_FIRST_CHARS \
-	"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-#define NAME_CHARS \
- 	"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._"
+#define NAME_FIRST_CHARS "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+#define NAME_CHARS "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._"
