@@ -203,18 +203,18 @@ bool fgoto_line(FILE *fp, long index)
 long mkseed(long x)
 { if (x==RANDOM) return((long)time(NULL)); else return(x); }
 
-#ifdef USE_RANDOM
+//#ifdef USE_RANDOM
 void do_seedrand(long x) { srandom((int)mkseed(x)); }
 real randnum() { return(((real)random())/2147483648.0); }
-#else 
-#ifdef USE_DRAND48
-void do_seedrand(long x) long x; { srand48(mkseed(x)); }
-real randnum(void) { return(drand48()); }
-#else /* USE_SRAND */
-void do_seedrand(x) long x; { srand((int)mkseed(x)); }
-real randnum() { return(((real)rand())/((real)(RAND_MAX+1))); }
-#endif
-#endif
+//#else
+//#ifdef USE_DRAND48
+//void do_seedrand(long x) long x; { srand48(mkseed(x)); }
+//real randnum(void) { return(drand48()); }
+//#else /* USE_SRAND */
+//void do_seedrand(x) long x; { srand((int)mkseed(x)); }
+//real randnum() { return(((real)rand())/((real)(RAND_MAX+1))); }
+//#endif
+//#endif
 
 
 /***** message and signal handling *****/

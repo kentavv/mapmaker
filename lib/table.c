@@ -38,10 +38,9 @@ TABLE *allocate_table(num_entries,str_len,expand_by,named)
 int num_entries, str_len, expand_by;
 bool named;
 { 
-    TABLE *p;
+    TABLE *p=NULL;
 
     run {
-	p=NULL;
 	single(p,TABLE);
 	p->list= NULL; p->unused=NULL; p->string_length=str_len;
 	p->expands_by= expand_by; p->named_entries= named; 

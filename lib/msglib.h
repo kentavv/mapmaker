@@ -1,3 +1,6 @@
+#ifndef _MSGLIB_H_
+#define _MSGLIB_H_
+
 /******************************************************************************
 
  #    #   ####    ####   #          #    #####           #    #
@@ -215,14 +218,13 @@ void init_stack_check();  /* args: int *var; */
 /******************** Support for Unix style signals ********************/
 
 /* Signal trap functions for signal_trap_init (which is in syscode.c) */
-SIGHANDLE handle_quit();
-SIGHANDLE handle_matherror();
-SIGHANDLE handle_weird_signal();
-SIGHANDLE handle_interrupt();
-SIGHANDLE handle_buserror();
+void handle_quit();
+void handle_matherror();
+void handle_weird_signal();
+void handle_interrupt();
+void handle_buserror();
 
-void signal_trap_init(); /* no args; in syscode.c */
-void msg_init();         /* no args; in syscode.c */
+void msg_init();
 
 
 /***** THE FOLLOWING IS AS YET UNUSED, AND MAYBE BEST LEFT THAT WAY *****/
@@ -238,7 +240,4 @@ function AFTER executing a run...except... thing). */
 extern bool in_tty_gets;
 extern bool hit_interrupt;
 
-
-
-
-
+#endif

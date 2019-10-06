@@ -20,16 +20,14 @@
 #define LEFT_PAREN 1
 #define MISSING_PHENO -100000.0
 
-/* These are subroutines that I will call within make and evaluate */
+static int stack_pointer;
 
-
-//void add_parenthesis(),add_number(),add_to_parsed_eqn(),postfix();
-/* char **variable_table; */
-/* real *value_table; */
-//void parse_equation(), check_sizeof_array();
-//real push_stack(), pop_stack();
-int stack_pointer;
-/* int table_size; */
+#define SIZEOF_STACK 100
+real val[SIZEOF_STACK];
+static int eqnlen;
+int table_size;
+char **variable_table;
+real *value_table;
 
 
 EQUATION **make_equation(char *original_equation, int (*variable_lookup)())
@@ -60,7 +58,7 @@ EQUATION **make_equation(char *original_equation, int (*variable_lookup)())
     } on_exit {
 	relay_messages;
     }
-    return (postfixed);
+    return postfixed;
     
 }
 
@@ -215,7 +213,6 @@ void parse_equation(char *original_equation, EQUATION **parsed_eqn, int (*variab
 	      }
 	}
     }
-    return;
 }
 
 void add_number(int mark, EQUATION **parsed_eqn, char *parsed_token, int *new_size, int *the_index)
@@ -231,7 +228,6 @@ void add_number(int mark, EQUATION **parsed_eqn, char *parsed_token, int *new_si
 	check_sizeof_array(the_index); 
 	    (*new_size)++;
     }
-    return;
 }
 
 void add_to_parsed_eqn(int mark, EQUATION **parsed_eqn, int parsed_token, int *new_size, int *the_index)
@@ -296,14 +292,12 @@ void add_to_parsed_eqn(int mark, EQUATION **parsed_eqn, int parsed_token, int *n
 	    *new_size=(*new_size+1);
 	}
     }
-    return;
 }
 
 void add_parenthesis(int *i, int par, int mark, EQUATION **parsed_eqn)
 {
     parsed_eqn[*i]->is_a = mark;
     parsed_eqn[*i]->val.symbol = par;
-    return;
 }
 
 void check_sizeof_array(int *size)
@@ -314,7 +308,6 @@ void check_sizeof_array(int *size)
 	BADEQN_errmsg = ptr_to("Error - Equation is too long!");
 	send (BADEQN);
     }
-    return;
 }
 
 /******************  The postfix algorithm  ************************/
@@ -373,7 +366,6 @@ void postfix(EQUATION **parsed_eqn, EQUATION **postfixed)
 	} 
     }
     postfixed[post_index]->is_a = 0;
-    return;
 }
 
 /********************* EVALUATING THE EQUATION **********************/
@@ -508,7 +500,6 @@ void eqn_init(void)
 {
     matrix(variable_table,200,200,char);
     array(value_table,200,real);
-    return;
 }
 
 int variable_lookup(char *item)
@@ -522,7 +513,7 @@ int variable_lookup(char *item)
    BADEQN_errpos = -1;
    BADEQN_errmsg = ptr_to("Error - variable name not known");
    send (BADEQN); 
-   return(0); /* not reached */
+   return 0; /* not reached */
 }
 
 real value_lookup(int index)
@@ -534,5 +525,5 @@ real value_lookup(int index)
 	BADEQN_errmsg = ptr_to("Error - no value for variable");
 	send (BADEQN);
     }
-    return(0); /* not reached */
+    return 0; /* not reached */
 }
