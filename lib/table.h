@@ -1,3 +1,6 @@
+#ifndef _TABLE_H_
+#define _TABLE_H_
+
 /******************************************************************************
 
   #####    ##    #####   #       ######          #    #
@@ -61,11 +64,6 @@ accordingly. */
 #define NAME_IS_AMBIGUOUS 2
 
 bool get_numbered_entry();    /* args: int num; char **string; TABLE *p; */
-bool delete_numbered_entry(); /* args: int num; TABLE *p; UNIMPLEMENTED! */
-/* The string with the specified number is looked up the table. If no
-such string can be found, FALSE is returned. Otherwise,
-delete_numbered_entry() deletes the string from the table, while
-get_numbered_entry() side-effects *string to point to it. */
 
 int  count_table_entries(); /* args: TABLE *p; */
 #define next_entry_number(table) ((table)->next_entry_num)
@@ -83,3 +81,5 @@ extern TABLE *cmd_history;
 
 #define NAME_FIRST_CHARS "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 #define NAME_CHARS "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._"
+
+#endif
