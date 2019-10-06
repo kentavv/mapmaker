@@ -19,6 +19,7 @@
 #define INC_EQN
 #define INC_HELP_DEFS
 #include "system.h"
+#include "syscode.h"
 
 #ifdef _GNU_READLINE
 #include "readline/readline.h"
@@ -27,24 +28,21 @@
 
 /*********************** C-Library Extensions ********************************/
 
-bool check_file_arg(int num, char *arg, char *name, char *type, char *def_ext, char *prog, char *mode);
-
 /***** Time functions *****/
 /* Note that time() and ctime() seem to be the only portable time functions.
    However, time() returns different types with different C compilers! */
 
-TIME_TYPE old_stamp, new_stamp;   /* For local use only! */
+static TIME_TYPE old_stamp, new_stamp;   /* For local use only! */
 
-real usertime(do_reset) /* return time in seconds, or -1.0 if fail */
-bool do_reset;
-{  
+real usertime(bool do_reset) /* return time in seconds, or -1.0 if fail */
+{
     real rtime;
     new_stamp= time((TIME_TYPE *)NULL); rtime= (real)(new_stamp - old_stamp);
     if (do_reset) old_stamp= new_stamp;
     return(rtime);
 }
 
-char *time_string()    /* return ptr to "" if fail */
+char *time_string(void)    /* return ptr to "" if fail */
 { 
     TIME_TYPE the_time;  /* note that asctime() does not always exist */
     char *str;
@@ -62,8 +60,7 @@ char *time_string()    /* return ptr to "" if fail */
 /***** subprocess functions *****/
  
 
-bool shell_command(cmd) 
-char *cmd; 
+bool shell_command(char *cmd)
 { 
     bool success;
     success=FALSE;
@@ -90,7 +87,7 @@ char *cmd;
 }
 
 
-bool subshell()
+bool subshell(void)
 {
         char *shell_name, cmd[120];
 	bool success=FALSE;
@@ -130,9 +127,8 @@ bool subshell()
 		    
 /***** get/set directories *****/
 
-bool change_directory(dir)
-char *dir;
-{ 
+bool change_directory(char *dir)
+{
     if (dir==NULL) send(CRASH);
 #ifdef HAVE_CHDIR
     if (chdir(dir)==0) return(TRUE); 
@@ -175,8 +171,7 @@ bool get_code_directory(char *buf)
     return(FALSE);
 }
 
-bool rename_file(original_name,new_name)
-char *original_name, *new_name;
+bool rename_file(char *original_name, char *new_name)
 {
 #ifdef _SYS_DOS
     sprintf(ps,"copy %s %s",original_name,new_name);
@@ -189,9 +184,7 @@ char *original_name, *new_name;
 }
 
 
-bool fgoto_line(fp,index)
-FILE *fp;
-long index;
+bool fgoto_line(FILE *fp, long index)
 {
 #ifdef REPLACE_FSEEK
     long fseekvalue= 0L;
@@ -207,16 +200,16 @@ long index;
 
 /***** random number functions *****/
 
-long mkseed(x) long x; 
+long mkseed(long x)
 { if (x==RANDOM) return((long)time(NULL)); else return(x); }
 
 #ifdef USE_RANDOM
-void do_seedrand(x) long x; { srandom((int)mkseed(x)); }
+void do_seedrand(long x) { srandom((int)mkseed(x)); }
 real randnum() { return(((real)random())/2147483648.0); }
 #else 
 #ifdef USE_DRAND48
-void do_seedrand(x) long x; { srand48(mkseed(x)); }
-real randnum() { return(drand48()); }
+void do_seedrand(long x) long x; { srand48(mkseed(x)); }
+real randnum(void) { return(drand48()); }
 #else /* USE_SRAND */
 void do_seedrand(x) long x; { srand((int)mkseed(x)); }
 real randnum() { return(((real)rand())/((real)(RAND_MAX+1))); }
@@ -226,7 +219,7 @@ real randnum() { return(((real)rand())/((real)(RAND_MAX+1))); }
 
 /***** message and signal handling *****/
 
-void untrapped_msg() /* DO NOT ASSUME THAT MSGNAME IS SET! */
+void untrapped_msg(void) /* DO NOT ASSUME THAT MSGNAME IS SET! */
 {
     /* if (msg!=IOERROR) flush(); most are disk errors */
     if (msg<1 || msg>MSGS) 
@@ -235,7 +228,7 @@ void untrapped_msg() /* DO NOT ASSUME THAT MSGNAME IS SET! */
     (*(mstrmsg[msg]))(ps_); fprintf(stderr,ps_); fprintf(stderr,"\n");
 }
 
-void trapped_msg() /* DO NOT ASSUME THAT MSGNAME IS SET! */
+void trapped_msg(void) /* DO NOT ASSUME THAT MSGNAME IS SET! */
 {
     /* if (msg!=IOERROR) flush(); most are disk errors */
     if (msg<1 || msg>MSGS) 
@@ -248,7 +241,7 @@ void trapped_msg() /* DO NOT ASSUME THAT MSGNAME IS SET! */
 #define SHUTDOWN2 "restart the\nprogram in order to resume proper operation. "
 #define SHUTDOWN3 "Hit <return> to continue..."
 
-void verbose_untrapped_msg() /* DO NOT ASSUME THAT MSGNAME IS SET! */
+void verbose_untrapped_msg(void) /* DO NOT ASSUME THAT MSGNAME IS SET! */
 {
   fprintf(stderr,"*** Drats! An unhandled internal error occured. ***\n");
   if (msg<1 || msg>MSGS) { fprintf(stderr,"error #%d (?)\n",msg); exit(1); }
@@ -260,7 +253,7 @@ void verbose_untrapped_msg() /* DO NOT ASSUME THAT MSGNAME IS SET! */
   fprintf(stderr,"\n");
 }
 
-void do_trap()
+void do_trap(void)
 { 
   if (msg<1 || msg>MSGS) 
       { fprintf(stderr,"Illegal trap message\n"); exit(1); }
@@ -269,13 +262,13 @@ void do_trap()
 }
 
 
-int signals;
+static int signals;
 
-void sigcounter()
+void sigcounter(void)
 { signals++; if (signals>MAX_BAD_SIGNALS) send(CRASH); }
 
 
-void signal_trap_init()
+void signal_trap_init(void)
 {  
   signals=0;
 
@@ -291,20 +284,15 @@ void signal_trap_init()
 
 /********************************** I/O *************************************/
 
-void get_screen_preferences();
-void tty_hello();
-
 int old_term, old_lines, old_scrollback, old_more, dos_output;
 bool tried_curses, tried_wimp, tried_split, have_drawn_top;
 int tty_errors, file_errors, puts_errors;
 int curses, split, wimp, use_gnu_readline; /* externed global bools */
 char **file_arg;
-int num_file_args, prep_it, append_it;
+int prep_it, append_it;
 
 
-bool do_gnu_readline(prompt,str,num)
-char *prompt, *str;
-int num;
+bool do_gnu_readline(char *prompt, char *str, int num)
 {
 #ifndef _GNU_READLINE
     send(CRASH);
@@ -326,7 +314,7 @@ int num;
 #ifdef _GNU_READLINE
 static char *default_text = NULL;
 
-int set_rl_default()
+int set_rl_default(void)
 {
     if(default_text)  {
         int n = strlen(default_text);
@@ -339,10 +327,7 @@ int set_rl_default()
 #endif
 
 	
-bool do_gnu_edit(prompt,str,num,initial)
-char *prompt, *str;
-int num;
-char *initial; /* initial may be = str */
+bool do_gnu_edit(char *prompt, char *str, int num, char *initial /* initial may be = str */)
 {
 #ifndef _GNU_READLINE
     send(CRASH);
@@ -367,8 +352,7 @@ char *initial; /* initial may be = str */
 }
 
 	
-bool gnu_copyright(str)
-char *str; /* side-effected, so it must be big enough */
+bool gnu_copyright(char *str /* side-effected, so it must be big enough */)
 {
 #ifndef _GNU_READLINE
     return(FALSE);
@@ -410,10 +394,7 @@ bool tty_gets(char *str, int num)
 }
 
 
-bool file_gets(fp,str,num)
-FILE *fp;   /* must be opened with file_open() */
-char *str;  /* must be num+2 chars long, but use num+3 in case of weirdness */
-int num;    /* num chars, not including the '\n' or '\0', will be read */
+bool file_gets(FILE *fp /* must be opened with file_open() */, char *str  /* must be num+2 chars long, but use num+3 in case of weirdness */, int num    /* num chars, not including the '\n' or '\0', will be read */)
 {
     int i, c, n;
     
@@ -438,9 +419,7 @@ int num;    /* num chars, not including the '\n' or '\0', will be read */
 }
 
 
-void lib_puts(fp,str)
-FILE *fp;   
-char *str;  
+void lib_puts(FILE *fp, char *str)
 {
     int i, n;
     char c;
@@ -468,10 +447,10 @@ char *str;
 }
 
 
-void iocheck() { return; } 
+void iocheck(void) { return; }
 
 
-void tty_init() 
+void tty_init(void)
 { 
     char *tty_type, *num_lines, copy[10], bp[1025];
     int x;
@@ -548,7 +527,7 @@ scrollback=TRUE is the conservative option.*/
 }
 
 
-bool check_tty_lines() /* return TRUE and set tty_lines if changed */
+bool check_tty_lines(void) /* return TRUE and set tty_lines if changed */
 {
 /* maybe add some weird PC thing here to get #lines */
 #ifdef TRY_WINSIZE
@@ -572,7 +551,7 @@ char Tcmd[100];
 #define ansi_highlight(on)   lib_puts(out,on ? "\033[7m":"\033[0m")
 #define ansi_del_prev_ln()   lib_puts(out,"\033[99D\033[K\033[1A\033[K")
 #define ansi_boing()         lib_puts(out,"\007")
-void ansi_cursor_left(i,s) int i; char *s;
+void ansi_cursor_left(int i, char *s)
 { if(i<0) sprintf(Tcmd, "\033[99D\033[K%s", s); else sprintf(Tcmd, "\033[%dD\033[K%s", i, s);
   lib_puts(out,Tcmd); }
 
@@ -581,7 +560,7 @@ void ansi_cursor_left(i,s) int i; char *s;
 #define hp_highlight(on)     lib_puts(out,on ? "\033&dB":"\033&d@")
 #define hp_del_prev_ln()     lib_puts(out,"\033&a0C\033K\033A\033K")
 #define hp_boing()           lib_puts(out,"\007")
-void hp_cursor_left(i,s) int i; char *s;
+void hp_cursor_left(int i, char *s)
 { if(i<0) sprintf(Tcmd, "\033&a0C\033K%s", s); else sprintf(Tcmd, "\033&a-%dC\033K%s", i, s);
   lib_puts(out,Tcmd); }
 
@@ -591,9 +570,9 @@ void hp_cursor_left(i,s) int i; char *s;
 #define mac_highlight(on)   	{}
 #define mac_del_prev_ln()   	{}
 #define mac_boing()       	{}
-void mac_cursor_left()		{}
+void mac_cursor_left(void)		{}
 
-void tty_hello()
+void tty_hello(void)
 {
     if (term==HP_TERM) hp_tty_init();
     else if (term==ANSI) ansi_tty_init();
@@ -606,7 +585,7 @@ void tty_hello()
 }
 
 
-bool do_clear_screen() 
+bool do_clear_screen(void)
 { 
 /* NEEDS WIMP AND MAC CONSOLE HOOK */
     if (term==HP_TERM)     { hp_clr_scrn();   fflush(out); return(TRUE); }
@@ -618,7 +597,7 @@ bool do_clear_screen()
 }
 
 
-bool do_delete_previous_line() /* Needed for the "Hit RETURN for more" thing */
+bool do_delete_previous_line(void) /* Needed for the "Hit RETURN for more" thing */
 {
 /* NEEDS WIMP AND MAC CONSOLE HOOK */
     if (term==HP_TERM)     { hp_del_prev_ln();   fflush(out); return(TRUE); }
@@ -630,8 +609,7 @@ bool do_delete_previous_line() /* Needed for the "Hit RETURN for more" thing */
 }
 
 
-bool do_highlight(reverse)
-bool reverse;
+bool do_highlight(bool reverse)
 {
 /* NEEDS WIMP AND MAC CONSOLE HOOK */
 #ifdef HAVE_CURSES
@@ -643,9 +621,7 @@ bool reverse;
 }
 
 
-bool do_cursor_left(num_spaces,str_to_print) 
-int num_spaces; /* might be FAR_LEFT */
-char *str_to_print;
+bool do_cursor_left(int num_spaces /* might be FAR_LEFT */, char *str_to_print)
 {
 /* NEEDS WIMP AND MAC CONSOLE HOOK */
     if (term==HP_TERM)     { hp_cursor_left(num_spaces,str_to_print); }
@@ -658,7 +634,7 @@ char *str_to_print;
 }
 
 
-bool boing()
+bool boing(void)
 {
 /* NEEDS WIMP AND MAC CONSOLE HOOK */
     if (term==HP_TERM)     { hp_boing(); return(TRUE); } 
@@ -672,7 +648,7 @@ bool boing()
 
 /****************************** TOPLEVEL STUFF ******************************/
 
-void misc_init() /* init this file */ 
+void misc_init(void) /* init this file */
 { 
     int i;
     matrix(file_arg,MAX_FILE_ARGS,PATH_LENGTH+1,char);
@@ -681,7 +657,7 @@ void misc_init() /* init this file */
 }
 
 
-void custom_lib_init()
+void custom_lib_init(void)
 {
 /* These init routines shouldn't really DO much - they really are meant for
    initializing variables, mallocing structures, and so forth. Serious work
@@ -697,16 +673,14 @@ void custom_lib_init()
     tty_init();  /* also in this file */
 }
 
-void lib_init()
+void lib_init(void)
 { 
     custom_lib_init();
     tty_hello();
 }
 
-void lib_inits(argc_ptr,argv)
-int *argc_ptr;
-char *argv[];
-{ 
+void lib_inits(int *argc_ptr, char *argv[])
+{
     custom_lib_init();
     /* if (!screen_init(argc_ptr,argv)) */ 
     get_cmd_line_args(argc_ptr,argv);
@@ -730,9 +704,7 @@ run %s and type 'help' for help with commands and other information \n"
 #define NOTSCREEN_ \
 { fprintf(stderr,ERROR_NOTSCREEN,argv[0],argv[i]); abnormal_exit(); }
 
-void get_cmd_line_args(argc_ptr,argv)
-int *argc_ptr;
-char *argv[];
+void get_cmd_line_args(int *argc_ptr, char *argv[])
 {
     int i;
 
@@ -826,159 +798,147 @@ bool check_file_arg(int num, char *arg, char *name, char *type, char *def_ext, c
 }
 
 
-bool update_top()
+bool update_top(void)
 { return(FALSE); }
 
 
 
 
-#ifdef PUNT_FOR_NOW /*******************************************************/
-
-bool screen_init(argc_ptr,argv) /* side-effect wimp, curses, and split */
-int *argc_ptr;
-char *argv[];
-{ 
-    bool try_curses, try_wimp;
-    get_screen_preferences(argc_ptr,argv,&try_curses,&try_wimp);
-#ifdef HAVE_WIMP  
-    if (!tried_wimp && try_wimp) 
-      if (do_wimp_init(argc_ptr,argv)) term=WIMP; /* wimp=TRUE */ 
-    tried_wimp= TRUE; 
-#endif
-    tty_init();
-#ifdef HAVE_CURSES
-    if(!wimp && !tried_curses && try_curses)
-	if (curses_init(&tty_lines)) term=CURSES; /* sets curses=TRUE */
-    tried_curses= TRUE;
-#endif
-    maybe_clear_screen(); nl(); boing();
-    return(wimp || curses); 
-}
-
-
-bool split_screen_init(argc_ptr,argv,top_lines,top_update_function)
-int *argc_ptr;
-char *argv[];
-int top_lines;
-void (*top_update_function)();
-{ 
-    bool try_curses, try_wimp;
-    get_screen_preferences(argc_ptr,argv,&try_curses,&try_wimp);
-#ifdef HAVE_WIMP  
-    if (!tried_wimp && try_wimp) 
-      if (do_split_wimp_init(top_lines,top_update_function,argc_ptr,argv)) 
-	term=WIMP; /* sets wimp=TRUE */ 
-    tried_wimp= TRUE; 
-#endif
-    tty_init();
-#ifdef HAVE_CURSES
-    if (!wimp && !tried_curses && try_curses)
-      if (curses_init(&tty_lines)) {
-	  if (curses_split(top_lines,CURSES_REVERSE_TOP,top_update_function,
-			   &tty_lines)) term=CURSES; /* sets curses=TRUE */
-	  else curses_end(); 
-      }
-    tried_curses= TRUE;
-#endif
-    maybe_clear_screen(); update_top(); nl(); boing();
-    return(wimp || curses); 
-}
-
-
-void get_screen_preferences(argc_ptr,argv,try_curses,try_wimp)
-int *argc_ptr;
-char *argv[];
-int *try_curses, *try_wimp;
-{
-    int i, j;
-
-    *try_curses= *try_wimp= MAYBE;
-    for (i=0; i<*argc_ptr; i++) {
-	if (nmatches(argv[i],"-window",2)) *try_wimp=TRUE; 
-	else if (nmatches(argv[i],"+window",2)) *try_wimp=FALSE; 
-	else if (nmatches(argv[i],"-nowindow",4)) *try_wimp=FALSE; 
-	else if (nmatches(argv[i],"-screen",2)) *try_curses=TRUE; 
-	else if (nmatches(argv[i],"+screen",2)) *try_curses=FALSE; 
-	else if (nmatches(argv[i],"-noscreen",4)) *try_curses=FALSE; 
-	else if (nmatches(argv[i],"-line",2)) *try_curses= *try_wimp= FALSE; 
-	else continue;
-	/* matched argument, so delete it from the list */
-	for (j=i+1; j<*argc_ptr; j++) argv[j-1]= argv[j];
-	--*argc_ptr;
-    }
-    if (*try_curses==MAYBE) *try_curses=DEFAULT_TRY_CURSES;
-    if (*try_wimp==MAYBE) *try_wimp=DEFAULT_TRY_WIMP;
-}
-
-
-/* Custom windows can work similarly to the canned types (text &
-split), except that the widow code is very application specific: it
-may respond to mouse clicks and so forth in special ways and have
-other special stuff, which will probably have to interect with the
-application code via global variables. Such interfaces could be
-implemented using a customized do_wimp_init() routine. To make life
-easy and so that things work similarly, we require (1) that the window
-have a scrolling text region, (2) that it uses the menu struct (see
-shell.c), (3) that it only need to know about state variable changes
-that already call update_top() (or maybe_ok()), and (4) that it
-effects state changes only when inhibit_menus is FALSE (see shell.c).
-Like all init routines, do_custom_wimp_init() should do very little -
-do_wimp_start() in shell.c should do this. */
-
-
-bool update_top()
-{ 
-/* NEEDS WIMP HOOK */
-#ifdef HAVE_CURSES
-    if (curses && split) { 
-	if (!have_drawn_top) curses_draw_top(); else curses_update_top();
-	have_drawn_top=TRUE; return(TRUE);
-    }
-#endif
-    return(FALSE);
-}
-
-
-void screen_end() { 
-/* NEEDS WIMP HOOK */
-/* ALSO NEEDS a "Hit return" hook for quiting under a window system */
-#ifdef HAVE_CURSES
-    if (curses) curses_end(FALSE); 
-#endif
-}
-
-
-bool string_editor(prompt,str,num)
-char *prompt, *str;
-int num; /* max #chars in str */
-{
-    bool successful;
-    
-/* NEEDS WIMP HOOK */
-    successful = FALSE;
-#ifdef HAVE_CURSES
-    if(curses)
-      successful = curses_string_editor(str,num);
-#endif
-    return(successful);
-}
-
-
-#ifdef HAVE_CURSES
-void curses_error(where)
-char *where;
-{
-    curses_end(TRUE); 
-    printed_lines=4; more_break_pending=FALSE; 
-    term= old_term;  tty_lines=old_lines; 
-    more= old_more;  scrollback= old_scrollback;
-    clear_screen();
-
-    if (where==NULL) where=ptr_to("?");
-    fprintf(stderr,"\nwarning: curses failed in %-50s\n",where);
-    fprintf(stderr,"attempting to continue in line mode...\n\n");
-    flush();
-}
-#endif
-
-#endif /* PUNT_FOR_NOW */
+//#ifdef PUNT_FOR_NOW /*******************************************************/
+//
+//bool screen_init(int *argc_ptr, char *argv[]) /* side-effect wimp, curses, and split */
+//{
+//    bool try_curses, try_wimp;
+//    get_screen_preferences(argc_ptr,argv,&try_curses,&try_wimp);
+//#ifdef HAVE_WIMP
+//    if (!tried_wimp && try_wimp)
+//      if (do_wimp_init(argc_ptr,argv)) term=WIMP; /* wimp=TRUE */
+//    tried_wimp= TRUE;
+//#endif
+//    tty_init();
+//#ifdef HAVE_CURSES
+//    if(!wimp && !tried_curses && try_curses)
+//	if (curses_init(&tty_lines)) term=CURSES; /* sets curses=TRUE */
+//    tried_curses= TRUE;
+//#endif
+//    maybe_clear_screen(); nl(); boing();
+//    return(wimp || curses);
+//}
+//
+//
+//bool split_screen_init(int *argc_ptr, char *argv[], int top_lines, void (*top_update_function)())
+//{
+//    bool try_curses, try_wimp;
+//    get_screen_preferences(argc_ptr,argv,&try_curses,&try_wimp);
+//#ifdef HAVE_WIMP
+//    if (!tried_wimp && try_wimp)
+//      if (do_split_wimp_init(top_lines,top_update_function,argc_ptr,argv))
+//	term=WIMP; /* sets wimp=TRUE */
+//    tried_wimp= TRUE;
+//#endif
+//    tty_init();
+//#ifdef HAVE_CURSES
+//    if (!wimp && !tried_curses && try_curses)
+//      if (curses_init(&tty_lines)) {
+//	  if (curses_split(top_lines,CURSES_REVERSE_TOP,top_update_function,
+//			   &tty_lines)) term=CURSES; /* sets curses=TRUE */
+//	  else curses_end();
+//      }
+//    tried_curses= TRUE;
+//#endif
+//    maybe_clear_screen(); update_top(); nl(); boing();
+//    return(wimp || curses);
+//}
+//
+//
+//void get_screen_preferences(int *argc_ptr, char *argv[], int *try_curses, int *try_wimp)
+//{
+//    int i, j;
+//
+//    *try_curses= *try_wimp= MAYBE;
+//    for (i=0; i<*argc_ptr; i++) {
+//	if (nmatches(argv[i],"-window",2)) *try_wimp=TRUE;
+//	else if (nmatches(argv[i],"+window",2)) *try_wimp=FALSE;
+//	else if (nmatches(argv[i],"-nowindow",4)) *try_wimp=FALSE;
+//	else if (nmatches(argv[i],"-screen",2)) *try_curses=TRUE;
+//	else if (nmatches(argv[i],"+screen",2)) *try_curses=FALSE;
+//	else if (nmatches(argv[i],"-noscreen",4)) *try_curses=FALSE;
+//	else if (nmatches(argv[i],"-line",2)) *try_curses= *try_wimp= FALSE;
+//	else continue;
+//	/* matched argument, so delete it from the list */
+//	for (j=i+1; j<*argc_ptr; j++) argv[j-1]= argv[j];
+//	--*argc_ptr;
+//    }
+//    if (*try_curses==MAYBE) *try_curses=DEFAULT_TRY_CURSES;
+//    if (*try_wimp==MAYBE) *try_wimp=DEFAULT_TRY_WIMP;
+//}
+//
+//
+///* Custom windows can work similarly to the canned types (text &
+//split), except that the widow code is very application specific: it
+//may respond to mouse clicks and so forth in special ways and have
+//other special stuff, which will probably have to interect with the
+//application code via global variables. Such interfaces could be
+//implemented using a customized do_wimp_init() routine. To make life
+//easy and so that things work similarly, we require (1) that the window
+//have a scrolling text region, (2) that it uses the menu struct (see
+//shell.c), (3) that it only need to know about state variable changes
+//that already call update_top() (or maybe_ok()), and (4) that it
+//effects state changes only when inhibit_menus is FALSE (see shell.c).
+//Like all init routines, do_custom_wimp_init() should do very little -
+//do_wimp_start() in shell.c should do this. */
+//
+//
+//bool update_top(void)
+//{
+///* NEEDS WIMP HOOK */
+//#ifdef HAVE_CURSES
+//    if (curses && split) {
+//	if (!have_drawn_top) curses_draw_top(); else curses_update_top();
+//	have_drawn_top=TRUE; return(TRUE);
+//    }
+//#endif
+//    return(FALSE);
+//}
+//
+//
+//void screen_end(void) {
+///* NEEDS WIMP HOOK */
+///* ALSO NEEDS a "Hit return" hook for quiting under a window system */
+//#ifdef HAVE_CURSES
+//    if (curses) curses_end(FALSE);
+//#endif
+//}
+//
+//
+//bool string_editor(char *prompt, char *str, int num /* max #chars in str */)
+//{
+//    bool successful;
+//
+///* NEEDS WIMP HOOK */
+//    successful = FALSE;
+//#ifdef HAVE_CURSES
+//    if(curses)
+//      successful = curses_string_editor(str,num);
+//#endif
+//    return(successful);
+//}
+//
+//
+//#ifdef HAVE_CURSES
+//void curses_error(char *where)
+//{
+//    curses_end(TRUE);
+//    printed_lines=4; more_break_pending=FALSE;
+//    term= old_term;  tty_lines=old_lines;
+//    more= old_more;  scrollback= old_scrollback;
+//    clear_screen();
+//
+//    if (where==NULL) where=ptr_to("?");
+//    fprintf(stderr,"\nwarning: curses failed in %-50s\n",where);
+//    fprintf(stderr,"attempting to continue in line mode...\n\n");
+//    flush();
+//}
+//#endif
+//
+//#endif /* PUNT_FOR_NOW */

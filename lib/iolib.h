@@ -1,3 +1,6 @@
+#ifndef _IOLIB_H_
+#define _IOLIB_H_
+
 /******************************************************************************
 
     #     ####   #          #    #####           #    #
@@ -90,70 +93,131 @@ computationally critical loops, as iocheck() may take some time itself
 exists but does nothing, and it may never...
 ***************************************************************************/
 
+#include "syscode.h"
+
+int lookup_fp(FILE *fp, char **name, char *modechar; /* side-effected if non-null */);
+void ioerror(char *errmsg, FILE *fp, char *ioline);
+bool make_filename_in_dir(char *str, /* str is side-effected: it should be PATH_LENGTH+1 chars long */
+                          bool force_ext,
+                          char *ext, /* may have the preceeding '.' or not */
+                          int add_dir_mode, /* values defined in iolib.h */
+                          char *dir /* assume no trailing divider, except VMS dirs, which have [..] */);
+bool make_filename(char *str, /* str is side-effected: it should be PATH_LENGTH+1 chars long */
+                   bool force_ext,
+                   char *ext_ /* may have the preceeding '.' or not */);
+FILE *open_file(char *name,  /* It's best to use make_filename() on name first */
+                char *mode)  /* use a #define in iolib.h for mode */;
+void close_file(FILE *fp)   /* ignore NULL fp */;
+void do_fwrite(FILE *fp, char *str_);
+void fprint(FILE *fp, char *str_);
+void finput(FILE *fp, char *str, int length);
+void fgetln(FILE *fp) /* ln is side-effected. */;
+void fgetdataln(FILE *fp, int *count) /* ln is side-effected */;
+bool end_of_file(FILE *fp);
+bool end_of_text(FILE *fp);
+void flush_linebuf(void);
+bool dump_held_lines(void);
+bool dump_to_screen(char *str);
+bool really_do_more(void);
+void mem_puts(char *str);
+void flush_and_force_nl(bool nl_on_screen_also);
+void kill_temp_print(void);
+bool lib_clear_screen(void);
+int photo_to_file(char *new_log_name, /* best to run through make_filename() first */ char *new_log_mode /* use a #define as for open_file() */);
+void print(const char *str) /* Sends IOERROR if an error occurs */;
+bool temp_print(char *simple_str, char *fancy_str);
+bool do_hold(bool start, bool more_on);
+void flush(void);
+void space(int n);
+bool to_column(int num);
+int at_column(void);
+bool maybe_clear_screen(void);
+bool clear_screen(void);
+bool highlight(bool x);
+void do_more(void);
+void review_memory(void);
+//static void dump_memory_lines(int start, int num) /* internal */;
+int redirect_input(char *fname, bool verbose)	/* fname=NULL to interrupt */;
+void input(char *prompt, char *str, int length);
+void edit_line(char *prompt, char *str, int length, char *initial);
+void getln(char *prompt /* may signal IOERROR or ENDOINPUT */) /* ln is side-effected, is filtered, despaced, lowercased */;
+bool temp_logging(bool new, bool *old);
+void prev_logging(int old);
+bool temp_more_mode(int new,int *old);
+void prev_more_mode(int old);
+void io_init(void);
+
+
+
+
+
+
+
+
 
 extern char *ps, *ln;  /* these global strings are malloced by io_init() */
-void iocheck();   /* no args; CURRENTLY A NOP */
+//void iocheck();   /* no args; CURRENTLY A NOP */
 
 
 /************************ Terminal output routines ***********************/ 
 void print(const char *);	 /* args: char *string; does lots of processing */
 #define nl() print("\n") 
 #define pr() print(ps) 
-void flush();	 /* no args. forces everything print()ed to be output */ 
+//void flush();	 /* no args. forces everything print()ed to be output */
 
-bool temp_print(); /* args: char *str; The string is printed out and flush()ed,
-   although it will be erased upon the next call to print(), input(), getln(),
-   etc. A following call to temp_print() will erase the previous string
-   temp_print()ed, and temp_print(NULL) or temp_print("") explicitly
-   clears the last temp_print()ed string. Strings for temp_print may not 
-   wrap, and may not contain tabs or newlines. Return FALSE if this is not
-   possible on the user's terminal type. */
+//bool temp_print(); /* args: char *str; The string is printed out and flush()ed,
+//   although it will be erased upon the next call to print(), input(), getln(),
+//   etc. A following call to temp_print() will erase the previous string
+//   temp_print()ed, and temp_print(NULL) or temp_print("") explicitly
+//   clears the last temp_print()ed string. Strings for temp_print may not
+//   wrap, and may not contain tabs or newlines. Return FALSE if this is not
+//   possible on the user's terminal type. */
 
 /* Nice screen control functions - the boolean functions do their stuff and 
    return TRUE if the operation was possible, or return FALSE otherwise. */
 
-bool boing(); /* make a noise, if possible */
+//bool boing(); /* make a noise, if possible */
 
-bool highlight();  /* args: bool val; sets highlighting (reverse video) mode-
-   NOTE: this mode may or may not be effective for only one screen line of 
-   output! This needs to be handled as yet... */
+//bool highlight();  /* args: bool val; sets highlighting (reverse video) mode-
+//   NOTE: this mode may or may not be effective for only one screen line of
+//   output! This needs to be handled as yet... */
 
-bool maybe_clear_screen();  /* no args; clears the screen, if it can,
-   although not if the terminal is believed to support scrollback or
-   not if curses is enabled. Returns TRUE if it did, FALSE if not. */
+//bool maybe_clear_screen();  /* no args; clears the screen, if it can,
+//   although not if the terminal is believed to support scrollback or
+//   not if curses is enabled. Returns TRUE if it did, FALSE if not. */
 
-bool clear_screen(); /* no args; does it anyway and returns TRUE if possible */
+//bool clear_screen(); /* no args; does it anyway and returns TRUE if possible */
 
-bool to_column(); /* args: int num; (leftmost=0), returns FALSE if the cursor 
-   is already right of the specified column */ 
-int at_column(); /* no args; returns the current column (leftmost=0) */
-void space();     /* args: int n; prints n spaces, regardless */
+//bool to_column(); /* args: int num; (leftmost=0), returns FALSE if the cursor
+//   is already right of the specified column */
+//int at_column(); /* no args; returns the current column (leftmost=0) */
+//void space();     /* args: int n; prints n spaces, regardless */
 
-void do_more();       /* no args: does a "Hit return for more" thing */
+//void do_more();       /* no args: does a "Hit return for more" thing */
 extern int tty_lines; /* You may look at this, but please do not set it. */
 
 
 
 /********************* Terminal input routines ****************************/
-void input();   /* args: char *prompt, *string; int max_input_chars; 
-   String must have room for max_input_chars+1 chars, and only
-   max_input_chars-1 chars can usually be read, as a '\n' may be read in
-   at the end and then deleted from the string. */
+//void input();   /* args: char *prompt, *string; int max_input_chars;
+//   String must have room for max_input_chars+1 chars, and only
+//   max_input_chars-1 chars can usually be read, as a '\n' may be read in
+//   at the end and then deleted from the string. */
 
-void getln();   /* args: char *prompt; side-effects global string ln */
+//void getln();   /* args: char *prompt; side-effects global string ln */
 
 /* NOTE: input() filter()s non-printing characters from the returned
 string, but otherwise returns it verbatim, while getln() filter()s,
 lowercase()s, and despace()s it! */
 
-bool redirect_input(); /* args: char *filename; bool verbose; */
-/* Semantics are kind of like photo_to_file(). Begin taking standard
-   input from the specified file instead of where-ever it was comming
-   from.  Return FALSE if we fail (e.g. can't open file), in which case
-   nothing is changed. Note that input redirections may be layered inside
-   one-another, up to some reasonable depth. Use redirect_input(NULL) to
-   bag ALL redirects.  Redirect_input(TTY) should redirect to the
-   terminal (THIS IS NOT IMPLEMENTED YET!). */ 
+//bool redirect_input(); /* args: char *filename; bool verbose; */
+///* Semantics are kind of like photo_to_file(). Begin taking standard
+//   input from the specified file instead of where-ever it was comming
+//   from.  Return FALSE if we fail (e.g. can't open file), in which case
+//   nothing is changed. Note that input redirections may be layered inside
+//   one-another, up to some reasonable depth. Use redirect_input(NULL) to
+//   bag ALL redirects.  Redirect_input(TTY) should redirect to the
+//   terminal (THIS IS NOT IMPLEMENTED YET!). */
 #define TTY ""
 
 /* You may look at, but not set, these variables... */
@@ -168,7 +232,7 @@ extern bool more, more_mode, ignore_eof;
    Ignore_eof is on whether the standard input is a terminal or not. 
    All are set by tty_init() and get_cmd_line_args() */
 
-bool do_hold(bool start, bool more_on);
+//bool do_hold(bool start, bool more_on);
 
 #define hold(with_more_on) \
   for (do_hold(TRUE,with_more_on); holding>0; do_hold(FALSE,FALSE))
@@ -205,17 +269,17 @@ extern bool logging;     /* you may examine this, but don't set it directly */
    prev_more_mode(). In general, this means make sure that these calls do 
    not span any code which would toggle these things! */
 
-bool temp_logging();      /* args logging, *save_state; turn logging on/off: 
-   To turn it on, a log-file must already be opened with photo_to_file()!
-   If not (the only failure case), FALSE is returned, otherwise TRUE is. 
-   However, even in this case, the routine behaves well (that is, you can 
-   ignore its return value if you don't care). */
-void prev_logging();      /* args state; restore logging */
+//bool temp_logging();      /* args logging, *save_state; turn logging on/off:
+//   To turn it on, a log-file must already be opened with photo_to_file()!
+//   If not (the only failure case), FALSE is returned, otherwise TRUE is.
+//   However, even in this case, the routine behaves well (that is, you can
+//   ignore its return value if you don't care). */
+//void prev_logging();      /* args state; restore logging */
+//
+//bool temp_more_mode(); /* args new_more_mode,*save_state; turn more on/off */
+//void prev_more_mode(); /* args state; */
 
-bool temp_more_mode(); /* args new_more_mode,*save_state; turn more on/off */
-void prev_more_mode(); /* args state; */
-
-void review_memory(); /* flips back through previous output in a nice way */
+//void review_memory(); /* flips back through previous output in a nice way */
 
 
 /******* Curses and WIMP (Windows, Icons, Mouse, and Pointers) Support *******/
@@ -224,12 +288,12 @@ void review_memory(); /* flips back through previous output in a nice way */
    to enable and control really fancy screen management (see system.h for
    details). These may invoke customized code for really funky WIMP stuff. */
 
-bool screen_init();  /* args: int *argc_ptr; char *argv[]; both may be side-
-   effected. Sets up funky screen I/O if possible - this may clear the
-   screen if it is appropriate to do so, among other things. This returns
-   TRUE if screen management (either curses or wimp) was enabled. */
+//bool screen_init();  /* args: int *argc_ptr; char *argv[]; both may be side-
+//   effected. Sets up funky screen I/O if possible - this may clear the
+//   screen if it is appropriate to do so, among other things. This returns
+//   TRUE if screen management (either curses or wimp) was enabled. */
 
-bool split_screen_init(); 
+//bool split_screen_init();
 /* args: int *argc_ptr; char *argv[]; int top_lines; void (*update_func)(); 
          both argc_ptr and argv may be side-effected. 
 	 update_func() gets args: char **text; int top_lines, top_columns;
@@ -243,11 +307,11 @@ bool split_screen_init();
    the matrix of characters (text) to reflect what the top part should
    display. */
 
-bool update_top();  /* Forces the top part of a split_screen to be updated. 
-   FALSE is returned if split_screen() has not successfully set things up. */
-void screen_end();  /* no args: undoes screen_init() or split_screen() */
+//bool update_top();  /* Forces the top part of a split_screen to be updated.
+//   FALSE is returned if split_screen() has not successfully set things up. */
+//void screen_end();  /* no args: undoes screen_init() or split_screen() */
 
-bool string_editor(); /* args: char *prompt, *str; int max_num_chars; */
+//bool string_editor(); /* args: char *prompt, *str; int max_num_chars; */
 
 
 /**************************** Text file routines  ****************************/
@@ -256,15 +320,15 @@ bool string_editor(); /* args: char *prompt, *str; int max_num_chars; */
    files! (The obvious exception is logging and input redirection, for which
    you should use the rather carefuly crafted routines described above!) */
 
-bool make_filename(); /* args: char *name; int mode; char *extension; 
-   This turns name into a perfectly valid file name, and returns TRUE if this
-   was possible. The name may include a directory specification - otherwise it
-   will be opened in the current working directory. name must be able to hold
-   PATH_LENGTH+1 chars. The argument mode should be one of... */
+//bool make_filename(); /* args: char *name; int mode; char *extension;
+//   This turns name into a perfectly valid file name, and returns TRUE if this
+//   was possible. The name may include a directory specification - otherwise it
+//   will be opened in the current working directory. name must be able to hold
+//   PATH_LENGTH+1 chars. The argument mode should be one of... */
 #define DEFAULT_EXTENSION  0  /* if name has no ext, one is added */
 #define FORCE_EXTENSION	   1  /* even if name has an ext, it's changed */
 
-bool make_filename_in_dir(); 
+//bool make_filename_in_dir();
 /* args: char *name; int ext_mode; char *ext; int dir_mode; char *dir; 
    Like make_filename, but you can also specify a directory. You may use: */
 #define FORCE_DIR	   0
@@ -273,41 +337,41 @@ bool make_filename_in_dir();
 #define CODE_DIR           "*c*"
 #define CURRENT_DIR        NULL
 
-FILE *open_file();  /* args: char *name, *mode; on failure sends CANTOPEN */
+//FILE *open_file();  /* args: char *name, *mode; on failure sends CANTOPEN */
 #define WRITE  "w"
 #define READ   "r"
 #define APPEND "a"
-void close_file();  /* args: FILE *fp; */
+//void close_file();  /* args: FILE *fp; */
 
-bool end_of_file(); /* args: FILE *fp; returns TRUE if finput() or fgetln()  
-   will be able to grab a new line from the file. */
-bool end_of_text(); /* args: FILE *fp; Like an end-of-file test, except it also
-  returns TRUE if rest of the file is white. As a side-effect, it will step
-  through the file up to the first non-white char. */
+//bool end_of_file(); /* args: FILE *fp; returns TRUE if finput() or fgetln()
+//   will be able to grab a new line from the file. */
+//bool end_of_text(); /* args: FILE *fp; Like an end-of-file test, except it also
+//  returns TRUE if rest of the file is white. As a side-effect, it will step
+//  through the file up to the first non-white char. */
 
-void fprint();    /* args: FILE *fp; char *string; processes output */
-void do_fwrite(); /* args: FILE *fp; char *string; no processing happens */
-#define fwrite(fp,str) (do_fwrite(fp,str))  /* UNIX already has an fwrite() */
+//void fprint();    /* args: FILE *fp; char *string; processes output */
+//void do_fwrite(); /* args: FILE *fp; char *string; no processing happens */
+//#define fwrite(fp,str) (do_fwrite(fp,str))  /* UNIX already has an fwrite() */
 
 #define fpr(fp) fprint(fp,ps)
-#define fwp(fp) fwrite(fp,ps)
-#define fnl(fp) fwrite(fp,"\n")
+#define fwp(fp) do_fwrite(fp,ps)
+#define fnl(fp) do_fwrite(fp,"\n")
 
-void finput();  /* args: FILE *fp; char *str; int max_input_chars; */
-void fgetln();  /* args: FILE *fp; side-effects global char *ln; 
-   Finput() and fgetln() both return a filter()ed line, and on end-of-file, the
-   ENDOFILE message is sent. Str must have room for max_input_chars+1 chars,
-   and only max_input_chars-1 chars can usually be read, as a '\n' may be read
-   in at the end and then deleted from the string. */
+//void finput();  /* args: FILE *fp; char *str; int max_input_chars; */
+//void fgetln();  /* args: FILE *fp; side-effects global char *ln;
+//   Finput() and fgetln() both return a filter()ed line, and on end-of-file, the
+//   ENDOFILE message is sent. Str must have room for max_input_chars+1 chars,
+//   and only max_input_chars-1 chars can usually be read, as a '\n' may be read
+//   in at the end and then deleted from the string. */
    
-void fgetdataln(); /* args: FILE *fp; int *count; side-effects global ln;
-   Like fgetln(), although this skips null (white) and comment lines (those
-   beginning with a '#' in the leftmost position. Also, each time any line is
-   read from the file (data, null, or comment), *count is incremented. */
+//void fgetdataln(); /* args: FILE *fp; int *count; side-effects global ln;
+//   Like fgetln(), although this skips null (white) and comment lines (those
+//   beginning with a '#' in the leftmost position. Also, each time any line is
+//   read from the file (data, null, or comment), *count is incremented. */
 		     
 #define frewind(fp) fseek(fp,0L,0)
 #define fflush(fp)  do_fflush(fp)  /* redeclare the C library function */
-void do_fflush(); /* never call this directly */
+//void do_fflush(); /* never call this directly */
 
 bool rename_file(); 
 /* args: char *old, new; in syscode.c renames old file with new name */
@@ -327,7 +391,7 @@ extern FILE *in, *out, *photo;
 #define RUN_FILE_ARG   1
 #define PHOTO_FILE_ARG 2
 extern char **file_arg;
-extern int num_file_args, dos_output, prep_it, append_it;
+extern int dos_output, prep_it, append_it;
 
 extern char *ps_, *ln_;     /* input and output strings for the library only */
 extern char *linebuf;       /* tty output buffer */
@@ -367,13 +431,13 @@ extern int tty_errors, file_errors, puts_errors;
 #define MAC_WINDOW        6
 #define WIMP              7
 
-bool boing();
-bool do_clear_screen();
-bool do_highlight();
-bool do_delete_previous_line();
-bool do_cursor_left(); /* args int spaces; char *str_to_then_print; */
+//bool boing();
+//bool do_clear_screen();
+//bool do_highlight();
+//bool do_delete_previous_line();
+//bool do_cursor_left(); /* args int spaces; char *str_to_then_print; */
 #define FAR_LEFT -1
-bool check_tty_lines();
+//bool check_tty_lines();
 
 void lib_puts();
 
@@ -389,44 +453,45 @@ void lib_puts();
       any post-processing. */
 bool tty_gets(char *str, int num);
 
-bool file_gets();
-void ioerror();
-void flush_and_force_nl();
+//bool file_gets();
+//void ioerror();
+//void flush_and_force_nl();
 extern bool supress_more, more_break_pending;
 
 extern bool curses, split;
 extern bool tried_curses, tried_split, have_drawn_top;
 /* These functions exist if HAVE_CURSES is defined. */
-bool curses_init();
-bool curses_split();
-void curses_end();
-void curses_error(); 
-void curses_clr_scrn();
-void curses_del_prev_ln();
-void curses_del_this_ln();
-void curses_del_to_eol();
-void curses_goto_far_left();
-void curses_cursor_left();
-void curses_set_highlight();
-bool curses_gets();
-void curses_puts();
-void curses_scrollup();
-void curses_flush();
-void curses_boing();
-void curses_refresh();
-void curses_update_top();
-void curses_draw_top();
+//bool curses_init();
+//bool curses_split();
+//void curses_end();
+//void curses_error();
+//void curses_clr_scrn();
+//void curses_del_prev_ln();
+//void curses_del_this_ln();
+//void curses_del_to_eol();
+//void curses_goto_far_left();
+//void curses_cursor_left();
+//void curses_set_highlight();
+//bool curses_gets();
+//void curses_puts();
+//void curses_scrollup();
+//void curses_flush();
+//void curses_boing();
+//void curses_refresh();
+//void curses_update_top();
+//void curses_draw_top();
 
 extern bool wimp, tried_wimp;
 /* These functions exist if HAVE_WIMP is defined. */
-void do_text_wimp_init();
-void do_split_wimp_init();
-void do_custom_wimp_init(); /* Only MAY exist... */
+//void do_text_wimp_init();
+//void do_split_wimp_init();
+//void do_custom_wimp_init(); /* Only MAY exist... */
 
 extern bool use_gnu_readline;
-bool do_gnu_readline();
-bool do_gnu_edit();
-bool gnu_copyright();
+//bool do_gnu_readline();
+//bool do_gnu_edit();
+//bool gnu_copyright();
 
-void edit_line(); /* make real decl above */
+//void edit_line(); /* make real decl above */
 
+#endif

@@ -477,6 +477,8 @@ typedef int     bool;
 #define MAYBE	(-1)
 /* rely on the system to define NULL */
 
+#include "histogrm.h"
+
 /* One of the lib_init() routines must be called before ANYTHING else
 is done, or the program will crash in wierd ways! In general, user's
 _init routines should come right after the lib_init() call and should
@@ -564,9 +566,9 @@ void get_cmd_line_args();  /* args: int *argc_ptr; char **argv;
 #include "eqn.h"
 #endif
 
-#ifdef INC_HISTO
-void make_histo(); /* that's all? */
-#endif
+//#ifdef INC_HISTO
+//void make_histo(); /* that's all? */
+//#endif
 
 #ifdef INC_STATS
 #include "stats.h"

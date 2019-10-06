@@ -13,15 +13,13 @@
 
 #define INC_LIB
 #define INC_MISC
-#define INC_HISTO
+//#define INC_HISTO
 #include "system.h"
+#include "histogrm.h"
 
+static void print_histogram(int intervals, char title[10]);
 
-void print_histogram();
-
-void make_histo(dist, dist_size)
-real *dist;
-int dist_size;
+void make_histo(real *dist, int dist_size)
 {
     int i, intervals;
     int more_than_2_25=0,more_than_2=0,more_than_1_75=0,more_than_1_5=0;
@@ -144,15 +142,12 @@ int dist_size;
 }
 
 
-void print_histogram(intervals, title)
-int intervals;
-char title[10];
+void print_histogram(int intervals, char title[10])
 {
     int i;
 
     sprintf(ps, "%s  |", title);pr();
     for(i=0;i<intervals;i++) print("*");
     nl();
-    return;
 }
 

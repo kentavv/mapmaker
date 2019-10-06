@@ -605,9 +605,9 @@ real threshold, falloff;
 		peak->free_map=TRUE;
 		mapcpy(peak->map,wig[peak_i]->map);
 		peak->map->fix_pos[k]=peak->qtl_pos;
-		temp_print("Calculating QTL map...");
+		temp_print("Calculating QTL map...", NULL);
 		make_qtl_map(peak->map);
-		temp_print(NULL);
+		temp_print(NULL, NULL);
 	    }
 	}
 

@@ -36,6 +36,20 @@ typedef struct {
     } val;
 } EQUATION;
 
+EQUATION **make_equation(char *original_equation, int (*variable_lookup)());
+void parse_equation(char *original_equation, EQUATION **parsed_eqn, int (*variable_lookup)(), int *new_size, int *the_index);
+void add_number(int mark, EQUATION **parsed_eqn, char *parsed_token, int *new_size, int *the_index);
+void add_to_parsed_eqn(int mark, EQUATION **parsed_eqn, int parsed_token, int *new_size, int *the_index);
+void add_parenthesis(int *i, int par, int mark, EQUATION **parsed_eqn);
+void check_sizeof_array(int *size);
+void postfix(EQUATION **parsed_eqn, EQUATION **postfixed);
+real evaluate_equation (EQUATION **postfixed, real (*value_find)());
+real pop_stack(void) /* This function returns the top value from the stack */;
+real push_stack(real value_to_push);
+void eqn_init(void);
+int variable_lookup(char *item);
+real value_lookup(int index);
+
 #define SYMBOL -1           /* these are flags          */
 #define VARIABLE 2          /* to be used in the        */
 #define NUMBER 1            /* data structures EQUATION */
@@ -57,13 +71,13 @@ typedef struct {
 #define RIGHT_P 15
 extern char **variable_table;
 extern real *value_table;                   
-void eqn_init();  /* Takes no arguments, it mallocs pasred and temp_eqn */
+//void eqn_init();  /* Takes no arguments, it mallocs pasred and temp_eqn */
 extern int table_size;
-real value_lookup();
-int variable_lookup();
+//real value_lookup();
+//int variable_lookup();
 /**************** The make equation subroutine ***********************/
 
-EQUATION **make_equation();
+//EQUATION **make_equation();
  
 /**** args:  char *original_eqn, char **symbol_table, int table_len 
   inputted_eqn is a char pointer to the equation as inputted by the

@@ -19,6 +19,9 @@
 #define INC_HELP_DEFS
 #include "system.h"
 #include "shell.h" /* just to get the decl of error()? */
+#include "iolib.h"
+
+static void dump_memory_lines(int start, int num) /* internal */;
 
 bool get_home_directory(char *buf);
 bool get_code_directory(char *buf);
@@ -31,8 +34,6 @@ int tty_lines, term;
 bool screen, curses, split, interactive;
 
 /* Local declarations - externed in iolib.h only for syscode.c  */
-void ioerror();
-int lookup_fp();
 char *out_file, out_modechar, *in_file, in_modechar;
 char *photo_file, photo_modechar;
 FILE *in, *out, *photo;
@@ -41,17 +42,13 @@ char *linebuf;  /* stdout buffer: one screen line max */
 int cursor, buf, printed_lines;
 bool supress_more, more_break_pending, memorize;
 int lines_written;
-char *gotln, *lnptr;
+char *lnptr;
 
 int  temp_print_spaces;
 #define temp_print_up (temp_print_spaces>0)
 
 void flush_linebuf();
-void flush_and_force_nl();
-void mem_puts();
 bool dump_held_lines();
-void dump_memory_lines();
-bool dump_to_screen();
 void kill_temp_print();
 bool lib_clear_screen();
 bool really_do_more();
@@ -75,9 +72,8 @@ FILE_INFO **files;
     if (modechar!=NULL) *modechar=files[i]->modechar; \
     return(i); } 
 
-int lookup_fp(fp,name,modechar)
-FILE *fp;
-char **name, *modechar; /* side-effected if non-null */
+int lookup_fp(FILE *fp,
+char **name, char *modechar /* side-effected if non-null */)
 {
     if (fp==NULL) {
 	if (name!=NULL) *name= null_string;
@@ -102,10 +98,9 @@ char **name, *modechar; /* side-effected if non-null */
 }
 
 
-void ioerror(errmsg,fp,ioline)
-char *errmsg;
-FILE *fp;
-char *ioline;
+void ioerror(char *errmsg,
+FILE *fp,
+char *ioline)
 {
          IOERROR_errmsg= errmsg;
 	 if (ioline!=NULL) nstrcpy(IOERROR_linecopy,ioline,64); 
@@ -117,12 +112,11 @@ char *ioline;
 
 /********** FILE HANDLING STUFF ***********/
 
-bool make_filename_in_dir(str,force_ext,ext,add_dir_mode,dir)
-char *str; /* str is side-effected: it should be PATH_LENGTH+1 chars long */
-bool force_ext;
-char *ext; /* may have the preceeding '.' or not */
-int add_dir_mode; /* values defined in iolib.h */
-char *dir; /* assume no trailing divider, except VMS dirs, which have [..] */
+bool make_filename_in_dir(char *str, /* str is side-effected: it should be PATH_LENGTH+1 chars long */
+bool force_ext,
+char *ext, /* may have the preceeding '.' or not */
+int add_dir_mode, /* values defined in iolib.h */
+char *dir /* assume no trailing divider, except VMS dirs, which have [..] */)
 {
     int end, dir_chars, has_dir, i, j;
     char cwd[PATH_LENGTH+1];
@@ -174,10 +168,9 @@ char *dir; /* assume no trailing divider, except VMS dirs, which have [..] */
 
 #define NO_DOT (-1)
 
-bool make_filename(str,force_ext,ext_)
-char *str; /* str is side-effected: it should be PATH_LENGTH+1 chars long */
-bool force_ext;
-char *ext_; /* may have the preceeding '.' or not */
+bool make_filename(char *str, /* str is side-effected: it should be PATH_LENGTH+1 chars long */
+bool force_ext,
+char *ext_ /* may have the preceeding '.' or not */)
 {
     int i, j, first_dot, next_dot, last_dot, root_start, end;
     bool has_ext, two_ext;
@@ -244,9 +237,8 @@ char *ext_; /* may have the preceeding '.' or not */
 }
 
 
-FILE *open_file(name,mode)
-char *name;  /* It's best to use make_filename() on name first */
-char *mode;  /* use a #define in iolib.h for mode */
+FILE *open_file(char *name,  /* It's best to use make_filename() on name first */
+char *mode)  /* use a #define in iolib.h for mode */
 {
         FILE *fp; int i, n;
 
@@ -266,8 +258,7 @@ char *mode;  /* use a #define in iolib.h for mode */
 }
 
 
-void close_file(fp)   /* ignore NULL fp */
-FILE *fp;
+void close_file(FILE *fp)   /* ignore NULL fp */
 {
     int n, i; 
     
@@ -282,21 +273,18 @@ FILE *fp;
 }
 
 
-void fwrite(fp,str_)
-FILE *fp;
-char *str_;
+void do_fwrite(FILE *fp,
+char *str_)
 { char *str=strdup(str_); _filter(str); lib_puts(fp,str); free(str); } /* DO NOTHING FANCY */
 
-void fprint(fp,str_)
-FILE *fp;
-char *str_;
+void fprint(FILE *fp,
+char *str_)
 { char *str=strdup(str_); _filter(str); lib_puts(fp,str); free(str); } /* JUST FOR NOW - GET FANCIER LATER */
 
 
-void finput(fp,str,length)	
-FILE *fp;
-char *str;
-int length;
+void finput(FILE *fp,
+char *str,
+int length)
 { 
     if (fp==stdin) { input("? ",str,length); return; }
     if (!file_gets(fp,str,length)) send(ENDOFILE); 
@@ -304,9 +292,8 @@ int length;
 }
 
 
-void fgetln(fp) /* ln is side-effected. */
-FILE *fp;
-{ 
+void fgetln(FILE *fp) /* ln is side-effected. */
+{
     if (fp==stdin) { getln("? "); return; }
     ln=lnptr; 
     if (!file_gets(fp,ln,MAXLINE)) send(ENDOFILE); 
@@ -314,9 +301,7 @@ FILE *fp;
 }
 
 
-void fgetdataln(fp,count) /* ln is side-effected */
-FILE *fp;
-int *count;
+void fgetdataln(FILE *fp, int *count) /* ln is side-effected */
 {
     char *p;
 
@@ -331,8 +316,7 @@ int *count;
 }
 		     
 
-bool end_of_file(fp)
-FILE *fp;
+bool end_of_file(FILE *fp)
 {
     int c;
 
@@ -341,9 +325,8 @@ FILE *fp;
     return(TRUE);
 }
 
-bool end_of_text(fp)
-FILE *fp;
-{ 
+bool end_of_text(FILE *fp)
+{
     int c;
 
     while ((c=getc(fp))!=EOF) 
@@ -354,7 +337,7 @@ FILE *fp;
 
 /*********************** OUTPUT ROUTINES... local ***********************/
 
-void flush_linebuf()
+void flush_linebuf(void)
 {
     bool endoline;
     if (buf==0) return; 
@@ -384,7 +367,7 @@ void flush_linebuf()
 }
 
 
-bool dump_held_lines() 
+bool dump_held_lines(void)
 /* When one does hold {}, we flush_and_force_nl(TRUE). THUS, held lines will
    always start dumping into the left column. Thus clear_screen works right. */
 {
@@ -424,8 +407,7 @@ bool dump_held_lines()
 }
 
 
-bool dump_to_screen(str)
-char *str;
+bool dump_to_screen(char *str)
 {
     if (more_break_pending) {
 	if (!really_do_more()) {
@@ -445,7 +427,7 @@ char *str;
 }
 
 
-bool really_do_more() 
+bool really_do_more(void)
 {
     bool continue_flag= TRUE;
     int i;
@@ -472,8 +454,7 @@ bool really_do_more()
 }
 
 
-void mem_puts(str)
-char *str;
+void mem_puts(char *str)
 {
     int last;
     if (str[0]=='\0' || !memorize) return;
@@ -488,9 +469,8 @@ char *str;
 }
 
 
-void flush_and_force_nl(nl_on_screen_also) 
-bool nl_on_screen_also;
-{ 
+void flush_and_force_nl(bool nl_on_screen_also)
+{
     kill_temp_print();
     flush();
     if (cursor!=0) {
@@ -508,7 +488,7 @@ bool nl_on_screen_also;
 }
 
 
-void kill_temp_print()
+void kill_temp_print(void)
 { 
     if (temp_print_up) {
 	if (term==TERM_UNKNOWN) lib_puts(out,"\n");
@@ -518,7 +498,7 @@ void kill_temp_print()
 }
 
 
-bool lib_clear_screen() 
+bool lib_clear_screen(void)
 { 	
     check_tty_lines();
     if (more_break_pending) if (!really_do_more()) { send(INTERRUPT); }
@@ -530,9 +510,8 @@ bool lib_clear_screen()
 
 /**************** application level output routines ****************/
 
-int photo_to_file(new_log_name,new_log_mode)
-char *new_log_name; /* best to run through make_filename() first */
-char *new_log_mode; /* use a #define as for open_file() */
+int photo_to_file(char *new_log_name, /* best to run through make_filename() first */
+char *new_log_mode /* use a #define as for open_file() */)
 /* Returns FALSE if it fails, in which case nothing is changed. If 
    nullstr(new_log_name) then photoing is stopped. */
 {
@@ -606,55 +585,54 @@ void print(const char *str) /* Sends IOERROR if an error occurs */
 }
 
 
-#ifdef NEEDS_WORK
-void fprint(fp,str) 	
-FILE *fp;
-char *str;		
-{
-    int i, j, k, found, fbuf;
-    char c, save[21], fline[LINE+10];
-    
-    if (str==NULL) send(CRASH);
-    fbuf=0;
+//#ifdef NEEDS_WORK
+//void fprint(fp,str)
+//FILE *fp;
+//char *str;
+//{
+//    int i, j, k, found, fbuf;
+//    char c, save[21], fline[LINE+10];
+//
+//    if (str==NULL) send(CRASH);
+//    fbuf=0;
+//
+//    for(i=0; str[i] != '\0'; i++) {
+//	c= str[i];
+//
+//	if (c=='\n' || (c==' ' && cursor>LINE) ||
+//	    (c=='\t' && cursor>LASTTAB)) {
+//	    fline[fbuf++]='\n';
+//	    flush_linebuf();
+//
+//	} else if (cursor>LINE) {
+//	    linebuf[buf]='\0';
+//	    /* Line would wrap, so we find a nice place to break it */
+//	    for (found=FALSE, j=buf-1, k=(buf>20 ? buf-20:0); j>=k; j--)
+//	      if (white(linebuf[j])) { found=TRUE; break; }
+//	    if (found) {
+//		strcpy(save,&linebuf[j+1]);
+//		linebuf[j++]='\n'; buf=j;
+//		flush_linebuf(); /* now buf==0, cursor==0 */
+//		for (k=0; save[k]!='\0'; k++) linebuf[buf++]=save[k];
+//	    } else { /* didn't find a whitespace */
+//		linebuf[buf++]='\n';
+//		flush_linebuf();
+//	    }
+//	    if (!trash(c)) { linebuf[buf++]= c; cursor++; }
+//
+//
+//	} else if (c=='\t' && TRANSLATE_TABS) {
+//	    do { linebuf[buf++]=' '; cursor++; } while (cursor%8 != 0);
+//
+//	} else if (!trash(c)) { /* KLUDGE: WHAT CTRL CHARS TO HANDLE?*/
+//	    linebuf[buf++]= c; cursor++;
+//	}
+//    }
+//}
+//#endif
 
-    for(i=0; str[i] != '\0'; i++) {
-	c= str[i];
 
-	if (c=='\n' || (c==' ' && cursor>LINE) ||
-	    (c=='\t' && cursor>LASTTAB)) {
-	    fline[fbuf++]='\n'; 
-	    flush_linebuf(); 
-	    
-	} else if (cursor>LINE) {
-	    linebuf[buf]='\0';
-	    /* Line would wrap, so we find a nice place to break it */
-	    for (found=FALSE, j=buf-1, k=(buf>20 ? buf-20:0); j>=k; j--) 
-	      if (white(linebuf[j])) { found=TRUE; break; }
-	    if (found) {
-		strcpy(save,&linebuf[j+1]);
-		linebuf[j++]='\n'; buf=j;
-		flush_linebuf(); /* now buf==0, cursor==0 */
-		for (k=0; save[k]!='\0'; k++) linebuf[buf++]=save[k];
-	    } else { /* didn't find a whitespace */
-		linebuf[buf++]='\n'; 
-		flush_linebuf(); 
-	    }
-	    if (!trash(c)) { linebuf[buf++]= c; cursor++; }
-
-	 
-	} else if (c=='\t' && TRANSLATE_TABS) {
-	    do { linebuf[buf++]=' '; cursor++; } while (cursor%8 != 0);
-	    
-	} else if (!trash(c)) { /* KLUDGE: WHAT CTRL CHARS TO HANDLE?*/
-	    linebuf[buf++]= c; cursor++; 
-	}
-    }
-}
-#endif
-
-
-bool temp_print(simple_str,fancy_str)
-char *simple_str, *fancy_str;
+bool temp_print(char *simple_str, char *fancy_str)
 {
     char *str;
 
@@ -697,29 +675,28 @@ char *simple_str, *fancy_str;
 }
 
 
-#ifdef JUST_TOO_HAIRY
-	/* Optimization in here to allow reprinting only the changed part */
-	/* just print a dot if TERM_UNKNOWN */
-	_filter(str);
-	for (i=0; str[i]!='\0'; i++) /* get rid of tabs and newlines */
-	  if (str[i]=='\t'||str[i]=='\n') str[i]=' ';
-	chrs= imaxf(len(str),LINE-cursor);
-	str[chrs]='\0'; /* truncate str if it would wrap */
+//#ifdef JUST_TOO_HAIRY
+//	/* Optimization in here to allow reprinting only the changed part */
+//	/* just print a dot if TERM_UNKNOWN */
+//	_filter(str);
+//	for (i=0; str[i]!='\0'; i++) /* get rid of tabs and newlines */
+//	  if (str[i]=='\t'||str[i]=='\n') str[i]=' ';
+//	chrs= imaxf(len(str),LINE-cursor);
+//	str[chrs]='\0'; /* truncate str if it would wrap */
+//
+//	for (pos= -1, i=0; temp_print_str[i]!='\0' && str[i]!='\0'; i++)
+//	  if (temp_print_str[i]!=str[i]) { pos=i; break; } /* 1st difference */
+//	if (pos<0) return(TRUE); /* new and old things are identical */
+//	if (term==TERM_UNKNOWN) {
+//	    if (temp_print_spaces==79)
+//	      { lib_puts(out,"\n"); temp_print_spaces=0; }
+//	    lib_puts(out,"."); temp_print_spaces++; /* ignore temp_print_str */
+//	} else
+//	    if (temp_print_on_left && pos<chrs/2) do_cursor_left(FAR_LEFT,str);
+//#endif
 
-	for (pos= -1, i=0; temp_print_str[i]!='\0' && str[i]!='\0'; i++) 
-	  if (temp_print_str[i]!=str[i]) { pos=i; break; } /* 1st difference */
-	if (pos<0) return(TRUE); /* new and old things are identical */
-	if (term==TERM_UNKNOWN) {
-	    if (temp_print_spaces==79) 
-	      { lib_puts(out,"\n"); temp_print_spaces=0; }
-	    lib_puts(out,"."); temp_print_spaces++; /* ignore temp_print_str */
-	} else
-	    if (temp_print_on_left && pos<chrs/2) do_cursor_left(FAR_LEFT,str);
-#endif
 
-
-bool do_hold(start,more_on)
-bool start, more_on;
+bool do_hold(bool start, bool more_on)
 { 
     if (start==TRUE && !holding) {
 	flush_and_force_nl(TRUE); 
@@ -737,7 +714,7 @@ bool start, more_on;
 }
 	
 
-void flush()
+void flush(void)
 { 
     dump_held_lines();
     flush_linebuf(); 
@@ -747,13 +724,11 @@ void flush()
 }
 
 
-void space(n) 
-int n;
+void space(int n)
 { while(n-->0) print(" "); }
 
 
-bool to_column(num)
-int num;
+bool to_column(int num)
 {
     if (num > LINE-1) { nl(); return(TRUE); }
     if (num < cursor) return(FALSE);
@@ -762,23 +737,23 @@ int num;
 }
 
 
-int at_column() { return(cursor); }
+int at_column(void) { return(cursor); }
 
 
-bool maybe_clear_screen() 
+bool maybe_clear_screen(void)
 {  flush_and_force_nl(FALSE); 
    if ((!scrollback || curses) && lib_clear_screen()) return(TRUE); 
    else return(FALSE); 
 }
 
-bool clear_screen() { flush_and_force_nl(FALSE);  return(lib_clear_screen()); }
+bool clear_screen(void) { flush_and_force_nl(FALSE);  return(lib_clear_screen()); }
 
-bool highlight(x) bool x; { flush(); return(do_highlight(x)); }
+bool highlight(bool x) { flush(); return(do_highlight(x)); }
 
-void do_more() { flush_and_force_nl(TRUE); more_break_pending=TRUE; } 
+void do_more(void) { flush_and_force_nl(TRUE); more_break_pending=TRUE; }
 
 
-void review_memory() 
+void review_memory(void)
 {
     int i, old_photo, start, num, old_memory;
 
@@ -807,8 +782,7 @@ void review_memory()
 }
 
 
-void dump_memory_lines(start,num) /* internal */
-int start, num;
+static void dump_memory_lines(int start, int num) /* internal */
 {
     int j;
 
@@ -821,9 +795,7 @@ int start, num;
 
 /*** INPUT ROUTINES ***/
 
-int redirect_input(fname,verbose)	/* fname=NULL to interrupt */
-char *fname;
-bool verbose;
+int redirect_input(char *fname, bool verbose)	/* fname=NULL to interrupt */
 {
     bool retoin;
     FILE *fp;
@@ -858,10 +830,8 @@ bool verbose;
    "\n\0", however, the trailing '\n' is stripped from the returned
    string, which is also despace()ed and filter()ed. */
 
-void input(prompt,str,length)
-char *prompt, *str;		
-int length;			
-{				
+void input(char *prompt, char *str, int length)
+{
     bool eof;
     more_break_pending= FALSE; eof= FALSE; 
 
@@ -903,10 +873,7 @@ int length;
 
 /* edit_line(): essentially the same rules as input() */
 
-void edit_line(prompt,str,length,initial)
-char *prompt, *str;
-int length;			
-char *initial;
+void edit_line(char *prompt, char *str, int length, char *initial)
 {				
     bool eof;
     more_break_pending= FALSE; eof= FALSE; 
@@ -932,55 +899,50 @@ char *initial;
 }
 
 
-void getln(prompt) /* ln is side-effected, is filtered, despaced, lowercased */
-char *prompt;      /* may signal IOERROR or ENDOINPUT */
+void getln(char *prompt /* may signal IOERROR or ENDOINPUT */) /* ln is side-effected, is filtered, despaced, lowercased */
 { ln=lnptr; input(prompt,ln,MAXLINE-2); lowercase(ln); }
 
 
 /*** TEMPORARILY CHANGE TERMINAL I/O MODES ***/
 
-bool temp_logging(new,old)
-bool new, *old;
-{ if (new && !log_open) return(FALSE); 
+bool temp_logging(bool new, bool *old)
+{ if (new && !log_open) return(FALSE);
   flush(); if (cursor!=0) nl();
   *old=logging; logging=new; return(TRUE); }
 
-void prev_logging(old)
-int old;
-{ if (old && !log_open) send(CRASH); 
+void prev_logging(int old)
+{ if (old && !log_open) send(CRASH);
   flush(); if (cursor!=0) nl(); logging=old; }
 
-bool temp_more_mode(new,old)
-int new, *old;
+bool temp_more_mode(int new,int *old)
 { flush(); if (cursor!=0) nl(); *old=more; more=new; return(TRUE); }
 
-void prev_more_mode(old)
-int old;
+void prev_more_mode(int old)
 { flush(); if (cursor!=0) nl(); more=old; }
 
-#ifdef OBSOLETE 
+//#ifdef OBSOLETE
+//
+///* We did away with the redirecting_input flag, so what to do about this? */
+//bool temp_redirect_input(new,old)
+//bool new, *old;
+//{ *old= redirecting_input;
+//  if (new && redirs==0) return(FALSE);
+//  redirecting_input=new; return(TRUE); }
+//
+//void prev_redirect_input(old)
+//int old;
+//{ if (old && redirs==0) send(CRASH); else redirecting_input=old; }
+//
+//bool temp_redirect_input(); /* args redirect, *save_state; turn ALL input
+//   redirection on/off. To turn on, redirection must already be enabled at
+//   least once with redirect_input() (remember, redirects may happen "inside"
+//   each other). Behavior is like temp_logging(). */
+//void prev_redirect_input();     /* args state; */
+//
+//#endif
 
-/* We did away with the redirecting_input flag, so what to do about this? */
-bool temp_redirect_input(new,old)
-bool new, *old;
-{ *old= redirecting_input;
-  if (new && redirs==0) return(FALSE); 
-  redirecting_input=new; return(TRUE); }
 
-void prev_redirect_input(old)
-int old;
-{ if (old && redirs==0) send(CRASH); else redirecting_input=old; }
-
-bool temp_redirect_input(); /* args redirect, *save_state; turn ALL input
-   redirection on/off. To turn on, redirection must already be enabled at 
-   least once with redirect_input() (remember, redirects may happen "inside" 
-   each other). Behavior is like temp_logging(). */
-void prev_redirect_input();     /* args state; */
-
-#endif
-
-
-void io_init()  /* this is run from lib_init() */
+void io_init(void)  /* this is run from lib_init() */
 {	
 	int i;
 
