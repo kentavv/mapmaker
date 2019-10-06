@@ -78,20 +78,20 @@ following and then #including "system.h":
    INC_TABLE   A useful data struct, used by the shell and other things. 
 *************************************************************************/
 
-#ifdef  _SYS_SUNOS
-#define _SYS_UNIX
-#else
-#ifdef  _SYS_ULTRIX
-#define _SYS_UNIX
-#else
-#ifdef  _SYS_AUX
-#define _SYS_UNIX  /* Note: NOT _SYS_MAC */
-#endif
-#endif
-#endif
-#ifdef _SYS_WATCOM
-#define _SYS_DOS
-#endif
+//#ifdef  _SYS_SUNOS
+//#define _SYS_UNIX
+//#else
+//#ifdef  _SYS_ULTRIX
+//#define _SYS_UNIX
+//#else
+//#ifdef  _SYS_AUX
+//#define _SYS_UNIX  /* Note: NOT _SYS_MAC */
+//#endif
+//#endif
+//#endif
+//#ifdef _SYS_WATCOM
+//#define _SYS_DOS
+//#endif
 
 
 
@@ -102,7 +102,7 @@ elements of a path are not checked, only its total length.
 *************************************************************************/
 #define PATH_LENGTH		200
 
-#ifndef _SYS_DOS /* e.g. _SYS_UNIX or some POSIX like thing */
+//#ifndef _SYS_DOS /* e.g. _SYS_UNIX or some POSIX like thing */
 #define HELP_EXT                ".help"
 #define ARG_CHAR                '-' /* Usual char for command line switches */
 #define PATH_REQUIRE_EXTENSION 	FALSE
@@ -115,19 +115,17 @@ elements of a path are not checked, only its total length.
 #define PATH_DIR_CHARS \
 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~#/"
 
-#else /* is _SYS_DOS */
-#define HELP_EXT                ".hlp"
-#define ARG_CHAR                '/' /* Usual char for command line switches */
-#define PATH_REQUIRE_EXTENSION 	TRUE
-#define PATH_SINGLE_EXTENSION  	TRUE
-#define PATH_UPPERCASE 		TRUE
-#define PATH_DIR_SEPARATORS 	"\\"    /* rightmost separating char */
-#define PATH_DIR_FILE_INSERT    "\\"    /* insert between a dir and filename */
-#define PATH_OK_CHARS \
-"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.$#/\\"
-#define PATH_DIR_CHARS \
-"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.$#/\\"
-#endif
+//#else /* is _SYS_DOS */
+//#define HELP_EXT                ".hlp"
+//#define ARG_CHAR                '/' /* Usual char for command line switches */
+//#define PATH_REQUIRE_EXTENSION 	TRUE
+//#define PATH_SINGLE_EXTENSION  	TRUE
+//#define PATH_UPPERCASE 		TRUE
+//#define PATH_DIR_SEPARATORS 	"\\"    /* rightmost separating char */
+//#define PATH_DIR_FILE_INSERT    "\\"    /* insert between a dir and filename */
+//#define PATH_OK_CHARS "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.$#/\\"
+//#define PATH_DIR_CHARS "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.$#/\\"
+//#endif
 
 
 /**************************** Subshells *********************************
@@ -145,17 +143,17 @@ Mac, and on VMS, SHELL_CMD should be "SPAWN".
 **************************************************************************/
 /* #define NO_SYSTEM_FUNC *//* ANSI/POSIX - All should have system() now */
 
-#ifdef _SYS_DOS
-#define TRY_COMSPEC_VAR
-#define TRY_SHELL_CMD "command.com"
-#define SHELL_MESSAGE "Running DOS prompt: Type 'exit' to return...\n"
-
-#else /* _SYS_UNIX */
+//#ifdef _SYS_DOS
+//#define TRY_COMSPEC_VAR
+//#define TRY_SHELL_CMD "command.com"
+//#define SHELL_MESSAGE "Running DOS prompt: Type 'exit' to return...\n"
+//
+//#else /* _SYS_UNIX */
 #define TRY_SHELL_VAR
 #define TRY_SHELL_CMD "/bin/csh"  /* csh is the default on Sun, DEC, A/UX */
 #define SHELL_MESSAGE \
 "Running Unix shell: Type 'exit' or hit Control-D to return...\n"
-#endif
+//#endif
 
 
 /************************ Error handling routines ************************* 
@@ -174,23 +172,23 @@ type of a signal handling function used as an argument to signal().
 ***************************************************************************/
 #define HAVE_MATHERR  /* Doesn't hurt to not define it... */
 
-#ifdef _SYS_WATCOM  /* strerror is defined, as it should be */
-#define SIGHANDLE int
-#define SIGQUIT SIGABRT /* bizzare */
-#endif
-#ifdef _SYS_SUNOS /* the @#!$% map pages lie */
-#define SIGHANDLE void
+//#ifdef _SYS_WATCOM  /* strerror is defined, as it should be */
+//#define SIGHANDLE int
+//#define SIGQUIT SIGABRT /* bizzare */
+//#endif
+//#ifdef _SYS_SUNOS /* the @#!$% map pages lie */
+//#define SIGHANDLE void
 //#define strerror(num) (num<sys_nerr ? sys_errlist[num]:(char*)NULL)
 //extern char *sys_errlist[]; extern int sys_nerr;
-#endif
-#ifdef _SYS_AUX
-#define SIGHANDLE void
-#define strerror(num) (num<sys_nerr ? sys_errlist[num]:(char*)NULL)
-extern char *sys_errlist[]; extern int sys_nerr;
-#endif
-#ifdef _SYS_ULTRIX
-#define SIGHANDLE void
-#endif
+//#endif
+//#ifdef _SYS_AUX
+//#define SIGHANDLE void
+//#define strerror(num) (num<sys_nerr ? sys_errlist[num]:(char*)NULL)
+//extern char *sys_errlist[]; extern int sys_nerr;
+//#endif
+//#ifdef _SYS_ULTRIX
+//#define SIGHANDLE void
+//#endif
 
 
 
@@ -201,19 +199,19 @@ Rand() is a lousy random number generator: don't use it unless no
 other is available. See the code for these in syscode.c.  The limits sont
 seem to be real portable, so be careful.
 ***************************************************************************/
-#ifdef _SYS_AUX
-#define USE_DRAND48
-#else
-#ifdef _SYS_SUNOS
-#define USE_RANDOM
-#else
-#ifdef _SYS_ULTRIX
-#define USE_RANDOM
-#else
-#define USE_SRAND
-#endif
-#endif
-#endif
+//#ifdef _SYS_AUX
+//#define USE_DRAND48
+//#else
+//#ifdef _SYS_SUNOS
+//#define USE_RANDOM
+//#else
+//#ifdef _SYS_ULTRIX
+//#define USE_RANDOM
+//#else
+//#define USE_SRAND
+//#endif
+//#endif
+//#endif
 
 
 /***************************** C-Library **************************************
@@ -274,23 +272,23 @@ Check out their usage (arguments, etc) in syscode.c to be safe!
 #define QSORT_CAST(x)      ((QSORT_DATA_PTR_TO*)(x))
 #define QSORT_COMPARE_PTR_TO(type) type
 
-#ifdef _SYS_ULTRIX     /* way old and quite kludgey C specs, BSD 4.2 da! */
-#define CALLOC_PTR_TO      char
-#define CALLOC_NUM_TYPE	   size_t /* unsigned in man page is wrong? */
-#define SIZEOF_TYPE	   size_t
-#define QSORT_DATA_PTR_TO  char
-#define QSORT_LENGTH       int   /* actually width is an int, not a unsigned */
-#endif
+//#ifdef _SYS_ULTRIX     /* way old and quite kludgey C specs, BSD 4.2 da! */
+//#define CALLOC_PTR_TO      char
+//#define CALLOC_NUM_TYPE	   size_t /* unsigned in man page is wrong? */
+//#define SIZEOF_TYPE	   size_t
+//#define QSORT_DATA_PTR_TO  char
+//#define QSORT_LENGTH       int   /* actually width is an int, not a unsigned */
+//#endif
+//
+//#ifdef _SYS_AUX     /* just like ULTRIX? */
+//#define CALLOC_PTR_TO      char
+//#define CALLOC_NUM_TYPE	   size_t /* unsigned in man page is wrong? */
+//#define SIZEOF_TYPE	   size_t
+//#define QSORT_DATA_PTR_TO  char
+//#define QSORT_LENGTH       int   /* actually width is an int, not a unsigned */
+//#endif
 
-#ifdef _SYS_AUX     /* just like ULTRIX? */
-#define CALLOC_PTR_TO      char
-#define CALLOC_NUM_TYPE	   size_t /* unsigned in man page is wrong? */
-#define SIZEOF_TYPE	   size_t
-#define QSORT_DATA_PTR_TO  char
-#define QSORT_LENGTH       int   /* actually width is an int, not a unsigned */
-#endif
-
-#ifdef _SYS_SUNOS     /* semi-ANSI is neither better nor worse */
+//#ifdef _SYS_SUNOS     /* semi-ANSI is neither better nor worse */
 #define CALLOC_PTR_TO      void   /* the man pages lie? */
 #define CALLOC_NUM_TYPE	   size_t
 #define SIZEOF_TYPE	   size_t
@@ -298,16 +296,16 @@ Check out their usage (arguments, etc) in syscode.c to be safe!
 #define QSORT_LENGTH       int   /* actually width is an int, not a unsigned */
 int system(); /* why is this in no include file */
 int fseek();  /* ditto */
-/* Fucking Suns: exit() is really of type int, but it's void in the lint-lib */
-#endif
+///* Fucking Suns: exit() is really of type int, but it's void in the lint-lib */
+//#endif
 
-#ifdef _SYS_WATCOM /* should be good for any ANSI system */
-#define CALLOC_PTR_TO      void
-#define CALLOC_NUM_TYPE	   size_t
-#define SIZEOF_TYPE	   size_t
-#define QSORT_DATA_PTR_TO  void
-#define QSORT_LENGTH       size_t
-#endif
+//#ifdef _SYS_WATCOM /* should be good for any ANSI system */
+//#define CALLOC_PTR_TO      void
+//#define CALLOC_NUM_TYPE	   size_t
+//#define SIZEOF_TYPE	   size_t
+//#define QSORT_DATA_PTR_TO  void
+//#define QSORT_LENGTH       size_t
+//#endif
 
 
 
@@ -372,14 +370,14 @@ the screen is not cleared. More-mode is now always diabled at first.
 #define MEMORY_LINES   150
 #define MAX_HOLD_LINES 150
 
-#ifdef _SYS_UNIX
+//#ifdef _SYS_UNIX
 #define DEFAULT_TERM_TYPE SCROLLING_ANSI 
 #define TRY_TERMCAP
 #define TRY_WINSIZE
-
-#else /* _SYS_DOS */
-#define DEFAULT_TERM_TYPE PC_CONSOLE
-#endif
+//
+//#else /* _SYS_DOS */
+//#define DEFAULT_TERM_TYPE PC_CONSOLE
+//#endif
 
 
 
@@ -511,9 +509,9 @@ void get_cmd_line_args();  /* args: int *argc_ptr; char **argv;
 #endif
 
 #include <stdlib.h>
-#ifndef _SYS_WATCOM
+//#ifndef _SYS_WATCOM
 #include <unistd.h>  /* not quite sure why we need this */
-#endif
+//#endif
 
 #ifdef INC_IO
 #include <stdio.h>
@@ -521,13 +519,13 @@ void get_cmd_line_args();  /* args: int *argc_ptr; char **argv;
 #endif
 
 #ifdef INC_MATH
-#ifdef _SYS_WATCOM
-#undef real
-#endif
+//#ifdef _SYS_WATCOM
+//#undef real
+//#endif
 #include <math.h>   /* WATCOM has problems with this if "real" is a macro */
-#ifdef _SYS_WATCOM
-#define real double
-#endif
+//#ifdef _SYS_WATCOM
+//#define real double
+//#endif
 #include "mathlib.h"
 #endif
 
@@ -580,7 +578,8 @@ robust and portable) interfaces are provided by the library. */
 
 #ifdef INC_HELP_DEFS
 
-#include <signal.h> 
+#include <stdlib.h>
+#include <signal.h>
 #include <errno.h> 	
 #include <time.h>       /* for ctime() def - Who does not have this file? */
 #include <malloc.h>
@@ -590,17 +589,17 @@ robust and portable) interfaces are provided by the library. */
 #include <sys/ioctl.h>
 #endif
 
-/* The BSD random number functions... seemingly not declared anywhere */
-#ifdef USE_RANDOM
-long random();
-//int srandom();
-#endif
+///* The BSD random number functions... seemingly not declared anywhere */
+//#ifdef USE_RANDOM
+//long random();
+////int srandom();
+//#endif
 
-/* The HPUX (and System V?) random number functions... ditto */
-#ifdef USE_DRAND48
-double drand48(); 
-void srand48(); 
-#endif
+///* The HPUX (and System V?) random number functions... ditto */
+//#ifdef USE_DRAND48
+//double drand48();
+//void srand48();
+//#endif
 
 /* Library declarations only to be used by the helpers library code itself */
 extern char *ps_, *ln_; /* defined in iolib.c */

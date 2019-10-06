@@ -8,8 +8,8 @@ if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release")
 endif ()
 
-SET(CMAKE_C_FLAGS "-g -O -Wall -Wextra -D_SYS_SUNOS -Wno-unused-parameter -Wno-clobbered -Wno-format-overflow")
-SET(CMAKE_C_FLAGS_RELEASE "-O3 -DNDEBUG -D_SYS_SUNOS")
+SET(CMAKE_C_FLAGS "-g -O -Wall -Wextra -Wno-unused-parameter -Wno-clobbered -Wno-format-overflow")
+SET(CMAKE_C_FLAGS_RELEASE "-O3 -DNDEBUG")
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 

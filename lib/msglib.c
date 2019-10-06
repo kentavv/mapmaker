@@ -145,24 +145,24 @@ void default_action(int num)
 { msg=num; untrapped_msg(); abnormal_exit(); }
 
 
-SIGHANDLE handle_interrupt(n) int n;
+void handle_interrupt(n) int n;
 { signal(n,handle_interrupt); 
   if(in_tty_gets) hit_interrupt = TRUE; 
   else send(INTERRUPT); }
 
-SIGHANDLE handle_quit(n) int n;
+void handle_quit(n) int n;
 { sprintf(QUIT_errmsg,"received QUIT signal (#%d) from system",n); send(QUIT);}
 
-SIGHANDLE handle_matherror(n) int n;
+void handle_matherror(n) int n;
 { signal(n,handle_matherror); sigcounter(); MATHERROR_arg1=MATHERROR_arg2=0.0; 
   strcpy(MATHERROR_type,"unknown math error (SIGFPE)"); send(MATHERROR); }
 
-SIGHANDLE handle_buserror(n) int n;
+void handle_buserror(n) int n;
 { signal(n,handle_buserror); sigcounter();
   strcpy(SYSERROR_errmsg,"segmentation-violation or bus-error"); 
   send(SYSERROR); }
 
-SIGHANDLE handle_weird_signal(n) int n;
+void handle_weird_signal(n) int n;
 { signal(n,handle_weird_signal); sigcounter();
   sprintf(SYSERROR_errmsg,"system signal #%d",n); send(SYSERROR); }
 
