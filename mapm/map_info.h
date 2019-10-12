@@ -62,6 +62,29 @@ void init_not_fixed(MAP *map);
 //void init_for_ctm();   /* arg:  MAP *m; bool sex, errors, hot_start; similar */
 
 
+
+
+typedef struct {  /* nifty little struct used for the above */
+    real like;
+    real dist;
+    bool zero;
+    real net_error;
+    real worst_error;
+} PLACE;
+
+typedef struct {  /* working data for place cmd and extend_order() */
+    int  locus;
+    bool *excluded;  /* [position-in-order] */
+    int  num_places, best_pos;
+    bool off_end, errors;
+    int  priority;    /* a random number */
+    MAP  *best_map;
+} PLACEME;
+
+
+
+
+
 /***** SAVED_LIST Multiple map structure - maps.c *****/
 
 typedef struct {
@@ -115,9 +138,11 @@ typedef struct {
 #define UNLINKED_LOD   0.50  /* Because LODs less than this never get stored */
 #define UNLINKED_THETA 0.40  /* we should not allow lodbounds<UNLINKED_LOD */
 
-void allocate_two_pt();  /* arg: num_loci; allocs and inits global 2pt data */
-void free_two_pt();      /* arg: num_loci; frees global */
-void expand_two_pt();    /* arg: num_entries; pre-allocates space in global */
+void allocate_two_pt (int num_loci);
+void free_two_pt(int num_loci);
+//void allocate_two_pt();  /* arg: num_loci; allocs and inits global 2pt data */
+//void free_two_pt();      /* arg: num_loci; frees global */
+//void expand_two_pt();    /* arg: num_entries; pre-allocates space in global */
 #define EXPAND_DEFAULT (-1) /* can be arg to above */
 
 void compute_two_pt(int a, int b);
@@ -173,46 +198,46 @@ bool delete_haplo_groups(); /* args: loci, num_loci; TRUE if any deleted */
 void find_haplo_group();    /* args: loci *#loci group *#group obs1 obs2 */
 bool force_haplo_sanity();  /* int *locus; bool verbose; FALSE if changed */
 
-void setup_3pt_data();
+void setup_3pt_data(int *locus, int num_loci, real threshold);
 /* args: int locus[], num_loci; real three_pt_threshold;
    Sets the global matrix used by create_order. three_pt_threshold
    should be negative, or if zero, 3pt data are unused. */
-void free_3pt_data();
+//void free_3pt_data();
 
-bool start_3pt(); 
+//bool start_3pt();
 /* args: int locus[], *num_loci; real threshold; int order[], *num_ordered; 
    If TRUE returned, all args (but threshold) are side-effected. */
 
-int three_pt_exclusions();
+int three_pt_exclusions(int *order, int num_placed, int newmarker, bool *excluded);
 /* args: int order[], num_placed, new_locus; bool excluded[]; 
    returns num_orders;
    Examines three-pt data for inserting new_locus in a order.
    excluded[i], for i=0...num_placed, and *num_orders are side-effected.
    This assumes that excluded[i] is initialized (likely to FALSE) */
 
-bool three_pt_verify();
+bool three_pt_verify(int *locus, int num_loci, int window_size);
 /* args: int loci[], num_loci, window_size;
    Examines an order to see if it is compatible with the three-point data.
    Return FALSE if order is excluded. */
 
-void informative_subset();
+void informative_subset(int *locus, int num_loci, int min_infs, real min_theta, bool codom_only, bool haplos, int *subset, int *num);
 /* args: locus[], num_loci, min_infs; real min_dist; bool codom_only, haplos; 
    int subset[], *num; finds a informative and not-too-closely-spaced set
    of loci. Does not understand sex_specific, nor does it really do anything
    smart with mixed typings. */
 
-void extend_order();
+void extend_order(MAP *placed, PLACEME **unplaced, int *num_unplaced, real npt_thresh, bool print_anyway);
 /* int create_order(); OBSOLETE */
 /* args: int *loci, *num_loci, *order, *num_ordered; real npt_threshold;
    Iteratively tries to place loci in order - side-effecting order[i] and 
    *num_ordered. Is rather chatty. */
 
-void find_window();
+void find_window(int *order, int num_placed, int new_locus, int *excluded, int min_window, int *start, int *end);
 /* int order[], num_placed, new_locus,  excluded[], min_window, *start, *end;
    find the appropriate region in which to try to place a marker, based on
    excluded[], and maybe (someday) informativeness */
 
-void place_locus();
+void place_locus(MAP *map, int locus, int start, int finish, bool *excluded, PLACE **result, int *best_pos, MAP *best_map, MAP *temp);
 /* args: MAP *map; int locus; int start, finish; bool excluded[]; 
    PLACE *result[]. int *best_pos; MAP *best_map, *temp_map;
    Tries locus into map order between locus #s i=start..finish
@@ -220,32 +245,13 @@ void place_locus();
    like may be 0.0 (best), NO_LIKE (untried) or ZERO_LIKE (if places on
    top of a marker, one side gets this value */
 
-int npt_exclusions(); /* return num_ok_intervals */
+int npt_exclusions(PLACE **place, int num_loci, real like_thresh, real one_err_thresh, real net_err_thresh, bool *excluded, bool *zero_place, int *off_ends, real *error_lod, bool *single_error, real *next_best, real *best_unallowed);
 /* args: PLACE *placements[]; int num_loci; real like_threshold;
    real worst_error_threshold, net_error_threshold; 
    bool excluded[], *zero_placement, *placed_off_end; real *error_lod;
    bool *single_error; real *second_best_like, *best_unallowed_like; 
    Examines the likes produced by place_locus(), side-effecting excluded[i], 
    and the many flags. */
-
-typedef struct {  /* nifty little struct used for the above */
-    real like;
-    real dist;
-    bool zero;
-    real net_error;
-    real worst_error;
-} PLACE;
-
-typedef struct {  /* working data for place cmd and extend_order() */
-    int  locus;
-    bool *excluded;  /* [position-in-order] */
-    int  num_places, best_pos; 
-    bool off_end, errors;
-    int  priority;    /* a random number */
-    MAP  *best_map;      
-} PLACEME;
-
-
 
 /***** Chromosome framework, assignment, and placement stuff - chroms.c *****/
 

@@ -15,6 +15,8 @@
 #define INC_SHELL
 #include "mapm.h"
 
+void expand_two_pt (int num_entries);
+
 /* global vars which happen to be declared here */
 char **note;
 real *error_rate;
