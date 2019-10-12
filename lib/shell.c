@@ -67,14 +67,14 @@ bool photo_update_top_hook;
 void (*photo_banner_hook)();
 char *the_program, *the_version, *the_copyright;
 
-int alias_match();
-int abbrev_match();
-int com_matches();
-int abbrev_matches();
-int try_to_match();
-
-void expand_history_references();
-char *centering();
+//int alias_match();
+//int abbrev_match();
+//int com_matches();
+//int abbrev_matches();
+//int try_to_match();
+//
+//void expand_history_references();
+//char *centering();
 
 #define NO_HELP_FILE "\
 Can't find help file - detailed help information is not available.\n\
@@ -91,7 +91,7 @@ type is provided. See the License Agreement for details.\n"
 Type 'help' for help.\n\
 Type 'about' for license, non-warranty, and support information.\n"
 
-void banner() 
+void banner(void)
 { 
     char line[81];
 
@@ -118,8 +118,8 @@ if (help_file==NULL) print(NO_HELP_FILE);
 }
 
 
-char *get_version(version_filename)
-char *version_filename;
+char *
+get_version (char *version_filename)
 {
     FILE *fp;
     char str[TOKLEN+1], *p, *version, name[PATH_LENGTH+1];
@@ -142,7 +142,8 @@ char *version_filename;
 }
     
 
-void photo_banner()
+void 
+photo_banner (void)
 {
     char ver[81];
 /*                                         Thu Apr 13 05:31:11 EDT 1989
@@ -165,9 +166,11 @@ if (photo_banner_hook!=NULL) (*photo_banner_hook)(photo);
 
 int prev_spaces=2;
 
-char *centering(str,lineup)  /* into global ps */
-char *str;
-bool lineup;
+char *
+centering (  /* into global ps */
+    char *str,
+    bool lineup
+)
 { 
     int spaces, i; 
     if (!lineup) spaces= 36-(len(str)/2); else spaces=prev_spaces;
@@ -179,8 +182,8 @@ bool lineup;
 }
 
 
-void shell_init(program,version,copyright,help_filename)
-char *program, *version, *copyright, *help_filename; 
+void 
+shell_init (char *program, char *version, char *copyright, char *help_filename) 
 /* help_filename must be side-effectable */
 {
     int i;
@@ -233,16 +236,13 @@ char *program, *version, *copyright, *help_filename;
 }
 
 
-char *default_prompt(s)
-char *s; 
+char *
+default_prompt (char *s) 
 { sprintf(s, "\n%d> ", cmd_history_num + 1); return(s); }
 
 
-void mktopic(num,nam,code,description_index)
-int num;
-char *nam;
-int code;
-long description_index;
+void 
+mktopic (int num, char *nam, int code, long description_index)
 { 
     if (num<=0 || num>MAX_COM_TOPICS || len(nam)>MAX_TOPIC_LEN) send(CRASH); 
     topic_name[num]=mkstrcpy(nam); topic_code[num]=code;
@@ -250,10 +250,8 @@ long description_index;
 }
 
 
-int mkcommand(name,abbrev,func,code) 
-char *name, *abbrev;
-void (*func)();
-int code;
+int 
+mkcommand (char *name, char *abbrev, void (*func)(void), int code)
 {
     char *str, **toks, c;
     int i, n_tokens;
@@ -300,13 +298,8 @@ int code;
 }
 
 		
-void mkhelp(cmd_name,abbrev,description_index,num_args_prefix,num_args,
-	    code,topic,description,arguments,defaults)
-char *cmd_name, *abbrev;
-long description_index;
-int num_args_prefix, num_args;
-int topic, code;
-char *description, *arguments, *defaults;
+void 
+mkhelp (char *cmd_name, char *abbrev, long description_index, int num_args_prefix, int num_args, int code, int topic, char *description, char *arguments, char *defaults)
 {
     int i, old_wiz;
     char *rest;
@@ -355,8 +348,10 @@ char *description, *arguments, *defaults;
 }
 
 
-bool valid_name(str) /* checks the syntax of names */
-char *str;
+bool 
+valid_name ( /* checks the syntax of names */
+    char *str
+)
 { 
   int i;
 
@@ -368,16 +363,19 @@ char *str;
 }
 
 
-void null_command() { send(CRASH); }
+void 
+null_command (void) { send(CRASH); }
 
 
 
 /**************************** The Command Parser ****************************/
 
-int parser(line,rest,help_ok) 
-char *line;
-char **rest; /* side-effected */
-bool help_ok;
+int 
+parser (
+    char *line,
+    char **rest, /* side-effected */
+    bool help_ok
+)
 { 
     int i, n_tokens, last_match;
     char *foo;
@@ -420,9 +418,11 @@ bool help_ok;
 }
 
 
-void print_parser_results(rest,help_ok) /* uses the global state */
-char *rest;
-bool help_ok;
+void 
+print_parser_results ( /* uses the global state */
+    char *rest,
+    bool help_ok
+)
 {
     int j;
 
@@ -451,11 +451,8 @@ bool help_ok;
    set com_match, n_matched and last_match accordingly. Return TRUE only if a
    unique match was found. */
   
-int try_to_match(token,n_tokens,n_to_try,n_word_command,
-	com_match,n_matched,last_match,allow_help_only_stuff)
-char **token;
-int n_tokens, n_to_try, n_word_command;
-int *com_match, *n_matched, *last_match, allow_help_only_stuff;
+int 
+try_to_match (char **token, int n_tokens, int n_to_try, int n_word_command, int *com_match, int *n_matched, int *last_match, int allow_help_only_stuff)
 {
 	int exact, i;
 	
@@ -473,9 +470,8 @@ int *com_match, *n_matched, *last_match, allow_help_only_stuff;
 }
 
 
-int com_matches(in_tokens,com_tokens,num_to_match,exact)
-char **in_tokens, **com_tokens;
-int num_to_match, *exact;
+int 
+com_matches (char **in_tokens, char **com_tokens, int num_to_match, int *exact)
 {
     int i;
 	
@@ -492,8 +488,10 @@ int num_to_match, *exact;
 
 #define HIST_RANGE "command history number is out of range"
 
-void expand_history_references(line) /* sends an error if need be */
-char *line; /* line IS side-effected */
+void 
+expand_history_references ( /* sends an error if need be */
+    char *line /* line IS side-effected */
+)
 {
     char *str, *save;
     int num, first=0, i;
@@ -536,7 +534,8 @@ char *line; /* line IS side-effected */
 #define punt    done=TRUE;  break;
 #define toleft  if (cursor!=0) nl();
 
-void command_loop()
+void 
+command_loop (void)
 {
     char *rest; 
     int done, failures, foo, prev_lvl= -1;
@@ -616,15 +615,16 @@ void command_loop()
 /************************ Useful things for commands ************************/
 
 
-void abort_command() { send(SOFTABORT); }
+void 
+abort_command (void) { send(SOFTABORT); }
 
 
 void error(const char *errmsg) /* guaranteed not to use ps */
 { print("error: "); print(errmsg); nl(); abort_command(); }
 
 
-void maybe_set_bool(var)
-bool *var;
+void 
+maybe_set_bool (bool *var)
 {
     char temp[TOKLEN+1];
     
@@ -637,9 +637,8 @@ bool *var;
 }
 
 
-void maybe_set_real(var,lbound,hbound,fmt)
-real *var, lbound, hbound;
-real fmt;
+void 
+maybe_set_real (real *var, real lbound, real hbound, real fmt)
 {
     real temp;
 	
@@ -653,8 +652,8 @@ real fmt;
 }
 
 
-void maybe_set_long(var,lbound,hbound)
-long *var, lbound, hbound;
+void 
+maybe_set_long (long *var, long lbound, long hbound)
 {
 	long temp;
 	
@@ -669,8 +668,8 @@ long *var, lbound, hbound;
 }
 
 
-void maybe_set_int(var,lbound,hbound)
-int *var, lbound, hbound;
+void 
+maybe_set_int (int *var, int lbound, int hbound)
 {
 	int temp;
 	
@@ -685,8 +684,10 @@ int *var, lbound, hbound;
 }
 
 
-void set_usage_error(com_args) /* guaranteed not to use ps */
-char *com_args;
+void 
+set_usage_error ( /* guaranteed not to use ps */
+    char *com_args
+)
 { print("error: illegal value for '"); print(com); print("'\n");
   if (cmd[com_num]->args_help!=NULL) 
     { print("correct value: "); print(cmd[com_num]->args_help); print("\n"); }
@@ -697,8 +698,10 @@ char *com_args;
 }
 
 
-void usage_error(num) 
-int num; /* num args given, maybe <0 */
+void 
+usage_error (
+    int num /* num args given, maybe <0 */
+)
 { 
     if (cmd[com_num]->num_args==0) 
       sprintf(ps, "error: The '%s' command takes no arguments.\n", com);
@@ -725,8 +728,10 @@ int num; /* num args given, maybe <0 */
 #define TOOMANY \
 "error: Too many arguments for the '%s' command\n(%s%d argument%s expected).\n"
 
-void nomore_args(n)
-int n; /* for now, a dummy arg */
+void 
+nomore_args (
+    int n /* for now, a dummy arg */
+)
 { 
     int mode, num; 
     num= cmd[com_num]->num_args;
@@ -753,8 +758,10 @@ int n; /* for now, a dummy arg */
 }
 
 
-void more_args(num)
-int num; /* num args given, maybe <0 */
+void 
+more_args (
+    int num /* num args given, maybe <0 */
+)
 {
     int mode, want; 
     want= cmd[com_num]->num_args; 
@@ -779,8 +786,8 @@ int num; /* num args given, maybe <0 */
 }
 
 
-void input_error(val,def) 
-char *val, *def;
+void 
+input_error (char *val, char *def)
 { 
     print("error: you have given an invalid response\n"); 
     if (!nullstr(val))
@@ -797,9 +804,8 @@ char *val, *def;
 
 #define EXTRA_INPUT   "too many values given in input line"
 
-void expect_nomore_input(str,mode,num)
-char *str;
-int mode, num;
+void 
+expect_nomore_input (char *str, int mode, int num)
 { if (nullstr(str)) return;
   else if (num>0)
     sprintf(ps, "error: %s\n %s %d value%s were expected\n", EXTRA_INPUT,
@@ -811,9 +817,8 @@ int mode, num;
 }
 
 
-void expect_more_input(str,mode,num)
-char *str;
-int mode, num;
+void 
+expect_more_input (char *str, int mode, int num)
 { if (!nullstr(str)) return;
   else if (num>0)
     sprintf(ps, "error: missing input\n%s %d value%s expected\n",
@@ -824,9 +829,11 @@ int mode, num;
 }
 
 
-bool split_arglist(rest,divider)
-char **rest;
-char divider; /* character that arglist should be split on */
+bool 
+split_arglist (
+    char **rest,
+    int divider /* character that arglist should be split on */
+)
 {
     int i, j;
 
@@ -841,9 +848,11 @@ char divider; /* character that arglist should be split on */
 }
 
 
-bool split_uncrunched_args(rest,divider)
-char **rest;
-char divider; /* character that arglist should be split on */
+bool 
+split_uncrunched_args (
+    char **rest,
+    int divider /* character that arglist should be split on */
+)
 {
     int i, j;
 
@@ -860,8 +869,8 @@ char divider; /* character that arglist should be split on */
 }
 
 
-void maybe_ok(str)
-char *str;
+void 
+maybe_ok (char *str)
 {
     if (update_top()) {	
 	if (photo!=NULL) lib_puts(photo,str); 
@@ -871,9 +880,12 @@ char *str;
 }
     
 
-void keep_user_amused(thing,iter,max_iter)
-char *thing; /* nullstr(str) means we are done, len<<TOKLEN, like one word */
-int iter, max_iter;
+void 
+keep_user_amused (
+    char *thing, /* nullstr(str) means we are done, len<<TOKLEN, like one word */
+    int iter,
+    int max_iter
+)
 {
     char simple[TOKLEN+1], fancy[TOKLEN+1];
 
@@ -894,7 +906,8 @@ int iter, max_iter;
 
 /**************************** Some Basic Commands ****************************/
 
-command show_cmd_history()
+command 
+show_cmd_history (void)
 {
     int i, num_to_print, first_to_print, printed_any; 
     char *cmd_str;
@@ -915,7 +928,8 @@ command show_cmd_history()
 }
 
 
-command quit()
+command 
+quit (void)
 {
     char token[TOKLEN+1];
 
@@ -939,11 +953,13 @@ command quit()
 }
 
 
-command really_quit()
+command 
+really_quit (void)
 { send(QUIT); }
 
 
-command run_from_file()
+command 
+run_from_file (void)
 {
     char file_name[PATH_LENGTH+1];
 
@@ -956,7 +972,8 @@ command run_from_file()
 }
 
 
-command do_photo()
+command 
+do_photo (void)
 {
     char file_name[TOKLEN+1];
 
@@ -993,9 +1010,12 @@ command do_photo()
 }
 
 
-command set_more()   { maybe_set_bool(&more); }
-command set_wizard() { maybe_set_bool(&wizard_mode); }
-command set_verbose_mem() { maybe_set_bool(&verbose_mem); }
+command 
+set_more (void)   { maybe_set_bool(&more); }
+command 
+set_wizard (void) { maybe_set_bool(&wizard_mode); }
+command 
+set_verbose_mem (void) { maybe_set_bool(&verbose_mem); }
 
 
 #define s_or_space_colon (cmd[i]->num_args==1 ? ": ":"s:")
@@ -1012,7 +1032,8 @@ command set_verbose_mem() { maybe_set_bool(&verbose_mem); }
 "=============================================================================\
 \n"
 
-command help()
+command 
+help (void)
 {
     int j, i, k, n;
     char *name=get_temp_string(), *rest=NULL, *str=get_temp_string(); 
@@ -1147,7 +1168,8 @@ command help()
 }
 
 
-command about()
+command 
+about (void)
 {
     int n;
 	
@@ -1175,9 +1197,11 @@ command about()
 }
 
 
-command review_output() { review_memory(); print("ok\n"); }
+command 
+review_output (void) { review_memory(); print("ok\n"); }
 
-command show_time() 
+command 
+show_time (void) 
 { 
     char *str; 
 
@@ -1187,7 +1211,8 @@ command show_time()
 }
 
 
-command cd_command()
+command 
+cd_command (void)
 {
     char dir_name[PATH_LENGTH+1];
     
@@ -1212,7 +1237,8 @@ command cd_command()
 }
 
 
-command system_command()
+command 
+system_command (void)
 {
     if (!nullstr(args)) { /* run shell command */
 	if (shell_command(args)) {
@@ -1243,7 +1269,8 @@ command system_command()
 #define GIMME_A_COMMENT \
 "Enter your comment. End it with a period ('.') on a line by itself.\n"
 
-command comment()
+command 
+comment (void)
 {
     if (nullstr(args)) {
 	print(GIMME_A_COMMENT);
@@ -1257,7 +1284,8 @@ command comment()
 /********** WIMP (Windows, Icons, Mouse, and Pointers) Support **********/
 
 #ifdef NOT_PUBLIC
-void wimp_start() /* Call from main() */
+void 
+wimp_start (void) /* Call from main() */
 {
 #ifdef HAVE_WIMP
     if (wimp) do_wimp_start(menus,num_menus);
@@ -1265,12 +1293,8 @@ void wimp_start() /* Call from main() */
 }
 
 
-void mkwimp(name,menu_entry,menu_num,wimp_function,status_function,
-	  wimp_help_function,shortcut)
-char *name, *menu_entry;
-int menu_num;
-void (*wimp_function)(), (*status_function)(), (*wimp_help_function)();
-char shortcut;
+void 
+mkwimp (char *name, char *menu_entry, int menu_num, void (*wimp_function)(void), void (*status_function)(void), void (*wimp_help_function)(void), int shortcut)
 {
     int i;
 
@@ -1289,9 +1313,8 @@ char shortcut;
 }
 
 
-void mkmenu(num,title)
-int num;
-char *title;
+void 
+mkmenu (int num, char *title)
 {
     if (num>=MAX_NUM_MENUS) send(CRASH);
     menu[num]->title=mkstrcpy(title);
@@ -1300,8 +1323,8 @@ char *title;
 
 COMMAND the_divider; 
 
-void mkdivider(menu_num)
-int menu_num;
+void 
+mkdivider (int menu_num)
 {
     if (menu_num>=MAX_NUM_MENUS || nullstr(menu[menu_num]->title) ||
 	menu[menu_num]->num_entries>=MAX_MENU_ENTRIES) send(CRASH);
