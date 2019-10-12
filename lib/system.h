@@ -481,20 +481,20 @@ _init routines should come right after the lib_init() call and should
 just initialize variables, malloc things, etc. They should not do
 anything important, and particularly should not generate any I/O. */
 
-void lib_init(); /* no args - assumes line type tty I/O */ 
-
-void lib_inits(); /* args: int *argc_pointer; char *argv[]; both are 
-   side-effected. This is more or less the same as lib_init() except that it 
-   checks the environment and may start up either curses or wimp I/O via 
-   screen_init(); */
-
-void custom_lib_init(); /* no args: This is like lib_init() except
-   that tty_init() is not called. A screen_init() routine must be invoked
-   before ANY I/O is attempted, or else... (see iolib.h) */
-
-void get_cmd_line_args();  /* args: int *argc_ptr; char **argv;
-   side-effects file_arg[] and nulls the args it parses, so another
-   arg sucker can go at it afterwards */
+//void lib_init(); /* no args - assumes line type tty I/O */
+//
+//void lib_inits(); /* args: int *argc_pointer; char *argv[]; both are
+//   side-effected. This is more or less the same as lib_init() except that it
+//   checks the environment and may start up either curses or wimp I/O via
+//   screen_init(); */
+//
+//void custom_lib_init(); /* no args: This is like lib_init() except
+//   that tty_init() is not called. A screen_init() routine must be invoked
+//   before ANY I/O is attempted, or else... (see iolib.h) */
+//
+//void get_cmd_line_args();  /* args: int *argc_ptr; char **argv;
+//   side-effects file_arg[] and nulls the args it parses, so another
+//   arg sucker can go at it afterwards */
 
 #endif
 
