@@ -18,6 +18,8 @@
 #define INC_QTOPLEVEL
 #include "qtl.h"
 
+void allocate_context (STATUS_CONTEXT *con);
+
 #define MAX_CONTEXTS 10
 STATUS_CONTEXT **context;
 int active_context, num_contexts;

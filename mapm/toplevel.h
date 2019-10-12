@@ -105,6 +105,8 @@ void scale_seg_dist(int locus);
 
 void mapm_data_info(FILE *fp);
 
+void try_to_load (FILE *fp, char *name, bool prev_data, bool raw);
+
 //void read_data();    /* args: FILE *fp; char *file_name; */
 //bool data_loaded();  /* no args */
 //char *data_info();   /* args: bool add_numbers_to_info; returns temp_string */
@@ -211,9 +213,12 @@ void print_badseq(void);
 //void print_badseq();	      /* no args */
 
 /* Fun things you can do to compiled sequences... */
-int count_loci();	/* args: SEQ_NODE *seq; count loci in seq */
-bool has_fixed_dists();	/* args: SEQ_NODE *seq; if any fixed_dists in seq */
-bool unpermutable();	/* args: SEQ_NODE *seq; TRUE if seq is unpermutable */
+int count_loci (SEQ_NODE *p);
+//int count_loci();	/* args: SEQ_NODE *seq; count loci in seq */
+bool has_fixed_dists(SEQ_NODE *p);
+//bool has_fixed_dists();	/* args: SEQ_NODE *seq; if any fixed_dists in seq */
+bool unpermutable(SEQ_NODE *p);
+//bool unpermutable();	/* args: SEQ_NODE *seq; TRUE if seq is unpermutable */
 #define permutable(seq) !unpermutable(seq)
 
 /* These two global arrays are ONLY for crunch_locus_list() in main.c */
@@ -225,7 +230,7 @@ extern char **seq_tokens;       /* [MAX_SEQ_TOKENS] */
 extern char *new_seq, *the_seq; /* [MAX_SEQ_LEN] */
 
 /* FIX these should move to sequence.c/toplevel.h - is now unused? */
-void set_seq_from_list();
+//void set_seq_from_list();
 
 
 /**** Below are the real command level interfaces to sequences ****/
@@ -242,7 +247,7 @@ extern char *seq_string;  /* ditto */
 void check_current_seq(); /* for use by mapm_ready */
 void parse_locus_args();  /* args: int **loci, *num_loci; may send error */
 void make_compare_seq();  /* int *locus, num_loci, start_set, set_size; */
-void expand_seq_names();  /* char *str */
+//void expand_seq_names();  /* char *str */
 
 bool alloc_list_of_all_loci(); /* args: SEQ_NODE *seq; int **locus,*num_loci;*/
 /* For convenience, it's like array(,count_loci(),int) then
@@ -327,10 +332,10 @@ side-effected. Otherwise FALSE is returned and *errmsg is
 side-effected. Abbreviated names are handled in the same way that
 is_a_locus() handles them. Token must be despace()ed and filter()ed! */
 
-bool is_a_special_sequence(); /* args: char *token, **str; char **errmsg; */
-/* Like above, and called by is_a_sequence(). The only difference is that 
-   TRUE can be returned with errmsg set (!nullstr()), meaning that the name 
-   WOULD be valid but doesn't happen to be, given MAPM's state. */
+//bool is_a_special_sequence(); /* args: char *token, **str; char **errmsg; */
+///* Like above, and called by is_a_sequence(). The only difference is that
+//   TRUE can be returned with errmsg set (!nullstr()), meaning that the name
+//   WOULD be valid but doesn't happen to be, given MAPM's state. */
 
 void print_special_sequences(); /* no args */
 void print_user_sequences();    /* no args - print user names */
@@ -341,7 +346,8 @@ bool unname_sequence();    /* args: char *name, **errmsg; */
 /* Thes both return TRUE if successful, and otherwise return FALSE and 
    side-effect *errmsg. */
 
-void add_to_seq_history(); /* args: char *seq; */
+void add_to_seq_history (char *seq, bool is_next_entry);
+//void add_to_seq_history(); /* args: char *seq; */
 
 /* bool valid_name(); */
 /* args: char *str; TRUE if str is a valid name token*/
@@ -365,12 +371,12 @@ char *rag();      /* args str; wrap around the above to get ragged result */
 char *locname();  /* int locus; bool print_haplo_mark; RAGGED output */
 
 void print_tiny_map();  /* arg: map; one liner (loci, log-like) */
-void print_short_map(); /* arg: map; three liner (loci, rec_fracs, log-like) */
+//void print_short_map(); /* arg: map; three liner (loci, rec_fracs, log-like) */
 void print_long_map();  /* arg: map; expanded map output */
 void print_special_map();  /* see print.c */
 void print_list();      /* arg: list; prints list */
 void print_trys();
-void print_permsex();
+//void print_permsex();
 
 void print_f2_map_genotypes(); /* prints genotypes w/ X-overs and errors
   args: MAP *map; bool explode_haplos; int num_old; int *old_locus; 

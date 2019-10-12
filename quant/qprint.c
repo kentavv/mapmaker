@@ -23,8 +23,11 @@
 char *interval_str();
 char *trait_str();
 
-void print_test_wiggle_map();      
-void map_printer();
+static char * units_str (  /* Takes 5 spaces, if fill, 2 otherwise */bool fill);
+static char *left_seq_str (QTL_MAP *map);
+void map_printer (QTL_MAP *map, bool print_genetics);
+//void print_test_wiggle_map();
+//void map_printer();
 
 
 /* QTL MAP OUTPUT FORMAT:   STEVE changed! Again!

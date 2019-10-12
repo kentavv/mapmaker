@@ -18,6 +18,8 @@
 #include "qtl.h"
 
 
+void free_data (DATA *data);
+
 /* internal stuff */
 void assign_probs();
 void make_genotype_arrays();

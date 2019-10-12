@@ -83,10 +83,10 @@ typedef struct {
 extern STATUS_CONTEXT **context;
 extern int num_contexts, active_context;
 
-void allocate_context();
+//void allocate_context();
 void context_init();
-bool change_context();
-bool create_new_context();
+//bool change_context();
+//bool create_new_context();
 void kill_context();
 void free_context();
 
@@ -150,7 +150,7 @@ bool next_wiggle(); /* args: QTL_SEQUENCE *seq; int *perm; real *cm_step;
 
 QTL_SEQUENCE *compile_intervals(); /* args: char *str; sends msg on error */
 
-void free_qtl_sequence(); /* args: QTL_SEQUENCE *ints; */
+//void free_qtl_sequence(); /* args: QTL_SEQUENCE *ints; */
 
 bool valid_locus_str();     /* which of these are obsolete? */
 bool valid_interval_num();
@@ -158,7 +158,8 @@ bool valid_locus_num();
 
 bool name_sequence();
 bool unname_sequence();
-void add_to_seq_history();
+void add_to_seq_history (char *seq);
+//void add_to_seq_history();
 void name_peaks();
 #define MAX_HISTORY_SEQS 23
 #define MAX_NAMED_SEQS   44
@@ -409,14 +410,14 @@ void print_saved_maps();
 void print_best_saved_maps();
 
 void print_test_wiggle_title();    /* no args */
-void print_test_wiggle_interval(); /* args: QTL_MAP *map; */
+//void print_test_wiggle_interval(); /* args: QTL_MAP *map; */
 void print_test_wiggle_order();    /* args: int wiggle, order; real thresh;*/
 
 char *genetics_str();  /* args: GENETICS *ptr; bool verbose; */
 char *interval_str();  /* args: int left, right; bool pad; */
-char *left_seq_str();  /* args: QTL_MAP *map; */
+//char *left_seq_str();  /* args: QTL_MAP *map; */
 char *dist_str();      
-char *units_str();
+//char *units_str();
 
 void print_trait();   /* arg: int for_how_many_traits; */
 void print_seq();     /* no args */
@@ -451,8 +452,8 @@ QTL_MAP *save_map();
 QTL_MAP *get_unused_map();
 void free_saved_maps();
 void return_unused_map();
-#define maps_saved(saved_maps) (saved_maps->num_maps)
-#define nth_map(saved_maps,i)  (saved_maps->map[i])
-#define best_map(saved_maps)   (saved_maps->map[0])
+//#define maps_saved(saved_maps) (saved_maps->num_maps)
+//#define nth_map(saved_maps,i)  (saved_maps->map[i])
+//#define best_map(saved_maps)   (saved_maps->map[0])
 
 #endif

@@ -88,7 +88,7 @@ extern DATA *data; /* a global used by make_qtl_map() */
 
 /*** Functions in QDATA.C ***/
 DATA *alloc_data();  /* args: int max_intervals, max_continuous_vars; */
-void free_data();    /* args: DATA *ptr; */
+//void free_data();    /* args: DATA *ptr; */
 
 void prepare_data(); /* args: QTL_MAP *map; DATA *data; in qdata.c */
 /* Prepare_data() uses the trait, left, right and num_intervals elements
@@ -165,7 +165,7 @@ extern RAW raw;
 /*** Functions defined in QRAW.C ***/
 void raw_init();             /* no args */
 void read_data();            /* args FILE *fp; char *path; */
-void read_olddata();         /* same args as read_data     */
+//void read_olddata();         /* same args as read_data     */
 void crunch_data();          /* no args; makes L&R cond_probs in raw struct */
 bool data_loaded();          /* no args; return TRUE if data is loaded */
 real map_length();           /* args: int left_locus, right_locus; */
@@ -210,13 +210,13 @@ extern SAVED_LIST *list;
 #define UNSORTED 0
 #define NONE_UNLINKED -1
 
-void create_status();
+//void create_status();
 SAVED_LIST *allocate_map_list();
 MAP *allocate_map();
-void sort_last();
+//void sort_last();
 void free_map();
 void free_map_list();
-int symbol_value();
+//int symbol_value();
 
 #define PARENTAL_TYPE_A           'A'
 #define PARENTAL_TYPE_B           'B'

@@ -16,9 +16,9 @@
 #include "mapm.h"
 
 /* Auxilliary stuff for load/save/prep */
-FILE *try_to_open();
-void try_to_unload();
-void try_to_load();
+FILE *try_to_open(char *name, int mode, char *ext, bool prev_data) /* return fp or send error */;
+void try_to_unload (FILE *fp, /* file to READ just so we can close it if an error occurs */ bool ask_first, bool do_save, bool do_unload, bool genos_too);
+//void try_to_load (FILE *fp, char *name, bool prev_data, bool raw);
 
 bool is_an_old_sequence();
 bool is_a_named_sequence(char *str, char **seq);  /* internal use only */
@@ -40,11 +40,7 @@ bool is_a_named_sequence(char *str, char **seq);  /* internal use only */
 
 bool just_prepared=FALSE;
 
-FILE *try_to_open(name,mode,ext,prev_data) /* return fp or send error */
-char *name;
-int  mode;
-char *ext;
-bool prev_data;
+FILE *try_to_open(char *name, int mode, char *ext, bool prev_data) /* return fp or send error */
 {
     FILE *fp;
     run {

@@ -102,7 +102,7 @@ real model_prediction(); /* args: QTL_MAP *map; int indiv; */
 QTL_MAP *alloc_qtl_map(); /* args: int n_intervals, n_continuous_vars; */
 void free_qtl_map();
 bool reset_map();
-void really_reset_map();
+//void really_reset_map();
 int  add_interval();
 void mapcpy();
 void make_qtl_map(); /* args: QTL_MAP *map; sets map->trait the runs 

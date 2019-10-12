@@ -21,6 +21,8 @@
 #define INC_QLOWLEVEL
 #include "qtl.h"
 
+void free_qtl_sequence (QTL_SEQUENCE *p);
+
 /***** Global *****/
 QTL_SEQUENCE *ints;
 char *ints_string;
