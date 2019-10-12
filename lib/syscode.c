@@ -32,23 +32,23 @@
 /* Note that time() and ctime() seem to be the only portable time functions.
    However, time() returns different types with different C compilers! */
 
-static TIME_TYPE old_stamp, new_stamp;   /* For local use only! */
+static time_t old_stamp, new_stamp;   /* For local use only! */
 
 real usertime(bool do_reset) /* return time in seconds, or -1.0 if fail */
 {
     real rtime;
-    new_stamp= time((TIME_TYPE *)NULL); rtime= (real)(new_stamp - old_stamp);
+    new_stamp= time(NULL); rtime= (real)(new_stamp - old_stamp);
     if (do_reset) old_stamp= new_stamp;
     return(rtime);
 }
 
 char *time_string(void)    /* return ptr to "" if fail */
-{ 
-    TIME_TYPE the_time;  /* note that asctime() does not always exist */
+{
+    time_t the_time;  /* note that asctime() does not always exist */
     char *str;
     int end;
 
-    the_time=time((TIME_TYPE *)NULL); 
+    the_time=time(NULL);
     str=ctime(&the_time); 
     if (str==NULL) return(ptr_to(""));
     end=len(str)-1;

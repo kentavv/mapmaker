@@ -268,7 +268,7 @@ Check out their usage (arguments, etc) in syscode.c to be safe!
 #define normal_exit()     exit(0)
 #define abnormal_exit()   exit(1)	
 #define exit_main()       return(0)
-#define TIME_TYPE 	  time_t /* for ctime - yes even on SunOS! */
+//#define TIME_TYPE 	  time_t /* for ctime - yes even on SunOS! */
 //#define QSORT_CAST(x)      ((QSORT_DATA_PTR_TO*)(x))
 //#define QSORT_COMPARE_PTR_TO(type) type
 
@@ -289,13 +289,13 @@ Check out their usage (arguments, etc) in syscode.c to be safe!
 //#endif
 
 //#ifdef _SYS_SUNOS     /* semi-ANSI is neither better nor worse */
-#define CALLOC_PTR_TO      void   /* the man pages lie? */
-#define CALLOC_NUM_TYPE	   size_t
-#define SIZEOF_TYPE	   size_t
+//#define CALLOC_PTR_TO      void   /* the man pages lie? */
+//#define CALLOC_NUM_TYPE	   size_t
+//#define SIZEOF_TYPE	   size_t
 //#define QSORT_DATA_PTR_TO  char
 //#define QSORT_LENGTH       int   /* actually width is an int, not a unsigned */
-int system(); /* why is this in no include file */
-int fseek();  /* ditto */
+//int system(); /* why is this in no include file */
+//int fseek();  /* ditto */
 ///* Fucking Suns: exit() is really of type int, but it's void in the lint-lib */
 //#endif
 
