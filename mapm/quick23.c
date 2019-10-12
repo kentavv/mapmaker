@@ -267,8 +267,8 @@ LOCUS locus;
 }
 
 
-int lookup(c)
-char c;
+int 
+lookup (int c)
 /*************************************************************\
 * 		Convert a character to it's index in the      *
 * 	symbol[] array.  If it doesn't appear in symbol[],    *
@@ -286,8 +286,8 @@ char c;
 }
 
 
-int changes(i,j)
-int i,j;
+int 
+changes (int i, int j)
 {
     static int ch[4][4], first;
     

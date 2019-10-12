@@ -472,9 +472,8 @@ sequence #123: blah blah blah
 #define LINE1 "units: %-9s using: %-24s photo: %-22s"
 #define LINE2 "sequence #%d: %-64s"
 
-void mapm_top(line,lines,cols)
-char **line;
-int lines,cols;
+void 
+mapm_top (char **line, int lines, int cols)
 {
     char file[PATH_LENGTH+1];
 
@@ -492,7 +491,8 @@ int lines,cols;
 #endif
 
 
-void setup_commands()
+void 
+setup_commands (void)
 {
     two_pt_touched = FALSE;
     three_pt_touched = FALSE;

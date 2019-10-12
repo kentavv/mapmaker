@@ -62,11 +62,14 @@ char *BADTRAIT_errmsg;
 void ps_MATINV();
 void ps_BADDATA();
 
-void ps_MATINV()  { sprintf(ps, "diff= %lf", MATINV_diff); }
-void ps_BADDATA() { sprintf(ps, "line=\"%s\"\nerror=%s",
+void
+ps_MATINV (char *a)  { sprintf(ps, "diff= %lf", MATINV_diff); }
+void 
+ps_BADDATA (char *a) { sprintf(ps, "line=\"%s\"\nerror=%s",
                             truncstr(BADDATA_ln,60), truncstr(BADDATA_error,70)); }
 
-void top_init()
+void 
+top_init (void)
 { 
   BADDATA_ln= BADDATA_error= NULL; 
   MATINV_diff= 0.0; NOPARSE_err= 0;
@@ -159,9 +162,8 @@ sequence #123: blah blah blah
 #define LINE1 "trait: %-15s units: %-11s     photo: %s"
 #define LINE2 "sequence #%d: %-64s"
 
-void qtl_top(line,lines,cols)
-char **line;
-int lines, cols;
+void 
+qtl_top (char **line, int lines, int cols)
 {
     char tr[16], file[PATH_LENGTH+1];
 
@@ -185,8 +187,8 @@ int lines, cols;
 
 /********** QTL_MAP handling routines **********/
 
-QTL_MAP *alloc_qtl_map(num_intervals,num_cont_vars)
-int num_intervals, num_cont_vars;
+QTL_MAP *
+alloc_qtl_map (int num_intervals, int num_cont_vars)
 {
     QTL_MAP *map=NULL;
         
@@ -224,8 +226,8 @@ int num_intervals, num_cont_vars;
 }
 
 
-void free_qtl_map(map)
-QTL_MAP *map;
+void 
+free_qtl_map (QTL_MAP *map)
 {
     if (map==NULL) return;
 
@@ -310,8 +312,11 @@ int add_continuous_var(QTL_MAP *map, int trait, real fix_weight)
 
 
 /* This is (I think) as yet unused, and hence, really untested */
-void mapcpy(to,from)   /* strcpy()-ish backasswards notation */
-QTL_MAP *to, *from;
+void 
+mapcpy (   /* strcpy()-ish backasswards notation */
+    QTL_MAP *to,
+    QTL_MAP *from
+)
 {
     int i;
 	
@@ -352,8 +357,8 @@ QTL_MAP *to, *from;
 }
 
 
-void copy_genetics(to,from)
-GENETICS *to, *from;
+void 
+copy_genetics (GENETICS *to, GENETICS *from)
 {
     to->backx_weight= from->backx_weight;
     to->interx_type=  from->interx_type;
@@ -409,8 +414,8 @@ real threshold;
 }
 	
 
-void free_saved_maps(p)
-SAVE_QTL_MAPS *p;
+void 
+free_saved_maps (SAVE_QTL_MAPS *p)
 {
 	int i;
 	
@@ -425,9 +430,8 @@ SAVE_QTL_MAPS *p;
 }
 
 
-QTL_MAP *save_map(map_to_save, the_maps)
-QTL_MAP *map_to_save;
-SAVE_QTL_MAPS *the_maps;
+QTL_MAP *
+save_map (QTL_MAP *map_to_save, SAVE_QTL_MAPS *the_maps)
 {
 	int i;
 	QTL_MAP *prev, *temp;
@@ -461,8 +465,8 @@ SAVE_QTL_MAPS *the_maps;
 }
 
 
-QTL_MAP *get_unused_map(the_maps)
-SAVE_QTL_MAPS *the_maps;
+QTL_MAP *
+get_unused_map (SAVE_QTL_MAPS *the_maps)
 {
 	if (the_maps->unused_checked_out) send(CRASH);
 	the_maps->unused_checked_out= TRUE;
@@ -470,9 +474,8 @@ SAVE_QTL_MAPS *the_maps;
 }
 
 
-void return_unused_map(map_to_return, the_maps)
-QTL_MAP *map_to_return;
-SAVE_QTL_MAPS *the_maps;
+void 
+return_unused_map (QTL_MAP *map_to_return, SAVE_QTL_MAPS *the_maps)
 {
   	if (!the_maps->unused_checked_out || 
 	    map_to_return != the_maps->unused) send(CRASH);
@@ -798,8 +801,8 @@ bool isa_seq_name(char *str, int *num /* the #matched if FALSE - undefined if tr
 
 /* Upper level */
 
-void set_trait_spec(str)
-char *str;
+void 
+set_trait_spec (char *str)
 {
     int trait_num;
 
@@ -812,8 +815,8 @@ char *str;
 }
 
 
-void make_qtl_map(map)
-QTL_MAP *map;
+void 
+make_qtl_map (QTL_MAP *map)
 {
     map->trait = trait;
     /* map_data is a global we keep handy just for this! */

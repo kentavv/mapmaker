@@ -34,7 +34,8 @@ QTL_MAP *load_qtl_map();
 
 /* functions */
 
-void wiggle_init()
+void 
+wiggle_init (void)
 {
     /* qtls=NULL; */
     wiggles=NULL;
@@ -46,8 +47,11 @@ void wiggle_init()
 
 
 
-void allocate_qtl_struct(n_wiggles,n_compares) /* allocate globals */
-int n_wiggles, n_compares;
+void 
+allocate_qtl_struct ( /* allocate globals */
+    int n_wiggles,
+    int n_compares
+)
 /* use globals raw.max_traits, raw.data_type, and raw.n_loci as params */
 {
     int i;
@@ -90,11 +94,8 @@ int n_wiggles, n_compares;
 
 /***** Stuff for the wiggle struct to save wiggle output... *****/
 
-int allocate_wiggle_struct(trait,seq,seq_str,n_intervals,n_orders,n_wiggled)
-int trait;
-QTL_SEQUENCE *seq;
-char *seq_str;
-int n_intervals, n_orders, n_wiggled;
+int 
+allocate_wiggle_struct (int trait, QTL_SEQUENCE *seq, char *seq_str, int n_intervals, int n_orders, int n_wiggled)
 /* return wiggles struct entry#, or -1 if error */
 {
     int n, i, j;
@@ -144,9 +145,11 @@ int n_intervals, n_orders, n_wiggled;
 }
 
 
-void bash_wiggle_struct(n) 
+void 
+bash_wiggle_struct ( 
 /* this is a KLUDGE for now - we need to recycle these better */
-int n;
+    int n
+)
 {
     unmatrix(wiggles[n]->data,wiggles[n]->num_orders,WIGGLE_INTERVAL);
     unarray(wiggles[n]->seq_string,char);
@@ -160,12 +163,7 @@ int n;
 } 
 
 
-void store_wiggle_interval(wiggle_num,map,new_left_order,contig,cm_step)
-int wiggle_num;
-QTL_MAP *map;
-bool new_left_order;
-bool contig;
-real cm_step;
+void store_wiggle_interval(int wiggle_num, QTL_MAP *map, bool new_left_order, bool contig, real cm_step)
 {
     WIGGLE_OPERATION *op;
     WIGGLE_INTERVAL *data, *prev;
@@ -261,9 +259,8 @@ real cm_step;
 }
 
 
-void store_wiggle_point(wiggle_num,map)
-int wiggle_num;
-QTL_MAP *map;
+void 
+store_wiggle_point (int wiggle_num, QTL_MAP *map)
 {
     WIGGLE_OPERATION *op=NULL;
     WIGGLE_INTERVAL *data;
@@ -299,11 +296,8 @@ QTL_MAP *map;
 
 /***** Stuff for the COMPARE struct to save compare output... *****/
 
-int allocate_compare_struct(trait,seq,seq_str,n_intervals,n_orders)
-int trait;
-QTL_SEQUENCE *seq;
-char *seq_str;
-int n_intervals, n_orders;
+int 
+allocate_compare_struct (int trait, QTL_SEQUENCE *seq, char *seq_str, int n_intervals, int n_orders)
 /* return compare struct entry#, or -1 if error */
 {
     int n;
@@ -339,9 +333,11 @@ int n_intervals, n_orders;
 }	
 
 
-void bash_compare_struct(n) 
+void 
+bash_compare_struct ( 
 /* this is a KLUDGE for now - we need to recycle these better */
-int n;
+    int n
+)
 {
     free_qtl_map(compares[n]->data[0]->map);
     compares[n]->data[0]->map=NULL; 
@@ -356,10 +352,7 @@ int n;
 } 
 
 
-void store_compare_map(compare_num,map,contig)
-int compare_num;
-QTL_MAP *map;
-bool contig;
+void store_compare_map(int compare_num, QTL_MAP *map, bool contig)
 {
     COMPARE_OPERATION *op;
     COMPARE_DATA *data;
@@ -425,12 +418,7 @@ bool contig;
 
 
 
-bool step(interval,point,contig,wig,n_intervals,forwards)
-int *interval, *point;
-bool *contig;
-WIGGLE_INTERVAL **wig;
-int n_intervals;
-bool forwards;
+bool step(int *interval, int * point, bool *contig, WIGGLE_INTERVAL **wig, int n_intervals, bool forwards)
 {
     if (*interval >= n_intervals) return(FALSE);
     if (forwards) {
@@ -456,11 +444,8 @@ bool forwards;
 }
 
 
-WIGGLE_PEAK *find_wiggle_peaks(wiggle_num,left_order_num,threshold,qtl_falloff,
-			       confidence_falloff,min_peak_delta,get_peak_maps)
-int wiggle_num, left_order_num;
-real threshold, qtl_falloff, confidence_falloff, min_peak_delta;
-bool get_peak_maps;
+WIGGLE_PEAK *find_wiggle_peaks(int wiggle_num, int left_order_num, real threshold, real qtl_falloff,
+			       real confidence_falloff, real min_peak_delta, bool get_peak_maps)
 {
     int i, j, peak_i, peak_j, n_intervals;
     bool still_falling=FALSE, off_end, contig;
@@ -523,14 +508,8 @@ bool get_peak_maps;
 }			
 
 
-WIGGLE_PEAK *peak_finder(interval,point,off_end,get_peak_maps,wig,n_intervals,
-			 threshold,falloff)
-int *interval, *point;
-bool *off_end;
-bool get_peak_maps; /* if TRUE, fill in peak->map MAY REQUIRE CALCULATION! */
-WIGGLE_INTERVAL **wig;
-int n_intervals;
-real threshold, falloff;
+WIGGLE_PEAK *peak_finder(int *interval, int * point, bool *off_end, bool get_peak_maps /* if TRUE, fill in peak->map MAY REQUIRE CALCULATION! */, WIGGLE_INTERVAL **wig, int n_intervals,
+			 real threshold, real falloff)
 {
     /* i's are intervals and j's are points */
     int peak_i, peak_j, left_i, left_j, right_i, right_j, i, j, k;
@@ -616,8 +595,8 @@ real threshold, falloff;
 }
 			     
 
-void free_wiggle_peaks(p)
-WIGGLE_PEAK *p;
+void 
+free_wiggle_peaks (WIGGLE_PEAK *p)
 {
     if (p==NULL) return;
     free_wiggle_peaks(p->next);
@@ -626,8 +605,7 @@ WIGGLE_PEAK *p;
 }
 
 
-bool isa_test_wiggle(wiggle_num)
-int wiggle_num;
+bool isa_test_wiggle(int wiggle_num)
 {
     QTL_SEQUENCE *p;
     
@@ -647,9 +625,8 @@ int wiggle_num;
 #define ORDER_NUM \
 "%d.%d is not a valid number for a saved scan result.\nUse a number from %d.1-%d.%d.\n"
 
-void get_wiggle_nums(str,wiggle,order)
-char *str;
-int *wiggle, *order;
+void 
+get_wiggle_nums (char *str, int *wiggle, int *order)
 {
     bool order_set;
     int i;
@@ -694,9 +671,8 @@ int *wiggle, *order;
 "%d.%d is not a valid number for a saved compare result.\nUse a number from %d.1-%d.%d.\n"
 
 
-void get_compare_nums(str,compare,contig)
-char *str;
-int *compare,*contig;
+void 
+get_compare_nums (char *str, int *compare, int *contig)
 {
     int i;
     bool contig_set;
@@ -753,9 +729,7 @@ int n;
 }
 
 
-void save_interval(fp,interval)
-FILE *fp;
-WIGGLE_INTERVAL *interval;
+void save_interval(FILE *fp, WIGGLE_INTERVAL *interval)
 {
     int i;
 
@@ -778,9 +752,7 @@ WIGGLE_INTERVAL *interval;
 }
 
 
-void save_qtl_map(fp,map)
-FILE *fp;
-QTL_MAP *map;
+void save_qtl_map(FILE *fp, QTL_MAP *map)
 {
     int i;
 
@@ -814,8 +786,7 @@ QTL_MAP *map;
 }
 
 
-void load_wiggle(fp)
-FILE *fp;
+void load_wiggle(FILE *fp)
 {
     int trait,i,j,n;
     int n_orders,n_ints,n_wiggled,foo;
@@ -843,9 +814,7 @@ FILE *fp;
 }
 
 
-void load_interval(fp,interval)
-FILE *fp;
-WIGGLE_INTERVAL *interval;
+void load_interval(FILE *fp, WIGGLE_INTERVAL *interval)
 {
     int num_points,i,matched,i1,i2,i3,i4;
     real pos,weight,dom,lod,var_exp,inc;
@@ -888,8 +857,7 @@ WIGGLE_INTERVAL *interval;
 }
 
 
-QTL_MAP *load_qtl_map(fp)
-FILE *fp;
+QTL_MAP *load_qtl_map(FILE *fp)
 {
     int i1,i2,i3,i4,i5, i;
     real r1,r2,r3,r4,r5,r6,r7,r8,r9,r10;
@@ -944,9 +912,7 @@ FILE *fp;
 }
 
 
-void save_compare(fp,n)
-FILE *fp;
-int n;
+void save_compare(FILE *fp,int n)
 {
     int i;
 
@@ -966,8 +932,7 @@ int n;
 }
 
 
-void load_compare(fp)
-FILE *fp;
+void load_compare(FILE *fp)
 {
     int trait,i,contig,n;
     int n_orders,n_ints,n_wiggled,foo;
@@ -992,7 +957,3 @@ FILE *fp;
 	}
     }
 }
-
-
-
-

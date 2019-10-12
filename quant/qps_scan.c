@@ -283,7 +283,8 @@ char *line_type;
 }
 
 
-void draw_x(/*FILE *fp*/)
+void 
+draw_x (void)
 {
 #ifdef DRAWX
     fprintf(fp,"GS -3 -3 rlineto stroke GR\n");
@@ -517,8 +518,8 @@ real threshold;
     unmatrix(label, MAX_CHROM_LOC, char);
 }
 
-char *line_choice(order)
-int order;
+char *
+line_choice (int order)
 {
     switch(order) {
         case 0: return(THICK_LINE);

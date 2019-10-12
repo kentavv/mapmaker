@@ -1,3 +1,6 @@
+#ifndef _QTOP_H_
+#define _QTOP_H_
+
 /******************************************************************************
 
   ####    #####   ####   #####           #    #
@@ -452,3 +455,4 @@ void return_unused_map();
 #define nth_map(saved_maps,i)  (saved_maps->map[i])
 #define best_map(saved_maps)   (saved_maps->map[0])
 
+#endif

@@ -30,14 +30,16 @@ int cum_not[ESTEPS], cum_err[ESTEPS];
 real ratio[ESTEPS];
 
 
-void npt_cmds_init()
+void 
+npt_cmds_init (void)
 { 
     int i;
     for (i=0; i<ESTEPS; i++) errs[i]=noterrs[i]=0;
 }
 
 
-command make_map()
+command 
+make_map (void)
 {
     MAP *map;
     int num_loci;
@@ -62,7 +64,8 @@ command make_map()
 }
 
 
-command draw_map()
+command 
+draw_map (void)
 {
     MAP *map;
     int num_loci;
@@ -105,7 +108,8 @@ command draw_map()
 }
 
 
-command genotypes()
+command 
+genotypes (void)
 {
     MAP *map;
     int num_loci;
@@ -137,7 +141,8 @@ command genotypes()
 #define BEST_ORDER  "\nBest order"
 #define N_EXCLUDED  " (%d excluded by three-point analysis)"
 
-command compare()
+command 
+compare (void)
 {
     SAVED_LIST *list=NULL;
     MAP *map;
@@ -210,7 +215,8 @@ command compare()
 }
 
 
-command ripple()
+command 
+ripple (void)
 {
     MAP *map0=NULL, *map;
     SAVED_LIST *list;
@@ -296,7 +302,8 @@ command ripple()
 #define TRY_TOO_MANY "too many loci to try"
 #define MAX_PAIRED 20
 
-command try()
+command 
+try (void)
 {
     SAVED_LIST **list=NULL;
     MAP *map=NULL;
@@ -532,7 +539,8 @@ int *count;
 #define LINK_CRITERIA \
  "Linkage Groups at min LOD %.2lf, max Distance %s\n"
 
-command order_maker()
+command 
+order_maker (void)
 {
     int *loci=NULL, num_loci, *linkage_group=NULL, num_unlinked, group_size;
     int *subset=NULL, **seed_temp=NULL, subset_size, groups_done;
@@ -727,7 +735,8 @@ command order_maker()
 }
 
 
-command greedy()
+command 
+greedy (void)
 {
     int *locus=NULL, num_loci=0, num_order=0, *all_loci=NULL, total;
     int i=0, prev=0, num=0, num_unplaced=0;

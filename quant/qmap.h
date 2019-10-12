@@ -1,3 +1,6 @@
+#ifndef _QMAP_H_
+#define _QMAP_H_
+
 /******************************************************************************
 
   ####   #    #    ##    #####           #    #
@@ -121,5 +124,4 @@ bool constrained(); /* args: GENETICS *genetics; */
 #define VERY_UNLIKELY	-1e30
 /* #define NO_TRAIT	-1 */
 
-
-
+#endif

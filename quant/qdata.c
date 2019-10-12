@@ -27,10 +27,11 @@ bool valid_trait_num();
 
 /********* FUNCTIONS TO DEAL WITH THE DATA AND MAP STRUCTS FOR QCTM *********/
 	
-void data_init() {}
+void 
+data_init (void) {}
 
-DATA *alloc_data(num_intervals,num_cont_vars)
-int num_intervals, num_cont_vars;
+DATA *
+alloc_data (int num_intervals, int num_cont_vars)
 {
     DATA *data;
     
@@ -58,8 +59,8 @@ int num_intervals, num_cont_vars;
 }
 
 
-void free_data(data)
-DATA *data;
+void 
+free_data (DATA *data)
 {
     if (data==NULL) return;
     unmatrix(data->genotype_prob, data->max_individuals,
@@ -80,9 +81,11 @@ DATA *data;
 }
 
  
-void prepare_data(map,data)
-QTL_MAP *map;
-DATA *data;		/* side-effected */
+void 
+prepare_data (
+    QTL_MAP *map,
+    DATA *data		/* side-effected */
+)
 {
     int i, j, k, indiv;
     bool missing;
@@ -134,11 +137,15 @@ DATA *data;		/* side-effected */
 }
 
 
-void assign_probs(data,raw_i,data_i,interval,left,right)
-DATA *data;        /* Needs data->interval_len[interval] */
-int raw_i, data_i; /* The individual's numbers in the data and raw structs */
-int interval;      /* The interval number */
-int left, right;   /* The left and right locus numbers */
+void 
+assign_probs (
+    DATA *data,        /* Needs data->interval_len[interval] */
+    int raw_i,
+    int data_i, /* The individual's numbers in the data and raw structs */
+    int interval,      /* The interval number */
+    int left,
+    int right   /* The left and right locus numbers */
+)
 {
     int geno, num;
 
@@ -154,9 +161,11 @@ int left, right;   /* The left and right locus numbers */
 }
 
 	
-void initial_qctm_values(data, map) 
-DATA *data;
-QTL_MAP *map; 	/* side-effected */
+void 
+initial_qctm_values (
+    DATA *data,
+    QTL_MAP *map 	/* side-effected */
+)
 /* map->fix_pos, fix_weight, fix_dominance, trait, left, and right must be 
    set, and prepare_data() must have been run on data */
 {
@@ -232,7 +241,8 @@ QTL_MAP *map; 	/* side-effected */
 
 /*************************** Setup stuff for QCTM ***************************/
 
-void alloc_qctm_globals()
+void 
+alloc_qctm_globals (void)
 {
     int j;
     
@@ -277,8 +287,8 @@ for (j=0; j<max_genotype_vars+1; j++) null_qtl_weight[j]= 0.0;
 
 #define RIGHT_BIT_SET(geno_vector) ((int)(geno_vector & (GENOTYPE)1))
 
-void make_genotype_arrays(data_type,num_intervals)
-int data_type,num_intervals;
+void 
+make_genotype_arrays (int data_type, int num_intervals)
 {
     int i, j, this_genotype, N;
     GENOTYPE geno;
@@ -323,7 +333,8 @@ int data_type,num_intervals;
 }
 
 
-void free_qctm_globals() {}  /* KLUDGE: CURRENTLY A NOP */
+void 
+free_qctm_globals (void) {}  /* KLUDGE: CURRENTLY A NOP */
 bool qctm_globals_avail()  { return(null_qtl_weight!=((real*)NULL)); }
 
 

@@ -29,8 +29,8 @@ MAP_FUNCTION maps[2];
 int num_map_functions;
 
 
-MAP *allocate_map(maxloci)
-int maxloci;
+MAP *
+allocate_map (int maxloci)
 {
     MAP *map;
     run {
@@ -60,8 +60,8 @@ int maxloci;
 }
 
 
-void allocate_error_matrix(map)
-MAP *map;
+void 
+allocate_error_matrix (MAP *map)
 {
     if (map->error_rate!=NULL) return;
     run {
@@ -75,8 +75,8 @@ MAP *map;
 }
 
 
-void free_map(map)
-MAP *map;
+void 
+free_map (MAP *map)
 {
     if(map == NULL) return;
     unarray(map->fix_interval, int);
@@ -157,13 +157,13 @@ bool sex, errors, start; /* deal with start */
 }
 
 
-void init_rec_fracs(map)
-MAP *map;
+void 
+init_rec_fracs (MAP *map)
 { init_for_ctm(map,sex_specific,use_error_rate,TRUE); }
 
 
-void init_not_fixed(map)
-MAP *map;
+void 
+init_not_fixed (MAP *map)
 { 
     int i;
     for (i=0; i<map->num_loci-1; i++)
@@ -215,9 +215,12 @@ bool clean_it;
 }
 
 
-int insert_locus(map,position,locus)    /* Returns TRUE if successful */
-MAP *map;
-int position, locus;
+int 
+insert_locus (    /* Returns TRUE if successful */
+    MAP *map,
+    int position,
+    int locus
+)
 {
     int i;
 
@@ -273,16 +276,16 @@ MAP **map;
 }
 
 
-MAP *get_map_to_bash(list)
-SAVED_LIST *list;
+MAP *
+get_map_to_bash (SAVED_LIST *list)
 { 
     clean_map(list->extra_map); 
     return(list->extra_map); 
 }
 
 
-void free_map_list(list)
-SAVED_LIST *list;
+void 
+free_map_list (SAVED_LIST *list)
 {
     int i;
     if(list == NULL) return;
@@ -296,8 +299,8 @@ SAVED_LIST *list;
 }
 
 
-void clean_list(list)
-SAVED_LIST *list;
+void 
+clean_list (SAVED_LIST *list)
 {
     int i;
 
@@ -309,8 +312,8 @@ SAVED_LIST *list;
 }
 
 
-MAP *get_best_map(list)
-SAVED_LIST *list;
+MAP *
+get_best_map (SAVED_LIST *list)
 {
     int i;
     real best;
@@ -325,9 +328,8 @@ SAVED_LIST *list;
     return(map);
 }
        
-int insert_map_into_list(list,map)
-SAVED_LIST *list;
-MAP **map;
+int 
+insert_map_into_list (SAVED_LIST *list, MAP **map)
 {
     int val; 
 
@@ -340,10 +342,8 @@ MAP **map;
     return(val);
 }
 
-void overwrite_map_num(list,map,chrom)
-SAVED_LIST *list;
-MAP **map;
-int chrom;
+void 
+overwrite_map_num (SAVED_LIST *list, MAP **map, int chrom)
 {
     MAP *tempmap;
     
@@ -356,8 +356,8 @@ int chrom;
 }
 
 
-int insert_sorted_map(list)
-SAVED_LIST *list;
+int 
+insert_sorted_map (SAVED_LIST *list)
 {
     int nmaps;
     MAP *tempmap;
@@ -394,8 +394,10 @@ SAVED_LIST *list;
 }
 
 
-void sort_last(list)   /* Sorts last entry in the list */
-SAVED_LIST *list;
+void 
+sort_last (   /* Sorts last entry in the list */
+    SAVED_LIST *list
+)
 {
     int i;
     MAP *movable,*tempmap;
@@ -414,8 +416,8 @@ SAVED_LIST *list;
 }
 
 
-int insert_unsorted_map(list)
-SAVED_LIST *list;
+int 
+insert_unsorted_map (SAVED_LIST *list)
 {
     MAP *tempmap;
 
@@ -552,12 +554,13 @@ real dist;
 }
 
 
-void map_func(mapnum)
-int mapnum;
+void 
+map_func (int mapnum)
 { mapfunction= &maps[mapnum]; }
 
 
-void map_init()
+void 
+map_init (void)
 {
     strcpy(maps[HALDANE].name,"Haldane");
     maps[HALDANE].add= poisson_add;

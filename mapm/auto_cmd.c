@@ -29,7 +29,8 @@ void maybe_print_together();
 
 #define CANT_MAKE "warning: can't make chromosome '%s'... %s\n"
 
-command make_chromosome()
+command 
+make_chromosome (void)
 {
     char name[TOKLEN+1];
     int i, num;
@@ -54,7 +55,8 @@ command make_chromosome()
 }
 
 
-command set_anchors()
+command 
+set_anchors (void)
 {
     int i, *locus=NULL, num_loci, chrom;
 
@@ -93,7 +95,8 @@ command set_anchors()
 #define CHROM_FRAME "%s framework:\n"
 #define CHROM_MARKS "%s Markers:\n"
 
-command set_framework()
+command 
+set_framework (void)
 {
     MAP *map, *old;
     char title[TOKLEN+1];
@@ -139,7 +142,8 @@ command set_framework()
 #define CHROMS_FORMAT \
 "   %-8s    %4d    %4d     %4d      %4d     %4d     %4d\n"
 
-command list_chroms()
+command 
+list_chroms (void)
 {
     int frame, total, anchor, placed, unique, region, i, *loci=NULL;
     int sum_frame, sum_total, sum_anchor, sum_placed, sum_unique, sum_region;
@@ -166,7 +170,8 @@ command list_chroms()
 }
 
 
-command list_assignments()
+command 
+list_assignments (void)
 {
     int chrom, i;
     
@@ -189,7 +194,8 @@ command list_assignments()
 }
 
 
-command list_mapping()
+command 
+list_mapping (void)
 {
     int source, num_loci, *locus=NULL;
 
@@ -214,7 +220,8 @@ command list_mapping()
 }
 
 
-command assign()
+command 
+assign (void)
 {
     int i, n_loci, *locus=NULL;
     real theta, lod, min_lod, unlinked_lod;
@@ -246,7 +253,8 @@ command assign()
 }
 
 
-command attach()
+command 
+attach (void)
 {
     int i, chrom, n_loci, *locus=NULL;
 
@@ -276,7 +284,8 @@ command attach()
 }
 
 
-command unassign()
+command 
+unassign (void)
 {
     int n_loci, i, *locus=NULL;
 
@@ -304,7 +313,8 @@ command unassign()
 #define PLACE_NONE    "unable to place any markers in the sequence"
 #define NONE_OK "no orders allowed by three-point analysis, not placed\n"
 #define NPT_WINDOW 5
-command place()
+command 
+place (void)
 {
     int  chrom, i, left, right;
     int  *locus=NULL, n_loci, *chrom_locus=NULL, n_to_place, n_allowed;
@@ -432,7 +442,8 @@ command place()
 }
 
 
-command show_chrom()
+command 
+show_chrom (void)
 {
     int chrom;
     int *marker=NULL, num_markers, **placement_state=NULL;
@@ -476,7 +487,8 @@ command show_chrom()
 #define PLACE_AT \
 "Placing markers at log-likelihood threshold %.1lf:\n"
 
-command place_together()
+command 
+place_together (void)
 {
     int  chrom, i;
     int  *locus=NULL, n_loci, *chrom_locus=NULL, n_to_place;
@@ -596,7 +608,8 @@ command place_together()
 }
 
 
-command draw_chromosome()
+command 
+draw_chromosome (void)
 {
     int chrom;
     char name[PATH_LENGTH+1];
@@ -626,7 +639,8 @@ command draw_chromosome()
 }
 
 
-command draw_all_chromosomes()
+command 
+draw_all_chromosomes (void)
 {
     char name[PATH_LENGTH+1];
     FILE *fp=NULL;

@@ -112,8 +112,8 @@ void hmm_fake_converge_to_map();
 
 /**** External Routines, mostly ****/
 
-void allocate_hmm_temps(total_loci,num_indivs,cross_type)
-int total_loci, num_indivs, cross_type;
+void 
+allocate_hmm_temps (int total_loci, int num_indivs, int cross_type)
 {
     int i, num_states=0, num_observations=0, num_loci, num_intervals;
     bool special_recs_hack;
@@ -182,8 +182,8 @@ int total_loci, num_indivs, cross_type;
 }
 
 
-void free_hmm_temps(total_loci,num_indivs,cross_type)
-int total_loci, num_indivs, cross_type;
+void 
+free_hmm_temps (int total_loci, int num_indivs, int cross_type)
 {
     int i, num_states=0, num_observations=0, num_loci, num_intervals;
     bool special_recs_hack;
@@ -247,8 +247,8 @@ int total_loci, num_indivs, cross_type;
 }
 
 
-void converge_to_map(map)
-MAP *map;
+void 
+converge_to_map (MAP *map)
 {
     if (map==NULL || map->num_loci<2 || raw.data_type!=F2) send(CRASH);
     if (map->num_loci>MAX_MAP_LOCI) 
@@ -315,9 +315,12 @@ int *observation, *new_observation; /* array of raw.num_indivs observations */
 }
 
 
-int f2_count_infs(num_dom,num_het,observation) /* return #inf */
-int *num_dom, *num_het; /* side-effected */
-int *observation; /* array of raw.num_indivs observations */
+int 
+f2_count_infs ( /* return #inf */
+    int *num_dom,
+    int *num_het, /* side-effected */
+    int *observation /* array of raw.num_indivs observations */
+)
 {
     int homo, het, dom, missing, j;
 
@@ -338,8 +341,8 @@ int *observation; /* array of raw.num_indivs observations */
 
 /**** The real Mapmaker itself ****/
 
-void hmm_converge_to_map(map)
-MAP *map;
+void 
+hmm_converge_to_map (MAP *map)
 {
     int iter;
     int testing, one;
@@ -390,8 +393,8 @@ if (testing) { /********** MORE DEBUGGING CODE **********/
 }
 
 
-void setup_hmm(map)
-MAP *map;
+void 
+setup_hmm (MAP *map)
 {
     int type;
 
@@ -411,10 +414,12 @@ MAP *map;
 }
     
 
-void setup_bc_like_hmm(locus,error_rate,cross_type)
-int *locus; /* The locus numbers in order */
-double *error_rate; 
-int cross_type;
+void 
+setup_bc_like_hmm (
+    int *locus, /* The locus numbers in order */
+    double *error_rate,
+    int cross_type
+)
 {
     int i, j, k, obs;
     real **recs, **norecs, error_prob;
@@ -481,9 +486,11 @@ int cross_type;
 }
 
 
-void setup_f2_hmm(locus,error_rate)
-int *locus; /* The locus numbers in order */
-double *error_rate; 
+void 
+setup_f2_hmm (
+    int *locus, /* The locus numbers in order */
+    double *error_rate
+) 
 {
     int i, j, k, obs;
     real total, **recs, **norecs, error_prob;
@@ -602,8 +609,10 @@ double *error_rate;
 }
 
 
-void setup_f3_self_hmm(locus)
-int *locus; /* The locus numbers in the sequence */
+void 
+setup_f3_self_hmm (
+    int *locus /* The locus numbers in the sequence */
+)
 {
     int i, j, k, the_obs;
     real recs;
@@ -718,9 +727,14 @@ if (observation[j][i]==OBS_H && observation[j][i+1]==OBS_H) hh++;
 }
 
 
-int f3_state(name,f2,mat,pat,obs)
-char *name; /* for debugging */
-int f2, mat, pat, obs;
+int 
+f3_state (
+    char *name, /* for debugging */
+    int f2,
+    int mat,
+    int pat,
+    int obs
+)
 {
     int i,j;
     i= f3_states++; /* assign f3 state number, f3_states is a global */
@@ -1218,8 +1232,8 @@ void quick_two_pt(int locus0, int locus1, TWO_PT_DATA *two_pt, bool sex /* do bo
 
 
 
-void hmm_fake_converge_to_map(map)
-MAP *map;
+void 
+hmm_fake_converge_to_map (MAP *map)
 {
     int i, j;
 

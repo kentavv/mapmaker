@@ -83,7 +83,8 @@ bool epistasis_kludge;
 
 /****************************** PRELIMINARIES ******************************/
 
-void qctm_init() 
+void 
+qctm_init (void) 
 {
     max_interx_genotypes= max_backx_genotypes= 0;
     max_intervals= max_genotype_vars= max_continuous_vars= 0;
@@ -101,9 +102,11 @@ void qctm_init()
 }
 
 
-void set_qctm_globals(data,map)	/* called only by qctm itself */
-DATA *data;
-QTL_MAP *map;
+void 
+set_qctm_globals (	/* called only by qctm itself */
+    DATA *data,
+    QTL_MAP *map
+)
 {
     int i, j, n, k, last;
     int n1, n2, g1, g2;
@@ -250,9 +253,11 @@ real new_like, *qtl_weight;
 
 /************************** QTL_CONV_TO_MAP (QCTM) **************************/
 
-void qtl_conv_to_map(data,map)
-DATA *data;
-QTL_MAP *map; 	/* many parts of this are side-effected */
+void 
+qtl_conv_to_map (
+    DATA *data,
+    QTL_MAP *map 	/* many parts of this are side-effected */
+)
 {
     real old_like, new_like;
     int i;
@@ -810,14 +815,16 @@ int i; /* the interval# */
 
 	    start= 0.0;
 	    inc= (haldane_cm(interval_rf[i])/(DIVS-1)); 
-	    if (print_brute_force) {
+	    int 
+if (int print_brute_force) {
 		sprintf(ps,PrBF1,i,interval_rf[i],qtl_pos[i]); 
 		print(ps);
 	    }
 	    max_pos=do_brute_force(start,inc,interval_rf[i],
 				   expected_recs,i,print_brute_force,&unimodal);
 	    
-	    if (!unimodal) {
+	    int 
+if (int unimodal) {
 		print("*** warning: pos_likes is not unimodal...\n");
 		qtl_pos[i]= max_pos;
 	    } else { /* unimodal */
@@ -939,9 +946,11 @@ real theta_interval;
 
 #endif
 
-void qtl_noconv_to_map(data,map) /* OBSOLETE, I THINK */
-DATA *data;
-QTL_MAP *map; 	/* many parts of this are side-effected */
+void 
+qtl_noconv_to_map ( /* OBSOLETE, I THINK */
+    DATA *data,
+    QTL_MAP *map 	/* many parts of this are side-effected */
+)
 {
     real new_like;
     /* use externs null_qtl_weight, qctm_qtl_weight, qctm_qtl_pos */

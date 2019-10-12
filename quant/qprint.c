@@ -78,7 +78,8 @@ mean= 12.456  sigma^2= 12.456  variance-explained= 0.1 %
 
 #define SHORT_MAP_MAX_STARS 10
 
-void print_map_divider()
+void 
+print_map_divider (void)
 { 
     if (print_names && raw.data_type==INTERCROSS) print(LONG_MAP_DIVIDER);
     else print(MAP_DIVIDER);
@@ -150,7 +151,8 @@ bool print_genetics;
 }
 
 
-void print_short_title() /* FROB */
+void 
+print_short_title (void) /* FROB */
 {
     sprintf(ps, INT_TITLE_LINE, " ", print_names ? "            " : ""); pr();
     print(WEIGHT_TITLE);
@@ -201,8 +203,8 @@ real delta_log_like;
 #define NULL_MAP_LINE \
 "null-like= %-8.3lf  null_sigma^2= %-6.3lf \nno-data-like=%-8.3lf\n"
 
-void print_null_iteration(map)
-QTL_MAP *map;
+void 
+print_null_iteration (QTL_MAP *map)
 {
 	print(ITER_DIVIDER);
 	sprintf(ps, NULL_MAP_LINE, map->null_log_like, map->null_sigma_sq,
@@ -284,7 +286,8 @@ POS     WEIGHT  DOM     %VAR  LOG-LIKE |
 #define F2_SPACES_LEFT 35
 
 
-void print_wiggle_title() 
+void 
+print_wiggle_title (void) 
 { 
     if (raw.data_type==BACKCROSS) { print(B1_WIGGLE_TITLE); }
     else { print(F2_WIGGLE_TITLE); }
@@ -292,8 +295,8 @@ void print_wiggle_title()
 }
 
 
-void print_wiggle_interval(map)
-QTL_MAP *map;
+void 
+print_wiggle_interval (QTL_MAP *map)
 { 
     int i;
 
@@ -340,8 +343,8 @@ real base_like, scale;
 }
 
 
-void print_wiggle_genetics(genetics)
-GENETICS *genetics;
+void 
+print_wiggle_genetics (GENETICS *genetics)
 {
     if (constrained(genetics)) {
 	print("Scanned QTL genetics are constrained to be: ");
@@ -352,8 +355,8 @@ GENETICS *genetics;
 
 /* left_seq_str() in this file STILL needs CONT_VAR hooks! */
 
-void print_wiggle_left_seq(map) 
-QTL_MAP *map;
+void 
+print_wiggle_left_seq (QTL_MAP *map)
 {
     char *left_seq;
     
@@ -366,7 +369,8 @@ QTL_MAP *map;
 #define WIG_LIST_NAMES "%3d.%s  %-10s  %s\n"
 #define WIG_LIST_NUMS  "%3d.%s  %3d    %s\n"
 
-void print_saved_wiggles()
+void 
+print_saved_wiggles (void)
 {
     int i;
     WIGGLE_OPERATION *op;
@@ -390,8 +394,8 @@ void print_saved_wiggles()
 #define ORD_LIST_TITLE "  NUM    GENETICS   FIXED-QTLS\n"
 #define ORD_LIST_FORM  "%3d.%-3d  %-9s  %s\n"
 
-void print_saved_wiggle(wiggle)
-int wiggle;
+void 
+print_saved_wiggle (int wiggle)
 {
     int i, k;
     WIGGLE_OPERATION *op;
@@ -459,9 +463,8 @@ real base_like, scale;
 #define PEAK_BOUND   "%s + %s\n"
 #define PEAK_NOBOUND "%s (off end)\n"
 
-void print_peak(peak,num)
-WIGGLE_PEAK *peak;
-int num;
+void 
+print_peak (WIGGLE_PEAK *peak, int num)
 {
     char *i;
     
@@ -545,8 +548,8 @@ real threshold;
 }
 
 
-void print_test_wiggle_interval(map)
-QTL_MAP *map;
+void 
+print_test_wiggle_interval (QTL_MAP *map)
 { 
     int i, last; 
     print(TEST_WIGGLE_DIVIDER); nl(); 
@@ -561,7 +564,8 @@ QTL_MAP *map;
 }
 
 
-void print_test_wiggle_title()
+void 
+print_test_wiggle_title (void)
 { print(TEST_WIGGLE_DIVIDER); nl(); print(TEST_WIGGLE_TITLE); nl(); 
   print(TEST_WIGGLE_DIVIDER); nl(); print(TEST_WIGGLE_HEADER1); nl();  
   print(TEST_WIGGLE_HEADER2); nl(); } 
@@ -601,21 +605,23 @@ real threshold;
 
 /*****************************************************************************/
 
-void print_trait(for_num_maps) 
-int for_num_maps;
+void 
+print_trait (int for_num_maps)
 { sprintf(ps, "QTL map%s for trait %s:\n", maybe_s(for_num_maps), trait_str()); pr(); }
 
 
-void print_seq()
+void 
+print_seq (void)
 { print("Sequence: "); print(ints_string); nl(); }
 
 
-void print_old_seq(str)
-char *str;
+void 
+print_old_seq (char *str)
 { print("Sequence: "); print(str); nl(); }
 
 
-char *trait_str()
+char *
+trait_str (void)
 {
     char *str= get_temp_string(); 
     sprintf(str, "%d (%s)", trait + 1, raw.trait_name[trait]); 
@@ -713,8 +719,8 @@ bool verbose;
 }
 
 
-char *left_seq_str(map)
-QTL_MAP *map;
+char *
+left_seq_str (QTL_MAP *map)
 {
     char *str=get_temp_string(), *qtl=get_temp_string();
     char *interval, *genetics, pos[11];
@@ -795,7 +801,8 @@ real offset;
 #define COMP_LIST_NAMES "%3d.%s  %-10s  %s\n"
 #define COMP_LIST_NUMS  "%3d.%s  %3d    %s\n"
 
-void print_saved_compares()
+void 
+print_saved_compares (void)
 {
     int i;
     COMPARE_OPERATION *op;
@@ -899,8 +906,8 @@ real threshold, falloff;
 #define SAVED_BEST_LIKE \
 "LOD score maximum for these maps: %-4.2lf\n"
 
-void print_saved_maps(compare,contig)
-int compare, contig;
+void 
+print_saved_maps (int compare, int contig)
 {
     COMPARE_OPERATION *op;
     int i, start;
@@ -925,8 +932,8 @@ int compare, contig;
     }
 }
 
-void get_fixed_qtl_weights(map)
-QTL_MAP *map;
+void 
+get_fixed_qtl_weights (QTL_MAP *map)
 {
     int i;
 

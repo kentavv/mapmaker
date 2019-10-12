@@ -100,9 +100,8 @@ real lodbound,thetabound;
 }
 
 
-void find_haplo_group(locus,num_loci,haplo_group,num_haplo,old_obs,new_obs)
-int *locus, *num_loci, *haplo_group, *num_haplo;
-int *old_obs, *new_obs;
+void 
+find_haplo_group (int *locus, int *num_loci, int *haplo_group, int *num_haplo, int *old_obs, int *new_obs)
 {
     int i, num_inf, num_dom, best_i=0, foo;
     int best_score, score;
@@ -143,8 +142,8 @@ int *old_obs, *new_obs;
 /**************** Three Point ****************/
 
 
-void alloc_3pt_matrix(num_group)
-int num_group;
+void 
+alloc_3pt_matrix (int num_group)
 { 
     if (three_pt_excluded!=NULL && num_group<=three_pt_size) return;
 
@@ -161,7 +160,8 @@ int num_group;
       
 
 
-void free_3pt_matrix()
+void 
+free_3pt_matrix (void)
 {
     free_char_3d_matrix(three_pt_excluded,three_pt_size,three_pt_size);
     unarray(three_pt_index,int);
@@ -226,7 +226,8 @@ real threshold;
     }
 }
 
-void free_3pt_data() { free_3pt_matrix(); }
+void 
+free_3pt_data (void) { free_3pt_matrix(); }
 
 
 bool start_3pt(locus,num_loci,threshold,order,num_ordered) /* improve this! */
@@ -914,9 +915,8 @@ MAP *temp_map;
 }
 
 
-void randomize_markers_to_try(unplaced,num_unplaced)
-PLACEME **unplaced;
-int num_unplaced;
+void 
+randomize_markers_to_try (PLACEME **unplaced, int num_unplaced)
 {
     int i, n_dom, n_het, num;
 
@@ -932,9 +932,8 @@ int num_unplaced;
 }
 
 
-void rank_markers_to_try(unplaced,num_unplaced)
-PLACEME **unplaced;
-int num_unplaced;
+void 
+rank_markers_to_try (PLACEME **unplaced, int num_unplaced)
 {
     qsort(unplaced,num_unplaced, sizeof(PLACEME*),compare_markers_to_try);
 }
@@ -954,10 +953,8 @@ int compare_markers_to_try(const void *a, const void *b)
 }
 
 
-void add_to_order(how,order,num_ordered,unplaced,index,num_unplaced)
-int how, *order, *num_ordered;
-PLACEME **unplaced;
-int index, *num_unplaced;
+void 
+add_to_order (int how, int *order, int *num_ordered, PLACEME **unplaced, int index, int *num_unplaced)
 {
     int i, pos, last, new_marker;
     PLACEME *temp;
@@ -1009,11 +1006,16 @@ int index, *num_unplaced;
    new frame:              b - c - d - e - f    
    new frame index:        0 - 1 - 2 - 3 - 4        */
 
-void find_window(order,num_placed,new_locus,excluded,min_window,start,end)
-int *order; /*NOTUSED*/
-int num_placed, new_locus, *excluded;
-int min_window;    /* #of loci to left and right, should be odd, e.g. 5 */
-int *start, *end;  /* side-effected with interval indecies */
+void 
+find_window (
+    int *order, /*NOTUSED*/
+    int num_placed,
+    int new_locus,
+    int *excluded,
+    int min_window,    /* #of loci to left and right, should be odd, e.g. 5 */
+    int *start,
+    int *end  /* side-effected with interval indecies */
+)
 {
     int j, step;
     /* simple implementation for now - this should later use informativeness */
@@ -1026,8 +1028,8 @@ int *start, *end;  /* side-effected with interval indecies */
 }
 
 
-int count_positions(excluded,num_order,first_place)
-int *excluded, num_order, *first_place;
+int 
+count_positions (int *excluded, int num_order, int *first_place)
 {
     int j, num_places;
 

@@ -371,8 +371,8 @@ real scale;
 }
 
 
-char *ps_loc_str(i)
-int i;
+char *
+ps_loc_str (int i)
 {
     char *tempstr;
 
@@ -384,8 +384,8 @@ int i;
     }
 }
 
-char *ps_frame_str(i)
-int i;
+char *
+ps_frame_str (int i)
 {
     int mark;
     char *tempstr;

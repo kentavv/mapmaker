@@ -72,7 +72,8 @@ This file was prepared using an older version of MAPMAKER.\n\
 You will need to re-prepare it using the 'prepare data' command."
 
 
-void data_init()
+void 
+data_init (void)
 {
     strcpy(raw.filename,"");
     raw.data_type= NO_DATA;
@@ -87,13 +88,16 @@ FILE *fp;
 { do { fgetln(fp); data_line++; } while (nullstr(ln)||ln[0]=='#'); }
 
   
-void baddata(reason) /* send data reading error message */
-char *reason; /* NOTE: should be a constant or a global */
+void 
+baddata ( /* send data reading error message */
+    char *reason /* NOTE: should be a constant or a global */
+)
 { nstrcpy(BADDATA_reason,reason,MAXLINE); BADDATA_line_num=data_line;
   nstrcpy(BADDATA_text,ln,MAXLINE); send(BADDATA); }
 
 
-int data_loaded()
+int 
+data_loaded (void)
 { return (raw.data_type!=NO_DATA); }
 
 
@@ -257,7 +261,8 @@ bool israw;
 }
 
 
-void do_unload_data()
+void 
+do_unload_data (void)
 {
     if (raw.data_type==F2)
       free_f2_data(raw.num_markers,raw.data.f2.num_indivs);
@@ -485,15 +490,16 @@ char *type;
 { fprintf(fp,"%d mapmaker %s data\n",raw.filenumber,type); }
 
 
-int new_magic_number()
+int 
+new_magic_number (void)
 { return(((int)(randnum()*3275.0))*10 + F2VERSION); }
 
 
 
 /**** Actually Get the Genotypes ****/
 
-void allocate_f2_data(n_loci,n_indivs)
-int n_loci, n_indivs;
+void 
+allocate_f2_data (int n_loci, int n_indivs)
 {
     matrix(raw.locus_name,n_loci,NAME_LEN+1,char);
     matrix(raw.data.f2.allele,n_loci,n_indivs,char);
@@ -517,7 +523,8 @@ void free_f2_data(int n_loci/*,int n_indivs*/)
 }
 
 
-void free_traits()
+void 
+free_traits (void)
 {
     if (num_traits>0) {
 	unmatrix(trait,num_traits,real);
@@ -824,9 +831,8 @@ int trait_num;
 }
 
 
-int symbol_value(chr, symb)
-int chr;
-char *symb;
+int 
+symbol_value (int chr, char *symb)
 {
     /* CHANGED FOR THIS VERION - NOW READS "-AHBCD" */
 
@@ -925,8 +931,8 @@ void add_to_seg_dist(char c, int locus)
     }
 }
 
-void scale_seg_dist(locus)
-int locus;
+void 
+scale_seg_dist (int locus)
 {
     real total;
     int i;

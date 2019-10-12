@@ -67,9 +67,8 @@ real like_base;
 
 
 
-void print_err(indiv,locus,map)
-int indiv, locus;
-MAP *map;
+void 
+print_err (int indiv, int locus, MAP *map)
 {
     sprintf(ps, "[#%d %c-%c-%c %.2lf]", indiv + 1,
             raw.data.f2.allele[map->locus[locus-1]][indiv],
@@ -80,17 +79,18 @@ MAP *map;
 }
 
 
-void print_long_map(map,title)
-MAP *map;
-char *title;
+void 
+print_long_map (MAP *map, char *title)
 { print_special_map(map,title,0,NULL); }
 
 
-void print_special_map(map,title,num_old,old_locus)
-MAP *map;
-char *title;  /* ps MAY be used for this! */
-int num_old;
-int *old_locus;  /* can omit if num_args==0 - should do this with VARARGS */
+void 
+print_special_map (
+    MAP *map,
+    char *title,  /* ps MAY be used for this! */
+    int num_old,
+    int *old_locus  /* can omit if num_args==0 - should do this with VARARGS */
+)
 {
     int  i, j, n, m;
     real length, male_cm, female_cm, male_length, female_length;
@@ -195,9 +195,8 @@ int *old_locus;  /* can omit if num_args==0 - should do this with VARARGS */
 }
 
 
-void print_short_map(map,text)
-MAP *map;
-char *text;
+void 
+print_short_map (MAP *map, char *text)
 {
     int i, col;
 
@@ -242,9 +241,8 @@ char *text;
 }
 
 
-void print_list(list,how_many)
-SAVED_LIST *list;
-int how_many;
+void 
+print_list (SAVED_LIST *list, int how_many)
 {
     int i,num_to_print;
     char str[TOKLEN+1];
@@ -281,8 +279,8 @@ real rec_frac;
 }
 
 
-char *loc2str(locus)
-int locus;
+char *
+loc2str (int locus)
 {
     char *str= get_temp_string(), haplo=' ';
     
@@ -312,8 +310,8 @@ bool haplo_mark;
 }
 
 
-char *locs2str(locus1,locus2)
-int locus1, locus2;
+char *
+locs2str (int locus1, int locus2)
 {
     char *str, *haplo1=get_temp_string(), *haplo2=get_temp_string();
     int i;
@@ -335,8 +333,8 @@ int locus1, locus2;
 }
 
 
-char *rag(str)
-char *str;
+char *
+rag (char *str)
 {
     int i=0;
     while (*str==' ') str++;
@@ -436,8 +434,8 @@ int num_tried, first;
 }
 
 
-void print_haplo_summary(locus,num_loci)
-int *locus, num_loci;
+void 
+print_haplo_summary (int *locus, int num_loci)
 {
     int i, j, any=FALSE;
     
@@ -460,9 +458,8 @@ int *locus, num_loci;
 
 
 
-char *region2str(locus,errs)
-int locus;
-char **errs;
+char *
+region2str (int locus, char **errs)
 {
     *errs= ptr_to("0.0");
     return("abc1-xyz999");
@@ -712,8 +709,8 @@ int interval, best, num_intervals, rightmost;
 }
 
 
-void pr_locus(n)
-int n;
+void 
+pr_locus (int n)
 { 
     if (n<99) sprintf(ps, " %2d  ", n + 1);
     else sprintf(ps, "%4d ", n + 1);
@@ -731,10 +728,12 @@ real rf;
 }
 
 
-void new_print_placements(map,placed,num_loci)
-MAP *map;		/* framework */
-PLACEME **placed;	
-int num_loci;		/* placed loci, maybe NO_LOCUS */
+void 
+new_print_placements (
+    MAP *map,		/* framework */
+    PLACEME **placed,
+    int num_loci		/* placed loci, maybe NO_LOCUS */
+)
 {
     int num_remaining, num_across, num_done, num_intervals;
     int i, j, num_places, rightmost;

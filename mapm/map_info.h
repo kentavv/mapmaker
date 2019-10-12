@@ -1,3 +1,6 @@
+#ifndef _MAP_INFO_H_
+#define _MAP_INFO_H_
+
 /******************************************************************************
 
  #    #    ##    #####              #    #    #  ######   ####           #    #
@@ -425,3 +428,5 @@ void map_func(); /* args: int num; sets map function */
 #define map_func_num()  (mapfunction->name[0]=='H' ? HALDANE:KOSAMBI)
 #define HALDANE 0
 #define KOSAMBI 1
+
+#endif

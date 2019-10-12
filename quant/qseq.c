@@ -68,7 +68,8 @@ char *seqtoken, *seqerr, *seqtoken_ptr;
 #define SEQ_SELF_DELIMITING 	"{}[]+:-|~"
 
 
-void seq_init()
+void 
+seq_init (void)
 { 
     ints= NULL;
     array(ints_string,SEQ_LEN+1,char);
@@ -107,8 +108,8 @@ int *errpos;
 }
 
 
-void free_qtl_sequence(p)
-QTL_SEQUENCE *p;
+void 
+free_qtl_sequence (QTL_SEQUENCE *p)
 {
     if (p==NULL || p->dont_free) return;
     free_qtl_sequence(p->next);
@@ -121,8 +122,8 @@ QTL_SEQUENCE *p;
     unsingle(p,QTL_SEQUENCE);
 }
 
-void free_seq_options(q)
-QTL_SEQ_OPTION *q;
+void 
+free_seq_options (QTL_SEQ_OPTION *q)
 {
     if (q==NULL) return;
     if (q->next!=NULL) free_seq_options(q->next);
@@ -162,8 +163,8 @@ the ints string. ***/
 #define err_NOTRAIT     "Expected trait name(s) and/or number(s) inside {...}"
 #define err_TRAITISCV	"Illegal sequence and trait combination.\nThe current trait is used as a continuous variable also."
 
-QTL_SEQUENCE *compile_intervals(str)
-char *str;
+QTL_SEQUENCE *
+compile_intervals (char *str)
 {
     QTL_SEQUENCE *first, *last, *p;
     char *ptr, *old_self_delim;
@@ -207,8 +208,8 @@ char *str;
 
 char dummy;
 
-QTL_SEQUENCE *int_compiler(str)
-char **str; 
+QTL_SEQUENCE *
+int_compiler (char **str) 
 {
 	int left, right, repeat, trait;
 	QTL_SEQUENCE *me;
@@ -356,8 +357,8 @@ real fix_weight;
 }
 
 
-QTL_SEQ_OPTION *mkinterval(left,right)
-int left, right;
+QTL_SEQ_OPTION *
+mkinterval (int left, int right)
 {
     QTL_SEQ_OPTION *p;
 	
@@ -421,9 +422,8 @@ QTL_SEQ_OPTION *opt; /* may be side-effected (turned into a RANGE) */
 #define INTERX_TYPE_(t) \
 if (raw.data_type==INTERCROSS) g->interx_type=t; else FAIL_(err_INTERX)
 
-void get_genetics_spec(str,g)
-char **str;
-GENETICS *g;
+void 
+get_genetics_spec (char **str, GENETICS *g)
 {
 
     real a, d;
@@ -457,8 +457,8 @@ GENETICS *g;
 
 /********** THINGS FOR BUILDING INTERVALS TREES **********/
 
-void enumerate_possibilities(p)
-QTL_SEQUENCE *p;
+void 
+enumerate_possibilities (QTL_SEQUENCE *p)
 {
     int i, left, prev_right, contig;
     QTL_SEQ_OPTION *q;
@@ -895,8 +895,8 @@ char *name,**why_not;
     return(TRUE);
 }
 
-void add_to_seq_history(seq)
-char *seq;
+void 
+add_to_seq_history (char *seq)
 {
     int seqnum;
 
@@ -906,8 +906,8 @@ char *seq;
     context[active_context]->seq_history_num = seqnum;
 }
 
-char *expand_named_entries(str)
-char *str;
+char *
+expand_named_entries (char *str)
 {
     char *every, *super_exp, *new_str, *tok, *expansion, *dummy;
     char *temp_str;
@@ -987,14 +987,18 @@ char *str;
    numbers parse wrong. So, we swap '-' for SURROGATE_DASH which should be
    self-delimiting, and swap back again when compile_sequence() is done. */
 
-void swap_for_dash(str) /* internal use only */
-char *str;
+void 
+swap_for_dash ( /* internal use only */
+    char *str
+)
 { int i; 
   for (i=0; str[i]!='\0'; i++) if (str[i]=='-') str[i]=SURROGATE_DASH_char; }
 
 
-void unswap_for_dash(str) /* internal use only */
-char *str;
+void 
+unswap_for_dash ( /* internal use only */
+    char *str
+)
 { int i; 
   for (i=0; str[i]!='\0'; i++) if (str[i]==SURROGATE_DASH_char) str[i]='-'; }
 
@@ -1026,8 +1030,8 @@ real *fix_pos;
 	return(TRUE);
 }
 
-int check_range(from,to,zero_pos)
-int *from, *to, zero_pos;
+int 
+check_range (int *from, int *to, int zero_pos)
 {
 	int temp;
 
@@ -1041,8 +1045,10 @@ int *from, *to, zero_pos;
 }
 
 
-void sticky_minus(str)
-char *str; /* str must be despaced, and is side-effected */
+void 
+sticky_minus (
+    char *str /* str must be despaced, and is side-effected */
+)
 {
     int i, j;
     

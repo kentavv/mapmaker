@@ -64,8 +64,8 @@ bool get_triple(int locus1, int locus2, int locus3, real *d1, real *d2, real *d3
 
 /**************** Stuff to handle global 2pt data ****************/
 
-void allocate_two_pt(num_loci)
-int num_loci;
+void 
+allocate_two_pt (int num_loci)
 {
     int i,j;
 
@@ -98,8 +98,8 @@ int num_loci;
 }
 
 
-void free_two_pt(num_loci)
-int num_loci;
+void 
+free_two_pt (int num_loci)
 {
     int i;
     if (two_pt_data==NULL) return;
@@ -159,8 +159,8 @@ bool *used_needs_incrementing;
 }
 
 
-void expand_two_pt(num_entries)
-int num_entries;
+void 
+expand_two_pt (int num_entries)
 {
     int i;
 
@@ -180,8 +180,11 @@ int num_entries;
 /* The following procedures are the only external accessors to the 
    TWO_PT_DATA structure. */
 
-void compute_two_pt(a,b) /* internal use only */
-int a, b;
+void 
+compute_two_pt ( /* internal use only */
+    int a,
+    int b
+)
 {
     TWO_PT_DATA *two_pt=NULL;
     int temp;
@@ -242,8 +245,8 @@ real *lod, *thetam, *thetaf;
 
 /**************** Stuff for Global 3pt data ****************/
 
-void allocate_three_pt(num_total)
-int num_total;
+void 
+allocate_three_pt (int num_total)
 {
     int i;
     
@@ -269,8 +272,8 @@ int num_total;
     } when_aborting { free_three_pt(num_total); relay; }
 } 
 
-TRIPLE_LIST *allocate_three_entries(num_to_alloc)
-int num_to_alloc;
+TRIPLE_LIST *
+allocate_three_entries (int num_to_alloc)
 {
     TRIPLE_LIST *part;
 
@@ -290,8 +293,8 @@ int num_to_alloc;
 }
 
 
-void bash_all_three_pt(num_total)
-int num_total;
+void 
+bash_all_three_pt (int num_total)
 {
     free_three_pt(num_total);
     allocate_three_pt(num_total);
@@ -299,8 +302,8 @@ int num_total;
     
 
 
-void free_three_pt(num_total)
-int num_total;
+void 
+free_three_pt (int num_total)
 {
     int i;
 
@@ -320,8 +323,8 @@ int num_total;
        num_threes_allocated, num_threes_deallocated); pr(); */
 }
 
-void deallocate_triple_list(p)
-TRIPLE_LIST *p;
+void 
+deallocate_triple_list (TRIPLE_LIST *p)
 {
     if (p->next != NULL) deallocate_triple_list(p->next);
     unsingle(p, TRIPLE_LIST);
@@ -667,8 +670,8 @@ MAP *map;
 
 /***************************** Haplotype-Groups *****************************/
 
-void setup_haplo_group(locus,num_loci)
-int *locus, num_loci;
+void 
+setup_haplo_group (int *locus, int num_loci)
 {
     int first, i;
 
@@ -756,7 +759,8 @@ char **why_not;
 }
 
 
-void print_class_names() /* let print() auto_wrap... */
+void 
+print_class_names (void) /* let print() auto_wrap... */
 { 
     int i; 
     for (i=0; i<NUM_CLASSES; i++) { print(class_name[i]); print(" "); }
@@ -776,8 +780,8 @@ void print_class_names() /* let print() auto_wrap... */
 
 void return_to_unused(), remove_triple_list();
 
-void bash_order_info(changed,num_changed)
-int *changed, num_changed;
+void 
+bash_order_info (int *changed, int num_changed)
 {
     int a, b, i, j;
     TRIPLE_LIST *p, *q, *prev;
@@ -891,8 +895,8 @@ int *changed, num_changed;
     }
 }
 
-void return_to_unused(p)
-TRIPLE_LIST *p;
+void 
+return_to_unused (TRIPLE_LIST *p)
 {
     /* Places a previously allocated but now unused elemtn on top of the
        unused stack */
@@ -906,16 +910,16 @@ TRIPLE_LIST *p;
     three_pt_data->unused= p;
 }
 
-void remove_triple_list(p)
-TRIPLE_LIST *p;
+void 
+remove_triple_list (TRIPLE_LIST *p)
 {    
     if (p->next!=NULL) remove_triple_list(p->next);
     return_to_unused(p);
 }
 
 
-void allocate_order_data(num_markers)
-int num_markers;
+void 
+allocate_order_data (int num_markers)
 {
     int i;
 
@@ -947,8 +951,8 @@ int num_markers;
 }
 
 
-void free_order_data(num_markers)
-int num_markers;
+void 
+free_order_data (int num_markers)
 {
     unarray(my_group, int);
     unarray(haplo_first, int);

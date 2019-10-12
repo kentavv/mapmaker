@@ -60,9 +60,11 @@ int *chrom; /* side-effected */
 }
 
 
-MAP *get_chrom_frame(chrom,num_loci)
-int chrom;
-int *num_loci; /* side-effected,  can be 0, or 1, or greater */
+MAP *
+get_chrom_frame (
+    int chrom,
+    int *num_loci /* side-effected,  can be 0, or 1, or greater */
+)
 {
     if (num_loci!=NULL) *num_loci= chromosome->map_list[chrom]->num_loci;
     return(chromosome->map_list[chrom]);
@@ -96,9 +98,11 @@ int locus;
 #define FRAME_DUPS \
   "bad framework - one or more loci are repeated in sequence"
 
-void set_chrom_frame(chrom,new)
-int chrom;
-MAP *new;   /* warning: side-effected! */
+void 
+set_chrom_frame (
+    int chrom,
+    MAP *new   /* warning: side-effected! */
+)
 /* When this is called, new MUST be equal to get_map_to_bash(chromosome), amd
    assigned_to(*,chrom) must have be true for all loci in new map. We also 
    assume haplo_sanity is true for old framework, and force it for new one. */
@@ -147,8 +151,8 @@ MAP *new;   /* warning: side-effected! */
 }
 
 
-void get_chrom_loci(chrom,locus,which_loci,num_loci,num_framework)
-int chrom, *locus, which_loci, *num_loci, *num_framework;
+void 
+get_chrom_loci (int chrom, int *locus, int which_loci, int *num_loci, int *num_framework)
 {
     int i, j, k, n, primary;
     bool framework=FALSE, non_frame=FALSE, haplos_anyway=FALSE;
@@ -225,12 +229,12 @@ bool assigned(locus)
 int locus; 
 { force_haplo_sanity(&locus,FALSE); return(assignment[locus]->status>0); }
 
-int assignment_state(locus)
-int locus;
+int 
+assignment_state (int locus)
 { force_haplo_sanity(&locus,FALSE); return(assignment[locus]->status); }
 
-int assignment_chrom(locus)
-int locus;
+int 
+assignment_chrom (int locus)
 { 
   force_haplo_sanity(&locus,FALSE);
   return(assignment[locus]->status>0 ? assignment[locus]->chromosome:NO_CHROM);
@@ -371,13 +375,13 @@ char *msg; /* pre-empts other message, only for A_PROBLEM as yet */
 }
 
 
-void unassign_this(locus,state)
-int locus, state;
+void 
+unassign_this (int locus, int state)
 { assign_this(locus,state,NO_CHROM,NO_LOD,NO_THETA,NO_LOCUS,""); }
 
 
-void attach_this(locus,state,chrom)
-int locus, state, chrom;
+void 
+attach_this (int locus, int state, int chrom)
 { assign_this(locus,state,chrom,NO_LOD,NO_THETA,NO_LOCUS,""); }
 
 
@@ -388,8 +392,12 @@ int locus, state, chrom;
 #define ANCHOR_ISNOW "%s- anchor locus on %s\n"
 #define ANCHOR_DUPS  "bad framework\none or more loci are repeated in sequence"
 
-void set_chrom_anchors(chrom,locus,num_loci)
-int chrom, *locus, num_loci; /* maybe 0 */
+void 
+set_chrom_anchors (
+    int chrom,
+    int *locus,
+    int num_loci /* maybe 0 */
+)
 { 
     int i, j, old_chrom;
     bool still_got_it;
@@ -768,8 +776,8 @@ bool verbose;
 
 
 /* These have no error traps - only use them if valid data are stored! */
-int best_placement(locus)
-int locus;
+int 
+best_placement (int locus)
 { 
     int i; 
     
@@ -804,8 +812,11 @@ real *like;
 /************ Load/Save/Reset ************/
 
 
-void bash_mapping_data(changed,num_changed)
-int *changed, num_changed; /* changed markers */
+void 
+bash_mapping_data (
+    int *changed,
+    int num_changed /* changed markers */
+)
 {
     int i, j, n;
     MAP *map;
@@ -856,8 +867,8 @@ int *changed, num_changed; /* changed markers */
 }
 
 
-void allocate_mapping_data(num_markers)
-int num_markers;
+void 
+allocate_mapping_data (int num_markers)
 {
     int locus;
 
@@ -885,8 +896,8 @@ int num_markers;
 }
 
 
-void free_mapping_data(num_markers)
-int num_markers;
+void 
+free_mapping_data (int num_markers)
 {
     free_map_list(chromosome);
     unparray(assignment,num_markers,ASSIGNMENT);

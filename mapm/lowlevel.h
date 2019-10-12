@@ -1,3 +1,6 @@
+#ifndef _LOWLEVEL_H_
+#define _LOWLEVEL_H_
+
 /******************************************************************************
 
  #        ####   #    #  #       ######  #    #  ######  #               #    #
@@ -230,4 +233,4 @@ void new_unk_count_recs();
 #define SMALLRECOMBS    0.00001
 #define BIGRECOMBS      0.50
 
-
+#endif

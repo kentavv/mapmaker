@@ -43,7 +43,8 @@ real *lod, *theta;
 }
 
 
-command two_point()
+command 
+two_point (void)
 {
     int a, b, num_loci, count, total, *locus=NULL;
 
@@ -71,7 +72,8 @@ command two_point()
 
 #define GROUP_DIVIDER "-------\n"
 
-command group()
+command 
+group (void)
 {
     real lodbound, thetabound;
     int *loci=NULL, num_loci, *linkage_group=NULL, group_size, num_left;
@@ -139,7 +141,8 @@ command group()
 #define HAP_NO_GROUPS  "No linkage groups found.\n"
 #define HAP_NO_HAPLOS  "No appropriate haplotype groups found.\n"
 
-command haplotype()
+command 
+haplotype (void)
 {
     real lodbound, thetabound;
     int *loci=NULL, num_loci, num_left, *linkage_group=NULL, group_size;
@@ -236,7 +239,8 @@ command haplotype()
 }
 
 
-command unhaplotype()
+command 
+unhaplotype (void)
 {
     int *loci=NULL, num_loci, *changed=NULL, num_changed;
 
@@ -262,7 +266,8 @@ command unhaplotype()
 }
 
 
-command list_haplotypes()
+command 
+list_haplotypes (void)
 {
     int num_loci, *locus=NULL;
 
@@ -286,7 +291,8 @@ command list_haplotypes()
 }
 
 
-command list_loci()
+command 
+list_loci (void)
 {
     int source, num_loci, *locus=NULL;
 
@@ -316,7 +322,8 @@ command list_loci()
 #define SEX_BIGLODS \
   "\n Marker-1  Marker-2    Theta(M) Theta(F)  LOD        cM(M)    cM(F)\n"
 
-command biglods()
+command 
+biglods (void)
 {
     int a, b, n, num_loci, *loci=NULL;
     real lodbound, thetabound;
@@ -342,7 +349,8 @@ command biglods()
 }
 
 
-command near_locus()
+command 
+near_locus (void)
 {
     int a, b, i, j, n, num_loci, *locus=NULL, *trial_locus=NULL, num_trials;
     real lodbound, thetabound;
@@ -382,7 +390,8 @@ command near_locus()
 }
 
 
-command near_chrom() /* should move to auto_cmd.c? */
+command 
+near_chrom (void) /* should move to auto_cmd.c? */
 {
     int a, b, i, n, num_loci, *locus=NULL, chrom;
     real lodbound, thetabound;
@@ -419,7 +428,8 @@ command near_chrom() /* should move to auto_cmd.c? */
 }
 
 
-command lodtable()
+command 
+lodtable (void)
 {
     int *loci=NULL, num_loci, type, source;
     char name[TOKLEN+1];
@@ -450,7 +460,8 @@ command lodtable()
 }
 
 
-command pairwise()
+command 
+pairwise (void)
 {
     int num_trials, *try_me=NULL, num_loci, *loci=NULL;
 
@@ -505,8 +516,8 @@ int chrom;
 }
 
 
-void print_lodtable(locus1,locus2,num_loci1,num_loci2,how)
-int *locus1, *locus2, num_loci1, num_loci2, how;
+void 
+print_lodtable (int *locus1, int *locus2, int num_loci1, int num_loci2, int how)
 {
     int across, down, num_across, num_done, across_to_print;
     char *line1, *line2;
@@ -563,8 +574,8 @@ int *locus1, *locus2, num_loci1, num_loci2, how;
 }
 
 
-void print_lod_line(loc,toploc,topnum,how,topref,downref)
-int loc, *toploc, topnum, how, topref, downref;
+void 
+print_lod_line (int loc, int *toploc, int topnum, int how, int topref, int downref)
 {
     int across, stop_at;
     real lod, theta, thetam, thetaf;
@@ -633,7 +644,8 @@ int loc, *toploc, topnum, how, topref, downref;
 #define THREE_HEAD  "Triplet criteria: LOD %.2lf, Max-Dist %s, #Linkages %d\n"
 #define TRIPLET_SEX FALSE
 
-command three_point()
+command 
+three_point (void)
 {
     int num_loci, *loci=NULL, num_trips, num_groups, num_links;
     int *linkage_group=NULL, group_size, num_unlinked, three_locus[3], foo;
@@ -751,7 +763,8 @@ print(  " count  markers                        a-b-c  b-a-c  a-c-b\n");
 }
 
 
-command forget_three_point()
+command 
+forget_three_point (void)
 {
     mapm_ready(ANY_DATA,0,0,NULL);
     nomore_args(0);
@@ -763,7 +776,8 @@ command forget_three_point()
 #define INF_CRITERIA \
   "Informativeness: min #Individuals %d%s, min Distance %s\n"
 
-command suggest_subset()
+command 
+suggest_subset (void)
 {
     real lodbound, thetabound;
     int *loci=NULL, num_loci, *linkage_group=NULL, group_size, groups_done;

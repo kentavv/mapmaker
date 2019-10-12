@@ -1,3 +1,6 @@
+#ifndef _QLOW_H_
+#define _QLOW_H_
+
 /******************************************************************************
 
   ####   #        ####   #    #          #    #
@@ -223,3 +226,5 @@ int symbol_value();
 #define MISSING_DATA              '-'
 
 extern bool fix_weight_kludge; /* BIG KLUDGE for tweak-weight cmd */
+
+#endif

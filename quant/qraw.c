@@ -66,7 +66,8 @@ need to re-prepare it using the 'prepare data' command in MAPMAKER."
 
 /********** PRELIMINARIES **********/
 
-void raw_init()
+void 
+raw_init (void)
 {
     raw.n_loci= 0; 		raw.n_traits= 0;
     raw.trait= NULL; 		raw.trait_name= NULL;
@@ -81,7 +82,8 @@ void raw_init()
     make_count_recs_etc();
 }
 
-void make_count_recs_etc() 
+void 
+make_count_recs_etc (void) 
 {
     int **x, *y;
 
@@ -106,7 +108,8 @@ void make_count_recs_etc()
 }
 
 
-void free_raw()  /* alloced by read_data - NEVER BEEN TESTED!! */
+void 
+free_raw (void)  /* alloced by read_data - NEVER BEEN TESTED!! */
 {
 	unmatrix(raw.locus, raw.n_indivs, char);
 	unmatrix(raw.locus_name, raw.n_loci, char);
@@ -120,7 +123,8 @@ void free_raw()  /* alloced by read_data - NEVER BEEN TESTED!! */
 	raw.file[0]='\0';
 }
 
-int data_loaded() { return(raw.file[0]!='\0'); }
+int 
+data_loaded (void) { return(raw.file[0]!='\0'); }
 
 
 
@@ -740,7 +744,8 @@ int num;
 #define PROBS_NOT_1 \
 "*** WARNING: interval genotype probs not 1: indiv %d interval %d\n"
 
-void crunch_data() /* side effects the raw data struct */
+void 
+crunch_data (void) /* side effects the raw data struct */
 {
     int i, k, first, last;
 
@@ -1126,7 +1131,8 @@ int data_type, geno;
 }
 
 
-void altered_chroms_message()
+void 
+altered_chroms_message (void)
 {
 if(!already_printed) {
     print("The linkage map data in the '.data' file has been altered since its\n");

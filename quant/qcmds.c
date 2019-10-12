@@ -111,7 +111,8 @@ command set_max_trait();
 DATA *data;
 
 /***** Initialize all user variables and the command tables *****/
-void cmd_init() {
+void 
+cmd_init (void) {
     
     array(temp,MAXLINE+1,char);
 
@@ -254,7 +255,8 @@ void cmd_init() {
 } 
 
 
-void help_init()
+void 
+help_init (void)
 {
 /* #include "qtl.code" - outdated help mechanism */
 }
@@ -1575,7 +1577,8 @@ FILE *fp;
 #define QTL_LD_OLD2 \
 "data were saved in the '.qtls' file. These data will not be loaded.\n" 
 
-void load_qtl_files()
+void 
+load_qtl_files (void)
 {
     char name[PATH_LENGTH+1];
     FILE *fp=NULL;

@@ -22,7 +22,8 @@
 STATUS_CONTEXT **context;
 int active_context, num_contexts;
 
-void context_init()
+void 
+context_init (void)
 {
     context = NULL;
     run {
@@ -39,8 +40,8 @@ void context_init()
 }
 
 
-void allocate_context(con)
-STATUS_CONTEXT *con;
+void 
+allocate_context (STATUS_CONTEXT *con)
 {
     TABLE *seqhist,*names;
 
@@ -59,8 +60,8 @@ STATUS_CONTEXT *con;
     }
 }
 
-void free_context(con)
-STATUS_CONTEXT *con;
+void 
+free_context (STATUS_CONTEXT *con)
 {
     free_table(con->named_sequences);
     free_table(con->sequence_history);
