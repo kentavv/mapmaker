@@ -16,10 +16,11 @@
 
 /********************** Useful things for MAPM Commands **********************/
 
-/* in toplevel.c */
-void mapm_ready(); /* args: int data_type_needed;
-		            int min_loci_in_seq; bool permutable_seq; 
-			    int *loci_in_seq; */
+void mapm_ready(int data_type, int min_seq_loci, bool permable_seq, int *seq_loci);
+///* in toplevel.c */
+//void mapm_ready(); /* args: int data_type_needed;
+//		            int min_loci_in_seq; bool permutable_seq;
+//			    int *loci_in_seq; */
 
 /* Data_type_needed may be one of CEPH, F2, ANY_DATA, NO_DATA, or
    MAYBE_DATA.  Min_loci_in_seq should be >0 if a seq is required, and
@@ -43,16 +44,17 @@ void mapm_ready(); /* args: int data_type_needed;
 
 #define NEED_SEQ_OR_ARGS "need loci as arguments OR sequence must be set"
 
-/* this is also now all in main.c */
-bool crunch_locus_list(); 
-/* args: locus[], *num_loci; int verbosity,  check_assignments, in_sequence;
-   side-effects locus[], *num_loci; and, if verbose, may print a msg.
-   Deletes duplicates in the list, multiple loci from the same haplo
-   group, and renumbers haploed loci to their primary. If
-   verbosity==ORDER_ERROR and if duplicates existed, error() is called.
-   If verbosity==CRUCH_WARNINGS, warnings are printed, otherwise it is
-   silent. If check_assignments and the chrom is set, then chrom
-   assignments of all loci to the current_chrom are verified. */
+bool crunch_locus_list(int *locus, int *num_loci, bool verbose, bool check_assignments, bool in_sequence);
+///* this is also now all in main.c */
+//bool crunch_locus_list();
+///* args: locus[], *num_loci; int verbosity,  check_assignments, in_sequence;
+//   side-effects locus[], *num_loci; and, if verbose, may print a msg.
+//   Deletes duplicates in the list, multiple loci from the same haplo
+//   group, and renumbers haploed loci to their primary. If
+//   verbosity==ORDER_ERROR and if duplicates existed, error() is called.
+//   If verbosity==CRUCH_WARNINGS, warnings are printed, otherwise it is
+//   silent. If check_assignments and the chrom is set, then chrom
+//   assignments of all loci to the current_chrom are verified. */
 
 #define CRUNCH_WARNINGS TRUE  /* for verbosity */
 #define ORDER_ERRORS    MAYBE
@@ -62,25 +64,57 @@ bool crunch_locus_list();
 #define IN_SEQ          TRUE  /* for in_sequence */
 #define IN_ARGS         FALSE
 
-int get_chrom_arg(); /* args: bool allow_no_chrom_answer; */
+int get_chrom_arg(bool allow_no_chrom);
+//int get_chrom_arg(); /* args: bool allow_no_chrom_answer; */
 /* tries using get_one_arg */
 
-bool get_markers();
-bool get_intervals();
-bool get_reals();
-bool input_dist();
+//bool get_markers();
+//bool get_intervals();
+//bool get_reals();
+bool input_dist(real *dist);
+//bool input_dist();
 
 /* stuff in reader.c */
-void read_data();    /* args: FILE *fp; char *file_name; */
-bool data_loaded();  /* no args */
-char *data_info();   /* args: bool add_numbers_to_info; returns temp_string */
-void do_load_data();
-void do_unload_data();
-void allocate_f2_data();
-void free_f2_data();
-void mapm_data_info(); /* for mapm_update_hook() */
-void try_to_load();  /* FILE *fp; char *name; bool prev_data, is_raw; 
-			in sys_cmds.c - where should I put this decl? */
+//void getdataln(FILE *fp);
+//void baddata(char *reason);
+int data_loaded(void);
+char *data_info(bool add_nums);
+FILE *start_save_to_file(char *name, char *ext, char *type, bool *exists);
+void finish_save_to_file(char *name, char *oldext, bool exists);
+void do_load_data(FILE *fp, char *filename, bool israw);
+//void do_unload_data(void);
+//void do_save_data(char *base_name, bool save_genos_too);
+int read_data_file_header(FILE *fp, char *filename);
+int read_raw_file_header(FILE *fp, char *filename, char *symbol);
+bool read_magic_number(FILE *fp, char *type);
+void write_magic_number(FILE *fp, char *type);
+int new_magic_number(void);
+void allocate_f2_data(int n_loci, int n_indivs);
+void free_f2_data(int n_loci);
+void free_traits(void);
+void new_read_f2_data(FILE *fp);
+void new_read_f2_locus(FILE *fp, int locus_num);
+void write_f2_data(FILE *fp);
+void new_read_f2_raw(FILE *fp, char *symbols);
+void read_raw_f2_locus(FILE *fp, int locus_num, char *symbol);
+void read_raw_trait(FILE *fp, int trait_num);
+int symbol_value(int chr, char *symb);
+void write_traits(FILE *fp);
+void add_to_seg_dist(char c, int locus);
+void scale_seg_dist(int locus);
+
+void mapm_data_info(FILE *fp);
+
+//void read_data();    /* args: FILE *fp; char *file_name; */
+//bool data_loaded();  /* no args */
+//char *data_info();   /* args: bool add_numbers_to_info; returns temp_string */
+//void do_load_data();
+//void do_unload_data();
+//void allocate_f2_data();
+//void free_f2_data();
+//void mapm_data_info(); /* for mapm_update_hook() */
+//void try_to_load();  /* FILE *fp; char *name; bool prev_data, is_raw;
+//			in sys_cmds.c - where should I put this decl? */
 
 
 
@@ -90,12 +124,17 @@ void quick_two_pt(int locus0, int locus1, TWO_PT_DATA *two_pt, bool sex /* do bo
 void f2_quick_two_pt(int loc1, int loc2, TWO_PT_DATA *two_pt, bool sexflag); /* in quick23.c, used by the above */
 
 /* in ctm.c */
-void converge_to_map(); /* args: MAP *map */
-void f2_genotype(); /* args: int locus; bool haplo; int *observation[#indiv] */
-bool merge_genotypes(); /* args: int new_locus, old_obs[], new_obs[] */
-  /* returns TRUE if no obligate recs, WARNING: will side-effect new_obs even
-     if FALSE is returned! */
-int  f2_count_infs(); /* args: *n_dominant, *n_het, obs[]; return #infs */
+//void converge_to_map(MAP *map);
+void f2_genotype(int locus, bool haplo, int *observation);
+bool merge_genotypes(int locus, int *observation, int *new_observation);
+int f2_count_infs(int *num_dom, int *num_het, int *observation);
+
+//void converge_to_map(); /* args: MAP *map */
+//void f2_genotype(); /* args: int locus; bool haplo; int *observation[#indiv] */
+//bool merge_genotypes(); /* args: int new_locus, old_obs[], new_obs[] */
+//  /* returns TRUE if no obligate recs, WARNING: will side-effect new_obs even
+//     if FALSE is returned! */
+//int  f2_count_infs(); /* args: *n_dominant, *n_het, obs[]; return #infs */
 extern int *observations; /* [num_indivs] useful as a temp to the above */
 
 /* this stuff is used by the new CTM and by a few other things */
@@ -108,7 +147,9 @@ extern int *observations; /* [num_indivs] useful as a temp to the above */
 #define fully_inf(obs) ((obs)==OBS_A || (obs)==OBS_H || (obs)==OBS_B)
 extern int obligate_recs[6][6];
 
-void allocate_hmm_temps(), free_hmm_temps(); 
+void allocate_hmm_temps (int total_loci, int num_indivs, int cross_type);
+void free_hmm_temps (int total_loci, int num_indivs, int cross_type);
+//void allocate_hmm_temps(), free_hmm_temps();
 /* args: int n_loci, n_indivs, cross_type; */
 
 
@@ -156,14 +197,18 @@ typedef struct seq_struct {
 #define NOT_FIXED OBSCURE_REAL
 #define UNLINK_ME OBSCURE_REAL2
 
-void allocate_seq_stuff(); /* args: int max_loci; call after loading data */
-void free_seq_stuff();     /* args: int max_loci; */
+void allocate_seq_stuff(int n_loci);
+void free_seq_stuff(void);
+//void allocate_seq_stuff(); /* args: int max_loci; call after loading data */
+//void free_seq_stuff();     /* args: int max_loci; */
 
 /* BADSEQ message */
 extern char *BADSEQ_errmsg;
 extern int BADSEQ_errpos;     /* index of the erroneous token in seq string */
-void badseq();                /* args: char *error_message; sends BADSEQ */
-void print_badseq();	      /* no args */
+void badseq(char *errmsg);
+void print_badseq(void);
+//void badseq();                /* args: char *error_message; sends BADSEQ */
+//void print_badseq();	      /* no args */
 
 /* Fun things you can do to compiled sequences... */
 int count_loci();	/* args: SEQ_NODE *seq; count loci in seq */

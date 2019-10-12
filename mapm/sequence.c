@@ -406,10 +406,8 @@ seqcomp (
 }
 
 
-void parse_fixed_distance(str,inside,p)
-char **str;
-bool inside;
-SEQ_NODE *p;
+void 
+parse_fixed_distance (char **str, bool inside, SEQ_NODE *p)
 {
     char c;
 
@@ -469,11 +467,14 @@ free_seq_nodes (SEQ_NODE *p)
    been wrapped up into one routine (eg. one decent of the seq tree), however
    this is easier to deal with. */
 
-bool get_order(p,locus,theta,num_loci,max_loci) /* TRUE or sends msg */
-SEQ_NODE *p;
-int *locus;
-real **theta;
-int *num_loci, max_loci; 
+bool 
+get_order ( /* TRUE or sends msg */
+    SEQ_NODE *p,
+    int *locus,
+    real **theta,
+    int *num_loci,
+    int max_loci
+) 
 /* locus is an array of locus nums, i is a ptr to its index, and max_loci is 
    the maximum number of loci the array holds (CRASH if it's exceeded) */
 {
@@ -515,9 +516,12 @@ get_list_of_all_loci (
 }
 
 
-bool alloc_list_of_all_loci(p,loci,num_loci)
-SEQ_NODE *p;
-int **loci, *num_loci; /* side-effect *loci and *num_loci setting (*loci)[i] */
+bool 
+alloc_list_of_all_loci (
+    SEQ_NODE *p,
+    int **loci,
+    int *num_loci /* side-effect *loci and *num_loci setting (*loci)[i] */
+)
 { 
     int total, *retoin=NULL; 
 
@@ -535,12 +539,15 @@ int **loci, *num_loci; /* side-effect *loci and *num_loci setting (*loci)[i] */
 }
 
 
-bool do_get_order(p,locus,theta,i,max_loci,direction) /* TRUE or sends msg */
-SEQ_NODE *p;
-int *locus;
-real **theta;
-int *i, max_loci; 
-int direction;
+bool 
+do_get_order ( /* TRUE or sends msg */
+    SEQ_NODE *p,
+    int *locus,
+    real **theta,
+    int *i,
+    int max_loci,
+    int direction
+)
 /* locus is an array of locus nums, i is a ptr to its index, and max_loci is 
    the maximum number of loci the array holds (CRASH if it's exceeded) */
 {
@@ -640,9 +647,8 @@ make_reordered_list ( /* intenal use only */
 }
 
 
-void reset_seq(p,reset_insert_pos)
-SEQ_NODE *p;
-bool reset_insert_pos;
+void 
+reset_seq (SEQ_NODE *p, bool reset_insert_pos)
 {
   if (p==NULL) return;
   if (reset_insert_pos) p->insert_pos= 0;
@@ -660,11 +666,13 @@ bool reset_insert_pos;
 }
 
 
-bool perm_seq(p,order_matters,in_unordered_set) 
+bool 
+perm_seq ( 
 /* return TRUE if there is another order, side-effecting the SEQ_NODE tree */
-SEQ_NODE *p;
-bool order_matters;
-bool in_unordered_set;
+    SEQ_NODE *p,
+    bool order_matters,
+    bool in_unordered_set
+)
 {
   int max_position;
   SEQ_NODE *q;
@@ -751,8 +759,8 @@ else switch (p->type) {
 }
 
 
-bool has_fixed_dists(p)
-SEQ_NODE *p;
+bool 
+has_fixed_dists (SEQ_NODE *p)
 { 
 if (p==NULL) return(FALSE);
 else switch (p->type) {
@@ -774,18 +782,16 @@ else switch (p->type) {
 }
 
 
-bool unpermutable(p)
-SEQ_NODE *p;
+bool 
+unpermutable (SEQ_NODE *p)
 { reset_seq(p,TRUE); return(!perm_seq(p,FALSE,FALSE)); }
 
 
 
 /***************** rather crufty stuff for 3pt *****************/
 
-SEQ_NODE *Tinit(ok,i_cnt,j_cnt,k_cnt,locus,num_loci)
-bool *ok;
-int *i_cnt, *j_cnt, *k_cnt;
-int *locus, num_loci;
+SEQ_NODE *
+Tinit (bool *ok, int *i_cnt, int *j_cnt, int *k_cnt, int *locus, int num_loci)
 {
     if (num_loci<3) send(CRASH);
     *ok= TRUE;
@@ -800,10 +806,8 @@ int *locus, num_loci;
 }
     
 
-bool Tnext(i_cnt,j_cnt,k_cnt,locus,num_loci,p)
-int *i_cnt, *j_cnt, *k_cnt;
-int *locus, num_loci;
-SEQ_NODE *p;
+bool 
+Tnext (int *i_cnt, int *j_cnt, int *k_cnt, int *locus, int num_loci, SEQ_NODE *p)
 {
     if (++*k_cnt > num_loci-1) {		/* k is innermost loop */
 	if (++*j_cnt > num_loci-2) {

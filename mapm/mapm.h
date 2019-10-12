@@ -277,129 +277,129 @@ SEQ_NODE *seq; char *seq_string; set by set_current_seq
    these consistent, I will kill you. */
 
 /* general */
-command set_print_names();
-command set_tolerance();
-command set_units();
-command set_cm_func();
-command set_autosave();
-command set_more_mode();
+command set_print_names(void);
+command set_tolerance(void);
+command set_units(void);
+command set_cm_func(void);
+command set_autosave(void);
+command set_more_mode(void);
 
 /* two point */
-command set_default_linkage();
+command set_default_linkage(void);
 
 /* three point */
-command set_use_3pt();
-command set_3pt_linkage();
-command set_3pt_threshold();
-command set_3pt_errors();
+command set_use_3pt(void);
+command set_3pt_linkage(void);
+command set_3pt_threshold(void);
+command set_3pt_errors(void);
 
 /* order maker */
-command set_npt_threshold();
-command set_inf_threshold();
-command set_print_all_maps();
+command set_npt_threshold(void);
+command set_inf_threshold(void);
+command set_print_all_maps(void);
 
 /* F2 and error checker stuff */
-command set_fake_maps(); /* wizard */
-command set_use_error_rate();
-command set_error_lod_thresh();
+command set_fake_maps(void); /* wizard */
+command set_use_error_rate(void);
+command set_error_lod_thresh(void);
 
 /**** in sys_cmds.c ****/
-command new_load_data();
-command new_save_data();
-command new_prepare();
-command set_error_rate();
-command make_note();		/* note */
-command set_age();
+command new_load_data(void);
+command new_save_data(void);
+command new_prepare(void);
+command set_error_rate(void);
+command make_note(void);		/* note */
+command set_age(void);
 
 /* sequence commands now in sys_cmds.c */
-command sequence();
-command expand_sequence();
-command history();
-command let();
-command let_expanding();
-command names();      		
-command forget();     		/* forget name? */
+command sequence(void);
+command expand_sequence(void);
+command history(void);
+command let(void);
+command let_expanding(void);
+command names(void);
+command forget(void);     		/* forget name? */
 
-command download();   /* downloads data from map_base for Mapmaker loading */
-command save_to_database();/* sends map data (frame/assign/place) back to the database */
-command import();
-command export();
+command download(void);   /* downloads data from map_base for Mapmaker loading */
+command save_to_database(void);/* sends map data (frame/assign/place) back to the database */
+command import(void);
+command export(void);
 
 
 /**** in two_cmds.c ****/
-command two_point();
-command three_point();
-command forget_three_point();
-command haplotype();
-command unhaplotype();
-command group();
-command order_maker();
-command greedy();
-command list_loci();
-command list_mapping();
-command list_haplotypes();
+command two_point(void);
+command three_point(void);
+command forget_three_point(void);
+command haplotype(void);
+command unhaplotype(void);
+command group(void);
+command order_maker(void);
+command greedy(void);
+command list_loci(void);
+command list_mapping(void);
+command list_haplotypes(void);
 
-command biglods();
-command lodtable();
-command near_locus();
-command near_chrom();
-command pairwise();
-command place();
-command suggest_subset();
+command biglods(void);
+command lodtable(void);
+command near_locus(void);
+command near_chrom(void);
+command pairwise(void);
+command place(void);
+command suggest_subset(void);
 
 /* in cmds.c */
-command make_map();		/* map */
-command draw_map();             /* map */
-command genotypes();		/* map */
-command compare();
-command try();
-command likely(); 		/* likelihood */
-command permsex();    		/* permute sexes */
-command use();        		/* use */
-command ripple();
+command make_map(void);		/* map */
+command draw_map(void);             /* map */
+command genotypes(void);		/* map */
+command compare(void);
+command try(void);
+command likely(void); 		/* likelihood */
+command permsex(void);    		/* permute sexes */
+command use(void);        		/* use */
+command ripple(void);
 
-command set_framework();  /* makes a map, stores it in chromosome list */
-command set_anchors();
-command print_chromosomes();  /* prints SAVED_LIST of chromosomes */
-command print_short_chroms(); /* for F2 data, prints chromosomes in raw F2 form */
-command attach();
-command assign();
-command unassign();
-command save();
-command meiosis_counter();
-command chrom_pics();
-command family_cross_count();
-command delete_locus();
-command append_locus();
-command edit_sequence();
-command new_insert();
-command new_delete();
-command new_append();
-command show_seq_history(); /* previous sequences */
-command set_class();
-command make_classes();
+command set_framework(void);  /* makes a map, stores it in chromosome list */
+command set_anchors(void);
+command print_chromosomes(void);  /* prints SAVED_LIST of chromosomes */
+command print_short_chroms(void); /* for F2 data, prints chromosomes in raw F2 form */
+command attach(void);
+command assign(void);
+command unassign(void);
+command save(void);
+command meiosis_counter(void);
+command chrom_pics(void);
+command family_cross_count(void);
+command delete_locus(void);
+command append_locus(void);
+command edit_sequence(void);
+command new_insert(void);
+command new_delete(void);
+command new_append(void);
+command show_seq_history(void); /* previous sequences */
+command set_class(void);
+command make_classes(void);
 void init_class_names(); /* could become an interactive command */
 
 /* map_func.c */
-command cm_func();
+command cm_func(void);
 
 /* in auto.c */
-command assign(), unassign(), attach(), chrom(), show_chrom(), list_loci();
-command place_together(), subset(), place();
-command make_chromosome();
-command list_chroms();
-command list_assignments();
-command batch_place(), iter();
-command draw_chromosome();
-command draw_all_chromosomes();
+command assign(void), unassign(void), attach(void), chrom(void), show_chrom(void), list_loci(void);
+command place_together(), subset(void), place(void);
+command make_chromosome(void);
+command list_chroms(void);
+command list_assignments(void);
+command batch_place(), iter(void);
+command draw_chromosome(void);
+command draw_all_chromosomes(void);
 
 
 void seg_dist();
 
 bool mapm_save_on_exit(); /* now in main.c */
 
-command prepdat();    		
-command translate();
+command prepdat(void);    		
+command translate(void);
 
 
 /* in sequence.c */

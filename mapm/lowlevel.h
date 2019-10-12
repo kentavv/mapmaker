@@ -166,50 +166,51 @@ typedef union {
 
 /* Functions */
 /*in ctm.c */
-void converge_to_map();  /* arg: MAP; calls map making functions and returns
+#include "map_info.h"
+void converge_to_map(MAP *map);  /* arg: MAP; calls map making functions and returns
 			    the converged map (alters: rec_frac, log-like) */
 /* in multipt.c */
-void allocate_recs();    /* These procedures are called by converge_to_map */
-void allocate_temps();   /* and assist in the map making. */
-void free_memory_temps();
-void no_history();
-bool norm_conv_rule();
-bool norm_inner_conv_rule();
-bool inner_converge_instantly();
-bool converge_instantly();
-void norm_make_new_map();
+//void allocate_recs();    /* These procedures are called by converge_to_map */
+//void allocate_temps();   /* and assist in the map making. */
+//void free_memory_temps();
+//void no_history();
+//bool norm_conv_rule();
+//bool norm_inner_conv_rule();
+//bool inner_converge_instantly();
+//bool converge_instantly();
+//void norm_make_new_map();
 
-/* map making procedures (separated by data type) */
-/* in interx.c */
-void f2_init_for_em();
-void f2_count_recs();
-void f2_free_memory_from_em();
-/* the following are also in interx.c but are used by other functions */
-int symbol_value();
-int changes();
-real f2_prob(), f3_prob();
-real power();
+///* map making procedures (separated by data type) */
+///* in interx.c */
+//void f2_init_for_em();
+//void f2_count_recs();
+//void f2_free_memory_from_em();
+///* the following are also in interx.c but are used by other functions */
+//int symbol_value();
+//int changes();
+//real f2_prob(), f3_prob();
+//real power();
 
-/* in known.c */
-void known_init_for_em();
-void known_count_recs();
-void known_free_memory_from_em();
-
-/* in backx.c */
-void backcross_init_for_em();
-void backcross_count_recs();
-void backcross_free_memory_from_em();
-
-/* in unk_init.c */
-void unk_init_for_em();
-void unk_free_memory_from_em();
-/*in unk_cnt.c */
-void unk_count_recs();
-
-/* in new_count.c */
-void new_unk_init_for_em();
-void new_unk_free_memory_from_em();
-void new_unk_count_recs();
+///* in known.c */
+//void known_init_for_em();
+//void known_count_recs();
+//void known_free_memory_from_em();
+//
+///* in backx.c */
+//void backcross_init_for_em();
+//void backcross_count_recs();
+//void backcross_free_memory_from_em();
+//
+///* in unk_init.c */
+//void unk_init_for_em();
+//void unk_free_memory_from_em();
+///*in unk_cnt.c */
+//void unk_count_recs();
+//
+///* in new_count.c */
+//void new_unk_init_for_em();
+//void new_unk_free_memory_from_em();
+//void new_unk_count_recs();
 
 
 /* Constant definitions useful in converge_to_map() and 

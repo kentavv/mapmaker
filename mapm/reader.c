@@ -16,6 +16,8 @@
 #define INC_EQN
 #include "mapm.h"
 
+int symbol_value (int chr, char *symb);
+
 RAW_DATA raw;
 int original_markers;
 
@@ -263,7 +265,7 @@ void
 do_unload_data (void)
 {
     if (raw.data_type==F2)
-      free_f2_data(raw.num_markers,raw.data.f2.num_indivs);
+      free_f2_data(raw.num_markers/*,raw.data.f2.num_indivs*/);
 #ifdef HAVE_CEPH
       else free_ceph_data(raw.num_markers,raw.data.ceph,num_families);
     free_sex_choose();
@@ -272,7 +274,7 @@ do_unload_data (void)
     undo_state();
     free_order_data(raw.num_markers);
     free_mapping_data(raw.num_markers);
-    free_seq_stuff(raw.num_markers);
+    free_seq_stuff(/*raw.num_markers*/);
     free_two_pt(raw.num_markers);
     free_three_pt(raw.num_markers);
     free_hmm_temps(raw.num_markers,raw.data.f2.num_indivs,
