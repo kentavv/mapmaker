@@ -170,4 +170,34 @@ void array_times_matrix(real *a, real **b, int rows, int columns, real *c);
 
 #define math_init() { seedrand(NONRANDOM); } /* called by lib_init() */
 
+/***** OTHER USEFUL OPERATIONS FOR REAL NUMBER ARRAYS *****/
+
+//real rmean();	/* real *data; int array_len; returns mean */
+//real rmaxin();	/* real *data; int array_len; returns largest */
+//real rminin();	/* real *data; int array_len; returns smallest */
+//real rmedian();	/* real *data; int array_len; returns median */
+//real rmiddle();	/* real *data; int array_len; returns middle entry */
+//void rcopy(); 	/* real *to, *from; int array_len; copies array */
+
+///* This one needs work */
+//bool rhistogram();	/* real *data; int array_len, min_num_buckets;... */
+//			/* real foo, bar; (unused) - returns T or F */
+//
+///***** AND MATRICIES... *****/
+//
+//void mat_invert(); /* args: real **m; int size; real **m_inverse; */
+///* Invert square matrix m by Gauss' method, side-effecting the
+//   (already allocated!) matrix m_inverse. m_inverse should be 2*size
+//   columns (2nd index) by size rows (first index) - its left square will be
+//   left with the result (ignore the right side). */
+//
+//void mat_mult(); /* args: real **m, **m2; int size; real **m_times_m2; */
+///* Multiply square matricies m and m2, side-effecting the (already allocated!)
+//   matrix m_times_m2, which should be the same size as m and m2 */
+//
+//void array_times_matrix(); /* real *a, **m; int rows, columns; real *result; */
+///* Multiply array a (length=rows) times matrix b (indicies=[row][column]),
+//   side effecting the (already allocated!) array c (length=columns). */
+
+
 #endif

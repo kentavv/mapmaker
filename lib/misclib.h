@@ -1,3 +1,6 @@
+#ifndef _MISCLIB_H_
+#define _MISCLIB_H_
+
 /******************************************************************************
 
  #    #     #     ####    ####   #          #    #####           #    #
@@ -16,23 +19,23 @@
 /***** GETTING THE TIME (code is in syscode.c) *****/
 /* DO NOT use the time() system function alone, it's not portable! */
 
-char *time_string(); /* no args; returns NULL if it fails */
-real usertime(); /* args: bool do_reset; */
-/* returns time in seconds, or -1.0 if it fails: do_reset makes it work like
-   a stopwatch (it starts counting when lib_init is executed) */
+//char *time_string(); /* no args; returns NULL if it fails */
+//real usertime(); /* args: bool do_reset; */
+///* returns time in seconds, or -1.0 if it fails: do_reset makes it work like
+//   a stopwatch (it starts counting when lib_init is executed) */
 
 /***** SUBPROCESSES (code is in syscode.c) *****/
 
-/* These both return FALSE on failure, TRUE if OK */
-bool shell_command(); /* arg: char *command; defined in system.h */
-bool subshell();      /* no args. returns T/F */
+///* These both return FALSE on failure, TRUE if OK */
+//bool shell_command(); /* arg: char *command; defined in system.h */
+//bool subshell();      /* no args. returns T/F */
 
 
 /***** GET/SET DIRECTORY (code is in syscode.c) *****/
 
-/* These both also return FALSE on failure, TRUE if OK */
-bool get_directory();     /* args: char *str; str>=PATH_LENGTH+1 chars */
-bool change_directory();  /* args: char *str; str is directory name */
+///* These both also return FALSE on failure, TRUE if OK */
+//bool get_directory();     /* args: char *str; str>=PATH_LENGTH+1 chars */
+//bool change_directory();  /* args: char *str; str is directory name */
 
 
 /***** SORT OPERATIONS FOR SIMPLE ARRAYS (code is in mathlib.c) *****/
@@ -89,34 +92,6 @@ your own sorting routines. */
 #define psort(p,n,t,f) qsort(QSORT_CAST(p),(QSORT_LENGTH)n,sizeof(t*),f)
 #define PSORT_COMPARE_TYPE(t) QSORT_COMPARE_PTR_TO(t)
  
-
-/***** OTHER USEFUL OPERATIONS FOR REAL NUMBER ARRAYS *****/
-
-real rmean();	/* real *data; int array_len; returns mean */
-real rmaxin();	/* real *data; int array_len; returns largest */
-real rminin();	/* real *data; int array_len; returns smallest */
-real rmedian();	/* real *data; int array_len; returns median */	
-real rmiddle();	/* real *data; int array_len; returns middle entry */
-void rcopy(); 	/* real *to, *from; int array_len; copies array */
-
-/* This one needs work */
-bool rhistogram();	/* real *data; int array_len, min_num_buckets;... */
-			/* real foo, bar; (unused) - returns T or F */
-
-/***** AND MATRICIES... *****/ 
-
-void mat_invert(); /* args: real **m; int size; real **m_inverse; */
-/* Invert square matrix m by Gauss' method, side-effecting the
-   (already allocated!) matrix m_inverse. m_inverse should be 2*size
-   columns (2nd index) by size rows (first index) - its left square will be
-   left with the result (ignore the right side). */
-
-void mat_mult(); /* args: real **m, **m2; int size; real **m_times_m2; */
-/* Multiply square matricies m and m2, side-effecting the (already allocated!)
-   matrix m_times_m2, which should be the same size as m and m2 */
-
-void array_times_matrix(); /* real *a, **m; int rows, columns; real *result; */
-/* Multiply array a (length=rows) times matrix b (indicies=[row][column]),
-   side effecting the (already allocated!) array c (length=columns). */
-
 #include "mathlib.h"
+
+#endif
