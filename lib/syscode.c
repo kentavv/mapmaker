@@ -447,7 +447,7 @@ void lib_puts(FILE *fp, char *str)
 }
 
 
-void iocheck(void) { return; }
+//void iocheck(void) { return; }
 
 
 void tty_init(void)
@@ -570,7 +570,7 @@ void hp_cursor_left(int i, char *s)
 #define mac_highlight(on)   	{}
 #define mac_del_prev_ln()   	{}
 #define mac_boing()       	{}
-void mac_cursor_left(void)		{}
+//void mac_cursor_left(void)		{}
 
 void tty_hello(void)
 {
@@ -634,16 +634,16 @@ bool do_cursor_left(int num_spaces /* might be FAR_LEFT */, char *str_to_print)
 }
 
 
-bool boing(void)
-{
-/* NEEDS WIMP AND MAC CONSOLE HOOK */
-    if (term==HP_TERM)     { hp_boing(); return(TRUE); } 
-    else if (term==ANSI)   { ansi_boing(); return(TRUE); } 
-#ifdef HAVE_CURSES
-    else if (term==CURSES) { curses_boing(); return(TRUE); } 
-#endif
-    else return(FALSE);
-}
+//bool boing(void)
+//{
+///* NEEDS WIMP AND MAC CONSOLE HOOK */
+//    if (term==HP_TERM)     { hp_boing(); return(TRUE); }
+//    else if (term==ANSI)   { ansi_boing(); return(TRUE); }
+//#ifdef HAVE_CURSES
+//    else if (term==CURSES) { curses_boing(); return(TRUE); }
+//#endif
+//    else return(FALSE);
+//}
 
 
 /****************************** TOPLEVEL STUFF ******************************/
@@ -679,13 +679,13 @@ void lib_init(void)
     tty_hello();
 }
 
-void lib_inits(int *argc_ptr, char *argv[])
-{
-    custom_lib_init();
-    /* if (!screen_init(argc_ptr,argv)) */ 
-    get_cmd_line_args(argc_ptr,argv);
-    tty_hello();
-}
+//void lib_inits(int *argc_ptr, char *argv[])
+//{
+//    custom_lib_init();
+//    /* if (!screen_init(argc_ptr,argv)) */
+//    get_cmd_line_args(argc_ptr,argv);
+//    tty_hello();
+//}
 
 
 /* This is a little specialized for MAPMAKER right now. Generalize soon... */
