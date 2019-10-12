@@ -30,28 +30,28 @@ char *BADDATA_text;
 char *BADDATA_reason;
 char *badstr;
 
-int read_data_file_header();
-int read_raw_file_header();
-FILE *start_save_to_file();
-void finish_save_to_file();
-bool read_magic_number();
-void write_magic_number();
-int  new_magic_number();
-
-void new_read_f2_data();
-void allocate_f2_data();
-void free_f2_data();
-void free_traits();
-void new_read_f2_locus();
-void write_f2_data();
-
-void new_read_f2_raw();
-void read_raw_f2_locus();
-void read_raw_trait();
-void write_traits();
-
-void add_to_seg_dist(char c, int locus);
-void scale_seg_dist(int locus);
+//int read_data_file_header();
+//int read_raw_file_header();
+//FILE *start_save_to_file();
+//void finish_save_to_file();
+//bool read_magic_number();
+//void write_magic_number();
+//int  new_magic_number();
+//
+//void new_read_f2_data();
+//void allocate_f2_data();
+//void free_f2_data();
+//void free_traits();
+//void new_read_f2_locus();
+//void write_f2_data();
+//
+//void new_read_f2_raw();
+//void read_raw_f2_locus();
+//void read_raw_trait();
+//void write_traits();
+//
+//void add_to_seg_dist(char c, int locus);
+//void scale_seg_dist(int locus);
 
 bool uppercase_genotypes; /* set by read_raw_header() for read_raw_f2_locus()*/
 

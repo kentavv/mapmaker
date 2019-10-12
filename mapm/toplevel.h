@@ -98,7 +98,7 @@ void write_f2_data(FILE *fp);
 void new_read_f2_raw(FILE *fp, char *symbols);
 void read_raw_f2_locus(FILE *fp, int locus_num, char *symbol);
 void read_raw_trait(FILE *fp, int trait_num);
-int symbol_value(int chr, char *symb);
+//int symbol_value(int chr, char *symb);
 void write_traits(FILE *fp);
 void add_to_seg_dist(char c, int locus);
 void scale_seg_dist(int locus);
