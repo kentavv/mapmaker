@@ -17,13 +17,11 @@
 #define INC_HELP_DEFS
 #include "system.h"
 
-int  get_token();
+//int  get_token();
 
 char Cw, Ct, *self_delimiting, *null_string;
 
-void nstrcpy(to,from,n)
-char  *to, *from;
-int n;
+void nstrcpy(char *to, char *from, int n)
 {
 	int i;
 	
@@ -32,9 +30,8 @@ int n;
 }
 
 
-void maxstrcat(to,from,n)
-char  *to, *from;
-int n;
+void 
+maxstrcat (char *to, char *from, int n)
 {
 	int i,j;
 	
@@ -44,9 +41,8 @@ int n;
 }
 
 
-void nstrcat(to,from,n)
-char  *to, *from;
-int n;
+void 
+nstrcat (char *to, char *from, int n)
 {
 	int i,j;
 	
@@ -56,8 +52,8 @@ int n;
 }
 
 
-void strins(to,from)
-char *to, *from;
+void 
+strins (char *to, char *from)
 {
     int i, current_length, num_to_ins;
 
@@ -69,9 +65,8 @@ char *to, *from;
 }
     
 
-void nstrins(to,from,max_to_ins)
-char *to, *from;
-int max_to_ins;
+void 
+nstrins (char *to, char *from, int max_to_ins)
 {
     int i, current_length, num_to_ins;
 
@@ -83,9 +78,8 @@ int max_to_ins;
 }
     
 
-void maxstrins(to,from,max_total_length)
-char *to, *from;
-int max_total_length;
+void 
+maxstrins (char *to, char *from, int max_total_length)
 {
     int i, current_length, num_to_ins;
 
@@ -98,9 +92,8 @@ int max_total_length;
 }
     
 
-void strdel(str,num_chars)
-char *str;
-int num_chars;
+void 
+strdel (char *str, int num_chars)
 {
   	int i;
 	char *rest;
@@ -111,8 +104,8 @@ int num_chars;
 }
 
 
-char *mkstrcpy(str)
-char *str;
+char *
+mkstrcpy (char *str)
 {
 	char *foo;
 
@@ -122,13 +115,13 @@ char *str;
 }
 		
 
-char *ptr_to(str)
-char *str;
+char *
+ptr_to (char *str)
 { return(str); } /* A Kludge to be sure, but the only way to do this in C */
 
 
-int nullstr(str) 
-char *str;
+int 
+nullstr (char *str)
 {
 	int i;
 	
@@ -143,8 +136,11 @@ char *str;
    a conflict with something of the same name in libc.a on
    some UNIX machines. */
 
-int strfinder(str,chr)	/* index of chr, or -1 if can't find chr */
-char *str, chr;
+int 
+strfinder (	/* index of chr, or -1 if can't find chr */
+    char *str,
+    int chr
+)
 {
 	int i;
 	
@@ -154,9 +150,8 @@ char *str, chr;
 }
 
 
-bool nmatches(s1,s2,n) 
-char *s1, *s2;
-int n;
+bool 
+nmatches (char *s1, char *s2, int n)
 /* match at least n chars in the first token in s1 to s2 "template" 
    for example "pr" matches "print" (n<=2). 
    if s1=="" or s2=="" it returns FALSE, if n==0 it returns TRUE 
@@ -177,8 +172,11 @@ int n;
 }
 
 
-int xstreq(s1,s2)	/* !!! currently broken !!! */
-char *s1, *s2;
+int 
+xstreq (	/* !!! currently broken !!! */
+    char *s1,
+    char *s2
+)
 {
     int i, j, preceeding_space;
 
@@ -207,17 +205,15 @@ char *s1, *s2;
 }
 	
 	
-char *truncstr(str,length)
-char *str;
-int length;
+char *
+truncstr (char *str, int length)
 { if (str==NULL) send(CRASH);
   if (len(str)>length) str[length]='\0';
   return(str); }
   
 
-char *pad_to_len(str,length)
-char *str;
-int length;
+char *
+pad_to_len (char *str, int length)
 { 
     int start, i;
 
@@ -229,9 +225,8 @@ int length;
 }
 
 
-char *append_spaces(str,num)
-char *str;
-int num;
+char *
+append_spaces (char *str, int num)
 { 
     int i, j;
 
@@ -241,8 +236,8 @@ int num;
 }
 
 
-char *despace(str) 
-char *str;
+char *
+despace (char *str)
 /* All whitespace is changed to single spaces. Leading and trailing whitespace
    is done away with entirely. */
 {
@@ -265,8 +260,8 @@ char *str;
 }
 
 
-char *lowercase(str)
-char *str;
+char *
+lowercase (char *str)
 {
     int i;
     char c;
@@ -279,8 +274,8 @@ char *str;
 }
 
 
-char *_filter(str)
-char *str;
+char *
+_filter (char *str)
 {
     int i,j;
     
@@ -291,8 +286,8 @@ char *str;
 }
 
 
-char *filter_nonspaces(str)
-char *str;
+char *
+filter_nonspaces (char *str)
 {
     int i,j;
     
@@ -304,13 +299,13 @@ char *str;
 }
 
 
-char *crunch(str)
-char *str;
+char *
+crunch (char *str)
 { despace(str);	_filter(str); lowercase(str); return(str); }
 
 
-char *uppercase(str)
-char *str;
+char *
+uppercase (char *str)
 {
 	int i;
 	char c;
@@ -334,10 +329,14 @@ char *str;
 
 #define self(c) strin(self_delimiting,c)
 
-bool get_token(str,tok,p_rest,length,truncated) 	
-char *str, *tok, **p_rest;
-int length;
-bool *truncated; /* side-effected */
+bool 
+get_token (
+    char *str,
+    char *tok,
+    char **p_rest,
+    int length,
+    bool *truncated /* side-effected */
+)
 {
 	int i, j;
 	
@@ -373,9 +372,12 @@ bool *truncated; /* side-effected */
 }
 
 
-bool split_string(str,rest,divider)
-char *str, **rest;
-char divider; /* character that the string should be split on */
+bool 
+split_string (
+    char *str,
+    char **rest,
+    int divider /* character that the string should be split on */
+)
 {
     int i, j;
     
@@ -394,9 +396,8 @@ char divider; /* character that the string should be split on */
 
 char *tok, *x; /* local */
 
-int itoken(p_str,default_val,p_val)
-char **p_str;
-int default_val, *p_val;
+int 
+itoken (char **p_str, int default_val, int *p_val)
 {
 	char *rest;
 	long foo;
@@ -415,9 +416,8 @@ int default_val, *p_val;
 }
 
 
-int ltoken(p_str,default_val,p_val)
-char **p_str;
-long default_val, *p_val;
+int 
+ltoken (char **p_str, long default_val, long *p_val)
 {
 	char *rest;
 	long foo;
@@ -435,9 +435,8 @@ long default_val, *p_val;
 }
 
 
-int rtoken(p_str,default_val,p_val)
-char **p_str;
-real default_val, *p_val;
+int 
+rtoken (char **p_str, real default_val, real *p_val)
 {
 	char *rest;
 	double foo;
@@ -458,11 +457,8 @@ real default_val, *p_val;
 
 
 /* only to be driven by macros in strlib.c */
-int stok(p_str,default_val,val,num_chars,allow_truncation,ok_chars)
-char **p_str;
-char *default_val, *val;
-int num_chars, allow_truncation;
-char *ok_chars;
+int 
+stok (char **p_str, char *default_val, char *val, int num_chars, int allow_truncation, char *ok_chars)
 {
 	char *rest;
 	bool toolong;
@@ -489,15 +485,18 @@ char *ok_chars;
 	return(TRUE);
 }
 
-int stoken(p,def,val)
-char **p, *def, *val;
+int 
+stoken (char **p, char *def, char *val)
 { return(stok(p,def,val,TOKLEN,TRUE,NULL)); }
 	
 
-int parse_char(p_str,ok_list,skip_whitespace,p_ch) /* see strlib.h for info */
-char **p_str, *ok_list;
-int skip_whitespace;
-char *p_ch;
+int 
+parse_char ( /* see strlib.h for info */
+    char **p_str,
+    char *ok_list,
+    int skip_whitespace,
+    char *p_ch
+)
 {
 	int i;
 	
@@ -515,13 +514,13 @@ char *p_ch;
 }
 
 
-void parse_whitespace(p_str)
-char **p_str;
+void 
+parse_whitespace (char **p_str)
 { while(**p_str!='\0' && white(**p_str)) ++*p_str; }
 
 
-int count_tokens(str)
-char *str;
+int 
+count_tokens (char *str)
 {
   int i, n;
 
@@ -538,8 +537,8 @@ char *str;
 }
 
 
-bool is_a_token(str)
-char *str;
+bool 
+is_a_token (char *str)
 {   
     int length, i;
 
@@ -562,8 +561,8 @@ int field(char **p_str, int length, char *val)   /* OBSOLETE */
 
 /**** see strlib.h for info on irange(), lrange(), and rrange() ****/
 
-int irange(p_var, min_val, max_val)  
-int *p_var, min_val, max_val;
+int 
+irange (int *p_var, int min_val, int max_val)
 {
 	if (*p_var<min_val) { *p_var=min_val; return(FALSE); }
 	else if (*p_var>max_val) { *p_var=max_val; return(FALSE); }
@@ -571,8 +570,8 @@ int *p_var, min_val, max_val;
 }
 
 
-int lrange(p_var, min_val, max_val)
-long *p_var, min_val, max_val;
+int 
+lrange (long *p_var, long min_val, long max_val)
 {
     if (*p_var<min_val) { *p_var=min_val; return(FALSE); }
     else if (*p_var>max_val) { *p_var=max_val; return(FALSE); }
@@ -580,8 +579,8 @@ long *p_var, min_val, max_val;
 }
 
 
-int rrange(p_var, min_val, max_val)
-real *p_var, min_val, max_val;
+int 
+rrange (real *p_var, real min_val, real max_val)
 {
     if (*p_var<min_val) { *p_var=min_val; return(FALSE); }
     else if (*p_var>max_val) { *p_var=max_val; return(FALSE); }
@@ -589,9 +588,12 @@ real *p_var, min_val, max_val;
 }
 
 
-char *binary(num,bits,str)
-int num, bits;
-char *str;  /* side effected */
+char *
+binary (
+    int num,
+    int bits,
+    char *str  /* side effected */
+)
 {
 	int i;
 	
@@ -605,7 +607,8 @@ char *str;  /* side effected */
 static char **tempstr;        /* internal use only */
 static int tempstr_n;         /* internal use only */
 
-char *get_temp_string() 
+char *
+get_temp_string (void) 
 { 
     char *str;
 
@@ -632,8 +635,8 @@ typedef struct {
 PRINT_INFO **print_info; /* [(int)(format*10)] => ptr to a PRINT_INFO */
 
 
-PRINT_INFO *lookup_print_info(format_num)
-real format_num;
+static PRINT_INFO *
+lookup_print_info (real format_num)
 {   
     int int_format;
     PRINT_INFO *p;
@@ -646,7 +649,8 @@ real format_num;
 }
 
 
-void init_print_info()
+void 
+init_print_info (void)
 {
     int int_format, total_spaces, decimal_places;
     PRINT_INFO *p;
@@ -681,8 +685,8 @@ void init_print_info()
 
 /**************** The funky real-number printing routines ********************/
 
-char *rs(format, number)
-real format, number;
+char *
+rs (real format, real number)
 {
     int i, max_spaces;
     char *str;
@@ -706,8 +710,8 @@ real format, number;
 }
 
 
-char *rsn(format, number)
-real format, number;
+char *
+rsn (real format, real number)
 {
     int i, max_spaces;
     char *str;
@@ -734,8 +738,8 @@ real format, number;
 }
 
 
-char *rsd(format, number)
-real format, number;
+char *
+rsd (real format, real number)
 {
     int i, max_spaces;
     char *str;
@@ -760,7 +764,8 @@ real format, number;
 }
 
 
-void str_init()
+void 
+str_init (void)
 { 
     array(tok,TOKLEN+1,char); tok[0]='\0';
     array(x,TOKLEN+1,char); x[0]='\0';

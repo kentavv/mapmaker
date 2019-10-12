@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
             } on_error { print("error opening photo file\n"); }
     }
 
-    if (!nullstr(file_arg[RUN_FILE_ARG],READ)) {
+    if (!nullstr(file_arg[RUN_FILE_ARG])) {
         run {
                 redirect_input(file_arg[RUN_FILE_ARG], TRUE);
             } on_error { print("error opening run file\n"); }

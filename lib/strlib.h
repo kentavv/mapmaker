@@ -1,3 +1,6 @@
+#ifndef _STRLIB_H_
+#define _STRLIB_H_
+
 /******************************************************************************
 
   ####    #####  #####   #          #    #####           #    #
@@ -11,41 +14,92 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-/***** String and parsing functions for the helpers library *****/
 
-/****************************************************************************
-Unfortunately, much of the C-library of string functions is not very
-portable: Most functions are in general the same, although they differ
-in a number of minor anoying ways. Of particular annayance are strlen()
-and the strn... functions (strncmp(), strncpy(), and strncat()).
 
-The functions strchr(), strrchr(), strspn(), strcspn(), strbrk(), and
-strtok() do not exist in all C implementations. Also, the string <->
-number conversion routines, including atof(), strtod(), strto(),
-atoi(), atol() and strtoul() may have compatibility problems. Some of
-the helper functions provide similar functionalities while preserving
-compatibility: use them instead!
+void nstrcpy(char *to, char *from, int n);
+void maxstrcat(char *to, char *from, int n);
+void nstrcat(char *to, char *from, int n);
+void strins(char *to, char *from);
+void nstrins(char *to, char *from, int max_to_ins);
+void maxstrins(char *to, char *from, int max_total_length);
+void strdel(char *str, int num_chars);
+char *mkstrcpy(char *str);
+char *ptr_to(char *str);
+int nullstr(char *str);
+int strfinder(char *str, int chr);
+bool nmatches(char *s1, char *s2, int n);
+int xstreq(char *s1, char *s2);
+char *truncstr(char *str, int length);
+char *pad_to_len(char *str, int length);
+char *append_spaces(char *str, int num);
+char *despace(char *str);
+char *lowercase(char *str);
+char *_filter(char *str);
+char *filter_nonspaces(char *str);
+char *crunch(char *str);
+char *uppercase(char *str);
+bool get_token(char *str, char *tok, char **p_rest, int length, bool *truncated);
+bool split_string(char *str, char **rest, int divider);
+int itoken(char **p_str, int default_val, int *p_val);
+int ltoken(char **p_str, long default_val, long *p_val);
+int rtoken(char **p_str, real default_val, real *p_val);
+int stok(char **p_str, char *default_val, char *val, int num_chars, int allow_truncation, char *ok_chars);
+int stoken(char **p, char *def, char *val);
+int parse_char(char **p_str, char *ok_list, int skip_whitespace, char *p_ch);
+void parse_whitespace(char **p_str);
+int count_tokens(char *str);
+bool is_a_token(char *str);
+int field(char **p_str, int length, char *val);
+int irange(int *p_var, int min_val, int max_val);
+int lrange(long *p_var, long min_val, long max_val);
+int rrange(real *p_var, real min_val, real max_val);
+char *binary(int num, int bits, char *str);
+char *get_temp_string(void);
+//PRINT_INFO *lookup_print_info(real format_num);
+void init_print_info(void);
+char *rs(real format, real number);
+char *rsn(real format, real number);
+char *rsd(real format, real number);
+void str_init(void);
 
-The functions toupper() etc. mentioned in K&R seem to be portable. 
-However, they are macros in some implementations! Thus, don't try
-toupper(ptr++), as ptr may get incremented more than once! Note that
-contrary to what K&R says, it is entirely reasonable to assume ASCII 
-codes are in use. 
 
-The only library functions known to be portable are strcat(),
-strcpy(), and strcmp(). Otherwise, you should use the functions
-provided here. Note that strcat() and strcpy() are inherently 
-dangerous, and they do not provide any bounds checking, and may 
-result in a crahing program. nstrcat() etc. are much preferred!
-****************************************************************************/
 
-/* Replacements for the C-Library... */
 
-/* These will return TRUE if they don't have to truncate, FALSE otherwise. */
-/* THIS IS NOT IMPLEMENTED YET! */
-void nstrcpy();	  /* args: char *to, *from; int num; copy <=num chars */
-void nstrcat();	  /* args: char *to, *from; int num; append <=num chars */
-void maxstrcat(); /* args: char *to, *from; int max; length kept <=max chars */
+///***** String and parsing functions for the helpers library *****/
+//
+///****************************************************************************
+//Unfortunately, much of the C-library of string functions is not very
+//portable: Most functions are in general the same, although they differ
+//in a number of minor anoying ways. Of particular annayance are strlen()
+//and the strn... functions (strncmp(), strncpy(), and strncat()).
+//
+//The functions strchr(), strrchr(), strspn(), strcspn(), strbrk(), and
+//strtok() do not exist in all C implementations. Also, the string <->
+//number conversion routines, including atof(), strtod(), strto(),
+//atoi(), atol() and strtoul() may have compatibility problems. Some of
+//the helper functions provide similar functionalities while preserving
+//compatibility: use them instead!
+//
+//The functions toupper() etc. mentioned in K&R seem to be portable.
+//However, they are macros in some implementations! Thus, don't try
+//toupper(ptr++), as ptr may get incremented more than once! Note that
+//contrary to what K&R says, it is entirely reasonable to assume ASCII
+//codes are in use.
+//
+//The only library functions known to be portable are strcat(),
+//strcpy(), and strcmp(). Otherwise, you should use the functions
+//provided here. Note that strcat() and strcpy() are inherently
+//dangerous, and they do not provide any bounds checking, and may
+//result in a crahing program. nstrcat() etc. are much preferred!
+//****************************************************************************/
+//
+///* Replacements for the C-Library... */
+//
+///* These will return TRUE if they don't have to truncate, FALSE otherwise. */
+///* THIS IS NOT IMPLEMENTED YET! */
+//void nstrcpy();	  /* args: char *to, *from; int num; copy <=num chars */
+//void nstrcat();	  /* args: char *to, *from; int num; append <=num chars */
+//void maxstrcat(); /* args: char *to, *from; int max; length kept <=max chars */
 
 /* To avoid the ANSI size_t idiocy... */
 
@@ -54,20 +108,20 @@ void maxstrcat(); /* args: char *to, *from; int max; length kept <=max chars */
 
 /* Other useful stuff... */
 
-char *mkstrcpy(); /* args: char *s; returns an allocated copy */ 
-char *ptr_to();   /* args: constant character string - return a ptr to it */
-void strdel();    /* args: char *s; int num; deletes num chars at s */ 
+//char *mkstrcpy(); /* args: char *s; returns an allocated copy */
+//char *ptr_to();   /* args: constant character string - return a ptr to it */
+//void strdel();    /* args: char *s; int num; deletes num chars at s */
 #define endof(str) ((str)+len(str))
 
-int strfinder();  /* args: char *str, c; get index of c in str or NOT_FOUND */ 
+//int strfinder();  /* args: char *str, c; get index of c in str or NOT_FOUND */
 #define NOT_FOUND (-1) 
 #define strin(str,chr) (strfinder(str,chr)!=NOT_FOUND)
 
-void strins();    /* args: char *a, *b; insert string b at a */
-void nstrins();	  /* args: char *a, *b; int num; insert at most num chars */
-void maxstrins(); /* args: char *a, *b; int max; length kept <= max */
+//void strins();    /* args: char *a, *b; insert string b at a */
+//void nstrins();	  /* args: char *a, *b; int num; insert at most num chars */
+//void maxstrins(); /* args: char *a, *b; int max; length kept <= max */
 
-bool nullstr();      /* args: char *s; TRUE if s==NULL or is all whitespace */
+//bool nullstr();      /* args: char *s; TRUE if s==NULL or is all whitespace */
 extern char *null_string; /* set to "" */
 #define streq(s1,s2)    (!strcmp(s1,s2)) 
 #define nstreq(s1,s2,n) (!nstrcmp(s1,s2,n)) 
@@ -76,15 +130,15 @@ extern char Cw, Ct;
 #define white(chr) ((Cw=(chr))==' ' || Cw=='\t' || Cw=='\n')
 #define trash(chr) (((Ct=(chr))!='\0') && (Ct<' ' || Ct>'~') && !white(Ct))
 
-bool nmatches(); /* args: char *s, *t; int num; */ 
-/* returns TRUE if chars in the 1st token in s match those in the token in 
-   "template" t, and if the token in s is at least num chars long. For 
-   example: "land" matches the template "lander", but not "lampshade". 
-   NOTE: s and t should be despace()ed and filter()ed, but not necessarily 
-   lowercase()ed (the match is case INSENSITIVE anyway). */
+//bool nmatches(); /* args: char *s, *t; int num; */
+///* returns TRUE if chars in the 1st token in s match those in the token in
+//   "template" t, and if the token in s is at least num chars long. For
+//   example: "land" matches the template "lander", but not "lampshade".
+//   NOTE: s and t should be despace()ed and filter()ed, but not necessarily
+//   lowercase()ed (the match is case INSENSITIVE anyway). */
 #define matches(s,t) nmatches(s,t,1)
 
-int xstreq(); 	/* currently broken? */
+//int xstreq(); 	/* currently broken? */
 #define istrlen len /* THIS IS AN OBSOLETE NAME- DON'T USE IT */
 
 /****************************************************************************
@@ -102,16 +156,16 @@ simply adds the requested number of spaces to the string. All
 side-effect their argument str, and return a pointer to it for yucks.
 ****************************************************************************/
 
-char *despace(); 	   /* args: char *str; side-effected */ 
-char *lowercase();	   /* args: char *str; side-effected */ 
-char *uppercase();	   /* args: char *str; side-effected */
-char *_filter();		   /* args: char *str; side-effected */ 
-char *filter_nonspaces();  /* args: char *str; side-effected */ 
-char *crunch(); 	   /* args: char *str; despace(_filter(lowercase())) */
-
-char *truncstr();	/* args: char *str; int max_chars; str side-effected */
-char *pad_to_len();     /* args: char *str; int max_chars; adds spaces */
-char *append_spaces();  /* args: char *str; int num_spaces; also adds spaces */
+//char *despace(); 	   /* args: char *str; side-effected */
+//char *lowercase();	   /* args: char *str; side-effected */
+//char *uppercase();	   /* args: char *str; side-effected */
+//char *_filter();		   /* args: char *str; side-effected */
+//char *filter_nonspaces();  /* args: char *str; side-effected */
+//char *crunch(); 	   /* args: char *str; despace(_filter(lowercase())) */
+//
+//char *truncstr();	/* args: char *str; int max_chars; str side-effected */
+//char *pad_to_len();     /* args: char *str; int max_chars; adds spaces */
+//char *append_spaces();  /* args: char *str; int num_spaces; also adds spaces */
 
 /****************************************************************************
 Each of the token-parsing functions work as follows: 
@@ -165,12 +219,12 @@ parsable_chars to indicate that any character is OK.
 ****************************************************************************/
 
 #define TOKLEN 40 
-int itoken();	 /* int token */ 
-int ltoken();	 /* long int token */ 
-int rtoken();	 /* real token */
+//int itoken();	 /* int token */
+//int ltoken();	 /* long int token */
+//int rtoken();	 /* real token */
 
-int stok(); /* INTERNAL USE ONLY! */ 
-int stoken(); /* args: p,def,val; does stok(p,def,val,TOKLEN,TRUE,NULL) */
+//int stok(); /* INTERNAL USE ONLY! */
+//int stoken(); /* args: p,def,val; does stok(p,def,val,TOKLEN,TRUE,NULL) */
 #define nstoken(p_str,def,val,num) stok(p_str,def,val,num,TRUE,NULL) 
 #define maxstoken(p_str,def,val,num) stok(p_str,def,val,num,FALSE,NULL)
 #define stokenof(p_str,def,val,chrs) stok(p_str,def,val,TOKLEN,TRUE,chrs) 
@@ -195,9 +249,9 @@ For example: the string "53 - (14+2)" with self_delimiting equal to
 extern char *self_delimiting;
 
 /*** Other useful stuff for parsing ***/
-int count_tokens();  /* args: char *str; */
-bool is_a_token();   /* args: char *str; must be despaced, or from stoken() */
-bool split_string(); /* args: char *str, **rest, divider; rest side-effected */
+//int count_tokens();  /* args: char *str; */
+//bool is_a_token();   /* args: char *str; must be despaced, or from stoken() */
+//bool split_string(); /* args: char *str, **rest, divider; rest side-effected */
 
 
 /****************************************************************************
@@ -210,9 +264,9 @@ returned.  Otherwise, *value is set to the apprpriate limit (low or
 high) and FALSE is returned.
 ****************************************************************************/
 
-int irange();	 /* integer range */ 
-int lrange(); 	 /* long int range */ 
-int rrange();	 /* real range */
+//int irange();	 /* integer range */
+//int lrange(); 	 /* long int range */
+//int rrange();	 /* real range */
 
 /****************************************************************************
 Parse_char parsing is similar to (and compatible with) the token
@@ -232,8 +286,8 @@ parse_whitespace() moves the ptr along until a non-whitespace character
 is encountered.
 ****************************************************************************/
 
-bool parse_char();	  /* args shown above */
-void parse_whitespace();  /* args: char **p_str; *p_str is side-effected */
+//bool parse_char();	  /* args shown above */
+//void parse_whitespace();  /* args: char **p_str; *p_str is side-effected */
 
 /* Arguments to parse_char() */ 
 #define ANYCHAR    NULL 
@@ -258,7 +312,7 @@ doccument this in your functions which use these or which call
 get_temp_str() directly.
 ***********************************************************************/
 
-char *get_temp_string(); /* returns the next available string for bashing */
+//char *get_temp_string(); /* returns the next available string for bashing */
 
 #define NUM_TEMP_STRINGS 50 
 #define TEMP_STRING_LEN 500
@@ -294,12 +348,12 @@ Each of these routines return a string "allocated" (appropriated) using
 get_temp_string(). Thus, heed the warnings above. 
 ************************************************************************/
 
-char *rs();   /* args: real format, num_to_print; */
-char *rsn();  /* args: real format, num_to_print; */
-char *rsd();  /* args: real format, num_to_print; */
+//char *rs();   /* args: real format, num_to_print; */
+//char *rsn();  /* args: real format, num_to_print; */
+//char *rsd();  /* args: real format, num_to_print; */
 
 /* other output formating stuff... */ 
-char *binary(); /* args: int num_to_print, num_bits; char *str; */
+//char *binary(); /* args: int num_to_print, num_bits; char *str; */
 
 /* macro char *maynl();  args: int chars; 
    returns a ptr to a string containing only the \n character if the number of 
@@ -320,11 +374,6 @@ char *binary(); /* args: int num_to_print, num_bits; char *str; */
    or a string of " " if num==1. Useful with maybe_s for lining things up */
 #define maybe_sp(n) ((n)!=1 ? "" : " ")
 
-void str_init();
+//void str_init();
 
-
-
-
-
-
-
+#endif
