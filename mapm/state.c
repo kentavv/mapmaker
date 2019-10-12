@@ -15,7 +15,9 @@
 #define INC_SHELL
 #include "mapm.h"
 
-void state_init_values();
+static void allocate_context (STATUS_CONTEXT *con);
+static void state_init_values (void);
+
 #define MAX_CONTEXTS 1     
 
 /* NOTE: keep the declarations of vars in the same order here, below in 

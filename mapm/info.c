@@ -651,11 +651,8 @@ three_linked (
 }
 
 
-void compute_3pt(seq,sex,trip_err_rate,like,map)
-SEQ_NODE *seq;
-bool sex;
-real trip_err_rate, *like;
-MAP *map;
+void 
+compute_3pt (SEQ_NODE *seq, bool sex, real trip_err_rate, real *like, MAP *map)
 {
     int i, k;
     real best;

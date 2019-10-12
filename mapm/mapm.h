@@ -144,11 +144,10 @@ extern char *BADDATA_reason;
 #define NUM_DATA_TYPES 4  /* used in old_ctm select_procs */
 
 /* Things used by the data readers in reader.c */
-void getdataln();
-void baddata();
-void do_save_data();
-void do_unload_data(); 
-void do_read_data();
+void getdataln(FILE *fp);
+void baddata(char *reason);
+void do_unload_data(void);
+void do_save_data(char *base_name, bool save_genos_too);
 
 
 /***************** MAPM Status Variables  ******************/
@@ -236,12 +235,9 @@ extern int active_context;
 #define the_sequence_history (context[active_context]->sequence_history)
 #define the_named_sequences  (context[active_context]->named_sequences)
 
-void allocate_context();
-void free_context();
-bool change_context();
-bool create_new_context();
-void read_status();  /* arg: FILE *fp; */
-void write_status(); /* arg: FILE *fp; */
+void free_context(STATUS_CONTEXT *con);
+void write_status(FILE *fp);
+void read_status(FILE *fp);
 
 /* Other State Vars of note
 MAP_FUNCTION *mapfunction (map_info.c, maps.c)
@@ -384,8 +380,8 @@ void init_class_names(); /* could become an interactive command */
 command cm_func(void);
 
 /* in auto.c */
-command assign(void), unassign(void), attach(void), chrom(void), show_chrom(void), list_loci(void);
-command place_together(), subset(void), place(void);
+command chrom(void), show_chrom(void);
+command place_together(), subset(void);
 command make_chromosome(void);
 command list_chroms(void);
 command list_assignments(void);
@@ -409,11 +405,11 @@ bool valid_new_name(char *str);
 
 
 /***************** Init Functions For Specific .c Files ******************/
-void npt_cmds_init();
-void map_init();
-void sequence_init();
-void state_init();
-void data_init();
+void npt_cmds_init (void);
+void map_init(void);
+void sequence_init (void);
+void state_init (void);
+void data_init (void);
 
 /***************** Other MAPM Include Files  ******************/
 

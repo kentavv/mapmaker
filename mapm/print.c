@@ -24,10 +24,7 @@ void print_err();
 
 #define MAX_LOG_LIKE_COLUMN 66
 
-void print_tiny_map(map,text,like_base)
-MAP *map;
-char *text; /* make sure its OK to use ps for this */
-real like_base;
+void print_tiny_map(MAP *map, char *text  /* make sure its OK to use ps for this */, real like_base)
 {
     int i, stop_column; 
     bool wrapped, had_unlinked=FALSE;

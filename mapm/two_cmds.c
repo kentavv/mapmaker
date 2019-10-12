@@ -26,9 +26,8 @@ void print_2pt_criteria();
 void parse_2pt_criteria();
 void print_lod_line();
 
-void print_2pt_criteria(str,lod,theta)
-char *str;
-real lod, theta;
+void 
+print_2pt_criteria (char *str, real lod, real theta)
 { sprintf(ps, "%s at min LOD %.2lf, max Distance %s", str, lod, rag(rf2str(theta))); 
   pr(); }
 

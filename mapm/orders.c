@@ -50,10 +50,8 @@ void free_3pt_matrix();
 
 /**************** Two-point, Haplotypes ****************/
 
-void get_linkage_group(locus,num_loci,linkage_group,group_size,lodbound,
-		       thetabound)
-int *locus, *num_loci, *linkage_group, *group_size;
-real lodbound,thetabound;
+void 
+get_linkage_group (int *locus, int *num_loci, int *linkage_group, int *group_size, real lodbound, real thetabound)
 {
     int i, j, linked, *unlinked_list, unlinked_size, oldsize, a, b;
     real lod, theta, thetam, thetaf;

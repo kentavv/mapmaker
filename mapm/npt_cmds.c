@@ -124,8 +124,8 @@ genotypes (void)
 	for_all_orders(seq, map) {
 	    init_rec_fracs(map); 	
 	    converge_to_map(map);
-	    print_f2_map_genotypes(map,use_haplotypes,TRUE,0);
-	    print(MAP_DIVIDER);
+	    print_f2_map_genotypes(map,use_haplotypes,TRUE,0, NULL);
+        print(MAP_DIVIDER);
 	}
     } on_exit {
 	free_map(map); 

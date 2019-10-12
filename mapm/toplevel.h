@@ -16,6 +16,8 @@
 
 /********************** Useful things for MAPM Commands **********************/
 
+#include "map_info.h"
+
 void mapm_ready(int data_type, int min_seq_loci, bool permable_seq, int *seq_loci);
 ///* in toplevel.c */
 //void mapm_ready(); /* args: int data_type_needed;
@@ -241,22 +243,30 @@ extern char *new_seq, *the_seq; /* [MAX_SEQ_LEN] */
    now uses delete_comments() and expand_sequence(), and it expands locus 
    names, locus range settings, etc. */
 
-void set_current_seq();   /* args: char *str; bool expanded; str=NULL unsets */
+void set_current_seq(char *str, bool expanded);
+void check_current_seq(int *num_loci);
+void parse_locus_args(int **loci, int *num_loci);
+void make_compare_seq(int *locus, int num_loci, int start_set, int set_size);
+//void set_current_seq();   /* args: char *str; bool expanded; str=NULL unsets */
 extern SEQ_NODE *seq;     /* global: the current sequence */
 extern char *seq_string;  /* ditto */
-void check_current_seq(); /* for use by mapm_ready */
-void parse_locus_args();  /* args: int **loci, *num_loci; may send error */
-void make_compare_seq();  /* int *locus, num_loci, start_set, set_size; */
+//void check_current_seq(); /* for use by mapm_ready */
+//void parse_locus_args();  /* args: int **loci, *num_loci; may send error */
+//void make_compare_seq();  /* int *locus, num_loci, start_set, set_size; */
 //void expand_seq_names();  /* char *str */
 
-bool alloc_list_of_all_loci(); /* args: SEQ_NODE *seq; int **locus,*num_loci;*/
+void get_one_order(SEQ_NODE *p, MAP *map);
+void get_list_of_all_loci(SEQ_NODE *p, int *loci, int *num_loci, int max_loci);
+bool alloc_list_of_all_loci(SEQ_NODE *p, int **loci, int *num_loci);
+
+//bool alloc_list_of_all_loci(); /* args: SEQ_NODE *seq; int **locus,*num_loci;*/
 /* For convenience, it's like array(,count_loci(),int) then
    get_list_of_all_loci() followed by crunch_locus_list(), testing haplos
    and duplicates (but NOT chrom assignments, and it is set to print
    warnings). Returns TRUE if num_loci>0, FALSE (w/o allocating)
    otherwise */
 
-void get_list_of_all_loci();
+//void get_list_of_all_loci();
 /* args: SEQ_NODE *seq; int *locus, *num_loci, max_loci;
    sets locus[...] and side-effects *num_loci to list all loci in seq
    max_loci is the malloced size of the list, we get a CRASH if it
@@ -264,7 +274,7 @@ void get_list_of_all_loci();
    not just haplo groups, one of each duplicate, etc */
 #define sort_loci(loci,num_loci) inv_isort(loci,num_loci)
 
-void get_one_order(); /* args: SEQ_NODE *seq; MAP *map; */
+//void get_one_order(); /* args: SEQ_NODE *seq; MAP *map; */
 /* Like get_list_of_all_loci. Map->max_loci must be big enough. */
 
 /* iterator macro for_all_orders(); args: SEQ_NODE *seq; MAP *map; (not **map)
@@ -285,9 +295,13 @@ for (Oagain=TRUE, reset_seq(S,TRUE); \
      Oagain=perm_seq(S,FALSE,FALSE))
 
 extern bool Oagain;     /* internal use only */
-void reset_seq();	/* internal only! */
-bool perm_seq();	/* internal only! */
-bool get_order();	/* internal only! */
+bool get_order(SEQ_NODE *p, int *locus, real **theta, int *num_loci, int max_loci);
+//bool do_get_order(SEQ_NODE *p, int *locus, real **theta, int *i, int max_loci, int direction);
+void reset_seq(SEQ_NODE *p, bool reset_insert_pos);
+bool perm_seq(SEQ_NODE *p, bool order_matters, bool in_unordered_set);
+//void reset_seq();	/* internal only! */
+//bool perm_seq();	/* internal only! */
+//bool get_order();	/* internal only! */
 
 /* iterator macro for_all_pairs()  args: int *loci, num_loci, locus1, locus2;
    Loops over all sq(num_loci)/2 unique pairs of the loci specified. 
@@ -316,7 +330,15 @@ bool Tnext();           /* internal use only! */
 
 /************************ Names handling routines *************************/
 
-bool is_a_locus(); /* args: char *token; int *num; char **errmsg; */
+bool is_a_locus(char *str, int *n, char **why_not);
+bool is_a_sequence(char *str, char **seq, char **why_not);
+bool name_sequence(char *name, char *str, char **why_not, bool expanded);
+bool unname_sequence(char *name, char **why_not);
+void add_to_seq_history(char *seq, bool is_next_entry);
+void print_special_sequences(void);
+void print_user_sequences(void);
+void print_history_seqs(int num_to_do);
+//bool is_a_locus(); /* args: char *token; int *num; char **errmsg; */
 /* Gets the locus number (0...max-1, inclusive) for the locus
 specified by str. Token MUST be a despace()ed and filter()ed SINGLE
 TOKEN! If token is not a valid locus name or number, FALSE is
@@ -325,7 +347,7 @@ is returned, *num is set, and *errmsg is left undefined. This routine
 checks that token matches the locus name without matching any sequence
 names, etc. and thus, abbreviations work in a semantically nice way. */
 
-bool is_a_sequence(); /* args: char *token, **str; char **errmsg; */
+//bool is_a_sequence(); /* args: char *token, **str; char **errmsg; */
 /* If the token is a reference to a MAPMAKER sequence (either a named
 sequence or a history reference) then TRUE is returned and *str is
 side-effected. Otherwise FALSE is returned and *errmsg is
@@ -337,57 +359,76 @@ is_a_locus() handles them. Token must be despace()ed and filter()ed! */
 //   TRUE can be returned with errmsg set (!nullstr()), meaning that the name
 //   WOULD be valid but doesn't happen to be, given MAPM's state. */
 
-void print_special_sequences(); /* no args */
-void print_user_sequences();    /* no args - print user names */
-void print_history_seqs();      /* args: int max_num_to_print; */
+//void print_special_sequences(); /* no args */
+//void print_user_sequences();    /* no args - print user names */
+//void print_history_seqs();      /* args: int max_num_to_print; */
 
-bool name_sequence();      /* args: char *name, *seq, **errmsg; */
-bool unname_sequence();    /* args: char *name, **errmsg; */
+//bool name_sequence();      /* args: char *name, *seq, **errmsg; */
+//bool unname_sequence();    /* args: char *name, **errmsg; */
 /* Thes both return TRUE if successful, and otherwise return FALSE and 
    side-effect *errmsg. */
 
-void add_to_seq_history (char *seq, bool is_next_entry);
+//void add_to_seq_history (char *seq, bool is_next_entry);
 //void add_to_seq_history(); /* args: char *seq; */
 
 /* bool valid_name(); */
 /* args: char *str; TRUE if str is a valid name token*/
 /* This does NOT necessarily mean that str is defined*/
 
-void tokenize_seq(); /* args: char *seq, **token; int *num_tokens; */
-  /* parses seq into into an array of words (using SELF_DELIMITING) */
-
-void untokenize_seq(); /* args: char *str, **token; int *num_tokens; */
-  /* unparses tokens side-effecting str, but does not set_current_seq() */
-
-void print_sequence(); /* no args */
+void print_sequence(void);
+void tokenize_seq(char *seq, char **token, int *num_tokens);
+void untokenize_seq(char *seq, char **token, int num_tokens);
+//void tokenize_seq(); /* args: char *seq, **token; int *num_tokens; */
+//  /* parses seq into into an array of words (using SELF_DELIMITING) */
+//
+//void untokenize_seq(); /* args: char *str, **token; int *num_tokens; */
+//  /* unparses tokens side-effecting str, but does not set_current_seq() */
+//
+//void print_sequence(); /* no args */
 
 
 /**************************** Stuff in print.c ****************************/
 
-char *rf2str();   /* arg: rec_frac; returns cM if print_cm, else itself */
-char *loc2str();  /* arg: locus; returns name if print_names, or number */
-char *locs2str(); /* args: locus1, locus2; */
-char *rag();      /* args str; wrap around the above to get ragged result */
-char *locname();  /* int locus; bool print_haplo_mark; RAGGED output */
+char *loc2str(int locus);
+char *locs2str(int locus1, int locus2);
+char *rag(char *str);
 
-void print_tiny_map();  /* arg: map; one liner (loci, log-like) */
+char *rf2str (real rec_frac);
+//char *rf2str();   /* arg: rec_frac; returns cM if print_cm, else itself */
+//char *loc2str();  /* arg: locus; returns name if print_names, or number */
+//char *locs2str(); /* args: locus1, locus2; */
+//char *rag();      /* args str; wrap around the above to get ragged result */
+char *locname ( /* ragged */int locus,bool haplo_mark);
+//char *locname();  /* int locus; bool print_haplo_mark; RAGGED output */
+
+void print_long_map(MAP *map, char *title);
+void print_special_map(MAP *map, char *title, int num_old, int *old_locus);
+void print_list(SAVED_LIST *list, int how_many);
+void print_haplo_summary(int *locus, int num_loci);
+
+void print_tiny_map(MAP *map, char *text  /* make sure its OK to use ps for this */, real like_base);
+//void print_tiny_map();  /* arg: map; one liner (loci, log-like) */
 //void print_short_map(); /* arg: map; three liner (loci, rec_fracs, log-like) */
-void print_long_map();  /* arg: map; expanded map output */
-void print_special_map();  /* see print.c */
-void print_list();      /* arg: list; prints list */
-void print_trys();
+//void print_long_map();  /* arg: map; expanded map output */
+//void print_special_map();  /* see print.c */
+//void print_list();      /* arg: list; prints list */
+void print_trys (SAVED_LIST **list, MAP *base_map,	   /* The map the tried markers were added to */ bool **excluded,   /* [i][n]=FALSE if we tried try_marker[i] in excluded */ int **new_marker, int num_tried,int first);
+//void print_trys();
 //void print_permsex();
 
-void print_f2_map_genotypes(); /* prints genotypes w/ X-overs and errors
-  args: MAP *map; bool explode_haplos; int num_old; int *old_locus; 
-  can omit old_locus if num_old==0 old_locus are printed as is, non-old 
-  get parentheses */
+void print_f2_map_genotypes (MAP *map,bool use_haplos,bool explode_haplos,int num_old,int *old_locus  /* can omit if num_old==0 - should do this with VARARGS */);
+//void print_f2_map_genotypes(); /* prints genotypes w/ X-overs and errors
+//  args: MAP *map; bool explode_haplos; int num_old; int *old_locus;
+//  can omit old_locus if num_old==0 old_locus are printed as is, non-old
+//  get parentheses */
 
-void print_haplo_summary();   /* int *loci, num_loci; */
-void print_locus_summary();   /* int *loci, num_loci; bool haplos_too; */
-void print_mapping_summary(); /* int *loci, num_loci; bool haplos_too; */
+//void print_haplo_summary();   /* int *loci, num_loci; */
+void print_locus_summary (int *locus, int n_loci, bool haplo);
+//void print_locus_summary();   /* int *loci, num_loci; bool haplos_too; */
+void print_mapping_summary (int *locus, int n_loci, bool haplo);
+//void print_mapping_summary(); /* int *loci, num_loci; bool haplos_too; */
 
-void new_print_placements();
+//void new_print_placements();
 /* args: int *order, num_order, *unplaced_loci, num_unplaced; bool **excluded;
    index into unplaced_loci[] is the same as the 1st index into excluded[][] */
 

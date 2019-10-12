@@ -28,9 +28,7 @@ int  get_anchors();
 
 /**************** Chromosomes ****************/
 
-bool make_new_chrom(name,num)
-char *name;
-int *num;
+bool make_new_chrom(char *name, int *num)
 {
     int n, m;
 

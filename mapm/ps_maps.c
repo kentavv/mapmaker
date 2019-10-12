@@ -22,8 +22,8 @@ void ps_dump_chrom();
 real ps_scale();
 char *ps_loc_str(), *ps_frame_str();
 
-void ps_file_start(fp)
-FILE *fp;
+void 
+ps_file_start (FILE *fp)
 {
     fprintf(fp,"%%!PS-Adobe-3.0\n");
     fprintf(fp,"%%%%Creator: MAPMAKER\n");
