@@ -45,16 +45,15 @@ bool change_directory();  /* args: char *str; str is directory name */
    void inv_isort(); args: int *data; int array_len; ascending order 
    void inv_rsort(); well, figure it out!       */
 
+//int icomp(), lcomp(), scomp(), rcomp(), inv_icomp(), inv_rcomp();
 
-#define isort(p,n) qsort(QSORT_CAST(p),(QSORT_LENGTH)n,sizeof(int),icomp); 
-#define lsort(p,n) qsort(QSORT_CAST(p),(QSORT_LENGTH)n,sizeof(long),lcomp); 
-#define rsort(p,n) qsort(QSORT_CAST(p),(QSORT_LENGTH)n,sizeof(real),rcomp); 
-#define ssort(p,n) qsort(QSORT_CAST(p),(QSORT_LENGTH)n,sizeof(char*),scomp); 
-#define inv_isort(p,n) qsort(QSORT_CAST(p),(QSORT_LENGTH)n,sizeof(int),inv_icomp);
-#define inv_rsort(p,n) qsort(QSORT_CAST(p),(QSORT_LENGTH)n,sizeof(real),inv_rcomp);
+#define isort(p,n) qsort(p,n,sizeof(int),icomp);
+#define lsort(p,n) qsort(p,n,sizeof(long),lcomp);
+#define rsort(p,n) qsort(p,n,sizeof(real),rcomp);
+#define ssort(p,n) qsort(p,n,sizeof(char*),scomp);
+#define inv_isort(p,n) qsort(p,n,sizeof(int),inv_icomp);
+#define inv_rsort(p,n) qsort(p,n,sizeof(real),inv_rcomp);
  
-int icomp(), lcomp(), scomp(), rcomp(), inv_icomp(), inv_rcomp();
-
 /* For arrays of pointers to things (eg: structs) use:
    void psort(); args: <type> *data; int array_len; <type>; int comp_func();
 
@@ -120,27 +119,4 @@ void array_times_matrix(); /* real *a, **m; int rows, columns; real *result; */
 /* Multiply array a (length=rows) times matrix b (indicies=[row][column]),
    side effecting the (already allocated!) array c (length=columns). */
 
-
-/***** SUPPORT FOR SOME GENERALLY USEFUL MATH FUNCTIONS *****/
-
-typedef struct {
-    int entries;
-    real start, increment, mean;
-    real *deviation, *prob; /* [entries], prob is cumulative */
-} DISTRIBUTION;
-
-DISTRIBUTION *make_distribution(); 
-/* args: real increment,limit,mean,(*function)();
-   Makes a probability distribution for d= mean-limit to mean+limit by 
-   increment, where function(d) is the probability of deviation d from mean. */
-
-DISTRIBUTION *make_normal_distribution();
-/* args: real mu, sigma, increment, limit; 
-   Makes a normal probability distribution with sigma about mean mu, where
-   increment and limit are both expressed as fractions of sigma (eg std
-   deviations, unlike the case in make_distribution()) */
-
-real pick_from_distribution();  /* args: DISTRIBUTION *dist; real *prob;
-  Return a randomly chosen deviation d from the distribution, and optionally
-  set *prob (if non-NULL) to d's CUMULATIVE probability. */
-
+#include "mathlib.h"

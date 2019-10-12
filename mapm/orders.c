@@ -928,8 +928,7 @@ int num_unplaced;
 	  imaxf(num-2*n_dom,0) +
 	  irand(raw.data.f2.num_indivs/10);
     }
-    qsort((QSORT_DATA_PTR_TO*)unplaced,(QSORT_LENGTH)num_unplaced,
-	  sizeof(PLACEME*),compare_markers_to_try);
+    qsort(unplaced,num_unplaced, sizeof(PLACEME*),compare_markers_to_try);
 }
 
 
@@ -937,18 +936,15 @@ void rank_markers_to_try(unplaced,num_unplaced)
 PLACEME **unplaced;
 int num_unplaced;
 {
-    qsort((QSORT_DATA_PTR_TO*)unplaced,(QSORT_LENGTH)num_unplaced,
-	  sizeof(PLACEME*),compare_markers_to_try);
+    qsort(unplaced,num_unplaced, sizeof(PLACEME*),compare_markers_to_try);
 }
 
 
-int compare_markers_to_try(a,b)
-QSORT_COMPARE_PTR_TO(PLACEME*) *a;
-QSORT_COMPARE_PTR_TO(PLACEME*) *b;
+int compare_markers_to_try(const void *a, const void *b)
 {
-    PLACEME *x, *y;
-    
-    x=*a; y=*b;
+    PLACEME *x=*(PLACEME * const *)a;
+    PLACEME *y=*(PLACEME * const *)b;
+
     /* num_places is three_pt criteria */
     if      (x->num_places < y->num_places) return(-1);
     else if (x->num_places > y->num_places) return(1);
