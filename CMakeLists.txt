@@ -54,7 +54,7 @@ add_library(mylib STATIC
 
 add_executable(
         makehelp
-        lib/makehelp.c
+        makehelp/makehelp.c
 )
 
 add_executable(
