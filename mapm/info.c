@@ -35,7 +35,7 @@ TWO_PT_DATA  ***two_pt_data=NULL;
 int two_pt_allocated=0, two_pt_used=0, two_pt_max=0, two_pt_collect=0;
 TWO_PT_DATA **two_pt_list=NULL;
 TWO_PT_DATA *UNLINKED_TWO_PT, the_unlinked_two_pt;
-TWO_PT_DATA *get_next_two_pt_entry();
+//TWO_PT_DATA *get_next_two_pt_entry();
 
 /* internal for 3pt */
 typedef struct three_entry {
@@ -49,15 +49,20 @@ typedef struct {
 } THREE_STRUCT;
 
 THREE_STRUCT *three_pt_data;
-TRIPLE_LIST *allocate_three_entries();
-void deallocate_triple_list();
+TRIPLE_LIST * allocate_three_entries (int num_to_alloc);
+//TRIPLE_LIST *allocate_three_entries();
+void deallocate_triple_list (TRIPLE_LIST *p);
+//void deallocate_triple_list();
 int num_threes_allocated, num_threes_deallocated; /* for testing purposes */
 
-void put_next();
-bool replace_triple();
-bool restore_triple();
-void save_triple();
-bool same_2_loop();
+//void put_next();
+bool replace_triple (int locus1, int locus2, int locus3, real d1, real d2, real d3);
+//bool replace_triple();
+//bool restore_triple();
+void save_triple (int locus1, int locus2, int locus3, real d1, real d2, real d3);
+//void save_triple();
+bool same_2_loop (TRIPLE_LIST *p, int locus3, real *d1, real *d2, real *d3);
+//bool same_2_loop();
 
 bool get_triple(int locus1, int locus2, int locus3, real *d1, real *d2, real *d3);
 

@@ -17,10 +17,10 @@
 #include "mapm.h"
 
 /* external proccedures WHY WHY WHY FIX FIX FIX */
-void try_marker();
+//void try_marker();
 
 /* local */
-void maybe_print_together();
+//void maybe_print_together();
 
 #define ASS_ALREADY "%s- already assigned to %s at LOD %4.1lf...not changing\n"
 

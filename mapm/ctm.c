@@ -94,20 +94,32 @@ int  f3_state();
 
 /**** The internal routines ****/
 
-real hmm_e_step();
-void hmm_count_stats(), hmm_make_new_map();
-void setup_hmm();
+void free_hmm_temps(int total_loci, int num_indivs, int cross_type);
+void converge_to_map(MAP *map);
+void f2_genotype(int locus, bool haplo, int *observation);
+bool merge_genotypes(int locus, int *observation, int *new_observation);
+int f2_count_infs(int *num_dom, int *num_het, int *observation);
+void hmm_converge_to_map(MAP *map);
+void setup_hmm(MAP *map);
+void setup_bc_like_hmm(int *locus, double *error_rate, int cross_type);
+void setup_f2_hmm(int *locus, double *error_rate);
+void setup_f3_self_hmm(int *locus);
+int f3_state(char *name, int f2, int mat, int pat, int obs);
+void hmm_bc_like_set_probs(MAP *map, real ***trans_prob, real ***obs_prob, real ***implied_recs);
+void hmm_f2_set_probs(MAP *map, real ***trans_prob, real ***obs_prob, real ***implied_recs);
+void hmm_f3_self_set_probs(MAP *map, real ***trans_prob, real ***obs_prob, real ***implied_recs);
+void hmm_count_stats(real ***exp_transitions, real ***exp_observations, real ***implied_recs, SUFF_STATS **sufficient_stats);
+void hmm_make_new_map(SUFF_STATS **sufficient_stats, real new_like, MAP *map);
+real hmm_e_step(MAP *map, real ***trans_prob, real ***obs_prob, real ***exp_transitions, real ***exp_observations);
+void test_dump(real ***p, int rows, char *name);
+void test_dump0(real **p, char *name);
+void count_error_lods(real *apriori_rate, real ***obs_prob, real ***exp_genotype, real **error_lod);
+void quick_two_pt(int locus0, int locus1, TWO_PT_DATA *two_pt, bool sex);
+void hmm_fake_converge_to_map(MAP *map);
 
-void setup_bc_like_hmm(), hmm_bc_like_set_probs();
-void setup_f2_hmm(), hmm_f2_set_probs();
-void setup_f3_self_hmm(), hmm_f3_self_set_probs();
-
-void test_dump(), test_dump0();
 real null_like;
 bool twopt_kludge;
 MAP *map2;
-void count_error_lods();
-void hmm_fake_converge_to_map();
 
 
 /**** External Routines, mostly ****/

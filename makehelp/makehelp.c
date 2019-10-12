@@ -761,7 +761,7 @@ int main(int argc, char *argv[])
             do_fwrite(code,"#include \"system.h\" \n\n");
             /* sprintf(ps,"char help_filename[]= \"%s\";\n\n",final_hlp_name);
                do_fwrite(code,ps); */
-            do_fwrite(code,"void make_help_entries()\n{\n");
+            do_fwrite(code,"void make_help_entries(void)\n{\n");
 
             /* man file */
             man_write_title();

@@ -15,10 +15,10 @@
 #define INC_SHELL
 #include "mapm.h"
 
-void setup_commands();
+void setup_commands(void);
 
-void make_help_entries();    /* move these to lib */
-extern char help_filename[];
+void make_help_entries(void); /* move these to lib */
+//extern char help_filename[];
 
 int main(int argc, char *argv[])
 {
