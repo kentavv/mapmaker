@@ -265,8 +265,8 @@ print_list (SAVED_LIST *list, int how_many)
 }
 
 
-char *rf2str(rec_frac)
-real rec_frac;
+char *
+rf2str (real rec_frac)
 {
     real d;
 
@@ -297,9 +297,11 @@ loc2str (int locus)
 }
 
 
-char *locname(locus,haplo_mark) /* ragged */
-int locus;
-bool haplo_mark;
+char *
+locname ( /* ragged */
+    int locus,
+    bool haplo_mark
+)
 {
     char *str= get_temp_string();
     bool haplo=FALSE;
@@ -346,12 +348,15 @@ rag (char *str)
 }
 
 
-void print_trys(list,base_map,excluded,new_marker,num_tried,first)
-SAVED_LIST **list;
-MAP *base_map;	   /* The map the tried markers were added to */
-bool **excluded;   /* [i][n]=FALSE if we tried try_marker[i] in excluded */
-int **new_marker;
-int num_tried, first;
+void 
+print_trys (
+    SAVED_LIST **list,
+    MAP *base_map,	   /* The map the tried markers were added to */
+    bool **excluded,   /* [i][n]=FALSE if we tried try_marker[i] in excluded */
+    int **new_marker,
+    int num_tried,
+    int first
+)
 {
     int i, j, k, q, width_ea, last;
     bool any_paired=FALSE;
@@ -466,9 +471,8 @@ region2str (int locus, char **errs)
 }
 
 
-char *genetics2str(locus,haplo)
-int locus;
-bool haplo;
+char *
+genetics2str (int locus, bool haplo)
 {
     int type, n_infs, n_dom_obs, n_het_obs;
     char *retoin= get_temp_string();
@@ -499,9 +503,8 @@ bool haplo;
 /*  num  name typ  err       chr  lg    hap */
 
 
-void print_locus_summary(locus,n_loci,haplo)
-int *locus, n_loci;
-bool haplo;
+void 
+print_locus_summary (int *locus, int n_loci, bool haplo)
 {
     int i, g;
     char *chrom, *hap, lg[TOKLEN+1];
@@ -545,9 +548,8 @@ bool haplo;
 /*  num  name ass   chr  lod   map  like loc  err */
 
 
-void print_mapping_summary(locus,n_loci,haplo)
-int *locus, n_loci;
-bool haplo;
+void 
+print_mapping_summary (int *locus, int n_loci, bool haplo)
 {
     int i, j, k, pos, state;
     real val;
@@ -645,10 +647,14 @@ bool haplo;
 
 
 #ifdef OBSOLETE
-void print_placements(order,num_order,locus,num_loci,excluded)
-int *order, num_order;
-int *locus, num_loci;  /* unplaced, maybe NO_LOCUS */
-bool **excluded;       /* first index is that into locus[] */
+void 
+print_placements (
+    int *order,
+    int num_order,
+    int *locus,
+    int num_loci,  /* unplaced, maybe NO_LOCUS */
+    bool **excluded       /* first index is that into locus[] */
+)
 {
     int num_left, num_across, num_done, i, j;
 
@@ -698,9 +704,8 @@ bool **excluded;       /* first index is that into locus[] */
 1234 12:....:.**.:....:....:....:....:....:....:....:....:....:....:....:....:
 */
 
-void pr_placement(excluded,interval,best,num_intervals,rightmost)
-bool *excluded;
-int interval, best, num_intervals, rightmost;
+void 
+pr_placement (bool *excluded, int interval, int best, int num_intervals, int rightmost)
 {
     if (interval==best) print("**.");
       else if (excluded[interval]) print("..."); else print(".*.");
@@ -718,8 +723,8 @@ pr_locus (int n)
 }
 
 
-void pr_dist(rf)
-real rf;
+void 
+pr_dist (real rf)
 { 
     sprintf(ps, "%3.0lf-:", cm_dist(rf));
     if (ps[0]==' ') ps[0]='-';
@@ -786,11 +791,8 @@ new_print_placements (
 
 #define NOER OBSCURE_REAL
 
-void print_geno_line(locus,error_rate,firsti,lasti,obs,is_old,isa_haplo)
-int locus;
-real error_rate;
-int firsti, lasti, *obs;
-bool is_old, isa_haplo;
+void 
+print_geno_line (int locus, real error_rate, int firsti, int lasti, int *obs, bool is_old, bool isa_haplo)
 {
     char p1, p2, name[TOKLEN+1];
     int indiv;
@@ -819,11 +821,14 @@ bool is_old, isa_haplo;
 
 #define OBLIG_REC "%5.1lf cM %3d loci in indiv %-3d  %s(%c) - %s(H) - %s(%c)\n"
 
-void print_f2_map_genotypes(map,use_haplos,explode_haplos,num_old,old_locus)
-MAP *map;
-bool use_haplos, explode_haplos;
-int num_old;
-int *old_locus;  /* can omit if num_old==0 - should do this with VARARGS */
+void 
+print_f2_map_genotypes (
+    MAP *map,
+    bool use_haplos,
+    bool explode_haplos,
+    int num_old,
+    int *old_locus  /* can omit if num_old==0 - should do this with VARARGS */
+)
 {
     int indiv, n_indivs, firsti, lasti;
     int locus, i, j, *obs=NULL, *prev_obs=NULL, *num_recs=NULL, old=0;

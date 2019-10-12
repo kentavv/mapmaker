@@ -823,9 +823,11 @@ SEQ_NODE *p;
 
 /***************** MAPMAKER's Current Sequence *****************/
 
-void set_current_seq(str,expanded) /* use nullstr to unset current sequence */
-char *str; /* side-effected: assumed to be MAX_SEQ_LEN long (use new_seq) */
-bool expanded; /* if seq_str is set to the name-expanded seq or not */
+void 
+set_current_seq ( /* use nullstr to unset current sequence */
+    char *str, /* side-effected: assumed to be MAX_SEQ_LEN long (use new_seq) */
+    bool expanded /* if seq_str is set to the name-expanded seq or not */
+)
 /* if error relay BADSEQ message without changing anything */
 {
     int save_chrom, num_loci;
@@ -954,10 +956,12 @@ parse_locus_args ( /* send error if fail */
 #define SHORTHAND \
   "can't list other loci with chromosome-name, 'any', 'all', or 'none'"
 
-bool parse_seq_chrom(str,chrom,rest) /* sets current_chrom */
-char *str; /* bashed */
-int *chrom;
-char **rest;
+bool 
+parse_seq_chrom ( /* sets current_chrom */
+    char *str, /* bashed */
+    int *chrom,
+    char **rest
+)
 {
     char *copy, name[TOKLEN+1];
 
@@ -1232,10 +1236,12 @@ they may return TRUE *EVEN IF THERE IS AN ERROR*, in which case
 !nullstr(*why_not).  This is to say when a name *should* be ok but it
 isn't (e.g. "sequence new" with no new markers) */
 
-bool is_a_locus(str,n,why_not)
-char *str;      /* must be a non-null token and a valid_name */
-int *n;         /* side-effected with locus# iff TRUE is returned */
-char **why_not; /* side-effected iff FALSE is returned */
+bool 
+is_a_locus (
+    char *str,      /* must be a non-null token and a valid_name */
+    int *n,         /* side-effected with locus# iff TRUE is returned */
+    char **why_not /* side-effected iff FALSE is returned */
+)
 { 
     int num;
 
@@ -1264,10 +1270,12 @@ char **why_not; /* side-effected iff FALSE is returned */
 }
 
 
-bool is_a_sequence(str,seq,why_not)
-char *str; 	 /* must be a non-null token and a valid_name */
-char **seq;      /* side-effected */
-char **why_not;  /* side-effected iff FALSE is returned */
+bool 
+is_a_sequence (
+    char *str, 	 /* must be a non-null token and a valid_name */
+    char **seq,      /* side-effected */
+    char **why_not  /* side-effected iff FALSE is returned */
+)
 {
     char name[TOKLEN+1];
 
@@ -1293,11 +1301,13 @@ char **why_not;  /* side-effected iff FALSE is returned */
 }
 
 
-bool name_sequence(name,str,why_not,expanded)
-char *name;
-char *str; /* assume its MAX_SEQ_LEN long, for expansions */
-char **why_not;
-bool expanded;
+bool 
+name_sequence (
+    char *name,
+    char *str, /* assume its MAX_SEQ_LEN long, for expansions */
+    char **why_not,
+    bool expanded
+)
 { 
     char *foo, *rest;
     int save_chrom;
@@ -1335,9 +1345,8 @@ bool expanded;
 }
   
 
-bool unname_sequence(name,why_not)
-char *name;
-char **why_not;
+bool 
+unname_sequence (char *name, char **why_not)
 { 
     int fail;
     char *seq;
@@ -1363,9 +1372,8 @@ char **why_not;
 }
   
 
-void add_to_seq_history(seq,is_next_entry)
-char *seq;
-bool is_next_entry;
+void 
+add_to_seq_history (char *seq, bool is_next_entry)
 { 
     int num;
     char *the_sequence;
@@ -1417,10 +1425,12 @@ bool is_a_named_sequence(char *str, char **seq)  /* internal use only */
 }
 
 
-bool is_an_old_sequence(str,seq,why_not)  /* internal use only */
-char *str;
-char **seq;      /* side-effected iff TRUE returned */
-char **why_not;  /* side-effected iff TRUE returned and *str=="" */
+bool 
+is_an_old_sequence (  /* internal use only */
+    char *str,
+    char **seq,      /* side-effected iff TRUE returned */
+    char **why_not  /* side-effected iff TRUE returned and *str=="" */
+)
 {
     int n;
     char *rest;
@@ -1447,10 +1457,12 @@ char **why_not;  /* side-effected iff TRUE returned and *str=="" */
 }
 
 
-bool is_a_special_sequence(str,seq,why_not) /* internal use only? */
-char *str; 
-char **seq;      /* side-effected iff TRUE returned */
-char **why_not;  /* side-effected iff TRUE returned and *str=="" */
+bool 
+is_a_special_sequence ( /* internal use only? */
+    char *str,
+    char **seq,      /* side-effected iff TRUE returned */
+    char **why_not  /* side-effected iff TRUE returned and *str=="" */
+)
 {
     int chrom, one_chrom, i, j, k, n, contig, num, ordered_seq;
     char *last;
@@ -1691,9 +1703,8 @@ print_user_sequences (void)
 }
 
 
-void print_special_sequence(name,print_if_none)
-char *name;
-bool print_if_none;
+void 
+print_special_sequence (char *name, bool print_if_none)
 {
     char *seq, *errmsg, line[MAX_SEQ_LEN+99];
 

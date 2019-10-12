@@ -130,8 +130,10 @@ data_loaded (void) { return(raw.file[0]!='\0'); }
 
 /********** THE DATA READER **********/
 
-void getdataln(fp) /* get next nonblank/noncomment data file line */
-FILE *fp;
+void 
+getdataln ( /* get next nonblank/noncomment data file line */
+    FILE *fp
+)
 { do { fgetln(fp); BADDATA_line_num++; } while(nullstr(ln) || ln[0]=='#'); 
   BADDATA_ln= ln; }
 real read_map_distance();
@@ -140,9 +142,8 @@ void read_quant_trait();
 
 #define DUMMY_LOCI 1
 
-void read_data(fpa,fpb,fpm,temp/*,int number_of_file*/)
-FILE *fpa, *fpb, *fpm;
-char *temp;
+void 
+read_data (FILE *fpa, FILE *fpb, FILE *fpm, char *temp)
 {
  
     int k=0,v,l,i,num_chrom,num_loc=0,t_loc=0,j=0,loc;
@@ -413,8 +414,8 @@ char *temp;
 }
 
 
-void save_traitfile(fp)
-FILE *fp;
+void 
+save_traitfile (FILE *fp)
 {
     int i,j,loci_tot,map_tot;
     
@@ -498,9 +499,8 @@ FILE *fp;
 }
 
 
-void read_map_locus(fp,indivs,t_loc,order,n_loci)
-FILE *fp;
-int indivs, t_loc, n_loci, *order;
+void 
+read_map_locus (FILE *fp, int indivs, int t_loc, int *order, int n_loci)
 /* could send BADDATA or IOERROR */
 {
     
@@ -565,9 +565,8 @@ real read_map_distance(FILE *fp/*int num*/)
     }
 
 
-void read_quant_trait(fp,num,indivs)
-FILE *fp;
-int num, indivs;
+void 
+read_quant_trait (FILE *fp, int num, int indivs)
 /* could send IOERROR or BADDATA */
 {
     
@@ -598,9 +597,8 @@ int num, indivs;
 
 void read_oldmap_locus(), read_oldquant_trait(), read_oldmap_distance();
 
-void read_olddata(fp,path)
-FILE *fp;
-char *path;
+void 
+read_olddata (FILE *fp, char *path)
 {
     int i, j, n_indivs, n_loci, n_traits;
     char tok[TOKLEN + 1];
@@ -661,9 +659,8 @@ char *path;
 }
 
 
-void read_oldmap_locus(fp,num,indivs)
-FILE *fp;
-int num, indivs;
+void 
+read_oldmap_locus (FILE *fp, int num, int indivs)
 /* could send BADDATA or IOERROR */
 {
     char c;
@@ -685,9 +682,8 @@ int num, indivs;
 }
 		
 
-void read_oldquant_trait(fp,num,indivs)
-FILE *fp;
-int num, indivs;
+void 
+read_oldquant_trait (FILE *fp, int num, int indivs)
 /* could send IOERROR or BADDATA */
 {
     char tok[TOKLEN+1];
@@ -710,9 +706,8 @@ int num, indivs;
     if (!nullstr(ln)) { why_("extra data"); send(BADDATA); }
 }
 
-void read_oldmap_distance(fp,num)
-FILE *fp;
-int num;
+void 
+read_oldmap_distance (FILE *fp, int num)
 {
 	int bar;
 

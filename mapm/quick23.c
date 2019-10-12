@@ -57,10 +57,8 @@ void f2_quick_two_pt(int loc1, int loc2, TWO_PT_DATA *two_pt, bool sexflag)
 }
 
 
-real quick_back(locus, rec_frac, conv_like, unconv_like)
-LOCUS locus;
-RECVECTOR **rec_frac;
-real *conv_like, *unconv_like;
+real 
+quick_back (LOCUS locus, RECVECTOR **rec_frac, real *conv_like, real *unconv_like)
 {
     int i;
     int indiv;
@@ -111,10 +109,8 @@ real *conv_like, *unconv_like;
 }
 
 
-real quick_f2(locus, rec_frac, conv_like, unconv_like)
-LOCUS locus;
-RECVECTOR **rec_frac;
-real *conv_like, *unconv_like;
+real 
+quick_f2 (LOCUS locus, RECVECTOR **rec_frac, real *conv_like, real *unconv_like)
 {
     int i,j;
     long meioses;
@@ -195,8 +191,8 @@ real *conv_like, *unconv_like;
 }
 
 
-void probinit(probdist)
-real probdist[6][4];
+void 
+probinit (real probdist[6][4])
 {
 /* A */
     probdist[1][0]=1.0;
@@ -231,9 +227,8 @@ real probdist[6][4];
 }
 
 
-void calclike(prob1, prob2, theta, locus, likelihood, numerator)
-real prob1[4], prob2[4], theta, *likelihood, *numerator;
-LOCUS locus;
+void 
+calclike (real prob1[4], real prob2[4], real theta, LOCUS locus, real *likelihood, real *numerator)
 {
     int i, j, diffs;
     real d1[4],d2[4],p;
@@ -314,9 +309,8 @@ changes (int i, int j)
 }
 
 
-real f2_prob(theta,diffs)
-real theta;
-int diffs;
+real 
+f2_prob (real theta, int diffs)
 {
     real answer;
     answer = power(theta, diffs) * power(1.0 - theta, 2 - diffs);
@@ -324,9 +318,8 @@ int diffs;
 }
 
 
-real power(a, x)
-real a;
-int x;
+real 
+power (real a, int x)
 
 {
     real b, result;
@@ -346,10 +339,8 @@ int x;
 
 #ifdef HAVE_CEPH
 
-void ceph_quick_two_pt(loc1,loc2,two_pt,sexflag)
-int loc1, loc2;
-TWO_PT_DATA *two_pt;
-bool sexflag;
+void 
+ceph_quick_two_pt (int loc1, int loc2, TWO_PT_DATA *two_pt, bool sexflag)
 {
     LOCUS locus;
     real conv_like, unconv_like, theta;
@@ -388,11 +379,8 @@ bool sexflag;
 }
 
 
-real quick_known(locus, rec_frac, conv_like, unconv_like, sexflag)
-LOCUS locus;
-RECVECTOR **rec_frac;
-real *conv_like, *unconv_like;
-bool sexflag;
+real 
+quick_known (LOCUS locus, RECVECTOR **rec_frac, real *conv_like, real *unconv_like, bool sexflag)
 {
     event_vector skip_flag, x;
     FLDB *block1, *block2;
@@ -470,11 +458,8 @@ bool sexflag;
 
 
 
-real quick_unknown(locus, rec_frac, conv_like, unconv_like, sexflag)
-LOCUS locus;
-RECVECTOR **rec_frac;
-real *conv_like, *unconv_like;
-bool sexflag;
+real 
+quick_unknown (LOCUS locus, RECVECTOR **rec_frac, real *conv_like, real *unconv_like, bool sexflag)
 {
     int num_parents, n, fam, cross, scene;
     bool pat_inf, mat_inf, p_phase, m_phase;

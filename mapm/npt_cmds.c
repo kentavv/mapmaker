@@ -457,12 +457,15 @@ try (void)
 #define is_zero(rec_frac,sex) \
   (rec_frac[MALE]<ZERO_DIST && (!sex || rec_frac[FEMALE]<ZERO_DIST))
 
-bool try_marker(marker,original_map,list,excluded,zero,count)
-int *marker;
-MAP *original_map; /* contains the list of loci in the order */
-SAVED_LIST *list;
-bool *excluded, *zero;
-int *count;
+bool 
+try_marker (
+    int *marker,
+    MAP *original_map, /* contains the list of loci in the order */
+    SAVED_LIST *list,
+    bool *excluded,
+    bool *zero,
+    int *count
+)
 {
     int i, j, num_ok, last, sex, num_paired, best_i=0;
     MAP *map;

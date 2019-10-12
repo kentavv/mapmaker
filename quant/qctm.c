@@ -207,9 +207,8 @@ set_qctm_globals (	/* called only by qctm itself */
 }
 
 
-void fill_in_qtl_map(map,new_like,qtl_weight)
-QTL_MAP *map;
-real new_like, *qtl_weight;
+void 
+fill_in_qtl_map (QTL_MAP *map, real new_like, real *qtl_weight)
 {
     int j, k, n, num, last;
     real a, b, c;
@@ -321,13 +320,17 @@ qtl_conv_to_map (
 
 /********************************** E-STEP **********************************/
 
-real E_step(qtl_pos,qtl_weight,mu,sigma_sq,data,expected_genotype,
-	    S_matrix,expected_recs) /* return the log-likelihood */
-real *qtl_pos, *qtl_weight;
-real *mu, *sigma_sq; /* just ptrs to single reals */
-DATA *data;
-real **expected_genotype, **S_matrix;  /* both side-effected */
-GENO_PROBS *expected_recs;             /* side-effected */
+real 
+E_step ( /* return the log-likelihood */
+    real *qtl_pos,
+    real *qtl_weight,
+    real *mu,
+    real *sigma_sq, /* just ptrs to single reals */
+    DATA *data,
+    real **expected_genotype,
+    real **S_matrix,  /* both side-effected */
+    GENO_PROBS *expected_recs             /* side-effected */
+)
 { 
     int *poss_genotype; 
     real *genotype_contribution;
@@ -515,18 +518,20 @@ if (debug_qctm) { /* DEBUGGING CODE */
 }
 
 
-void likelihood(qtl_genotype,contribution,trans_prob,qtl_weight,mu,sigma_sq,
-    data,indiv,total_like,total_int_like,rec_like)
-int *qtl_genotype;
-real *contribution;
-GENO_PROBS *trans_prob;
-real *qtl_weight;
-real *mu, *sigma_sq;  	  /* mu and sigma_sq are pointers to single numbers */
-DATA *data;
-int indiv;
-real *total_like;	  /* side-effected - is a  ptr to a single num */
-real *total_int_like;	  /* side-effected - is also a  ptr to a single num */
-INTERVAL_GENOTYPE_PROBS *rec_like; /* [interval][int-geno] - side-effected */
+void 
+likelihood (
+    int *qtl_genotype,
+    real *contribution,
+    GENO_PROBS *trans_prob,
+    real *qtl_weight,
+    real *mu,
+    real *sigma_sq,  	  /* mu and sigma_sq are pointers to single numbers */
+    DATA *data,
+    int indiv,
+    real *total_like,	  /* side-effected - is a  ptr to a single num */
+    real *total_int_like,	  /* side-effected - is also a  ptr to a single num */
+    INTERVAL_GENOTYPE_PROBS *rec_like /* [interval][int-geno] - side-effected */
+)
 {
     real normal_like, prediction, ratio;
     int j, y, n, c, geno;
@@ -581,9 +586,8 @@ if (debug_qctm) { /* DEBUGGING CODE */
 }
 
 
-void make_rec_probs(qtl_pos,interval_rf,trans_prob)
-real *qtl_pos, *interval_rf;
-GENO_PROBS *trans_prob;
+void 
+make_rec_probs (real *qtl_pos, real *interval_rf, GENO_PROBS *trans_prob)
 {
     int j, geno, qtl, left, right;
     real left_rf, right_rf, sum;
@@ -621,8 +625,8 @@ if (debug_qctm) {
 }
 
 
-real normal_density(x,sigma_sq)
-real x,*sigma_sq;
+real 
+normal_density (real x, real *sigma_sq)
 {
     real exponent;
     
@@ -641,10 +645,16 @@ real x,*sigma_sq;
 
 /******************** ML_QTL_WEIGHT ********************/
     
-void ML_qtl_weight(S_matrix,expected_genotype,phenotype,fix_weight,
-	mu,qtl_weight,sigma_sq)
-real **S_matrix, **expected_genotype, *phenotype, *fix_weight;
-real *mu, *qtl_weight, *sigma_sq;  /* side effect these three */
+void 
+ML_qtl_weight (
+    real **S_matrix,
+    real **expected_genotype,
+    real *phenotype,
+    real *fix_weight,
+    real *mu,
+    real *qtl_weight,
+    real *sigma_sq  /* side effect these three */
+)
 {
     int n, size, i;
     real total, prediction;
@@ -681,9 +691,12 @@ real *mu, *qtl_weight, *sigma_sq;  /* side effect these three */
 }
 
 
-void kill_entry(S_matrix,size,i)
-real **S_matrix;
-int size, i; /* index of entry to kill */
+void 
+kill_entry (
+    real **S_matrix,
+    int size,
+    int i /* index of entry to kill */
+)
 {
     int n;
 
@@ -692,9 +705,8 @@ int size, i; /* index of entry to kill */
 }
 
 
-real variance(phenotype,qtl_weight,expected_genotype,S_matrix,mu,size)
-real *phenotype, *qtl_weight, **expected_genotype, **S_matrix, *mu;
-int size;
+real 
+variance (real *phenotype, real *qtl_weight, real **expected_genotype, real **S_matrix, real *mu, int size)
 {
     int i, n, m;
     real var, prediction, term1, term2, pheno;
@@ -721,11 +733,13 @@ int size;
 #define DIVS 100
 #define STEP 0.02
 
-void ML_qtl_pos(expected_recs,interval_rf,fix_pos,qtl_pos)
-GENO_PROBS *expected_recs;
-real *interval_rf;
-real *fix_pos; /* []==DONT_FIX if we don't want to fix it */
-real *qtl_pos; /* side-effected */
+void 
+ML_qtl_pos (
+    GENO_PROBS *expected_recs,
+    real *interval_rf,
+    real *fix_pos, /* []==DONT_FIX if we don't want to fix it */
+    real *qtl_pos /* side-effected */
+)
 {
     int i;
     real start, end, interval_cm, pos, max_cm, min_cm;
@@ -754,12 +768,16 @@ real *qtl_pos; /* side-effected */
 }
 
 
-real do_brute_force(expected_recs,i,interval_rf,start,end,steps)
-  /* return the best pos in cM */ 
-GENO_PROBS *expected_recs;
-int i; /* interval# */
-real interval_rf, start, end; /* start and end are positions in cM */
-int steps;
+real 
+do_brute_force (
+  /* return the best pos in cM */
+    GENO_PROBS *expected_recs,
+    int i, /* interval# */
+    real interval_rf,
+    real start,
+    real end, /* start and end are positions in cM */
+    int steps
+)
 {
     real inc, pos, like, max_like, best_pos=0.;
     int j;
@@ -773,10 +791,13 @@ int steps;
 }
 
 
-real pos_like(left_theta,interval_theta,expected_recs,i)
-GENO_PROBS *expected_recs;
-real left_theta, interval_theta;
-int i; /* the interval# */
+real 
+pos_like (
+    real left_theta,
+    real interval_theta,
+    GENO_PROBS *expected_recs,
+    int i /* the interval# */
+)
 {
     real event_like, pos_like, right_theta;
     int interval_geno, left_geno, right_geno, qtl_geno;
@@ -842,10 +863,8 @@ if (int unimodal) {
 		   qtl_pos[i]); print(ps);
 	    }
 	    
-real do_brute_force(start,inc,theta,expected_recs,interval,do_print,unimodal)
-real start, inc, theta;
-GENO_PROBS *expected_recs;
-int interval, do_print, *unimodal;
+real 
+do_brute_force (real start, real inc, real theta, GENO_PROBS *expected_recs, int interval, int do_print, int *unimodal)
 {
 	real pos, cm, max_pos, max_like, d, d2, f, prev_f;
 	int j, max_j, dip, got_f;	
@@ -872,12 +891,8 @@ int interval, do_print, *unimodal;
 }
 
 
-void pos_likes(lambda,expected_recs,i,theta,deriv,deriv2,f)
-real lambda;
-GENO_PROBS *expected_recs;
-int i;
-real theta;
-real *deriv, *deriv2, *f;  
+void 
+pos_likes (real lambda, GENO_PROBS *expected_recs, int i, real theta, real *deriv, real *deriv2, real *f)  
 {
 	real w1,x1,y1,z1,w2,x2,y2,z2;
 	real lambda_star, one_minus_lambda, one_minus_2_lambda;
@@ -919,10 +934,8 @@ real *deriv, *deriv2, *f;
 */
 }
 
-real guess_pos(expected_recs,i,theta_interval)
-GENO_PROBS *expected_recs;
-int i;
-real theta_interval;
+real 
+guess_pos (GENO_PROBS *expected_recs, int i, real theta_interval)
 {
 	real total_recs, left_recs, right_recs, L, R, X;
 	real left_cm, right_cm, cm_pos, pos;

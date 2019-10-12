@@ -614,8 +614,8 @@ free_context (STATUS_CONTEXT *con)
 }
 
 
-bool change_context(new_context)
-int new_context;
+bool 
+change_context (int new_context)
 {
     if(context[new_context] != NULL) {
 	active_context = new_context;
@@ -634,8 +634,8 @@ int new_context;
 }
 
 
-bool create_new_context(new_context)
-int new_context;
+bool 
+create_new_context (int new_context)
 {
     if(context[new_context] != NULL || new_context > MAX_CONTEXTS)
       return(FALSE);
@@ -654,9 +654,8 @@ int new_context;
 
 
 #ifdef OBSOLETE
-void kill_context(con,save_it)
-STATUS_CONTEXT *con;
-bool save_it;
+void 
+kill_context (STATUS_CONTEXT *con, bool save_it)
 {
     char *name,*seqnce,*err;
 
@@ -761,8 +760,8 @@ set_use_haplotypes (void)
 /**************** Save and Load Status info ****************/
 
 
-void write_status(fp)
-FILE *fp;
+void 
+write_status (FILE *fp)
 {
     int i, usenum;
 
@@ -820,8 +819,8 @@ FILE *fp;
 }
 
 
-void read_status(fp)
-FILE *fp;
+void 
+read_status (FILE *fp)
 {
     int i, mapnum, usenum, num;
     char word[TOKLEN+1];

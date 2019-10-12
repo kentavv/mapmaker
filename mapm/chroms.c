@@ -46,9 +46,11 @@ int *num;
 }
 
 
-bool isa_chrom(name,chrom)
-char *name;
-int *chrom; /* side-effected */
+bool 
+isa_chrom (
+    char *name,
+    int *chrom /* side-effected */
+)
 {
     int i;
 
@@ -71,8 +73,8 @@ get_chrom_frame (
 }	
 
 
-bool framework_marker(locus)
-int locus;
+bool 
+framework_marker (int locus)
 {
     int j;
     MAP *frame;
@@ -187,12 +189,18 @@ get_chrom_loci (int chrom, int *locus, int which_loci, int *num_loci, int *num_f
 }	
 
 
-void count_chrom_loci(chrom,n_anchor,n_frame,n_total,n_placed,n_unique,
-		      n_region,haplos_too,temp)
-int chrom;
-int *n_anchor, *n_frame, *n_total, *n_placed, *n_unique, *n_region;
-bool haplos_too;
-int *temp; /* at most raw.num_markers long, alloced outside */
+void 
+count_chrom_loci (
+    int chrom,
+    int *n_anchor,
+    int *n_frame,
+    int *n_total,
+    int *n_placed,
+    int *n_unique,
+    int *n_region,
+    bool haplos_too,
+    int *temp /* at most raw.num_markers long, alloced outside */
+)
 {
     int which, i, locus, primary;
     int frame, total, anchor, placed, unique, region;
@@ -225,8 +233,8 @@ int *temp; /* at most raw.num_markers long, alloced outside */
 
 /**************** Assignments ****************/
 
-bool assigned(locus)
-int locus; 
+bool 
+assigned (int locus) 
 { force_haplo_sanity(&locus,FALSE); return(assignment[locus]->status>0); }
 
 int 
@@ -240,15 +248,15 @@ assignment_chrom (int locus)
   return(assignment[locus]->status>0 ? assignment[locus]->chromosome:NO_CHROM);
 }
 
-bool assigned_to(locus,chrom)
-int locus, chrom; 
+bool 
+assigned_to (int locus, int chrom) 
 {
   force_haplo_sanity(&locus,FALSE);
   return(assignment[locus]->status>0 && assignment[locus]->chromosome==chrom);
 }
 
-bool anchor_locus(locus)
-int locus;
+bool 
+anchor_locus (int locus)
 { return(assignment_state(locus)==A_ANCHOR); } /* does force_haplo_sanity */
 
     
@@ -259,9 +267,12 @@ int locus;
 #define ASS_INSANE  \
   "%s- not the name of its haplotype-group, can't assign or unassign\n"
 
-bool is_assignable(locus,chrom,fix_frames)
-int locus, chrom; /* maybe NO_CHROM */
-bool fix_frames;
+bool 
+is_assignable (
+    int locus,
+    int chrom, /* maybe NO_CHROM */
+    bool fix_frames
+)
 {
     int old;
 
@@ -320,11 +331,16 @@ bool fix_frames;
 
 /* this will unassign anchors, but not reassign them correctly, and it will 
    certainly not make loci anchors - this is OK for now */
-void assign_this(locus,state,chrom,lod,theta,linked_locus,msg)
-int locus, state, chrom;
-real lod, theta;
-int linked_locus;
-char *msg; /* pre-empts other message, only for A_PROBLEM as yet */
+void 
+assign_this (
+    int locus,
+    int state,
+    int chrom,
+    real lod,
+    real theta,
+    int linked_locus,
+    char *msg /* pre-empts other message, only for A_PROBLEM as yet */
+)
 {
     if (state<=0) { /* set to an unassigned state */
 	if (!nullstr(msg)) /* problem state: use this msg */
@@ -446,11 +462,18 @@ set_chrom_anchors (
 #define DOASS_NOANCHS "no anchor loci have yet been assigned to chromosomes\n" 
 #define DOASS_NOCHROMS "no chromosomes have yet been defined\n"
 
-void do_assignments(locus,num_loci,lod1,unlinked_lod1,theta1,
-		    lod2,unlinked_lod2,theta2,haplo)
-int *locus, num_loci;  /* is_assignable must have been verified */
-real lod1, unlinked_lod1, theta1, lod2, unlinked_lod2, theta2;
-bool haplo;
+void 
+do_assignments (
+    int *locus,
+    int num_loci,  /* is_assignable must have been verified */
+    real lod1,
+    real unlinked_lod1,
+    real theta1,
+    real lod2,
+    real unlinked_lod2,
+    real theta2,
+    bool haplo
+)
 {
     int i, state, num_chroms;
     bool assigned_any;
@@ -500,13 +523,16 @@ bool haplo;
 
 #define ASS_MULTI  "%s- conflicting data (%s LOD %.2lf, %s LOD %.2lf)\n"
 
-bool do_assignment(locus,lodbound,minlodbound,thetabound,
-		   anchor,count,num_groups)
-int locus;
-real lodbound, minlodbound, thetabound;
-int **anchor;   /* [num_groups][0..count[this_group]-1] */
-int *count;     /* [num_groups] */
-int num_groups;
+bool 
+do_assignment (
+    int locus,
+    real lodbound,
+    real minlodbound,
+    real thetabound,
+    int **anchor,   /* [num_groups][0..count[this_group]-1] */
+    int *count,     /* [num_groups] */
+    int num_groups
+)
 {
     int assigned_locus, j, k, state;
     int pos_locus=0, this_chrom=0, pos_chrom, alt_chrom, pos_group=0;
@@ -582,10 +608,14 @@ int num_groups;
     
 
 
-bool get_anchors(anchor,count,locus,num_loci,haplo) /* internal use only */
-int **anchor, *count; /* side-effected if non-null */
-int *locus, num_loci; /* markers to assign now */
-bool haplo;   /* take only haplo_firsts */
+bool 
+get_anchors ( /* internal use only */
+    int **anchor,
+    int *count, /* side-effected if non-null */
+    int *locus,
+    int num_loci, /* markers to assign now */
+    bool haplo   /* take only haplo_firsts */
+)
 {
     int i, j, state, chrom, found, n=0;
 
@@ -605,12 +635,12 @@ bool haplo;   /* take only haplo_firsts */
 
 /**************** Placements ****************/
 
-bool placed_locus(locus)
-int locus;
+bool 
+placed_locus (int locus)
 { force_haplo_sanity(&locus,FALSE); return(placement[locus]->status>0); }
 
-bool placement_state(locus)
-int locus;
+bool 
+placement_state (int locus)
 { force_haplo_sanity(&locus,FALSE); return(placement[locus]->status); }
 
 
@@ -642,8 +672,8 @@ int locus;
   " %4d  %-9s - placed %sin %d intervals, like%s%.2f 2nd%s%.2f\n"
 /*234  123456789 - placed *with errors* in 24 intervals, like=-9.24, 2nd=-5.*/
 
-bool is_placeable(locus,chrom)
-int locus, chrom;
+bool 
+is_placeable (int locus, int chrom)
 {
     /* unplace_this() helps to clean up the placement structure, when this
        is called by place or place_together */
@@ -673,12 +703,16 @@ int locus, chrom;
 }
 
 
-int place_this(locus,chrom,place,like_thresh,one_err_thresh,net_err_thresh,
-	       excluded)
-int locus, chrom;
-PLACE **place;   /* better be ralative to chrom's fw order */
-real like_thresh, one_err_thresh, net_err_thresh;
-bool *excluded;  /* used as a temp for npt_exclusions() */
+int 
+place_this (
+    int locus,
+    int chrom,
+    PLACE **place,   /* better be ralative to chrom's fw order */
+    real like_thresh,
+    real one_err_thresh,
+    real net_err_thresh,
+    bool *excluded  /* used as a temp for npt_exclusions() */
+)
 {
     int j, n, num, good;
     real second_best, support, error_lod;
@@ -753,9 +787,8 @@ bool *excluded;  /* used as a temp for npt_exclusions() */
 }
 
 
-void unplace_this(locus,chrom,status,verbose)
-int locus, chrom, status;
-bool verbose;
+void 
+unplace_this (int locus, int chrom, int status, bool verbose)
 {
     placement[locus]->modified= TRUE;
     placement[locus]->num_intervals= 0;
@@ -789,9 +822,11 @@ best_placement (int locus)
 }
 
 
-int second_best_placement(locus,like) /* only ok for M_REGION */
-int locus;
-real *like;
+int 
+second_best_placement ( /* only ok for M_REGION */
+    int locus,
+    real *like
+)
 { 
     int i, j; /* need to add many error traps */
     real best;
@@ -905,8 +940,8 @@ free_mapping_data (int num_markers)
 }
 
 
-void write_mapping_data(fp)
-FILE *fp;
+void 
+write_mapping_data (FILE *fp)
 {
     int locus, i, j;
 
@@ -940,8 +975,8 @@ FILE *fp;
 }
 
 
-void read_mapping_data(fp)
-FILE *fp;
+void 
+read_mapping_data (FILE *fp)
 {
     int locus, num, i, j, num_chroms;
     real rnum;

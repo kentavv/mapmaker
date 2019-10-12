@@ -73,8 +73,8 @@ FILE *fp;
     fprintf(fp,"%%%%EndSetup\n");
 }
 
-void ps_file_end(fp)
-FILE *fp;
+void 
+ps_file_end (FILE *fp)
 {
     fprintf(fp,"%%%%Trailer\n");
     fprintf(fp,"grestore\n");
@@ -82,9 +82,8 @@ FILE *fp;
     fprintf(fp,"%%%%EOF\n");
 }
 
-void ps_page_start(fp,pagenum)
-FILE *fp;
-int pagenum;
+void 
+ps_page_start (FILE *fp, int pagenum)
 {
     fprintf(fp,"%%%%Page: ? %d\n",pagenum);
     fprintf(fp,"%%%%BeginPageSetup\n");
@@ -92,17 +91,16 @@ int pagenum;
     fprintf(fp,"%%%%EndPageSetup\n");
 }
 
-void ps_page_end(fp)
-FILE *fp;
+void 
+ps_page_end (FILE *fp)
 {
     fprintf(fp,"GM showpage\n");
 }
 
 #define LAST_INTERVAL (-999.0)
 
-void print_ps_map(fp,map)
-FILE *fp;
-MAP *map;
+void 
+print_ps_map (FILE *fp, MAP *map)
 {
     int i;
     double map_length=0.0, interval_length, ps_length, scale;
@@ -157,9 +155,8 @@ MAP *map;
     ps_file_end(fp);
 }
 
-void print_ps_chrom(fp,chrom)
-FILE *fp;
-int chrom;
+void 
+print_ps_chrom (FILE *fp, int chrom)
 {
     int i;
     real map_length, scale;
@@ -181,8 +178,8 @@ int chrom;
     ps_file_end(fp);
 }
 
-void print_all_ps_chroms(fp)
-FILE *fp;
+void 
+print_all_ps_chroms (FILE *fp)
 {
     int i, j;
     real map_length, best, scale;
@@ -207,8 +204,8 @@ FILE *fp;
     ps_file_end(fp);
 }
 
-real ps_scale(map_length)
-real map_length;
+real 
+ps_scale (real map_length)
 {
     real scale;
 
@@ -221,10 +218,8 @@ real map_length;
 
 #define PLACE_STRING 200
 
-void ps_dump_chrom(fp, chrom, scale)
-FILE *fp;
-int chrom;
-real scale;
+void 
+ps_dump_chrom (FILE *fp, int chrom, real scale)
 {
     int i, j, k, l, num_crunched, interval=0, marker;
     double interval_length, ps_length, dist=0.;

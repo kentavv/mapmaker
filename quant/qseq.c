@@ -84,10 +84,12 @@ seq_init (void)
 }
 
 
-bool set_qtl_sequence(str,errmsg,errpos)
-char *str; /* str may be uncrunched */
-char *errmsg;
-int *errpos;
+bool 
+set_qtl_sequence (
+    char *str, /* str may be uncrunched */
+    char *errmsg,
+    int *errpos
+)
 {
     QTL_SEQUENCE *new_ints;
     char new_seq[MAXLINE+1]; 
@@ -343,9 +345,8 @@ int_compiler (char **str)
 }
 
 
-QTL_SEQ_OPTION *mkcontinuous(trait,fix_weight)
-int trait;
-real fix_weight;
+QTL_SEQ_OPTION *
+mkcontinuous (int trait, real fix_weight)
 {
     QTL_SEQ_OPTION *p;
 	
@@ -385,9 +386,11 @@ bool try_right(char **str /* may be side-effected */, QTL_SEQ_OPTION *opt /* may
 }
 
 
-bool try_fix_pos(str,opt)
-char **str; /* may be side-effected */
-QTL_SEQ_OPTION *opt; /* may be side-effected */
+bool 
+try_fix_pos (
+    char **str, /* may be side-effected */
+    QTL_SEQ_OPTION *opt /* may be side-effected */
+)
 {
     real pos, rf;
 
@@ -402,9 +405,11 @@ QTL_SEQ_OPTION *opt; /* may be side-effected */
 }
 
 
-bool try_range(str,opt)
-char **str;  /* may be side-effected */
-QTL_SEQ_OPTION *opt; /* may be side-effected (turned into a RANGE) */
+bool 
+try_range (
+    char **str,  /* may be side-effected */
+    QTL_SEQ_OPTION *opt /* may be side-effected (turned into a RANGE) */
+)
 {
     int num;
     char right[TOKLEN+1];
@@ -586,9 +591,11 @@ int *pnum_intervals, *pcont_vars, *pnum_orders, *pwiggle_ints;
 }
 
 
-void get_seq_free_genetics(p,free)
-QTL_SEQUENCE *p;
-bool *free; /* [#intervals] should be alloced - elts are side-effected */
+void 
+get_seq_free_genetics (
+    QTL_SEQUENCE *p,
+    bool *free /* [#intervals] should be alloced - elts are side-effected */
+)
 {
     int i, j;
 
@@ -633,9 +640,11 @@ bool get_order(QTL_SEQUENCE *p, bool wiggle, QTL_MAP *map)
 /* The permutation routines treat cont_var's as a discontiguous permutation,
    simply by the fact that the contig[i] flags are FALSE for i!=0. */
 
-bool next_order(p,perm)  
-QTL_SEQUENCE *p;	
-int *perm; /* side-effected to be the interval# permed */
+bool 
+next_order (
+    QTL_SEQUENCE *p,
+    int *perm /* side-effected to be the interval# permed */
+)
 { 
     int permed_int, type;
 
@@ -650,10 +659,12 @@ int *perm; /* side-effected to be the interval# permed */
 }
 
 
-bool next_wiggle(p,perm,cm_step)  
-QTL_SEQUENCE *p;	
-int *perm;          /* side-effected to be the interval# permed */
-real cm_step;
+bool 
+next_wiggle (
+    QTL_SEQUENCE *p,
+    int *perm,          /* side-effected to be the interval# permed */
+    real cm_step
+)
 { 
     int permed_int, last, type, contig, in_wig;
     QTL_SEQUENCE *left, *right;
@@ -680,10 +691,12 @@ real cm_step;
 }
 
 
-bool contig_perm(p,perm,wiggle)  
-QTL_SEQUENCE *p;	
-int *perm; /* side-effected to be the interval# permed */
-bool wiggle;
+bool 
+contig_perm (
+    QTL_SEQUENCE *p,
+    int *perm, /* side-effected to be the interval# permed */
+    bool wiggle
+)
 {
     int the_perm, i, j, *k, min_k, max_k, contig_end;
 
@@ -729,10 +742,12 @@ bool wiggle;
 }
 		
 		
-bool discont_perm(p,perm,wiggle)  
-QTL_SEQUENCE *p;	
-int *perm; /* side-effected to be the interval# permed */
-bool wiggle;
+bool 
+discont_perm (
+    QTL_SEQUENCE *p,
+    int *perm, /* side-effected to be the interval# permed */
+    bool wiggle
+)
 {
     int the_perm, i, j, *k, min_k, max_k;
 
@@ -784,10 +799,13 @@ bool wiggle;
 }
 	
 	
-bool wiggle_perm(p,contig,wiggled,cm_step)  
-QTL_SEQUENCE *p;	
-bool *contig, *wiggled; /* side-effected */
-real cm_step;
+bool 
+wiggle_perm (
+    QTL_SEQUENCE *p,
+    bool *contig,
+    bool *wiggled, /* side-effected */
+    real cm_step
+)
 {
     int i;
 
@@ -806,10 +824,13 @@ real cm_step;
 }
 		
 		
-bool test_perm(p,perm,wiggle,perm_rightmost)  
-QTL_SEQUENCE *p;	
-int *perm; /* side-effected to be the interval# permed */
-bool wiggle, perm_rightmost;
+bool 
+test_perm (
+    QTL_SEQUENCE *p,
+    int *perm, /* side-effected to be the interval# permed */
+    bool wiggle,
+    bool perm_rightmost
+)
 {
     int the_perm, j, *k, min_k;
 
@@ -857,8 +878,8 @@ bool wiggle, perm_rightmost;
 /********** SEQUENCE NAMES **********/
 
 
-bool name_sequence(name,seq,why_not)
-char *name,*seq,**why_not;
+bool 
+name_sequence (char *name, char *seq, char **why_not)
 {
     if(name[0]=='*') name++;
     if(!valid_name(name)) {
@@ -869,8 +890,8 @@ char *name,*seq,**why_not;
     return(TRUE);
 }
 
-bool unname_sequence(name,why_not)
-char *name,**why_not;
+bool 
+unname_sequence (char *name, char **why_not)
 {
     int foo, fail;
     char *err=get_temp_string();
@@ -1004,9 +1025,12 @@ unswap_for_dash ( /* internal use only */
 
 
 #ifdef OBSOLETE
-int check_interval(left,right,fix_pos)/* make sure all is OK - return T or F */
-int *left, *right;	              /* swap them if ordered wrong */
-real *fix_pos;
+int 
+check_interval (/* make sure all is OK - return T or F */
+    int *left,
+    int *right,	              /* swap them if ordered wrong */
+    real *fix_pos
+)
 {
 	int temp; /* KLUDGED: NEEDS WORK */
 	/* check int len? */
@@ -1063,10 +1087,8 @@ sticky_minus (
 #endif
 
 
-void name_peaks(peak,prefix,forget)
-WIGGLE_PEAK *peak;
-char *prefix;
-bool forget;
+void 
+name_peaks (WIGGLE_PEAK *peak, char *prefix, bool forget)
 {
     char *name, *real_name, *seq_str, *seq_to_name, *err;
     int i, fail, count, peaks;

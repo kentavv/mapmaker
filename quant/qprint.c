@@ -86,9 +86,11 @@ print_map_divider (void)
 }
 
 
-void print_qtl_map(map,free_genetics) /* has CONT_VAR hooks */
-QTL_MAP *map;
-bool *free_genetics;
+void 
+print_qtl_map ( /* has CONT_VAR hooks */
+    QTL_MAP *map,
+    bool *free_genetics
+)
 {
     int i, print_genetics, df_per;
 
@@ -108,9 +110,8 @@ bool *free_genetics;
 }
 
 
-void map_printer(map,print_genetics)
-QTL_MAP *map;
-bool print_genetics;
+void 
+map_printer (QTL_MAP *map, bool print_genetics)
 {
     int i;
     char *trait_string= get_temp_string();
@@ -162,9 +163,12 @@ print_short_title (void) /* FROB */
 }
 
 
-void print_short_qtl_map(map,threshold,scale) /* FROB */
-QTL_MAP *map;
-real threshold, scale;
+void 
+print_short_qtl_map ( /* FROB */
+    QTL_MAP *map,
+    real threshold,
+    real scale
+)
 {
     int i, n, last;
     last= map->num_intervals-1;
@@ -185,10 +189,8 @@ real threshold, scale;
 }
 
 
-void print_iteration(iter,map,delta_log_like)
-int iter;
-QTL_MAP *map;
-real delta_log_like;
+void 
+print_iteration (int iter, QTL_MAP *map, real delta_log_like)
 {
 	print(ITER_DIVIDER);
 	sprintf(ps, "iteration #%d:\n", iter + 1); print(ps);
@@ -214,11 +216,8 @@ print_null_iteration (QTL_MAP *map)
 
 
 /* has CONT_VAR hooks */
-void do_print_E_step(expected_genotype,S_matrix,expected_recs,n_individuals,
-		     n_genotype_vars,n_continuous_vars,n_intervals)
-real **expected_genotype, **S_matrix;
-GENO_PROBS *expected_recs;
-int n_individuals, n_genotype_vars, n_continuous_vars, n_intervals;
+void 
+do_print_E_step (real **expected_genotype, real **S_matrix, GENO_PROBS *expected_recs, int n_individuals, int n_genotype_vars, int n_continuous_vars, int n_intervals)
 {
     int i, j, n, g, q, m, num;
 
@@ -315,9 +314,8 @@ print_wiggle_interval (QTL_MAP *map)
 }
   
 
-void print_wiggle_map(map,base_like,scale)
-QTL_MAP *map;
-real base_like, scale;
+void 
+print_wiggle_map (QTL_MAP *map, real base_like, real scale)
 {
     int i, j, stars;
 
@@ -414,9 +412,8 @@ print_saved_wiggle (int wiggle)
 }
 	
 
-void print_saved_wiggle_order(wiggle,order,base_like,scale)
-int wiggle, order;
-real base_like, scale;
+void 
+print_saved_wiggle_order (int wiggle, int order, real base_like, real scale)
 {
     int i, j, k, stars;
     WIGGLE_OPERATION *op;
@@ -524,9 +521,8 @@ interval= xxxxx length= 12.45 cm                                             |
    on the HP800. Leave it as is. */
 
 
-void print_test_wiggle_map(point,threshold)
-WIGGLE_POINT **point; 
-real threshold;
+void 
+print_test_wiggle_map (WIGGLE_POINT **point, real threshold)
 {
     real lod; lod= point[FREE]->lod_score;
 
@@ -571,9 +567,8 @@ print_test_wiggle_title (void)
   print(TEST_WIGGLE_HEADER2); nl(); } 
 
 
-void print_test_wiggle_order(wiggle,order,threshold)
-int wiggle, order;
-real threshold;
+void 
+print_test_wiggle_order (int wiggle, int order, real threshold)
 {
     int i, j, test;
     WIGGLE_OPERATION *op;
@@ -629,9 +624,8 @@ trait_str (void)
 }
     
 
-char *interval_str(left,right,fill)
-int left, right;
-bool fill;
+char *
+interval_str (int left, int right, bool fill)
 {
     char *str= get_temp_string();
     if (print_mapm_loci) {
@@ -650,9 +644,11 @@ bool fill;
     }
 }
 
-char *dist_str(rec_frac,fill)  /* Always takes 5 spaces */
-real rec_frac;
-bool fill; /* unused? */
+char *
+dist_str (  /* Always takes 5 spaces */
+    real rec_frac,
+    bool fill /* unused? */
+)
 {
     char *str; str=get_temp_string();
 
@@ -666,8 +662,10 @@ bool fill; /* unused? */
 }
 
 
-char *units_str(fill)  /* Takes 5 spaces, if fill, 2 otherwise */
-bool fill;
+char *
+units_str (  /* Takes 5 spaces, if fill, 2 otherwise */
+    bool fill
+)
 {
     char *str; str=get_temp_string();
 
@@ -679,9 +677,8 @@ bool fill;
 }
 
 
-char *genetics_str(genetics,verbose)
-GENETICS *genetics;
-bool verbose;
+char *
+genetics_str (GENETICS *genetics, bool verbose)
 { 
     char *str= get_temp_string();
 
@@ -757,10 +754,12 @@ left_seq_str (QTL_MAP *map)
 #define TINY_LINE1  "#%-3d "   
 #define TINY_LINE2  " %4.1lf  %-7.2lf\n"
 
-void print_tiny_map(map,num,offset) /* unused, and broken */
-QTL_MAP *map;
-int num; /* number for map (starts at 0) or num_intervals if map is null */
-real offset;
+void 
+print_tiny_map ( /* unused, and broken */
+    QTL_MAP *map,
+    int num, /* number for map (starts at 0) or num_intervals if map is null */
+    real offset
+)
 {
     int i, spaces_per_int, ints_per_line, columns, right, n_ints=0;
     char *interval;
@@ -828,9 +827,8 @@ print_saved_compares (void)
 #define BAD_MAPS_TITLE  "QTL-maps below LOD %sfalloff:\n"
 #define COMP_MAP_TOP    "QTL-map #%d:  LOD score difference= %-5.2lf\n"
 
-void print_best_saved_maps(compare,contig,threshold,falloff)
-int compare, contig;
-real threshold, falloff;
+void 
+print_best_saved_maps (int compare, int contig, real threshold, real falloff)
 {
     COMPARE_OPERATION *op;
     int start, i, *like_index, num_in_list, j;

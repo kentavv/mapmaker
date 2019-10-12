@@ -259,8 +259,8 @@ free_qtl_map (QTL_MAP *map)
    except to the extent that ->num_intervals=0 and
    ->num_continuous_vars=0. */
 
-bool reset_map(map)  
-QTL_MAP *map;    
+bool 
+reset_map (QTL_MAP *map)    
 {
     if (map==NULL) send(CRASH);
 
@@ -274,11 +274,14 @@ QTL_MAP *map;
 }
 
 
-int add_interval(map,left,right,fix_pos,genetics)
-QTL_MAP *map;
-int left, right; /* loci */
-real fix_pos; 
-GENETICS *genetics;
+int 
+add_interval (
+    QTL_MAP *map,
+    int left,
+    int right, /* loci */
+    real fix_pos,
+    GENETICS *genetics
+)
 {
     int i;
     if (map==NULL || map->num_intervals>=map->max_intervals) send(CRASH); 
@@ -366,8 +369,8 @@ copy_genetics (GENETICS *to, GENETICS *from)
 }
 
 
-bool constrained(genetics)
-GENETICS *genetics;
+bool 
+constrained (GENETICS *genetics)
 {
     if (raw.data_type==BACKCROSS) return(genetics->backx_weight!=DONT_FIX);
     else return(genetics->interx_type!=FREE);
@@ -392,9 +395,8 @@ Otherwise, if you do return it, it will be freed, and thus any ptrs to it
 should be thrown away. */
 
 
-SAVE_QTL_MAPS *alloc_saved_maps(num_maps, num_intervals, threshold)
-int num_maps, num_intervals;
-real threshold;
+SAVE_QTL_MAPS *
+alloc_saved_maps (int num_maps, int num_intervals, real threshold)
 {
 	SAVE_QTL_MAPS *p;
 	int i;
@@ -503,9 +505,8 @@ return_unused_map (QTL_MAP *map_to_return, SAVE_QTL_MAPS *the_maps)
 "The current sequence is not apropriate for the '%s' command.\nOnly one interval may be specified."  /* FROB */
 
 
-void qtl_ready(data_type,need_seq,need_trait,will_call_qctm)
-int data_type, need_seq;
-bool need_trait, will_call_qctm;
+void 
+qtl_ready (int data_type, int need_seq, bool need_trait, bool will_call_qctm)
 /* Side-effects globals num_intervals, num_orders, num_ints_to_wiggle, 
    free_genetics, and allocate map and map_data, if needed. */
 {
@@ -561,10 +562,12 @@ bool need_trait, will_call_qctm;
   "The name '%s' is too long - limit names to %d characters."
 #define eTRAITNEEDNAME "You must specify a name (not a number) for the trait."
 
-bool valid_locus_str(str,num,errmsg)  /* return TRUE or FALSE */
-char *str;     /* assume this is a despaced/lowercased/filtered token */
-int *num;      /* side-effect with the number if TRUE */
-char *errmsg;  /* side-effect with a message if FALSE */
+bool 
+valid_locus_str (  /* return TRUE or FALSE */
+    char *str,     /* assume this is a despaced/lowercased/filtered token */
+    int *num,      /* side-effect with the number if TRUE */
+    char *errmsg  /* side-effect with a message if FALSE */
+)
 {
     int match, exact;
     char *name= get_temp_string();
@@ -616,10 +619,12 @@ char *errmsg;  /* side-effect with a message if FALSE */
 }
 
 
-bool valid_trait_str(str,num,errmsg)  /* return TRUE or FALSE */
-char *str;    /* assume this is a despaced/lowercased/filtered token */
-int *num;     /* side-effect with the number if TRUE */
-char *errmsg; /* side-effect with a message if FALSE */
+bool 
+valid_trait_str (  /* return TRUE or FALSE */
+    char *str,    /* assume this is a despaced/lowercased/filtered token */
+    int *num,     /* side-effect with the number if TRUE */
+    char *errmsg /* side-effect with a message if FALSE */
+)
 {
     int match, exact;
     char *name= get_temp_string();
@@ -675,9 +680,11 @@ char *errmsg; /* side-effect with a message if FALSE */
 }
 
 
-bool valid_new_trait_name(str,errmsg)  /* return TRUE or FALSE */
-char *str;     /* assume this is a despaced/lowercased/filtered token */
-char *errmsg;  /* side-effect with a message if FALSE */
+bool 
+valid_new_trait_name (  /* return TRUE or FALSE */
+    char *str,     /* assume this is a despaced/lowercased/filtered token */
+    char *errmsg  /* side-effect with a message if FALSE */
+)
 {
     int match, exact;
     char *name= get_temp_string();
@@ -716,8 +723,8 @@ char *errmsg;  /* side-effect with a message if FALSE */
 }
 
 
-bool valid_locus_num(num)
-int *num;
+bool 
+valid_locus_num (int *num)
 { 
     int i, x, new_num = -1;
 
@@ -730,8 +737,8 @@ int *num;
     return(*num>=0);
 }
 
-bool valid_trait_num(num)
-int num;
+bool 
+valid_trait_num (int num)
 { return(irange(&num,0,raw.n_traits-1) && !nullstr(raw.trait_name[num])); }
 
 /* bool new_trait_num(num) UNUSED?

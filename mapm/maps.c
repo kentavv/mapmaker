@@ -95,8 +95,8 @@ free_map (MAP *map)
 }
 
 
-bool clean_map(map) 
-MAP *map;
+bool 
+clean_map (MAP *map)
 {
     int i, j;
 
@@ -119,9 +119,13 @@ MAP *map;
 }
 
 
-void init_for_ctm(map,sex,errors,start) /* what else */
-MAP *map;
-bool sex, errors, start; /* deal with start */
+void 
+init_for_ctm ( /* what else */
+    MAP *map,
+    bool sex,
+    bool errors,
+    bool start /* deal with start */
+)
 { 
     int i, j;
 
@@ -172,9 +176,8 @@ init_not_fixed (MAP *map)
 }
 
 
-void mapcpy(to,from,clean_it)
-MAP *to, *from;
-bool clean_it;
+void 
+mapcpy (MAP *to, MAP *from, bool clean_it)
 {
     int i, j;
     if (to->max_loci<from->num_loci) send(CRASH);
@@ -247,10 +250,8 @@ insert_locus (    /* Returns TRUE if successful */
 }
 
 
-SAVED_LIST *allocate_map_list(maxmaps, maxloci, sortflag, map)
-int maxmaps, maxloci;
-bool sortflag;
-MAP **map;
+SAVED_LIST *
+allocate_map_list (int maxmaps, int maxloci, bool sortflag, MAP **map)
 {
     SAVED_LIST *list;
     int i;
@@ -442,22 +443,26 @@ real kosa_add(), kosa_d_r();
 real poisson_d_r_deriv(), kosa_d_r_deriv();
 
 
-real apportion(rec_flag, both, first, second)
-bool rec_flag; /* assume REC==1 */
-real both, first, second;
+real 
+apportion (
+    bool rec_flag, /* assume REC==1 */
+    real both,
+    real first,
+    real second
+)
 {
     if (rec_flag) return ((first - second + both) / (2.0 * both));
     else return ((first + second - both) / (2.0 * (1.0 - both)));
 }
 
-real poisson_add(first, second)
-real first, second;
+real 
+poisson_add (real first, real second)
 {
     return first * (1.0 - second) + (1.0 - first) * second;
 }
 
-real poisson_r_d(rec_frac)
-real rec_frac;
+real 
+poisson_r_d (real rec_frac)
 {
 #ifdef DONT_DO_THIS    
     if (raw.data_type == F2) {
@@ -475,8 +480,8 @@ real rec_frac;
      9.999));
 }
 
-real poisson_d_r(dist)
-real dist;
+real 
+poisson_d_r (real dist)
 {
     real rec_frac;
 
@@ -495,14 +500,14 @@ real dist;
 #endif
 }
 
-real kosa_add(first, second)
-real first, second;
+real 
+kosa_add (real first, real second)
 {
     return (first + second) / (1.0 + 4.0 * first * second);
 }
 
-real kosa_r_d(rec_frac)
-real rec_frac;
+real 
+kosa_r_d (real rec_frac)
 {
 #ifdef DONT_DO_THIS    
     if(raw.data_type == F2) {
@@ -520,8 +525,8 @@ real rec_frac;
      9.999));
 }
 
-real kosa_d_r(dist)
-real dist;
+real 
+kosa_d_r (real dist)
 {
     real rec_frac;
 
@@ -540,14 +545,14 @@ real dist;
 #endif
 }
 
-real poisson_d_r_deriv(dist)
-real dist;
+real 
+poisson_d_r_deriv (real dist)
 {
     return ((real) (exp(-2.0*dist)));
 }
 
-real kosa_d_r_deriv(dist)
-real dist;
+real 
+kosa_d_r_deriv (real dist)
 {
     return ((real) 4.0/( (exp(2.0*dist) + exp(-2.0*dist)) * 
 			    (exp(2.0*dist) + exp(-2.0*dist)) ) );
@@ -585,9 +590,8 @@ map_init (void)
 /******************************* Save/Load *******************************/
 
 
-void read_map(fp,map)
-FILE *fp;
-MAP *map;
+void 
+read_map (FILE *fp, MAP *map)
 {
     int i, j, num_loci, num, unlink, sex, errors;
     real rnum, like;
@@ -661,9 +665,8 @@ MAP *map;
 }
 
 
-void write_map(fp,map)
-FILE *fp;
-MAP *map;
+void 
+write_map (FILE *fp, MAP *map)
 {
     int i, j;
 

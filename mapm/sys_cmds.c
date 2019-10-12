@@ -57,9 +57,14 @@ bool prev_data;
 }
 
 
-void try_to_unload(fp,ask_first,do_save,do_unload,genos_too)
-FILE *fp; /* file to READ just so we can close it if an error occurs */
-bool ask_first, do_save, do_unload, genos_too;
+void 
+try_to_unload (
+    FILE *fp, /* file to READ just so we can close it if an error occurs */
+    bool ask_first,
+    bool do_save,
+    bool do_unload,
+    bool genos_too
+)
 {
     bool doit;
     char token[TOKLEN+1];
@@ -88,10 +93,8 @@ bool ask_first, do_save, do_unload, genos_too;
 }
 
 
-void try_to_load(fp,name,prev_data,raw)
-FILE *fp;
-char *name;
-bool prev_data, raw;
+void 
+try_to_load (FILE *fp, char *name, bool prev_data, bool raw)
 {
     char run_file[PATH_LENGTH+1];
 
@@ -122,8 +125,8 @@ bool prev_data, raw;
 }
 
 
-void mapm_data_info(fp)
-FILE *fp;
+void 
+mapm_data_info (FILE *fp)
 {
     if (!data_loaded()) return;
     sprintf(ps, DATA_LOADED, raw.filename, data_info(TRUE)); fpr(fp);

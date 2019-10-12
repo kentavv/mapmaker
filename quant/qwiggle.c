@@ -708,9 +708,8 @@ get_compare_nums (char *str, int *compare, int *contig)
 }
 
 
-void save_wiggle(fp,n)
-FILE *fp;
-int n;
+void 
+save_wiggle (FILE *fp, int n)
 {
     int i,j;
     if (wiggles[n]->data == NULL)

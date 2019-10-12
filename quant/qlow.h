@@ -14,7 +14,7 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-/* qlow.h - declarations needed only deep within the bowls of QCTM */
+/* qlow.h - declarations needed only deep within the bowels of QCTM */
 
 /* These locus and interval genotype codes are used in lots of places.
    Do NOT change these definitions: if you do, all hell may break loose! 

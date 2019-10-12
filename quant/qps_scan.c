@@ -142,12 +142,8 @@ real threshold;
 }
 
 
-void draw_axes(fp, xnotch, num_notches, label, y_name, dotted_val)
-FILE *fp;
-double *xnotch;
-int num_notches;
-char **label, *y_name;
-double dotted_val;
+void 
+draw_axes (FILE *fp, double *xnotch, int num_notches, char **label, char *y_name, double dotted_val)
 {
     int i;
     double prev, next, current;
@@ -190,11 +186,8 @@ double dotted_val;
 }
 
 
-void do_bezier(fp, xval, yval, num_points, s0, sn, line_type)
-FILE *fp;
-double *xval, *yval, s0, sn;
-int num_points;
-char *line_type;
+void 
+do_bezier (FILE *fp, double *xval, double *yval, int num_points, double s0, double sn, char *line_type)
 {
     int i;
     double *x0, *x1, *x2, *x3, *y0, *y1, *y2, *y3, *slope, s1, s2;
@@ -296,8 +289,8 @@ draw_x (void)
 
 
 
-void ps_file_start(fp)
-FILE *fp;
+void 
+ps_file_start (FILE *fp)
 {
     fprintf(fp,"%%!PS-Adobe-3.0\n");
     fprintf(fp,"%%%%Creator: MAPMAKER\n");
@@ -364,8 +357,8 @@ FILE *fp;
     fprintf(fp,"%%%%EndSetup\n");
 }
 
-void ps_file_end(fp)
-FILE *fp;
+void 
+ps_file_end (FILE *fp)
 {
     fprintf(fp,"%%%%Trailer\n");
     fprintf(fp,"grestore\n");
@@ -373,9 +366,8 @@ FILE *fp;
     fprintf(fp,"%%%%EOF\n");
 }
 
-void ps_page_start(fp,pagenum)
-FILE *fp;
-int pagenum;
+void 
+ps_page_start (FILE *fp, int pagenum)
 {
     fprintf(fp,"%%%%Page: ? %d\n",pagenum);
     fprintf(fp,"%%%%BeginPageSetup\n");
@@ -383,8 +375,8 @@ int pagenum;
     fprintf(fp,"%%%%EndPageSetup\n");
 }
 
-void ps_page_end(fp)
-FILE *fp;
+void 
+ps_page_end (FILE *fp)
 {
     fprintf(fp,"GM showpage\n");
 }
@@ -392,9 +384,8 @@ FILE *fp;
 
 
 
-void print_ps_multi_wiggle(wiggle, threshold)
-int wiggle;
-real threshold;
+void 
+print_ps_multi_wiggle (int wiggle, real threshold)
 {
     int i, j, count=0, num_notches=0, pagenum=1, order;
     double **xval, **yval, *notch, highest, longest, current_len;

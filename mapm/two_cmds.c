@@ -32,9 +32,8 @@ real lod, theta;
 { sprintf(ps, "%s at min LOD %.2lf, max Distance %s", str, lod, rag(rf2str(theta))); 
   pr(); }
 
-void parse_2pt_criteria(argptr,lod,theta)
-char **argptr;
-real *lod, *theta;
+void 
+parse_2pt_criteria (char **argptr, real *lod, real *theta)
 {
     if (!rtoken(argptr,default_lod,lod) || !rrange(lod,0.0,1000.0)) 
       error("bad value for min LOD score");
@@ -484,11 +483,8 @@ pairwise (void)
 }
 
 
-bool print_biglod(i,j,lodbound,thetabound,sex,chrom)
-int i, j;
-real lodbound, thetabound;
-bool sex;
-int chrom;
+bool 
+print_biglod (int i, int j, real lodbound, real thetabound, bool sex, int chrom)
 {
     real lod, theta, thetam, thetaf;
 

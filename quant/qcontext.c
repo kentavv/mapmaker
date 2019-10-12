@@ -68,8 +68,8 @@ free_context (STATUS_CONTEXT *con)
 }
 
 
-bool change_context(new_context)
-int new_context;
+bool 
+change_context (int new_context)
 {
     if(context[new_context] != NULL) {
 	active_context = new_context;
@@ -82,8 +82,8 @@ int new_context;
 }
 
 
-bool create_new_context(new_context)
-int new_context;
+bool 
+create_new_context (int new_context)
 {
     if(context[new_context] != NULL || new_context > MAX_CONTEXTS)
       return(FALSE);
@@ -97,9 +97,8 @@ int new_context;
 }
 
 
-void kill_context(con,save_it)
-STATUS_CONTEXT *con;
-bool save_it;
+void 
+kill_context (STATUS_CONTEXT *con, bool save_it)
 {
     char *err;
 

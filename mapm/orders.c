@@ -170,9 +170,8 @@ free_3pt_matrix (void)
 
     
 
-void setup_3pt_data(locus,num_loci,threshold)
-int *locus, num_loci;
-real threshold;
+void 
+setup_3pt_data (int *locus, int num_loci, real threshold)
 {
     int i, j, k;
     real d1, d2, d3;
@@ -230,10 +229,14 @@ void
 free_3pt_data (void) { free_3pt_matrix(); }
 
 
-bool start_3pt(locus,num_loci,threshold,order,num_ordered) /* improve this! */
-int *locus, *num_loci;     /* starters are deleted */
-real threshold;
-int *order, *num_ordered; /* the starting order */
+bool 
+start_3pt ( /* improve this! */
+    int *locus,
+    int *num_loci,     /* starters are deleted */
+    real threshold,
+    int *order,
+    int *num_ordered /* the starting order */
+)
 {
     int i, j, k, num_left, starter[3], temp;
     real d1, d2, d3, best;
@@ -280,21 +283,20 @@ int *order, *num_ordered; /* the starting order */
 
 
 
-bool is_excluded(a,b,c)
-int a, b, c;
+bool 
+is_excluded (int a, int b, int c)
 { return(three_pt_excluded[three_pt_index[a]][three_pt_index[b]]
 	                  [three_pt_index[c]]==EXCLUDED); }
  
 
-bool is_computed(a,b,c)
-int a, b, c;
+bool 
+is_computed (int a, int b, int c)
 { return(three_pt_excluded[three_pt_index[a]][three_pt_index[b]]
                           [three_pt_index[c]]!=UNCOMPUTED); }
 	 
 
-void left_exclusion(excluded,locus,num_loci,newmarker)
-bool *excluded;
-int *locus, num_loci, newmarker;
+void 
+left_exclusion (bool *excluded, int *locus, int num_loci, int newmarker)
 {
     int middle, end, i;
 
@@ -310,9 +312,8 @@ int *locus, num_loci, newmarker;
 }
 
 
-void right_exclusion(excluded,locus,num_loci,newmarker)
-bool *excluded;
-int *locus, num_loci, newmarker;
+void 
+right_exclusion (bool *excluded, int *locus, int num_loci, int newmarker)
 {
     int middle,end,i;
 
@@ -328,12 +329,16 @@ int *locus, num_loci, newmarker;
 }
 
 
-void middle_exclusion(excluded,locus,num_loci,leftmost,rightmost,
-		      init_window_size,newmarker)
-bool *excluded;
-int *locus, num_loci;
-int leftmost, rightmost;  /* presumably, the left and rightmost intervals? */
-int init_window_size, newmarker;
+void 
+middle_exclusion (
+    bool *excluded,
+    int *locus,
+    int num_loci,
+    int leftmost,
+    int rightmost,  /* presumably, the left and rightmost intervals? */
+    int init_window_size,
+    int newmarker
+)
 {
     int first, last, start, end, width, i, j;
     
@@ -361,9 +366,13 @@ int init_window_size, newmarker;
    orig frame index:   0 - 1 - 2 - 3 - 4 - 5 - 6    num_placed=7
    exclusion index:  0 - 1 - 2 - 3 - 4 - 5 - 6 - 7                */
 
-int  three_pt_exclusions(order,num_placed,newmarker,excluded)
-int  *order, num_placed, newmarker;
-bool *excluded;  /* side-effected */
+int 
+three_pt_exclusions (
+    int *order,
+    int num_placed,
+    int newmarker,
+    bool *excluded  /* side-effected */
+)
 {
     int i, j, left, right, num_places;
     for (i=0; i<num_placed+1; i++) excluded[i]=FALSE;
@@ -382,8 +391,8 @@ bool *excluded;  /* side-effected */
 }
 
 
-bool three_pt_verify(locus,num_loci,window_size)
-int *locus, num_loci, window_size;
+bool 
+three_pt_verify (int *locus, int num_loci, int window_size)
 {
     int i, j, k;
     if (num_loci<3 || window_size<3) return(TRUE); /* crash? */
@@ -399,14 +408,18 @@ int *locus, num_loci, window_size;
 
 /**************** N-Pt Maker Placer ****************/
 
-void place_locus(map,locus,start,finish,excluded,result,best_pos,best_map,temp)
-MAP *map;          /* map to place locus into, should be ctm-ed! */
-int locus;
-int start, finish; /* The leftmost and rightmost frame markers (i) to use */
-bool *excluded; /* [interval#], one must be FALSE, NOT set */
-PLACE **result; /* [interval#]->foo side-effected like=NO_LIKE if untried */
-int *best_pos;   /* side effected */
-MAP *best_map, *temp;  /* max_loci must be >=finish-start+2 */
+void 
+place_locus (
+    MAP *map,          /* map to place locus into, should be ctm-ed! */
+    int locus,
+    int start,
+    int finish, /* The leftmost and rightmost frame markers (i) to use */
+    bool *excluded, /* [interval#], one must be FALSE, NOT set */
+    PLACE **result, /* [interval#]->foo side-effected like=NO_LIKE if untried */
+    int *best_pos,   /* side effected */
+    MAP *best_map,
+    MAP *temp  /* max_loci must be >=finish-start+2 */
+)
 {
     int i, j, k, num_allowed, last;
     real best_like, lod, theta;
@@ -504,20 +517,22 @@ MAP *best_map, *temp;  /* max_loci must be >=finish-start+2 */
 }
 
 
-int npt_exclusions(place,num_loci,like_thresh,one_err_thresh,net_err_thresh,
-		   excluded,zero_place,off_ends,error_lod,single_error,
-		   next_best,best_unallowed)
+int 
+npt_exclusions (
 /* return #ints ok */
-PLACE **place;  /* results from above */
-int  num_loci;  /* in order */
-real like_thresh, one_err_thresh, net_err_thresh;
-bool *excluded;     /* contents side-effected */
-bool *zero_place;   /* side-effected, T if all acceptable places are zeros */
-int  *off_ends;     /* side-effected, >0 if all acceptable places are end(s) */
-real *error_lod;    /* side-effected, is greatest for all acceptable places */
-bool *single_error; /* side-effected, T if error_place && err due to summing */
-real *next_best;    /* side-effected, best acceptable but non_zero like (<0) */
-real *best_unallowed; /* side-effected, best like >threshold */
+    PLACE **place,  /* results from above */
+    int num_loci,  /* in order */
+    real like_thresh,
+    real one_err_thresh,
+    real net_err_thresh,
+    bool *excluded,     /* contents side-effected */
+    bool *zero_place,   /* side-effected, T if all acceptable places are zeros */
+    int *off_ends,     /* side-effected, >0 if all acceptable places are end(s) */
+    real *error_lod,    /* side-effected, is greatest for all acceptable places */
+    bool *single_error, /* side-effected, T if error_place && err due to summing */
+    real *next_best,    /* side-effected, best acceptable but non_zero like (<0) */
+    real *best_unallowed /* side-effected, best like >threshold */
+)
 {
     int i, best_i, num, zero, one, ends;
     real second, unallowed, this_like, err, x;
@@ -562,13 +577,8 @@ real *best_unallowed; /* side-effected, best like >threshold */
 /**************** Automatic Sub-Order Finder and Stuff ****************/
 
 
-void informative_subset(locus,num_loci,min_infs,min_theta,codom_only,haplos,
-			subset,num)
-int *locus, num_loci;
-int min_infs;
-real min_theta;
-bool codom_only, haplos;
-int *subset, *num;
+void 
+informative_subset (int *locus, int num_loci, int min_infs, real min_theta, bool codom_only, bool haplos, int *subset, int *num)
 {
     int n_infs, n_dom_obs, n_het_obs, type, i, j, a, b, delete, deleted;
     int a_infs, b_infs;
@@ -736,12 +746,14 @@ bool good_seed(MAP *map,MAP *temp_map, real thresh)
   sprintf(ps,"%s%d%s%s",(paren ? "(":""),(locus)+1, \
      (use_haplotypes && haplotyped(locus) ? "+":""),(paren ? ")":""))
      
-void extend_order(placed,unplaced,num_unplaced,npt_thresh,print_anyway)
-MAP *placed;  		/* starting order, must be total long */
-PLACEME **unplaced;
-int *num_unplaced;
-real npt_thresh;        /* both are side-effected, and may have NO_LOCUS */
-bool print_anyway;
+void 
+extend_order (
+    MAP *placed,  		/* starting order, must be total long */
+    PLACEME **unplaced,
+    int *num_unplaced,
+    real npt_thresh,        /* both are side-effected, and may have NO_LOCUS */
+    bool print_anyway
+)
 {
     int i, j, total;
     bool placed_any, contradiction;
@@ -804,15 +816,16 @@ bool print_anyway;
 }
 
 
-bool extend_order_by_1(placed,unplaced,num_unplaced,npt_thresh,contradiction,
-		       placements,temp_map)
-MAP *placed;
-PLACEME **unplaced;
-int  *num_unplaced;
-real npt_thresh;
-bool *contradiction; /* iff return FALSE, is TRUE if 3pt excludes all */
-PLACE **placements; /* these are all temps */
-MAP *temp_map;
+bool 
+extend_order_by_1 (
+    MAP *placed,
+    PLACEME **unplaced,
+    int *num_unplaced,
+    real npt_thresh,
+    bool *contradiction, /* iff return FALSE, is TRUE if 3pt excludes all */
+    PLACE **placements, /* these are all temps */
+    MAP *temp_map
+)
 {
     int places, best_places, best_i, i, j;
     int left, right, how;
@@ -1041,8 +1054,8 @@ count_positions (int *excluded, int num_order, int *first_place)
 }
 
 
-bool middles_excluded(excluded,num_order)
-int *excluded, num_order;
+bool 
+middles_excluded (int *excluded, int num_order)
 {
     int j;
 
@@ -1052,12 +1065,17 @@ int *excluded, num_order;
 
 
 #ifdef OBSOLETE /************************************************************/
-void make_npt_maps(order,start,finish,newmarker,threshold,excluded,map,like)
-int *order, start, finish, newmarker;
-real threshold;    /* threshold is negative */
-bool *excluded;
-MAP *map;
-real *like;
+void 
+make_npt_maps (
+    int *order,
+    int start,
+    int finish,
+    int newmarker,
+    real threshold,    /* threshold is negative */
+    bool *excluded,
+    MAP *map,
+    real *like
+)
 {
     int i, j, k, best_i, maybe_zero, first;
     real best_like;
@@ -1107,14 +1125,19 @@ real *like;
    new frame index:        0 - 1 - 2 - 3 - 4   
    place_in:                 0 - 1 - 2 - 3               */
 
-void make_pair_maps(order,start,finish,locus,i1,i2,threshold,excluded,
-		   map,temp_order)
-int *order, start, finish;
-int *locus, i1, i2;  /* the locus array and indecies of the two to place */
-real threshold;      /* threshold is negative */
-bool **excluded;
-MAP *map;
-int **temp_order;     /* used as a temp 1,2=frame, 3..., n... w/places */
+void 
+make_pair_maps (
+    int *order,
+    int start,
+    int finish,
+    int *locus,
+    int i1,
+    int i2,  /* the locus array and indecies of the two to place */
+    real threshold,      /* threshold is negative */
+    bool **excluded,
+    MAP *map,
+    int **temp_order     /* used as a temp 1,2=frame, 3..., n... w/places */
+)
 {
     int j, k, n, n_in_order, n_start, n_orders;
     real best;

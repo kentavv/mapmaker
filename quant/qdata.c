@@ -335,14 +335,15 @@ make_genotype_arrays (int data_type, int num_intervals)
 
 void 
 free_qctm_globals (void) {}  /* KLUDGE: CURRENTLY A NOP */
-bool qctm_globals_avail()  { return(null_qtl_weight!=((real*)NULL)); }
+bool 
+qctm_globals_avail (void)  { return(null_qtl_weight!=((real*)NULL)); }
 
 
 
 /********************* RANDOM FUNCTIONS *********************/
 
-real haldane(theta)
-real theta;
+real 
+haldane (real theta)
 {
 	if (theta==0.0) return(0.0);
 	else if (theta>=MAX_REC_FRAC) return(MAX_CM);
@@ -350,16 +351,16 @@ real theta;
 }
 
 
-real unhaldane(morgans)
-real morgans;
+real 
+unhaldane (real morgans)
 {
     if (morgans==0.0) return(0.0);
     else if (morgans>=(MAX_CM/100.0)) return(MAX_REC_FRAC);
     else return((1.0-exp(-2.0*morgans))/2.0);    
 }
 
-real kosambi(theta)
-real theta;
+real 
+kosambi (real theta)
 {
 	if (theta==0.0) return(0.0);
 	else if (theta>=MAX_REC_FRAC) return(MAX_CM);
@@ -367,8 +368,8 @@ real theta;
 }
 
 
-real unkosambi(morgans)
-real morgans;
+real 
+unkosambi (real morgans)
 {
   	real exp_4_morgans;
 
@@ -384,8 +385,8 @@ real morgans;
 #ifdef UNUSED_CODE
 /* name conflicts with map_func in def.h, included by f2_prep and map -
    will need to be changed before we can use this! */
-real map_func(theta)
-real theta;
+real 
+map_func (real theta)
 { switch(map_function) {
     case HALDANE: return(haldane(theta));
     case KOSAMBI: return(kosambi(theta));  
@@ -394,8 +395,8 @@ real theta;
 }
 
 
-real unmap_func(morgans)
-real morgans;
+real 
+unmap_func (real morgans)
 { switch(map_function) {
     case HALDANE: return(unhaldane(morgans));
     case KOSAMBI: return(unkosambi(morgans));  
@@ -405,9 +406,8 @@ real morgans;
 #endif
 
 
-real model_prediction(map,indiv)
-QTL_MAP *map;
-int indiv;
+real 
+model_prediction (QTL_MAP *map, int indiv)
 {
     int j, k, geno, qtl, left, right;
     real pheno, interval_rf, left_rf, right_rf, sum, num=0., dom=0.;

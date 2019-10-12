@@ -83,8 +83,10 @@ data_init (void)
 }
 
 
-void getdataln(fp) /* get next nonblank,noncomment data file line */
-FILE *fp;
+void 
+getdataln ( /* get next nonblank,noncomment data file line */
+    FILE *fp
+)
 { do { fgetln(fp); data_line++; } while (nullstr(ln)||ln[0]=='#'); }
 
   
@@ -101,8 +103,8 @@ data_loaded (void)
 { return (raw.data_type!=NO_DATA); }
 
 
-char *data_info(add_nums)
-bool add_nums;
+char *
+data_info (bool add_nums)
 {
     char *str1= get_temp_string(), *str2= get_temp_string();
 
@@ -134,9 +136,8 @@ bool add_nums;
 }
 
 
-FILE *start_save_to_file(name,ext,type,exists)
-char *name, *ext, *type;
-bool *exists;
+FILE *
+start_save_to_file (char *name, char *ext, char *type, bool *exists)
 {
     FILE *fp;
     char tmpname[PATH_LENGTH+1];
@@ -164,9 +165,8 @@ bool *exists;
 }
 
 
-void finish_save_to_file(name,oldext,exists)
-char *name, *oldext;
-bool exists;
+void 
+finish_save_to_file (char *name, char *oldext, bool exists)
 {
     char tmpname[PATH_LENGTH+1], oldname[PATH_LENGTH+1];
     strcpy(tmpname,name); make_filename(tmpname,FORCE_EXTENSION,TEMP_EXT);
@@ -180,10 +180,8 @@ bool exists;
 
 /**** Do Real Work Now ****/
 
-void do_load_data(fp,filename,israw)
-FILE *fp;
-char *filename;
-bool israw;
+void 
+do_load_data (FILE *fp, char *filename, bool israw)
 {
     char name[PATH_LENGTH+1], symbols[7], type[TOKLEN+1];
     FILE *fp2;
@@ -282,9 +280,8 @@ do_unload_data (void)
 }
 
 
-void do_save_data(base_name,save_genos_too)
-char *base_name;
-bool save_genos_too;
+void 
+do_save_data (char *base_name, bool save_genos_too)
 {
     FILE *fp=NULL;
     char name[PATH_LENGTH+1];
@@ -340,9 +337,8 @@ bool save_genos_too;
 
 /**** Lower level stuff ****/
 
-int read_data_file_header(fp,filename)
-FILE *fp;
-char *filename;
+int 
+read_data_file_header (FILE *fp, char *filename)
 {
     int type=NO_DATA;
     if (data_loaded() || fp==NULL) send(CRASH);
@@ -385,9 +381,8 @@ Type 'help data formats' for instructions."
 #define OK_SYMBOLS \
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890+-"
 
-int read_raw_file_header(fp,filename,symbol)
-FILE *fp;
-char *filename, *symbol;
+int 
+read_raw_file_header (FILE *fp, char *filename, char *symbol)
 {
     int type, n_indivs, n_loci, n_chroms, n_traits, i, n=0, first;
     char str[TOKLEN+1], *dflt=NULL, user[2];
@@ -469,9 +464,11 @@ char *filename, *symbol;
 }
 
 
-bool read_magic_number(fp,type)
-FILE *fp;
-char *type; /* no spaces allowed, must parse with %s */
+bool 
+read_magic_number (
+    FILE *fp,
+    char *type /* no spaces allowed, must parse with %s */
+)
 {
     int magic_number;
     char id[TOKLEN+1];
@@ -484,9 +481,8 @@ char *type; /* no spaces allowed, must parse with %s */
 }
 
 
-void write_magic_number(fp,type)
-FILE *fp;
-char *type;
+void 
+write_magic_number (FILE *fp, char *type)
 { fprintf(fp,"%d mapmaker %s data\n",raw.filenumber,type); }
 
 
@@ -533,8 +529,10 @@ free_traits (void)
     }
 }
 
-void new_read_f2_data(fp)
-FILE  *fp; /* sends BADDATA, or MALLOC, INTERRUPT etc. if an error */
+void 
+new_read_f2_data (
+    FILE *fp /* sends BADDATA, or MALLOC, INTERRUPT etc. if an error */
+)
 {
     int j;
     run {
@@ -548,9 +546,8 @@ FILE  *fp; /* sends BADDATA, or MALLOC, INTERRUPT etc. if an error */
 }	
 
 
-void new_read_f2_locus(fp,locus_num)
-FILE *fp;
-int locus_num;
+void 
+new_read_f2_locus (FILE *fp, int locus_num)
 {
     int i;
     char c, name[NAME_LEN+2];
@@ -578,8 +575,8 @@ int locus_num;
 }
 
 
-void write_f2_data(fp)
-FILE *fp;
+void 
+write_f2_data (FILE *fp)
 {
     int i, j;
     char header[MAXLINE+1];
@@ -611,9 +608,11 @@ FILE *fp;
 }
 
 
-void new_read_f2_raw(fp,symbols)
-FILE  *fp; /* sends BADDATA, or MALLOC, INTERRUPT etc. if an error */
-char *symbols;
+void 
+new_read_f2_raw (
+    FILE *fp, /* sends BADDATA, or MALLOC, INTERRUPT etc. if an error */
+    char *symbols
+)
 {
     int i;
 
@@ -630,10 +629,8 @@ char *symbols;
 
 
 
-void read_raw_f2_locus(fp,locus_num,symbol)
-FILE *fp;
-int locus_num;
-char *symbol;
+void 
+read_raw_f2_locus (FILE *fp, int locus_num, char *symbol)
 {
     int i, j;
     char c, *name, converted;
@@ -714,9 +711,8 @@ char *symbol;
 
 #define ACTIVATE_EQUATION
 
-void read_raw_trait(fp,trait_num)
-FILE *fp;
-int trait_num;
+void 
+read_raw_trait (FILE *fp, int trait_num)
 {
     int i, j, k, l, did_we_do_eqn, templen;
     char *tempstr, *temp2, *name, *tok;
@@ -847,8 +843,8 @@ symbol_value (int chr, char *symb)
 }
 
 
-void write_traits(fp)
-FILE *fp;
+void 
+write_traits (FILE *fp)
 {
     int i, j;
 

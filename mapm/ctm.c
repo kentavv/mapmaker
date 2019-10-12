@@ -261,10 +261,12 @@ converge_to_map (MAP *map)
 }
 
 
-void f2_genotype(locus,haplo,observation)
-int locus;
-bool haplo; /* merge haplotypes */
-int *observation; /* array of raw.num_indivs observations */
+void 
+f2_genotype (
+    int locus,
+    bool haplo, /* merge haplotypes */
+    int *observation /* array of raw.num_indivs observations */
+)
 {
     int j;
     
@@ -289,9 +291,12 @@ int *observation; /* array of raw.num_indivs observations */
 }
 
 
-bool merge_genotypes(locus,observation,new_observation)
-int locus;
-int *observation, *new_observation; /* array of raw.num_indivs observations */
+bool 
+merge_genotypes (
+    int locus,
+    int *observation,
+    int *new_observation /* array of raw.num_indivs observations */
+)
 {
     int j, the_obs;
     
@@ -758,11 +763,13 @@ f3_state (
 }
 
 
-void hmm_bc_like_set_probs(map,trans_prob,obs_prob,implied_recs)
-MAP *map;
-real ***trans_prob;    /* [interval][from_state][to_state] */
-real ***obs_prob;      /* [locus][observation/MD][state] side-effected */
-real ***implied_recs;  /* [interval][from_state][to_state] side-effected */
+void 
+hmm_bc_like_set_probs (
+    MAP *map,
+    real ***trans_prob,    /* [interval][from_state][to_state] */
+    real ***obs_prob,      /* [locus][observation/MD][state] side-effected */
+    real ***implied_recs  /* [interval][from_state][to_state] side-effected */
+)
 /* for now, assume obs_probs are fixed and initialized by setup_hmm() */
 {
     int i;
@@ -793,11 +800,13 @@ real ***implied_recs;  /* [interval][from_state][to_state] side-effected */
 }
 
 
-void hmm_f2_set_probs(map,trans_prob,obs_prob,implied_recs)
-MAP *map;
-real ***trans_prob;    /* [interval][from_state][to_state] */
-real ***obs_prob;      /* [locus][observation/MD][state] side-effected */
-real ***implied_recs;  /* [interval][from_state][to_state] side-effected */
+void 
+hmm_f2_set_probs (
+    MAP *map,
+    real ***trans_prob,    /* [interval][from_state][to_state] */
+    real ***obs_prob,      /* [locus][observation/MD][state] side-effected */
+    real ***implied_recs  /* [interval][from_state][to_state] side-effected */
+)
 /* for now, assume obs_probs are fixed and initialized by setup_hmm() */
 {
     int i;
@@ -834,11 +843,13 @@ real ***implied_recs;  /* [interval][from_state][to_state] side-effected */
 }
 
 
-void hmm_f3_self_set_probs(map,trans_prob,obs_prob,implied_recs)
-MAP *map;
-real ***trans_prob;    /* [interval][from_state][to_state] */
-real ***obs_prob;      /* [locus][observation/MD][state] side-effected */
-real ***implied_recs;  /* [interval][from_state][to_state] side-effected */
+void 
+hmm_f3_self_set_probs (
+    MAP *map,
+    real ***trans_prob,    /* [interval][from_state][to_state] */
+    real ***obs_prob,      /* [locus][observation/MD][state] side-effected */
+    real ***implied_recs  /* [interval][from_state][to_state] side-effected */
+)
 /* for now, assume obs_probs are fixed and initialized by setup_hmm() */
 {
     int i, k, j;
@@ -874,13 +885,13 @@ real ***implied_recs;  /* [interval][from_state][to_state] side-effected */
 }
 
 
-void hmm_count_stats(exp_transitions,exp_observations,implied_recs,
-			sufficient_stats)
-real ***exp_transitions;   /* [interval][from_state][to_state] */
-real ***exp_observations;  /* [locus][observation/MD][state] */
-real ***implied_recs;	   /* [interval][from_state][to_state] */
-/* for now, assume exp_observations==NULL, and is not used */
-SUFF_STATS **sufficient_stats; /* [locus] => ptr to struct (recs,norecs)... */
+void 
+hmm_count_stats (
+    real ***exp_transitions,   /* [interval][from_state][to_state] */
+    real ***exp_observations,  /* [locus][observation/MD][state] */
+    real ***implied_recs,	   /* [interval][from_state][to_state] */
+    SUFF_STATS **sufficient_stats /* [locus] => ptr to struct (recs,norecs)... */
+)
 {
     int i, k, j;
     real **transitions_exp, **recs_implied=NULL, **norecs_implied=NULL;
@@ -908,10 +919,12 @@ SUFF_STATS **sufficient_stats; /* [locus] => ptr to struct (recs,norecs)... */
 }
 
 
-void hmm_make_new_map(sufficient_stats,new_like,map)
-SUFF_STATS **sufficient_stats; /* [locus] => ptr to struct (recs,norecs)... */
-real new_like;
-MAP *map;
+void 
+hmm_make_new_map (
+    SUFF_STATS **sufficient_stats, /* [locus] => ptr to struct (recs,norecs)... */
+    real new_like,
+    MAP *map
+)
 /* for now, assume no penetrance stuff */
 {
     int i;
@@ -936,10 +949,14 @@ MAP *map;
 
 
 
-real hmm_e_step(map,trans_prob,obs_prob,exp_transitions,exp_observations)
-MAP *map;
-real ***trans_prob, ***exp_transitions; /* [interval][from_state][to_state] */
-real ***obs_prob, ***exp_observations;  /* [locus][observation][state] */
+real 
+hmm_e_step (
+    MAP *map,
+    real ***trans_prob,
+    real ***obs_prob,
+    real ***exp_transitions, /* [interval][from_state][to_state] */
+    real ***exp_observations  /* [locus][observation][state] */
+)
 /* for now, assume exp_observations==NULL, meaning "don't bother" */
 /* return likelihood */
 {
@@ -1125,10 +1142,8 @@ real ***obs_prob, ***exp_observations;  /* [locus][observation][state] */
 }
 
 
-void test_dump(p,rows,name) 
-real ***p;
-int rows;
-char *name;
+void 
+test_dump (real ***p, int rows, char *name)
 {
     int i, j, k, n;
 
@@ -1148,9 +1163,8 @@ char *name;
 }
 
 
-void test_dump0(p,name) 
-real **p;
-char *name;
+void 
+test_dump0 (real **p, char *name)
 {
     int j, k, n;
 
@@ -1171,12 +1185,13 @@ char *name;
 #define state_not_allowed(locus,obs,state) \
   (obs!=OBS_MISSING && obs_prob[locus][obs][state]<0.24)
 
-void count_error_lods(apriori_rate,obs_prob,exp_genotype,
-		      error_lod)
-real *apriori_rate;       /* [locus#] */
-real ***exp_genotype;     /* [indiv][locus][state] */
-real ***obs_prob;         /* [locus#][observation][state] */
-real **error_lod;         /* [locus#][indiv] side-effected */
+void 
+count_error_lods (
+    real *apriori_rate,       /* [locus#] */
+    real ***obs_prob,         /* [locus#][observation][state] */
+    real ***exp_genotype,     /* [indiv][locus][state] */
+    real **error_lod         /* [locus#][indiv] side-effected */
+)
 {
     real apostiori_rate, e1, e2, like;
     int i, j, state, the_obs;
