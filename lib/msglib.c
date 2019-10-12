@@ -41,17 +41,22 @@ int   BADEQN_errpos;
 
 void strmsg_default(char *str)
  { str[0]='\0'; }
-void strmsg_MATHERROR(str) char *str;
+void 
+strmsg_MATHERROR (char *str)
  { sprintf(str, "error type=%-60s\narg1=%lf\narg2=%lf",
            MATHERROR_type, MATHERROR_arg1, MATHERROR_arg2); }
-void strmsg_NOMEMORY(str) char *str;
+void 
+strmsg_NOMEMORY (char *str)
  { sprintf(str, "cell size=%d\nnum cells=%d", NOMEMORY_cell_size, NOMEMORY_num_cells);}
-void strmsg_CANTOPEN(str) char *str;
+void 
+strmsg_CANTOPEN (char *str)
  { sprintf(str, "filename=%-60s\nmode=%c", CANTOPEN_path, CANTOPEN_modechar); }
-void strmsg_IOERROR(str) char *str;
+void 
+strmsg_IOERROR (char *str)
  { sprintf(str, "filename=%-60s\nline=%-60s\nerror=%-60s",
            IOERROR_filename, truncstr(IOERROR_linecopy,60), IOERROR_errmsg); }
-void strmsg_SYSERROR(str) char *str;
+void 
+strmsg_SYSERROR (char *str)
  { sprintf(str, "errmsg=%-60s", SYSERROR_errmsg); }
 
 jmp_buf stk[TRAP_DEPTH];     /* stack of message traps */
@@ -62,7 +67,8 @@ void (*(maction[MSGS]))(int);   /* [msg] => function which does whatever */
 void (*(mstrmsg[MSGS]))(char *);   /* [msg] => function which sets its (char*) arg */
 void sighandle(); 
 
-void msg_init()
+void 
+msg_init (void)
 {
 	msgname=NULL; mname= NULL; lvl=0; 
 	matrix(mname,MSGS,TOKLEN+1,char);
@@ -108,17 +114,20 @@ void msg_init()
 }
 
 
-void setmsg(var,nam,action,disp) /* for a pre-assigned msg number */
-int var;
-char *nam;
-void (*action)();
-void (*disp)();
+void 
+setmsg ( /* for a pre-assigned msg number */
+    int var,
+    char *nam,
+    void (*action)(int),
+    void (*disp)(char *)
+)
 { if (nam!=NULL) nstrcpy(mname[var],nam,MSGNAMLEN); 
   if (action!=NULL) maction[var]=action; 
   if (disp!=NULL) mstrmsg[var]=disp; }
 
 
-int lvl_plus_plus() 
+int 
+lvl_plus_plus (void) 
 { if (lvl<TRAP_DEPTH) return(lvl++);
   msg=CRASH; untrapped_msg(); abnormal_exit(); return(0); }
   
@@ -135,60 +144,69 @@ void sender(int num)
 }
 
 
-void punter(/*int num*/)
+void 
+punter (void)
 { if (--lvl>=0) longjmp(stk[lvl],QUIT); else {msg=CRASH; untrapped_msg();} }
 
-void trapper(num) int num;
+void 
+trapper (int num)
 { void do_trap(); msg=num; do_trap(); } /* do_trap() is in syscode.c */
 
 void default_action(int num)
 { msg=num; untrapped_msg(); abnormal_exit(); }
 
 
-void handle_interrupt(n) int n;
+void 
+handle_interrupt (int n)
 { signal(n,handle_interrupt); 
   if(in_tty_gets) hit_interrupt = TRUE; 
   else send(INTERRUPT); }
 
-void handle_quit(n) int n;
+void 
+handle_quit (int n)
 { sprintf(QUIT_errmsg,"received QUIT signal (#%d) from system",n); send(QUIT);}
 
-void handle_matherror(n) int n;
+void 
+handle_matherror (int n)
 { signal(n,handle_matherror); sigcounter(); MATHERROR_arg1=MATHERROR_arg2=0.0; 
   strcpy(MATHERROR_type,"unknown math error (SIGFPE)"); send(MATHERROR); }
 
-void handle_buserror(n) int n;
+void 
+handle_buserror (int n)
 { signal(n,handle_buserror); sigcounter();
   strcpy(SYSERROR_errmsg,"segmentation-violation or bus-error"); 
   send(SYSERROR); }
 
-void handle_weird_signal(n) int n;
+void 
+handle_weird_signal (int n)
 { signal(n,handle_weird_signal); sigcounter();
   sprintf(SYSERROR_errmsg,"system signal #%d",n); send(SYSERROR); }
 
 
-#ifdef MATHERR_DEFINED
+//#ifdef MATHERR_DEFINED
+//
+//int
+//matherr ( 	 	/* System V std math error trap */
+//    struct exception *ex
+//)
+//{ switch (ex->type) {
+//    case DOMAIN:    strcpy(MATHERROR_type,"DOMAIN");      break;
+//    case SING:	    strcpy(MATHERROR_type,"SINGULARITY"); break;
+//    case OVERFLOW:  strcpy(MATHERROR_type,"OVERFLOW");    break;
+//    case UNDERFLOW: strcpy(MATHERROR_type,"UNDERFLOW");   break;
+//    case TLOSS:	    strcpy(MATHERROR_type,"Total-Loss of significance"); break;
+//    case PLOSS:	strcpy(MATHERROR_type,"Partial-Loss of significance");   break;
+//    default:	strcpy(MATHERROR_type,"Unknown");         break;
+//  }
+//  MATHERROR_arg1= ex->arg1; MATHERROR_arg2= ex->arg2;
+//  send(MATHERROR);
+//  return(0);  /*  never reached */
+//}
+//
+//#endif
 
-int matherr(ex) 	 	/* System V std math error trap */
-struct exception *ex;
-{ switch (ex->type) {
-    case DOMAIN:    strcpy(MATHERROR_type,"DOMAIN");      break;
-    case SING:	    strcpy(MATHERROR_type,"SINGULARITY"); break;
-    case OVERFLOW:  strcpy(MATHERROR_type,"OVERFLOW");    break;
-    case UNDERFLOW: strcpy(MATHERROR_type,"UNDERFLOW");   break;
-    case TLOSS:	    strcpy(MATHERROR_type,"Total-Loss of significance"); break;
-    case PLOSS:	strcpy(MATHERROR_type,"Partial-Loss of significance");   break;
-    default:	strcpy(MATHERROR_type,"Unknown");         break;
-  }
-  MATHERROR_arg1= ex->arg1; MATHERROR_arg2= ex->arg2;
-  send(MATHERROR);
-  return(0);  /*  never reached */
-}
-
-#endif
-
-bool stack_check(var)
-int *var;
+bool 
+stack_check (int *var)
 {    
      if (*var==-1) { *var=lvl; return(TRUE); }
      if (lvl== *var) return(TRUE); 
