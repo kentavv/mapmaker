@@ -14,6 +14,8 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
+#include "syscode.h"
+
 /************* IOLIB.H - terminal and text file I/O functions *************
 OVERVIEW:
 
@@ -92,8 +94,6 @@ computationally critical loops, as iocheck() may take some time itself
 (though likely doesn't).  NOTE: iocheck() IS NOT YET IMPLEMENTED - it
 exists but does nothing, and it may never...
 ***************************************************************************/
-
-#include "syscode.h"
 
 int lookup_fp(FILE *fp, char **name, char *modechar; /* side-effected if non-null */);
 void ioerror(char *errmsg, FILE *fp, char *ioline);

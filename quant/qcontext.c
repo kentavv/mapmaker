@@ -11,11 +11,11 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-#define INC_LIB
-#define INC_SHELL
-#define INC_TABLE
-#define INC_CALLQCTM
-#define INC_QTOPLEVEL
+//#define INC_LIB
+//#define INC_SHELL
+//#define INC_TABLE
+//#define INC_CALLQCTM
+//#define INC_QTOPLEVEL
 #include "qtl.h"
 
 void allocate_context (STATUS_CONTEXT *con);

@@ -14,6 +14,9 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
+#include "mapm.h"
+//#include "toplevel.h"
+
 /***** MAP struct - holds all information about a linkage map - maps.c *****/
 typedef struct {
     char        *map_name;     /* name of MAP */
@@ -153,8 +156,6 @@ void bash_all_three_pt(int num_total);
 void free_three_pt(int num_total);
 bool restore_triple(int locus1, int locus2, int locus3, real *d1, real *d2, real *d3);
 bool three_linked(int *locus, real lodbound, real thetabound, int num_links, bool sex);
-#include "toplevel.h"
-void compute_3pt(SEQ_NODE *seq, bool sex, real trip_err_rate, real *like, MAP *map);
 //
 ///* these two calculate on demand WHAT ABOUT HAPS??? */
 //void compute_two_pt();  /* args: int locus1, locus2; */

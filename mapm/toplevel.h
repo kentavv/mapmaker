@@ -201,6 +201,8 @@ typedef struct seq_struct {
 #define NOT_FIXED OBSCURE_REAL
 #define UNLINK_ME OBSCURE_REAL2
 
+void compute_3pt(SEQ_NODE *seq, bool sex, real trip_err_rate, real *like, MAP *map);
+
 void allocate_seq_stuff(int n_loci);
 void free_seq_stuff(void);
 //void allocate_seq_stuff(); /* args: int max_loci; call after loading data */

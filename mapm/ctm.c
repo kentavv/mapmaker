@@ -13,9 +13,11 @@
 
 /************** Hiden Markov Model based Converge to Map for F2 **************/
 
-#define INC_LIB
-#define INC_SHELL
+//#define INC_LIB
+//#define INC_SHELL
 #include "mapm.h"
+//#include "toplevel.h"
+//#include "lowlevel.h"
 
 /**** statics all setup by setup_hmm() - arrays are freed by free_hmm() ****/
 int n_indivs, n_loci, n_intervals;

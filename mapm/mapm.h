@@ -16,14 +16,11 @@
 
 /***************** Get the common #includes first...  *****************/
 
-#define INC_TABLE /* need TABLE to compile toplevel.h and STATUS_CONTEXT */
+//#include <stdio.h>
 
-#ifndef command
-#define command void /* needed if INC_SHELL was not defined */
-#endif
+//#define INC_TABLE /* need TABLE to compile toplevel.h and STATUS_CONTEXT */
 
-#include "system.h"
-
+//#define command void /* needed if INC_SHELL was not defined */
 
 /***************** MAPM Constants *****************/
 /* you should be able to change these and recompile */
@@ -142,6 +139,11 @@ extern char *BADDATA_reason;
 
 /* for raw.data_type, use only CEPH, F2, or NO_DATA */
 #define NUM_DATA_TYPES 4  /* used in old_ctm select_procs */
+
+#include "system.h"
+#include "lowlevel.h"
+#include "map_info.h"
+#include "toplevel.h"
 
 /* Things used by the data readers in reader.c */
 void getdataln(FILE *fp);
@@ -410,18 +412,5 @@ void map_init(void);
 void sequence_init (void);
 void state_init (void);
 void data_init (void);
-
-/***************** Other MAPM Include Files  ******************/
-
-#include "lowlevel.h"
-#include "map_info.h"
-#include "toplevel.h"
-
-
-/*
-#ifdef INC_PREPDATA
-#include "prepdata.h"
-#endif
-*/
 
 #endif

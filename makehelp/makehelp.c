@@ -44,8 +44,8 @@ POSTSCRIPT VERSION
 #include <stdio.h>
 #include <string.h>
 
-#define INC_LIB
-#define INC_SHELL   /* for various definitions */
+//#define INC_LIB
+//#define INC_SHELL   /* for various definitions */
 #include "system.h"
 
 typedef char STRING[MAXLINE+1];
@@ -757,7 +757,7 @@ int main(int argc, char *argv[])
 
             /* code file */
             do_fwrite(code,"/* MAPMAKER help code file - do not edit! */ \n\n");
-            do_fwrite(code,"#define INC_LIB \n#define INC_SHELL \n");
+//            do_fwrite(code,"#define INC_LIB \n#define INC_SHELL \n");
             do_fwrite(code,"#include \"system.h\" \n\n");
             /* sprintf(ps,"char help_filename[]= \"%s\";\n\n",final_hlp_name);
                do_fwrite(code,ps); */

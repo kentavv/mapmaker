@@ -17,10 +17,10 @@
 extern bool wizard_mode;
 //void null_command();
 extern FILE *help_file;
-#define command void
+typedef void command;
 
 extern bool (*quit_save_hook)(bool);
-extern bool more_mode;
+//extern bool more_mode;
 
 
 

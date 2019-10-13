@@ -14,6 +14,8 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
+#include "table.h"
+
 /***** qtop.h - Declarations of things which help the QTL commands
 deal with data produced by QCTM - this file requires that qmap.h and
 table.h be included first! *****/

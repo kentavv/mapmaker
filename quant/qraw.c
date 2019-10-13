@@ -13,11 +13,11 @@
 
 /* QTL raw data */
 
-#define INC_LIB
-#define INC_SHELL
-#define INC_QLOWLEVEL
-#define INC_CALLQCTM
-#define INC_QTOPLEVEL
+//#define INC_LIB
+//#define INC_SHELL
+//#define INC_QLOWLEVEL
+//#define INC_CALLQCTM
+//#define INC_QTOPLEVEL
 #include <stdlib.h>
 //#undef CRASH
 #include "qtl.h"

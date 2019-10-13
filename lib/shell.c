@@ -11,9 +11,9 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-#define INC_LIB
-#define INC_MISC
-#define INC_HELP_DEFS
+//#define INC_LIB
+//#define INC_MISC
+//#define INC_HELP_DEFS
 #include "system.h"
 #include "shell.h"
 #include "table.h"

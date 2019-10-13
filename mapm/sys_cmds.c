@@ -11,9 +11,11 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-#define INC_LIB
-#define INC_SHELL
+//#define INC_LIB
+//#define INC_SHELL
 #include "mapm.h"
+//#include "lowlevel.h"
+//#include "toplevel.h"
 
 /* Auxilliary stuff for load/save/prep */
 FILE *try_to_open(char *name, int mode, char *ext, bool prev_data) /* return fp or send error */;

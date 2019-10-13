@@ -13,11 +13,11 @@
 
 /********** QPRINT.C - QTL's PRINTING ROUTINES **********/
 
-#define INC_LIB
-#define INC_SHELL
-#define INC_CALLQCTM
-#define INC_QTOPLEVEL
-#define INC_QLOWLEVEL /* why? */
+//#define INC_LIB
+//#define INC_SHELL
+//#define INC_CALLQCTM
+//#define INC_QTOPLEVEL
+//#define INC_QLOWLEVEL /* why? */
 #include "qtl.h"
 
 //char *interval_str();

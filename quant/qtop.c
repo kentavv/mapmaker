@@ -14,11 +14,11 @@
 /* QTOP.C - The toplevel for MAPMAKER/QTL, including lots of utility functions
    for the commands, and the main() procedure. */
 
-#define INC_LIB
-#define INC_SHELL
-#define INC_CALLQCTM
-#define INC_QTOPLEVEL
-#define INC_QLOWLEVEL
+//#define INC_LIB
+//#define INC_SHELL
+//#define INC_CALLQCTM
+//#define INC_QTOPLEVEL
+//#define INC_QLOWLEVEL
 #include "qtl.h"
 
 /***** User State Variables - global *****/

@@ -15,9 +15,9 @@
 /* Most of this file is doccumented in system.h - it contains most of the 
    system dependent code for the helpers library. */
 
-#define INC_LIB
-#define INC_EQN
-#define INC_HELP_DEFS
+//#define INC_LIB
+//#define INC_EQN
+//#define INC_HELP_DEFS
 #include "system.h"
 #include "syscode.h"
 

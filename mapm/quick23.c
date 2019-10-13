@@ -11,8 +11,9 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-#define INC_LIB
+//#define INC_LIB
 #include "mapm.h"
+//#include "lowlevel.h"
 
 char symbols[]={
     HYBRID_TYPE_H,

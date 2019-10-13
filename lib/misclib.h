@@ -15,6 +15,7 @@
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
 #include "syscode.h"
+#include "mathlib.h"
 
 /***** GETTING THE TIME (code is in syscode.c) *****/
 /* DO NOT use the time() system function alone, it's not portable! */
@@ -89,9 +90,7 @@
 //You may want to look in system.h to see how these work in order to write
 //your own sorting routines. */
 
-#define psort(p,n,t,f) qsort(QSORT_CAST(p),(QSORT_LENGTH)n,sizeof(t*),f)
-#define PSORT_COMPARE_TYPE(t) QSORT_COMPARE_PTR_TO(t)
+//#define psort(p,n,t,f) qsort(QSORT_CAST(p),(QSORT_LENGTH)n,sizeof(t*),f)
+//#define PSORT_COMPARE_TYPE(t) QSORT_COMPARE_PTR_TO(t)
  
-#include "mathlib.h"
-
 #endif

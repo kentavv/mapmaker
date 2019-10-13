@@ -11,9 +11,11 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-#define INC_LIB
-#define INC_SHELL
+//#define INC_LIB
+//#define INC_SHELL
 #include "mapm.h"
+//#include "toplevel.h"
+//#include "lowlevel.h"
 
 #define LONGEST_MAP 300.0  /* longest map allowed for one page output */
 
@@ -21,9 +23,6 @@ void ps_file_start(FILE *fp);
 void ps_file_end(FILE *fp);
 void ps_page_start(FILE *fp, int pagenum);
 void ps_page_end(FILE *fp);
-void print_ps_map(FILE *fp, MAP *map);
-void print_ps_chrom(FILE *fp, int chrom);
-void print_all_ps_chroms(FILE *fp);
 real ps_scale(real map_length);
 void ps_dump_chrom(FILE *fp, int chrom, real scale);
 char *ps_loc_str(int i);

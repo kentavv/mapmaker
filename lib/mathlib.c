@@ -11,14 +11,14 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-#define INC_MATH
-#define INC_MEM
-#define INC_MSG
-#define INC_STR 
-#define INC_IO
+//#define INC_MATH
+//#define INC_MEM
+//#define INC_MSG
+//#define INC_STR
+//#define INC_IO
 
-#define INC_MISC
-#define INC_HELP_DEFS
+//#define INC_MISC
+//#define INC_HELP_DEFS
 #include "system.h"
 
 real sq(real r) { return(r*r); }

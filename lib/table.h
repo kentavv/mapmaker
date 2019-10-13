@@ -19,6 +19,8 @@
    Tables can be made to either expand themselves as needed, or to bash old 
    entries. Numbered tables are kept sorted, and named tables may be sorted. */
 
+#include <stdio.h>
+
 typedef struct named_entry {
     char *string;
     union { int num; char *name; } id;

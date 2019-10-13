@@ -11,12 +11,12 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-#define INC_IO
-#define INC_MSG
-#define INC_MEM
-#define INC_STR
-#define INC_MATH
-#define INC_HELP_DEFS
+//#define INC_IO
+//#define INC_MSG
+//#define INC_MEM
+//#define INC_STR
+//#define INC_MATH
+//#define INC_HELP_DEFS
 #include "system.h"
 #include "shell.h" /* just to get the decl of error()? */
 #include "iolib.h"

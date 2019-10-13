@@ -11,11 +11,13 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-#define INC_LIB
-#define INC_MISC
-#define INC_SHELL
+//#define INC_LIB
+//#define INC_MISC
+//#define INC_SHELL
 #include "mapm.h"
-#include "map_info.h"
+//#include "map_info.h"
+//#include "lowlevel.h"
+//#include "toplevel.h"
 
 SAVED_LIST *chromosome;
 ASSIGNMENT **assignment;

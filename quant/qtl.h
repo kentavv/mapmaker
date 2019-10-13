@@ -14,15 +14,18 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
+#include "system.h"
+#include "qmap.h"
+#include "qtop.h"    /* include after qmap.h */
+#include "qlow.h"
+
 /* This is the only file which understands the order in which #include
    files need to be included! */
 
-#ifdef INC_QTOPLEVEL
-#define INC_TABLE     /* NOT included by INC_LIB */
-#define INC_CALLQCTM
-#endif
-
-#include "system.h"
+//#ifdef INC_QTOPLEVEL
+//#define INC_TABLE     /* NOT included by INC_LIB */
+//#define INC_CALLQCTM
+//#endif
 
 /******************** GLOBAL DECLARATIONS SPECIFIC TO QTL ********************/
 /* Generally speaking, this declares QTL commands, user accessible state 
@@ -153,21 +156,6 @@ int dum_loc;      /* Used to set proper number of loci in data set */
 /* Various Kludges to go from the old to new helpers library!  */
 #define INSIZE LINE*2
 #define why_(str) nstrcpy(BADDATA_error,str,LINE)
-
-
-/*** QTL #include files ***/
-
-#ifdef INC_CALLQCTM
-#include "qmap.h"
-#endif
-
-#ifdef INC_QTOPLEVEL
-#include "qtop.h"    /* include after qmap.h */
-#endif
-
-#ifdef INC_QLOWLEVEL
-#include "qlow.h"
-#endif
 
 void print_ps_wiggle_order(int wiggle, int order, real threshold);
 void print_ps_multi_wiggle(int wiggle, real threshold);

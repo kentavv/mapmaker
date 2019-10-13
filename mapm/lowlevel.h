@@ -14,6 +14,8 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
+#include "map_info.h"
+
 
 /********************** Raw Data Struct ************************************/
   			
@@ -166,7 +168,6 @@ typedef union {
 
 /* Functions */
 /*in ctm.c */
-#include "map_info.h"
 void converge_to_map(MAP *map);  /* arg: MAP; calls map making functions and returns
 			    the converged map (alters: rec_frac, log-like) */
 /* in multipt.c */

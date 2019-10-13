@@ -11,6 +11,39 @@
 /* This file is part of MAPMAKER, Copyright 1987-1992 Whitehead Institute.
    See the READ.ME file for license agreement and non-warranty information. */
 
+#include <ctype.h>
+#include <errno.h>
+#include <malloc.h>
+#include <math.h>
+#include <setjmp.h>
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/ioctl.h>
+#include <sys/types.h>
+#include <time.h>
+#include <unistd.h>
+
+typedef double  real;
+typedef int     flag;
+typedef int     bool;
+#define TRUE 	(1)
+#define FALSE	(0)
+#define MAYBE	(-1)
+
+#include "eqn.h"
+#include "iolib.h"
+#include "mathlib.h"
+#include "memlib.h"
+#include "misclib.h"
+#include "msglib.h"
+#include "shell.h"
+#include "stats.h"
+#include "strlib.h"
+#include "table.h"
+
+
 /***************************************************************************
 This file, along with the syscode.c file, is used to provide most, if
 not all system specific, definitions allowing our library files to
@@ -465,15 +498,7 @@ changed! They exist only to clarify code, not to allow any sort of
 data-type abstraction!
 ******************************************************************************/
 
-#ifndef NO_INCLUDE_HELPERS
-
-typedef double  real;
-typedef int     flag;
-typedef int     bool;
-#define TRUE 	(1)
-#define FALSE	(0)
-#define MAYBE	(-1)
-/* rely on the system to define NULL */
+//#ifndef NO_INCLUDE_HELPERS
 
 /* One of the lib_init() routines must be called before ANYTHING else
 is done, or the program will crash in wierd ways! In general, user's
@@ -496,79 +521,62 @@ anything important, and particularly should not generate any I/O. */
 //   side-effects file_arg[] and nulls the args it parses, so another
 //   arg sucker can go at it afterwards */
 
-#endif
+//#endif
 
 
 /*************************** Library Include files **************************/
-#ifdef  INC_LIB
-#define INC_MATH
-#define INC_MSG
-#define INC_IO
-#define INC_STR
-#define INC_MEM
-#endif
-
-#include <stdlib.h>
-//#ifndef _SYS_WATCOM
-#include <unistd.h>  /* not quite sure why we need this */
+//#ifdef  INC_LIB
+//#define INC_MATH
+//#define INC_MSG
+//#define INC_IO
+//#define INC_STR
+//#define INC_MEM
 //#endif
 
-#ifdef INC_IO
-#include <stdio.h>
-#include "iolib.h"
-#endif
+//#ifndef _SYS_WATCOM
+//#endif
 
-#ifdef INC_MATH
+//#ifdef INC_IO
+//#endif
+
+//#ifdef INC_MATH
 //#ifdef _SYS_WATCOM
 //#undef real
 //#endif
-#include <math.h>   /* WATCOM has problems with this if "real" is a macro */
 //#ifdef _SYS_WATCOM
 //#define real double
 //#endif
-#include "mathlib.h"
-#endif
+//#endif
 
-#ifdef INC_MSG
-#include <setjmp.h>	
-#include "msglib.h"
-#endif
+//#ifdef INC_MSG
+//#endif
 
-#ifdef INC_MEM
-#include "memlib.h"
-#endif
+//#ifdef INC_MEM
+//#endif
 
-#ifdef INC_STR
-#include <string.h>
-#include <ctype.h>
-#include "strlib.h"
-#endif
+//#ifdef INC_STR
+//#endif
 
 /* The following are NOT included by INC_LIB */
 
-#ifdef INC_MISC
-#include "misclib.h"
-#endif
+//#ifdef INC_MISC
+//#endif
 
-#ifdef INC_SHELL
-#include "shell.h"
-#endif
+//#ifdef INC_SHELL
+//#endif
 
-#ifdef INC_TABLE
-#include "table.h"
-#endif
+//#ifdef INC_TABLE
+//#endif
 
-#ifdef INC_EQN
-#include "eqn.h"
-#endif
+//#ifdef INC_EQN
+//#endif
 
 //#ifdef INC_HISTO
 //void make_histo(); /* that's all? */
 //#endif
 
-#ifdef INC_STATS
-#include "stats.h"
-#endif
+//#ifdef INC_STATS
+//#endif
 
 /********************* Defs internal to the library *********************
 Here are definitions needed ONLY to compile the helpers files themselves.
@@ -576,18 +584,10 @@ None of this stuff should be used by the user code: much better (that is,
 robust and portable) interfaces are provided by the library. */
 /*************************************************************************/
 
-#ifdef INC_HELP_DEFS
+//#ifdef INC_HELP_DEFS
 
-#include <stdlib.h>
-#include <signal.h>
-#include <errno.h> 	
-#include <time.h>       /* for ctime() def - Who does not have this file? */
-#include <malloc.h>
-#include <sys/types.h>
-
-#ifdef TRY_WINSIZE
-#include <sys/ioctl.h>
-#endif
+//#ifdef TRY_WINSIZE
+//#endif
 
 ///* The BSD random number functions... seemingly not declared anywhere */
 //#ifdef USE_RANDOM
@@ -605,7 +605,7 @@ robust and portable) interfaces are provided by the library. */
 extern char *ps_, *ln_; /* defined in iolib.c */
 //void dummy_math_calls();
 
-#endif /* for #ifdef INC_HELP_DEFS */
+//#endif /* for #ifdef INC_HELP_DEFS */
 
 #undef fflush  /* a special version is used by the application code */
 

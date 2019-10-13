@@ -13,12 +13,12 @@
 
 /********** QSEQ.C - QTL INTERVAL SEQUENCE HANDLERS **********/
 
-#define INC_LIB
-#define INC_TABLE
-#define INC_SHELL     /* for now need wizard_mode definition, otherwise punt */
-#define INC_CALLQCTM
-#define INC_QTOPLEVEL
-#define INC_QLOWLEVEL
+//#define INC_LIB
+//#define INC_TABLE
+//#define INC_SHELL     /* for now need wizard_mode definition, otherwise punt */
+//#define INC_CALLQCTM
+//#define INC_QTOPLEVEL
+//#define INC_QLOWLEVEL
 #include "qtl.h"
 
 //void free_qtl_sequence (QTL_SEQUENCE *p);

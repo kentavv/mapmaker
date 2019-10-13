@@ -11,12 +11,14 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-#define INC_MEM
-#define INC_IO
-#define INC_MATH
-#define INC_STR
-#define INC_MSG
+//#define INC_MEM
+//#define INC_IO
+//#define INC_MATH
+//#define INC_STR
+//#define INC_MSG
 #include "mapm.h"
+//#include "toplevel.h"
+//#include "lowlevel.h"
 
 #define empty_loc_str loc2str(-1)
 #define empty_locs_str locs2str(-1,-1)

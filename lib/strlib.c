@@ -13,8 +13,8 @@
 
 /******************** STRLIB.C - STRING & PARSING STUFF ********************/
 
-#define INC_LIB
-#define INC_HELP_DEFS
+//#define INC_LIB
+//#define INC_HELP_DEFS
 #include "system.h"
 
 //int  get_token();
