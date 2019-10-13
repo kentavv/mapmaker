@@ -14,6 +14,8 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
+#include "syscode.h"
+
 /************* IOLIB.H - terminal and text file I/O functions *************
 OVERVIEW:
 
@@ -92,8 +94,6 @@ computationally critical loops, as iocheck() may take some time itself
 (though likely doesn't).  NOTE: iocheck() IS NOT YET IMPLEMENTED - it
 exists but does nothing, and it may never...
 ***************************************************************************/
-
-#include "syscode.h"
 
 int lookup_fp(FILE *fp, char **name, char *modechar; /* side-effected if non-null */);
 void ioerror(char *errmsg, FILE *fp, char *ioline);
@@ -240,10 +240,10 @@ extern int holding;
 /* This is the preferred interface to more, clearing screen, etc */
 #define unhold() do_hold(FALSE,FALSE)
 
-bool photo_to_file(); /* args: char *name, *mode; Returns TRUE if it succeeds, 
-   FALSE if it fails (e.g. unable to open file). If a photo file is already 
-   open, it is closed and a new one is opened. This function will not affect 
-   the current photo mode if it fails. Use name==NULL to turn photo-ing off. */
+//bool photo_to_file(); /* args: char *name, *mode; Returns TRUE if it succeeds,
+//   FALSE if it fails (e.g. unable to open file). If a photo file is already
+//   open, it is closed and a new one is opened. This function will not affect
+//   the current photo mode if it fails. Use name==NULL to turn photo-ing off. */
 
 #define log_open (photo_file[0]!='\0') /* Is photo-ing enabled? This will
    return TRUE even if photo-ing has been temporarily disabled by 
@@ -253,33 +253,33 @@ bool photo_to_file(); /* args: char *name, *mode; Returns TRUE if it succeeds,
 extern char *photo_file; /* valid only if log_open is TRUE */
 extern bool logging;     /* you may examine this, but don't set it directly */
 
-/* Here are some new functions to temporarily change fancy modes. These each 
-   require a pointer to an int to hold the previous state. For example, to 
-   temporarily inhibit logging to a file, use: 
-
-   	temp_logging(FALSE,&save);
-	...
-	prev_logging(save);
-
-   If logging is already off, these calls will have no effect on the code.
-   DO NOT do anything silly to set these modes while inside of a temp mode 
-   change, as the results are unpredictable! For example, do not call 
-   photo_to_file() inside calls to temp_logging() and prev_logging();
-   Also, do not set the variable more inside calls to temp_more_mode() and 
-   prev_more_mode(). In general, this means make sure that these calls do 
-   not span any code which would toggle these things! */
-
-//bool temp_logging();      /* args logging, *save_state; turn logging on/off:
-//   To turn it on, a log-file must already be opened with photo_to_file()!
-//   If not (the only failure case), FALSE is returned, otherwise TRUE is.
-//   However, even in this case, the routine behaves well (that is, you can
-//   ignore its return value if you don't care). */
-//void prev_logging();      /* args state; restore logging */
+///* Here are some new functions to temporarily change fancy modes. These each
+//   require a pointer to an int to hold the previous state. For example, to
+//   temporarily inhibit logging to a file, use:
 //
-//bool temp_more_mode(); /* args new_more_mode,*save_state; turn more on/off */
-//void prev_more_mode(); /* args state; */
-
-//void review_memory(); /* flips back through previous output in a nice way */
+//   	temp_logging(FALSE,&save);
+//	...
+//	prev_logging(save);
+//
+//   If logging is already off, these calls will have no effect on the code.
+//   DO NOT do anything silly to set these modes while inside of a temp mode
+//   change, as the results are unpredictable! For example, do not call
+//   photo_to_file() inside calls to temp_logging() and prev_logging();
+//   Also, do not set the variable more inside calls to temp_more_mode() and
+//   prev_more_mode(). In general, this means make sure that these calls do
+//   not span any code which would toggle these things! */
+//
+////bool temp_logging();      /* args logging, *save_state; turn logging on/off:
+////   To turn it on, a log-file must already be opened with photo_to_file()!
+////   If not (the only failure case), FALSE is returned, otherwise TRUE is.
+////   However, even in this case, the routine behaves well (that is, you can
+////   ignore its return value if you don't care). */
+////void prev_logging();      /* args state; restore logging */
+////
+////bool temp_more_mode(); /* args new_more_mode,*save_state; turn more on/off */
+////void prev_more_mode(); /* args state; */
+//
+////void review_memory(); /* flips back through previous output in a nice way */
 
 
 /******* Curses and WIMP (Windows, Icons, Mouse, and Pointers) Support *******/
@@ -294,18 +294,18 @@ extern bool logging;     /* you may examine this, but don't set it directly */
 //   TRUE if screen management (either curses or wimp) was enabled. */
 
 //bool split_screen_init();
-/* args: int *argc_ptr; char *argv[]; int top_lines; void (*update_func)(); 
-         both argc_ptr and argv may be side-effected. 
-	 update_func() gets args: char **text; int top_lines, top_columns;
-
-   Like screen_init(), except the window is broken into two parts - a
-   top half which may be used to display status information, and a bottom
-   half which scrolls like an ordinary terminal. The top half will have
-   the specified # of lines, and will either be in reverse video or will
-   be separated from the bottom half somehow. The procedure
-   update_func may be called asynchronously, and should side-effect
-   the matrix of characters (text) to reflect what the top part should
-   display. */
+///* args: int *argc_ptr; char *argv[]; int top_lines; void (*update_func)();
+//         both argc_ptr and argv may be side-effected.
+//	 update_func() gets args: char **text; int top_lines, top_columns;
+//
+//   Like screen_init(), except the window is broken into two parts - a
+//   top half which may be used to display status information, and a bottom
+//   half which scrolls like an ordinary terminal. The top half will have
+//   the specified # of lines, and will either be in reverse video or will
+//   be separated from the bottom half somehow. The procedure
+//   update_func may be called asynchronously, and should side-effect
+//   the matrix of characters (text) to reflect what the top part should
+//   display. */
 
 //bool update_top();  /* Forces the top part of a split_screen to be updated.
 //   FALSE is returned if split_screen() has not successfully set things up. */
@@ -373,10 +373,10 @@ extern bool logging;     /* you may examine this, but don't set it directly */
 #define fflush(fp)  do_fflush(fp)  /* redeclare the C library function */
 //void do_fflush(); /* never call this directly */
 
-bool rename_file(); 
+//bool rename_file();
 /* args: char *old, new; in syscode.c renames old file with new name */
 
-bool fgoto_line(); /* in syscode.c - replacement for fseek() */
+//bool fgoto_line(); /* in syscode.c - replacement for fseek() */
 /* args: FILE *fp; long index; */
 
 
@@ -405,12 +405,12 @@ extern int redirs;
 /* a list associating fp's with names etc */
 typedef struct { FILE *fp; char modechar; char *name; } FILE_INFO;
 extern FILE_INFO **files;
-int lookup_fp();
-void ioerror();
-
-void tty_init();  /* no args: in syscode.c, called by lib_init() */
-void io_init();   /* no args: in iolib.c, called by lib_init() */
-void tty_hello(); /* no args */
+//int lookup_fp();
+//void ioerror();
+//
+//void tty_init();  /* no args: in syscode.c, called by lib_init() */
+//void io_init();   /* no args: in iolib.c, called by lib_init() */
+//void tty_hello(); /* no args */
 
 extern int cursor, buf, printed_lines, supress_more, lines_written;
 extern int term, tty_lines;
@@ -439,7 +439,7 @@ extern int tty_errors, file_errors, puts_errors;
 #define FAR_LEFT -1
 //bool check_tty_lines();
 
-void lib_puts();
+//void lib_puts();
 
 /**
    @param str must be num+2 chars long, but use num<<len just in case
@@ -451,7 +451,7 @@ void lib_puts();
    If fgets() works correctly, then line should be valid on EOF, although
       FALSE is still returned. The operating system is responsible for
       any post-processing. */
-bool tty_gets(char *str, int num);
+//bool tty_gets(char *str, int num);
 
 //bool file_gets();
 //void ioerror();

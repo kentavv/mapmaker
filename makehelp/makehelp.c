@@ -41,8 +41,11 @@ POSTSCRIPT VERSION
    @end 
 */
 
-#define INC_LIB
-#define INC_SHELL   /* for various definitions */
+#include <stdio.h>
+#include <string.h>
+
+//#define INC_LIB
+//#define INC_SHELL   /* for various definitions */
 #include "system.h"
 
 typedef char STRING[MAXLINE+1];
@@ -69,11 +72,7 @@ typedef char STRING[MAXLINE+1];
 /*    MAPMAKER/EXP V3.0 Manual  12345678901234567890 Commands  ------Page xx*/
 #define CONTENTS_LEFT    70
 
-#ifdef _SYS_DOS
-#define LINE_BREAK_LEN   2l  /* nl or cr-nl, change for DOS */
-#else
 #define LINE_BREAK_LEN   1l
-#endif
 
 #define SPACE "    "
 #define HLP_TAB "    "
@@ -81,44 +80,52 @@ typedef char STRING[MAXLINE+1];
 
 /**** other defs ****/
 
-FILE *file=NULL, *code=NULL, *hlp=NULL;
-STRING file_name, code_name, hlp_name, final_hlp_name, code_failed;
-long pos;
-int num_args, prefix, topic;
-char **entry;
-int entry_type[MAX_COMMANDS+1];
-STRING cmd_description[MAX_COMMANDS+1];
-STRING str, type, name, arguments, defaults, description, title;
-STRING abbreviation, sequence, results, section[MAX_COM_TOPICS];
-long position[MAX_COM_TOPICS];
-
-void nextstr(), parse_error(), parse_entry(), close_files();
-void write_mkhelp(), write_topics_and_end();
-
-void ps_file_start(), ps_file_end(), ps_page_start(), ps_page_end();
-char *ps_string();
+static FILE *file=NULL, *code=NULL, *hlp=NULL;
+static STRING file_name, code_name, hlp_name, final_hlp_name, code_failed;
+static long pos;
+static int n_args, prefix, topic;
+static char **entry;
+static int entry_type[MAX_COMMANDS+1];
+static STRING cmd_description[MAX_COMMANDS+1];
+static STRING str, type, name, arguments, defaults, description, title;
+static STRING abbreviation, sequence, results, section[MAX_COM_TOPICS];
+static long position[MAX_COM_TOPICS];
 
 /**** defs for man_stuff ****/
-int lines, page=0, start_page=0, ps_page=0;
-int entries, pending, entry_page[MAX_COMMANDS+1];
-FILE *man=NULL;
-STRING save, man_name, chapter_title;
+static int lines, page=0, start_page=0, ps_page=0;
+static int entries, pending, entry_page[MAX_COMMANDS+1];
+static FILE *man=NULL;
+static STRING save, man_name, chapter_title;
 #define make_man (!nullstr(man_name))
 
-void man_write_line(), man_write_done(), man_new_entry(), man_new_page();
-void man_new_topic(),  man_write_contents(), man_write_title();
+static void nextstr(void);
+static void parse_error(char *msg, int punt /* 0= no, 1= this-entry, 2= entirely */);
+static void close_files(char *name);
+static void parse_entry(int kind, char *name, char *abbrev);
+static void write_mkhelp(char *cmd,char *abbrev,long pos, int prefix, int num_args, char *desc, char *args, char *defs,int topic,int kind);
+static void write_topics_and_end(void);
+static void man_new_page(void);
+static void man_write_line(char *line);
+static void man_write_done(void);
+static void man_new_entry(int kind, char *name, bool has_description) /* only CMD or OPT */;
+static void man_new_topic(char *name, char *description, bool has_description);
+static void man_write_contents(void);
+static void man_write_title(void);
+static void ps_file_start(FILE *fp);
+static void ps_file_end(FILE *fp);
+static void ps_page_start(FILE *fp, int pagenum);
+static void ps_page_end(FILE *fp);
+static char *ps_string(char *str);
 
 
-void nextstr()
+void nextstr(void)
 {
     do finput(file,str,MAXLINE); /* crunches */
     while (str[0]=='#');
 }
 
 
-void parse_error(msg,punt)
-char *msg;
-int punt; /* 0= no, 1= this-entry, 2= entirely */
+void parse_error(char *msg, int punt /* 0= no, 1= this-entry, 2= entirely */)
 {
     sprintf(ps, "%s  ", msg); pr();
     if (punt>0) do nextstr(); while (str[0]!='@');
@@ -126,8 +133,7 @@ int punt; /* 0= no, 1= this-entry, 2= entirely */
 }
 
 
-void close_files(name)
-char *name;
+void close_files(char *name)
 {
     close_file(file);
 
@@ -151,121 +157,7 @@ char *name;
 }
 
 
-int main(argc,argv)
-int argc;
-char *argv[];
-{
-    int i, j;
-
-    lib_init();
-
-    if (argc!=5) {
-	sprintf(ps, "usage: %s source code help doc dir\n", argv[0]);
-	fprint(stderr,ps);
-	abnormal_exit();
-    }
-
-    run {
-	strcpy(file_name,argv[1]);
-	strcpy(code_name,argv[2]); 
-	strcpy(hlp_name, argv[3]);
-	strcpy(man_name, argv[4]);
-
-	strcpy(code_failed,code_name);
-	make_filename(code_failed,FORCE_EXTENSION,"failed");
-	strcpy(final_hlp_name,hlp_name);
-	make_filename_in_dir(final_hlp_name,FORCE_EXTENSION,"help",
-			     FORCE_DIR,argv[5]);
-
-	file= open_file(file_name,READ);
-	code= open_file(code_name,WRITE);
-	hlp=  open_file(hlp_name, WRITE);
-	man=  open_file(man_name,WRITE);
-	
-	topic= 0;
-	entries= 0;
-	matrix(entry,MAX_COMMANDS,MAXLINE+1,char);
-
-	/* start help file 12345678901234567890123456789012345 */
-	do_fwrite(hlp,       "#MAPMAKER help file - do not edit!\n");
-	pos= 34l + LINE_BREAK_LEN;
-	
-	/* code file */
-	do_fwrite(code,"/* MAPMAKER help code file - do not edit! */ \n\n");
-	do_fwrite(code,"#define INC_LIB \n#define INC_SHELL \n");
-	do_fwrite(code,"#include \"system.h\" \n\n");
-	/* sprintf(ps,"char help_filename[]= \"%s\";\n\n",final_hlp_name);
-	   do_fwrite(code,ps); */
-	do_fwrite(code,"void make_help_entries()\n{\n");
-
-	/* man file */
-	man_write_title();
-
-	/* get title */
-	while (nullstr(str)) nextstr();
-	if (str[0]!='@' || sscanf(str+1,"%s",type)!=1 || !streq(type,"title"))
-	  parse_error("need to start with a title",2);
-	i=0; while (str[i++]!=' ') {}
-	strcpy(title,str+i);
-
-	/* get starting page# */
-	do nextstr(); while (nullstr(str));
-	if (str[0]!='@' || sscanf(str+1,"%s %d",type,&start_page)!=2 || 
-	    !streq(type,"page"))
-	  parse_error("need a page number",2);
-
-	nextstr();
-	while (TRUE) {
-	    while (nullstr(str)) nextstr();
-
-	    if (str[0]!='@' || sscanf(str+1,"%s",type)!=1) {
-		sprintf(ps, "error:  bad header:%s\n", str); pr(); 
-		close_files(argv[0]);
-		return(1);
-	    } else if (streq(type,"end")) { 
-		close_files(argv[0]); 
-		return(0); 
-	    } else if (topic==0 && !streq(type,"topic")) 
-	        parse_error("need to start with a topic",2);
-
-	    i=0; while (str[i++]!=' ') {}
-	    j=i; while (str[j]!='(' && str[j]!='\0') j++;
-	    if (str[j]=='(') {
-		str[j]='\0';
-		if (sscanf(str+j+1,"%s",abbreviation)!=1 || 
-		    len(abbreviation)>4 ||
-		    abbreviation[len(abbreviation)-1]!=')')
-		  parse_error("bad abbreviation",1);
-		else abbreviation[len(abbreviation)-1]='\0'; /* end ')' */
-	    } else abbreviation[0]='\0';
-
-	    strcpy(name,str+i); despace(name);
-	    nextstr();
-	    sprintf(ps, "\t%s...  ", name); pr(); flush();
-	    
-	    if      (streq(type,"cmd"))   parse_entry(CMD,name,abbreviation); 
-	    else if (streq(type,"opt"))   parse_entry(OPT,name,abbreviation); 
-	    else if (streq(type,"param")) parse_entry(PAR,name,abbreviation);
-	    else if (streq(type,"info"))  parse_entry(HLP,name,abbreviation);
-	    else if (streq(type,"topic")) parse_entry(TOP,name,abbreviation);
-	    else 	     		  parse_error("unknown type",1);
-	    nl();
-	}
-
-    } on_exit {
-	if (msg==ENDOFILE) print("error:  unexpected end of file\n");
-	else print("error: makehelp failed");
-	close_files(argv[0]);
-	rename_file(code_name,code_failed);
-	return(1);
-    }
-    return(1); /* not reached */
-} 
-
-
-void parse_entry(kind,name,abbrev)
-int kind;
-char *name, *abbrev;
+void parse_entry(int kind, char *name, char *abbrev)
 {
     bool rest=FALSE;
     int i;
@@ -273,7 +165,7 @@ char *name, *abbrev;
 
     /* get stuff for cmd/opt */
     description[0]= arguments[0]= defaults[0]= '\0';
-    num_args=-1; prefix=0;
+    n_args=-1; prefix=0;
 
     while (!rest) {
 	switch(str[0]) {
@@ -290,8 +182,8 @@ char *name, *abbrev;
 	    case '<':       /* <,=,> */
 	    case '=': 
 	    case '>':
-	      if (white(str[1]) || sscanf(str+1,"%d",&num_args)!=1 ||
-		  num_args>9 || num_args<0) parse_error("bad digit",0);
+	      if (white(str[1]) || sscanf(str+1,"%d",&n_args)!=1 ||
+		  n_args>9 || n_args<0) parse_error("bad digit",0);
 	      else {
 		  if (str[0]=='<') prefix= UPTO;
 		  else if (str[0]=='=') prefix= EXACTLY;
@@ -335,11 +227,11 @@ char *name, *abbrev;
     strcpy(key,name); crunch(key);
 
     /* check for bogasity - WANT MORE? */
-    if (num_args>0  &&  nullstr(arguments)) parse_error("no args text",0);
-    if (num_args==0 && !nullstr(arguments)) parse_error("extra args text",0);
-    if (num_args==0 && !nullstr(defaults)) parse_error("extra default text",0);
+    if (n_args>0  &&  nullstr(arguments)) parse_error("no args text",0);
+    if (n_args==0 && !nullstr(arguments)) parse_error("extra args text",0);
+    if (n_args==0 && !nullstr(defaults)) parse_error("extra default text",0);
     if (kind==TOP && (!nullstr(arguments) || !nullstr(defaults) || 
-		      !nullstr(results) || !nullstr(sequence) || num_args>0))
+		      !nullstr(results) || !nullstr(sequence) || n_args>0))
       parse_error("improper entries for topic",0);
     if (nullstr(description)) parse_error("no description",0);
 
@@ -355,7 +247,7 @@ char *name, *abbrev;
 	/* write code, doc file entries */
 	sprintf(ps, "%c%s\n", '@', key); do_fwrite(hlp, ps);
 	pos+= (long)(len(name)+1)+LINE_BREAK_LEN; /* after writing above! */
-	write_mkhelp(key,abbrev,pos,prefix,num_args,description,arguments,
+	write_mkhelp(key,abbrev,pos,prefix,n_args,description,arguments,
 		     defaults,topic,kind);
 	strcpy(cmd_description[entries],description);
     }
@@ -380,12 +272,7 @@ char *name, *abbrev;
 }
 
 
-void write_mkhelp(cmd,abbrev,pos,prefix,num_args,desc,args,defs,topic,kind)
-char *cmd, *abbrev;
-long pos;
-int prefix, num_args;
-char *desc, *args, *defs;
-int topic, kind;
+void write_mkhelp(char *cmd,char *abbrev,long pos, int prefix, int num_args, char *desc, char *args, char *defs,int topic,int kind)
 {
     STRING temp;
 
@@ -407,7 +294,7 @@ int topic, kind;
 }
 
 
-void write_topics_and_end()
+void write_topics_and_end(void)
 {
     int i, s;
     STRING temp;
@@ -427,7 +314,7 @@ void write_topics_and_end()
 /*****************************************************************************/
 
 
-void man_new_page()
+void man_new_page(void)
 {
     STRING p, temp, foot;
     if (!make_man) return;
@@ -468,8 +355,7 @@ void man_new_page()
 }
 
 
-void man_write_line(line)
-char *line;
+void man_write_line(char *line)
 {
     if (!make_man) return;
 
@@ -502,7 +388,7 @@ char *line;
 }
 
 
-void man_write_done()
+void man_write_done(void)
 {
     if (!make_man) return;
 
@@ -530,13 +416,10 @@ void man_write_done()
 }
 
 
-void man_new_entry(kind,name,has_description) /* only CMD or OPT */
-int kind;
-char *name;
-bool has_description;
+void man_new_entry(int kind, char *name, bool has_description) /* only CMD or OPT */
 {
     STRING temp0, temp1, temp2, templine;
-    int n= num_args; /* -1 => plural */
+    int n= n_args; /* -1 => plural */
     int need=5;  /* name + space + args + defs + (space or no_desc line) */
     bool blank=FALSE;
     if (!make_man) return;
@@ -627,10 +510,7 @@ bool has_description;
 }
 
 
-void man_new_topic(name,description,has_description)
-char *name;
-char *description;
-bool has_description;
+void man_new_topic(char *name, char *description, bool has_description)
 {
     STRING upcase,templine;
 
@@ -657,7 +537,7 @@ bool has_description;
 }
 
 
-void man_write_contents()
+void man_write_contents(void)
 {
     int i, s, k;
     STRING temp, upcase, templine;
@@ -737,7 +617,7 @@ void man_write_contents()
 }
 
 
-void man_write_title()
+void man_write_title(void)
 {
     if (!make_man) return;
 
@@ -748,8 +628,7 @@ void man_write_title()
 
 /********** POSTSCRIPT STUFF **********/
 
-void ps_file_start(fp)
-FILE *fp;
+void ps_file_start(FILE *fp)
 {
     fprintf(fp,"%%!PS-Adobe-3.0\n");
     fprintf(fp,"%%%%Creator: MAPMAKER\n");
@@ -800,8 +679,7 @@ FILE *fp;
     fprintf(fp,"%%%%EndSetup\n");
 }
 
-void ps_file_end(fp)
-FILE *fp;
+void ps_file_end(FILE *fp)
 {
     fprintf(fp,"%%%%Trailer\n");
     fprintf(fp,"grestore\n");
@@ -809,9 +687,7 @@ FILE *fp;
     fprintf(fp,"%%%%EOF\n");
 }
 
-void ps_page_start(fp,pagenum)
-FILE *fp;
-int pagenum;
+void ps_page_start(FILE *fp, int pagenum)
 {
     fprintf(fp,"%%%%Page: ? %d\n",pagenum);
     fprintf(fp,"%%%%BeginPageSetup\n");
@@ -819,16 +695,14 @@ int pagenum;
     fprintf(fp,"%%%%EndPageSetup\n");
 }
 
-void ps_page_end(fp)
-FILE *fp;
+void ps_page_end(FILE *fp)
 {
     fprintf(fp,"GM showpage\n");
 }
 
 char newstr[MAXLINE];
 
-char *ps_string(str)
-char *str;
+char *ps_string(char *str)
 {
     int sl, i, j;
     
@@ -844,8 +718,111 @@ char *str;
 }
 
 
+int main(int argc, char *argv[])
+{
+    int i, j;
 
+    lib_init();
 
+    if (argc!=5) {
+        sprintf(ps, "usage: %s source code help doc dir\n", argv[0]);
+        fprint(stderr,ps);
+        abnormal_exit();
+    }
 
+    run {
+            strcpy(file_name,argv[1]);
+            strcpy(code_name,argv[2]);
+            strcpy(hlp_name, argv[3]);
+            strcpy(man_name, argv[4]);
 
+            strcpy(code_failed,code_name);
+            make_filename(code_failed,FORCE_EXTENSION,"failed");
+            strcpy(final_hlp_name,hlp_name);
+            make_filename_in_dir(final_hlp_name,FORCE_EXTENSION,"help",
+                                 FORCE_DIR,argv[5]);
 
+            file= open_file(file_name,READ);
+            code= open_file(code_name,WRITE);
+            hlp=  open_file(hlp_name, WRITE);
+            man=  open_file(man_name,WRITE);
+
+            topic= 0;
+            entries= 0;
+            matrix(entry,MAX_COMMANDS,MAXLINE+1,char);
+
+            /* start help file 12345678901234567890123456789012345 */
+            do_fwrite(hlp,       "#MAPMAKER help file - do not edit!\n");
+            pos= 34l + LINE_BREAK_LEN;
+
+            /* code file */
+            do_fwrite(code,"/* MAPMAKER help code file - do not edit! */ \n\n");
+//            do_fwrite(code,"#define INC_LIB \n#define INC_SHELL \n");
+            do_fwrite(code,"#include \"system.h\" \n\n");
+            /* sprintf(ps,"char help_filename[]= \"%s\";\n\n",final_hlp_name);
+               do_fwrite(code,ps); */
+            do_fwrite(code,"void make_help_entries(void)\n{\n");
+
+            /* man file */
+            man_write_title();
+
+            /* get title */
+            while (nullstr(str)) nextstr();
+            if (str[0]!='@' || sscanf(str+1,"%s",type)!=1 || !streq(type,"title"))
+                parse_error("need to start with a title",2);
+            i=0; while (str[i++]!=' ') {}
+            strcpy(title,str+i);
+
+            /* get starting page# */
+            do nextstr(); while (nullstr(str));
+            if (str[0]!='@' || sscanf(str+1,"%s %d",type,&start_page)!=2 ||
+                !streq(type,"page"))
+                parse_error("need a page number",2);
+
+            nextstr();
+            while (TRUE) {
+                while (nullstr(str)) nextstr();
+
+                if (str[0]!='@' || sscanf(str+1,"%s",type)!=1) {
+                    sprintf(ps, "error:  bad header:%s\n", str); pr();
+                    close_files(argv[0]);
+                    return(1);
+                } else if (streq(type,"end")) {
+                    close_files(argv[0]);
+                    return(0);
+                } else if (topic==0 && !streq(type,"topic"))
+                    parse_error("need to start with a topic",2);
+
+                i=0; while (str[i++]!=' ') {}
+                j=i; while (str[j]!='(' && str[j]!='\0') j++;
+                if (str[j]=='(') {
+                    str[j]='\0';
+                    if (sscanf(str+j+1,"%s",abbreviation)!=1 ||
+                        len(abbreviation)>4 ||
+                        abbreviation[len(abbreviation)-1]!=')')
+                        parse_error("bad abbreviation",1);
+                    else abbreviation[len(abbreviation)-1]='\0'; /* end ')' */
+                } else abbreviation[0]='\0';
+
+                strcpy(name,str+i); despace(name);
+                nextstr();
+                sprintf(ps, "\t%s...  ", name); pr(); flush();
+
+                if      (streq(type,"cmd"))   parse_entry(CMD,name,abbreviation);
+                else if (streq(type,"opt"))   parse_entry(OPT,name,abbreviation);
+                else if (streq(type,"param")) parse_entry(PAR,name,abbreviation);
+                else if (streq(type,"info"))  parse_entry(HLP,name,abbreviation);
+                else if (streq(type,"topic")) parse_entry(TOP,name,abbreviation);
+                else 	     		  parse_error("unknown type",1);
+                nl();
+            }
+
+        } on_exit {
+        if (msg==ENDOFILE) print("error:  unexpected end of file\n");
+        else print("error: makehelp failed");
+        close_files(argv[0]);
+        rename_file(code_name,code_failed);
+        return(1);
+    }
+    return(1); /* not reached */
+}

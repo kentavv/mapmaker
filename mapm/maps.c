@@ -11,17 +11,30 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-#define INC_LIB
-#define INC_SHELL
+//#define INC_LIB
+//#define INC_SHELL
 #include "mapm.h"
+//#include "toplevel.h"
+//#include "lowlevel.h"
 
 /****************** Support for the MAP and MAP_LIST structs *****************/
 
 /* internal only */
-int insert_sorted_map();
-int insert_unsorted_map();
-void sort_last();
-void allocate_error_matrix();
+static void allocate_error_matrix(MAP *map);
+static int insert_sorted_map(SAVED_LIST *list);
+static void sort_last(SAVED_LIST *list);
+static int insert_unsorted_map(SAVED_LIST *list);
+
+/******************************* Map Functions *******************************/
+static real apportion(bool rec_flag, real both, real first, real second);
+static real poisson_add(real first, real second);
+static real poisson_r_d(real rec_frac);
+static real poisson_d_r(real dist);
+static real kosa_add(real first, real second);
+static real kosa_r_d(real rec_frac);
+static real kosa_d_r(real dist);
+static real poisson_d_r_deriv(real dist);
+static real kosa_d_r_deriv(real dist);
 
 /* external */
 MAP_FUNCTION *mapfunction;
@@ -29,8 +42,8 @@ MAP_FUNCTION maps[2];
 int num_map_functions;
 
 
-MAP *allocate_map(maxloci)
-int maxloci;
+MAP *
+allocate_map (int maxloci)
 {
     MAP *map;
     run {
@@ -60,8 +73,8 @@ int maxloci;
 }
 
 
-void allocate_error_matrix(map)
-MAP *map;
+void 
+allocate_error_matrix (MAP *map)
 {
     if (map->error_rate!=NULL) return;
     run {
@@ -75,8 +88,8 @@ MAP *map;
 }
 
 
-void free_map(map)
-MAP *map;
+void 
+free_map (MAP *map)
 {
     if(map == NULL) return;
     unarray(map->fix_interval, int);
@@ -95,8 +108,8 @@ MAP *map;
 }
 
 
-bool clean_map(map) 
-MAP *map;
+bool 
+clean_map (MAP *map)
 {
     int i, j;
 
@@ -119,9 +132,13 @@ MAP *map;
 }
 
 
-void init_for_ctm(map,sex,errors,start) /* what else */
-MAP *map;
-bool sex, errors, start; /* deal with start */
+void 
+init_for_ctm ( /* what else */
+    MAP *map,
+    bool sex,
+    bool errors,
+    bool start /* deal with start */
+)
 { 
     int i, j;
 
@@ -157,13 +174,13 @@ bool sex, errors, start; /* deal with start */
 }
 
 
-void init_rec_fracs(map)
-MAP *map;
+void 
+init_rec_fracs (MAP *map)
 { init_for_ctm(map,sex_specific,use_error_rate,TRUE); }
 
 
-void init_not_fixed(map)
-MAP *map;
+void 
+init_not_fixed (MAP *map)
 { 
     int i;
     for (i=0; i<map->num_loci-1; i++)
@@ -172,9 +189,8 @@ MAP *map;
 }
 
 
-void mapcpy(to,from,clean_it)
-MAP *to, *from;
-bool clean_it;
+void 
+mapcpy (MAP *to, MAP *from, bool clean_it)
 {
     int i, j;
     if (to->max_loci<from->num_loci) send(CRASH);
@@ -215,9 +231,12 @@ bool clean_it;
 }
 
 
-int insert_locus(map,position,locus)    /* Returns TRUE if successful */
-MAP *map;
-int position, locus;
+int 
+insert_locus (    /* Returns TRUE if successful */
+    MAP *map,
+    int position,
+    int locus
+)
 {
     int i;
 
@@ -244,10 +263,8 @@ int position, locus;
 }
 
 
-SAVED_LIST *allocate_map_list(maxmaps, maxloci, sortflag, map)
-int maxmaps, maxloci;
-bool sortflag;
-MAP **map;
+SAVED_LIST *
+allocate_map_list (int maxmaps, int maxloci, bool sortflag, MAP **map)
 {
     SAVED_LIST *list;
     int i;
@@ -273,16 +290,16 @@ MAP **map;
 }
 
 
-MAP *get_map_to_bash(list)
-SAVED_LIST *list;
+MAP *
+get_map_to_bash (SAVED_LIST *list)
 { 
     clean_map(list->extra_map); 
     return(list->extra_map); 
 }
 
 
-void free_map_list(list)
-SAVED_LIST *list;
+void 
+free_map_list (SAVED_LIST *list)
 {
     int i;
     if(list == NULL) return;
@@ -296,8 +313,8 @@ SAVED_LIST *list;
 }
 
 
-void clean_list(list)
-SAVED_LIST *list;
+void 
+clean_list (SAVED_LIST *list)
 {
     int i;
 
@@ -309,8 +326,8 @@ SAVED_LIST *list;
 }
 
 
-MAP *get_best_map(list)
-SAVED_LIST *list;
+MAP *
+get_best_map (SAVED_LIST *list)
 {
     int i;
     real best;
@@ -325,9 +342,8 @@ SAVED_LIST *list;
     return(map);
 }
        
-int insert_map_into_list(list,map)
-SAVED_LIST *list;
-MAP **map;
+int 
+insert_map_into_list (SAVED_LIST *list, MAP **map)
 {
     int val; 
 
@@ -340,10 +356,8 @@ MAP **map;
     return(val);
 }
 
-void overwrite_map_num(list,map,chrom)
-SAVED_LIST *list;
-MAP **map;
-int chrom;
+void 
+overwrite_map_num (SAVED_LIST *list, MAP **map, int chrom)
 {
     MAP *tempmap;
     
@@ -356,8 +370,8 @@ int chrom;
 }
 
 
-int insert_sorted_map(list)
-SAVED_LIST *list;
+int 
+insert_sorted_map (SAVED_LIST *list)
 {
     int nmaps;
     MAP *tempmap;
@@ -394,8 +408,10 @@ SAVED_LIST *list;
 }
 
 
-void sort_last(list)   /* Sorts last entry in the list */
-SAVED_LIST *list;
+void 
+sort_last (   /* Sorts last entry in the list */
+    SAVED_LIST *list
+)
 {
     int i;
     MAP *movable,*tempmap;
@@ -414,8 +430,8 @@ SAVED_LIST *list;
 }
 
 
-int insert_unsorted_map(list)
-SAVED_LIST *list;
+int 
+insert_unsorted_map (SAVED_LIST *list)
 {
     MAP *tempmap;
 
@@ -433,29 +449,33 @@ SAVED_LIST *list;
 
 /******************************* Map Functions *******************************/
 
-real apportion();
-real poisson_add(), poisson_d_r();
-real poisson_r_d(), kosa_r_d();
-real kosa_add(), kosa_d_r();
-real poisson_d_r_deriv(), kosa_d_r_deriv();
+//real apportion();
+//real poisson_add(), poisson_d_r();
+//real poisson_r_d(), kosa_r_d();
+//real kosa_add(), kosa_d_r();
+//real poisson_d_r_deriv(), kosa_d_r_deriv();
 
 
-real apportion(rec_flag, both, first, second)
-bool rec_flag; /* assume REC==1 */
-real both, first, second;
+real 
+apportion (
+    bool rec_flag, /* assume REC==1 */
+    real both,
+    real first,
+    real second
+)
 {
     if (rec_flag) return ((first - second + both) / (2.0 * both));
     else return ((first + second - both) / (2.0 * (1.0 - both)));
 }
 
-real poisson_add(first, second)
-real first, second;
+real 
+poisson_add (real first, real second)
 {
     return first * (1.0 - second) + (1.0 - first) * second;
 }
 
-real poisson_r_d(rec_frac)
-real rec_frac;
+real 
+poisson_r_d (real rec_frac)
 {
 #ifdef DONT_DO_THIS    
     if (raw.data_type == F2) {
@@ -473,8 +493,8 @@ real rec_frac;
      9.999));
 }
 
-real poisson_d_r(dist)
-real dist;
+real 
+poisson_d_r (real dist)
 {
     real rec_frac;
 
@@ -493,14 +513,14 @@ real dist;
 #endif
 }
 
-real kosa_add(first, second)
-real first, second;
+real 
+kosa_add (real first, real second)
 {
     return (first + second) / (1.0 + 4.0 * first * second);
 }
 
-real kosa_r_d(rec_frac)
-real rec_frac;
+real 
+kosa_r_d (real rec_frac)
 {
 #ifdef DONT_DO_THIS    
     if(raw.data_type == F2) {
@@ -518,8 +538,8 @@ real rec_frac;
      9.999));
 }
 
-real kosa_d_r(dist)
-real dist;
+real 
+kosa_d_r (real dist)
 {
     real rec_frac;
 
@@ -538,26 +558,27 @@ real dist;
 #endif
 }
 
-real poisson_d_r_deriv(dist)
-real dist;
+real 
+poisson_d_r_deriv (real dist)
 {
     return ((real) (exp(-2.0*dist)));
 }
 
-real kosa_d_r_deriv(dist)
-real dist;
+real 
+kosa_d_r_deriv (real dist)
 {
     return ((real) 4.0/( (exp(2.0*dist) + exp(-2.0*dist)) * 
 			    (exp(2.0*dist) + exp(-2.0*dist)) ) );
 }
 
 
-void map_func(mapnum)
-int mapnum;
+void 
+map_func (int mapnum)
 { mapfunction= &maps[mapnum]; }
 
 
-void map_init()
+void 
+map_init (void)
 {
     strcpy(maps[HALDANE].name,"Haldane");
     maps[HALDANE].add= poisson_add;
@@ -582,9 +603,8 @@ void map_init()
 /******************************* Save/Load *******************************/
 
 
-void read_map(fp,map)
-FILE *fp;
-MAP *map;
+void 
+read_map (FILE *fp, MAP *map)
 {
     int i, j, num_loci, num, unlink, sex, errors;
     real rnum, like;
@@ -658,9 +678,8 @@ MAP *map;
 }
 
 
-void write_map(fp,map)
-FILE *fp;
-MAP *map;
+void 
+write_map (FILE *fp, MAP *map)
 {
     int i, j;
 

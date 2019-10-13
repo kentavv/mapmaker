@@ -20,8 +20,8 @@ void verbose_untrapped_msg(void); /* DO NOT ASSUME THAT MSGNAME IS SET! */
 void do_trap(void);
 void sigcounter(void);
 void signal_trap_init(void);
-void get_screen_preferences();
-void tty_hello();
+//void get_screen_preferences();
+//void tty_hello();
 bool do_gnu_readline(char *prompt, char *str, int num);
 int set_rl_default(void);
 bool do_gnu_edit(char *prompt, char *str, int num, char *initial /* initial may be = str */);
@@ -30,22 +30,22 @@ bool tty_gets(char *str, int num);
 bool file_gets(FILE *fp /* must be opened with file_open() */, char *str  /* must be num+2 chars long, but use num+3 in case of weirdness */,
                int num    /* num chars, not including the '\n' or '\0', will be read */);
 void lib_puts(FILE *fp, char *str);
-void iocheck(void);
+//void iocheck(void);
 void tty_init(void);
 bool check_tty_lines(void); /* return TRUE and set tty_lines if changed */
 void ansi_cursor_left(int i, char *s);
 void hp_cursor_left(int i, char *s);
-void mac_cursor_left(void);
+//void mac_cursor_left(void);
 void tty_hello(void);
 bool do_clear_screen(void);
 bool do_delete_previous_line(void); /* Needed for the "Hit RETURN for more" thing */
 bool do_highlight(bool reverse);
 bool do_cursor_left(int num_spaces /* might be FAR_LEFT */, char *str_to_print);
-bool boing(void);
+//bool boing(void);
 void misc_init(void); /* init this file */
 void custom_lib_init(void);
 void lib_init(void);
-void lib_inits(int *argc_ptr, char *argv[]);
+//void lib_inits(int *argc_ptr, char *argv[]);
 void get_cmd_line_args(int *argc_ptr, char *argv[]);
 bool check_file_arg(int num, char *arg, char *name, char *type, char *def_ext, char *prog, char *mode);
 bool update_top(void);

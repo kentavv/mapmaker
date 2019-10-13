@@ -11,10 +11,10 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-#define INC_LIB
-#define INC_MISC
-#define INC_STATS
-#define INC_HELP_DEFS
+//#define INC_LIB
+//#define INC_MISC
+//#define INC_STATS
+//#define INC_HELP_DEFS
 #include "system.h"
 
 NORMAL_TEST *check_normalcy(real *dist, int dist_size)

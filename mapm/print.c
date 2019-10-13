@@ -11,23 +11,22 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-#define INC_MEM
-#define INC_IO
-#define INC_MATH
-#define INC_STR
-#define INC_MSG
+//#define INC_MEM
+//#define INC_IO
+//#define INC_MATH
+//#define INC_STR
+//#define INC_MSG
 #include "mapm.h"
+//#include "toplevel.h"
+//#include "lowlevel.h"
 
 #define empty_loc_str loc2str(-1)
 #define empty_locs_str locs2str(-1,-1)
-void print_err();
+static void print_err (int indiv, int locus, MAP *map);
 
 #define MAX_LOG_LIKE_COLUMN 66
 
-void print_tiny_map(map,text,like_base)
-MAP *map;
-char *text; /* make sure its OK to use ps for this */
-real like_base;
+void print_tiny_map(MAP *map, char *text  /* make sure its OK to use ps for this */, real like_base)
 {
     int i, stop_column; 
     bool wrapped, had_unlinked=FALSE;
@@ -67,9 +66,8 @@ real like_base;
 
 
 
-void print_err(indiv,locus,map)
-int indiv, locus;
-MAP *map;
+void 
+print_err (int indiv, int locus, MAP *map)
 {
     sprintf(ps, "[#%d %c-%c-%c %.2lf]", indiv + 1,
             raw.data.f2.allele[map->locus[locus-1]][indiv],
@@ -80,17 +78,18 @@ MAP *map;
 }
 
 
-void print_long_map(map,title)
-MAP *map;
-char *title;
+void 
+print_long_map (MAP *map, char *title)
 { print_special_map(map,title,0,NULL); }
 
 
-void print_special_map(map,title,num_old,old_locus)
-MAP *map;
-char *title;  /* ps MAY be used for this! */
-int num_old;
-int *old_locus;  /* can omit if num_args==0 - should do this with VARARGS */
+void 
+print_special_map (
+    MAP *map,
+    char *title,  /* ps MAY be used for this! */
+    int num_old,
+    int *old_locus  /* can omit if num_args==0 - should do this with VARARGS */
+)
 {
     int  i, j, n, m;
     real length, male_cm, female_cm, male_length, female_length;
@@ -195,9 +194,8 @@ int *old_locus;  /* can omit if num_args==0 - should do this with VARARGS */
 }
 
 
-void print_short_map(map,text)
-MAP *map;
-char *text;
+void 
+print_short_map (MAP *map, char *text)
 {
     int i, col;
 
@@ -242,9 +240,8 @@ char *text;
 }
 
 
-void print_list(list,how_many)
-SAVED_LIST *list;
-int how_many;
+void 
+print_list (SAVED_LIST *list, int how_many)
 {
     int i,num_to_print;
     char str[TOKLEN+1];
@@ -267,8 +264,8 @@ int how_many;
 }
 
 
-char *rf2str(rec_frac)
-real rec_frac;
+char *
+rf2str (real rec_frac)
 {
     real d;
 
@@ -281,8 +278,8 @@ real rec_frac;
 }
 
 
-char *loc2str(locus)
-int locus;
+char *
+loc2str (int locus)
 {
     char *str= get_temp_string(), haplo=' ';
     
@@ -299,9 +296,11 @@ int locus;
 }
 
 
-char *locname(locus,haplo_mark) /* ragged */
-int locus;
-bool haplo_mark;
+char *
+locname ( /* ragged */
+    int locus,
+    bool haplo_mark
+)
 {
     char *str= get_temp_string();
     bool haplo=FALSE;
@@ -312,8 +311,8 @@ bool haplo_mark;
 }
 
 
-char *locs2str(locus1,locus2)
-int locus1, locus2;
+char *
+locs2str (int locus1, int locus2)
 {
     char *str, *haplo1=get_temp_string(), *haplo2=get_temp_string();
     int i;
@@ -335,8 +334,8 @@ int locus1, locus2;
 }
 
 
-char *rag(str)
-char *str;
+char *
+rag (char *str)
 {
     int i=0;
     while (*str==' ') str++;
@@ -348,12 +347,15 @@ char *str;
 }
 
 
-void print_trys(list,base_map,excluded,new_marker,num_tried,first)
-SAVED_LIST **list;
-MAP *base_map;	   /* The map the tried markers were added to */
-bool **excluded;   /* [i][n]=FALSE if we tried try_marker[i] in excluded */
-int **new_marker;
-int num_tried, first;
+void 
+print_trys (
+    SAVED_LIST **list,
+    MAP *base_map,	   /* The map the tried markers were added to */
+    bool **excluded,   /* [i][n]=FALSE if we tried try_marker[i] in excluded */
+    int **new_marker,
+    int num_tried,
+    int first
+)
 {
     int i, j, k, q, width_ea, last;
     bool any_paired=FALSE;
@@ -436,8 +438,8 @@ int num_tried, first;
 }
 
 
-void print_haplo_summary(locus,num_loci)
-int *locus, num_loci;
+void 
+print_haplo_summary (int *locus, int num_loci)
 {
     int i, j, any=FALSE;
     
@@ -460,18 +462,16 @@ int *locus, num_loci;
 
 
 
-char *region2str(locus,errs)
-int locus;
-char **errs;
+char *
+region2str (int locus, char **errs)
 {
     *errs= ptr_to("0.0");
     return("abc1-xyz999");
 }
 
 
-char *genetics2str(locus,haplo)
-int locus;
-bool haplo;
+char *
+genetics2str (int locus, bool haplo)
 {
     int type, n_infs, n_dom_obs, n_het_obs;
     char *retoin= get_temp_string();
@@ -502,9 +502,8 @@ bool haplo;
 /*  num  name typ  err       chr  lg    hap */
 
 
-void print_locus_summary(locus,n_loci,haplo)
-int *locus, n_loci;
-bool haplo;
+void 
+print_locus_summary (int *locus, int n_loci, bool haplo)
 {
     int i, g;
     char *chrom, *hap, lg[TOKLEN+1];
@@ -548,9 +547,8 @@ bool haplo;
 /*  num  name ass   chr  lod   map  like loc  err */
 
 
-void print_mapping_summary(locus,n_loci,haplo)
-int *locus, n_loci;
-bool haplo;
+void 
+print_mapping_summary (int *locus, int n_loci, bool haplo)
 {
     int i, j, k, pos, state;
     real val;
@@ -648,10 +646,14 @@ bool haplo;
 
 
 #ifdef OBSOLETE
-void print_placements(order,num_order,locus,num_loci,excluded)
-int *order, num_order;
-int *locus, num_loci;  /* unplaced, maybe NO_LOCUS */
-bool **excluded;       /* first index is that into locus[] */
+void 
+print_placements (
+    int *order,
+    int num_order,
+    int *locus,
+    int num_loci,  /* unplaced, maybe NO_LOCUS */
+    bool **excluded       /* first index is that into locus[] */
+)
 {
     int num_left, num_across, num_done, i, j;
 
@@ -701,9 +703,8 @@ bool **excluded;       /* first index is that into locus[] */
 1234 12:....:.**.:....:....:....:....:....:....:....:....:....:....:....:....:
 */
 
-void pr_placement(excluded,interval,best,num_intervals,rightmost)
-bool *excluded;
-int interval, best, num_intervals, rightmost;
+void 
+pr_placement (bool *excluded, int interval, int best, int num_intervals, int rightmost)
 {
     if (interval==best) print("**.");
       else if (excluded[interval]) print("..."); else print(".*.");
@@ -712,8 +713,8 @@ int interval, best, num_intervals, rightmost;
 }
 
 
-void pr_locus(n)
-int n;
+void 
+pr_locus (int n)
 { 
     if (n<99) sprintf(ps, " %2d  ", n + 1);
     else sprintf(ps, "%4d ", n + 1);
@@ -721,8 +722,8 @@ int n;
 }
 
 
-void pr_dist(rf)
-real rf;
+void 
+pr_dist (real rf)
 { 
     sprintf(ps, "%3.0lf-:", cm_dist(rf));
     if (ps[0]==' ') ps[0]='-';
@@ -731,10 +732,12 @@ real rf;
 }
 
 
-void new_print_placements(map,placed,num_loci)
-MAP *map;		/* framework */
-PLACEME **placed;	
-int num_loci;		/* placed loci, maybe NO_LOCUS */
+void 
+new_print_placements (
+    MAP *map,		/* framework */
+    PLACEME **placed,
+    int num_loci		/* placed loci, maybe NO_LOCUS */
+)
 {
     int num_remaining, num_across, num_done, num_intervals;
     int i, j, num_places, rightmost;
@@ -787,11 +790,8 @@ int num_loci;		/* placed loci, maybe NO_LOCUS */
 
 #define NOER OBSCURE_REAL
 
-void print_geno_line(locus,error_rate,firsti,lasti,obs,is_old,isa_haplo)
-int locus;
-real error_rate;
-int firsti, lasti, *obs;
-bool is_old, isa_haplo;
+void 
+print_geno_line (int locus, real error_rate, int firsti, int lasti, int *obs, bool is_old, bool isa_haplo)
 {
     char p1, p2, name[TOKLEN+1];
     int indiv;
@@ -820,11 +820,14 @@ bool is_old, isa_haplo;
 
 #define OBLIG_REC "%5.1lf cM %3d loci in indiv %-3d  %s(%c) - %s(H) - %s(%c)\n"
 
-void print_f2_map_genotypes(map,use_haplos,explode_haplos,num_old,old_locus)
-MAP *map;
-bool use_haplos, explode_haplos;
-int num_old;
-int *old_locus;  /* can omit if num_old==0 - should do this with VARARGS */
+void 
+print_f2_map_genotypes (
+    MAP *map,
+    bool use_haplos,
+    bool explode_haplos,
+    int num_old,
+    int *old_locus  /* can omit if num_old==0 - should do this with VARARGS */
+)
 {
     int indiv, n_indivs, firsti, lasti;
     int locus, i, j, *obs=NULL, *prev_obs=NULL, *num_recs=NULL, old=0;

@@ -11,22 +11,24 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-#define INC_MATH
-#define INC_MEM
-#define INC_MSG
-#define INC_STR 
-#define INC_IO
+//#define INC_MATH
+//#define INC_MEM
+//#define INC_MSG
+//#define INC_STR
+//#define INC_IO
 
-#define INC_MISC
-#define INC_HELP_DEFS
+//#define INC_MISC
+//#define INC_HELP_DEFS
 #include "system.h"
 
-real sq(r) real r; { return(r*r); }
-real rmaxf(r,s) real r,s; { return(r>=s ? r : s); }
-real rminf(r,s) real r,s; { return(r<=s ? r : s); }
+real sq(real r) { return(r*r); }
+real rmaxf (real r, real s) { return(r>=s ? r : s); }
+real rminf (real r, real s) { return(r<=s ? r : s); }
 
-long lpow2(i)	/* Return 2 to the i-th power for 0<=i<=LONGBITS (31) */
-int i;
+long 
+lpow2 (	/* Return 2 to the i-th power for 0<=i<=LONGBITS (31) */
+    int i
+)
 {
 	long result; int j;
 	
@@ -35,8 +37,10 @@ int i;
 	return(result);
 }
 
-int ipow2(i)	/* Return 2 to the i-th power 0<=i<=INTBITS (15) */
-int i;
+int 
+ipow2 (	/* Return 2 to the i-th power 0<=i<=INTBITS (15) */
+    int i
+)
 {
 	int result; int j;
 	
@@ -46,8 +50,11 @@ int i;
 }
 
 
-long lpow(x,i)	/* Return x to the i-th power */
-int x,i;
+long 
+lpow (	/* Return x to the i-th power */
+    int x,
+    int i
+)
 {
 	long result; int j;
 	
@@ -77,48 +84,57 @@ int ichoose(int n, int k) /* Best algorithm for small k */
     return((int)(a/b));
 }
 
-int imaxf(r,s)  int r,s;  { return(r>=s ? r : s); }
-int iminf(r,s)  int r,s;  { return(r<=s ? r : s); }
-long lmaxf(r,s) long r,s; { return(r>=s ? r : s); }
-long lminf(r,s) long r,s; { return(r<=s ? r : s); }
+int 
+imaxf (int r, int s)  { return(r>=s ? r : s); }
+int 
+iminf (int r, int s)  { return(r<=s ? r : s); }
+long 
+lmaxf (long r, long s) { return(r>=s ? r : s); }
+long 
+lminf (long r, long s) { return(r<=s ? r : s); }
 
 
 /*** Compare Functions for Array Sort Routines ***/
 
-int icomp(x,y)
-QSORT_COMPARE_PTR_TO(int) *x, *y;
+int 
+icomp (const void *x, const void *y)
 { return( (*(int*)y) - (*(int*)x) ); }
 
-int lcomp(x,y)
-QSORT_COMPARE_PTR_TO(long) *x, *y;
+int 
+lcomp (const void *x, const void *y)
 { long a, b; a= *(long*)x; b= *(long*)y; 
   if (a<b) return(-1); else if (a==b) return(0); else return(1); }
 
-int rcomp(x,y)
-QSORT_COMPARE_PTR_TO(real) *x, *y;
+int 
+rcomp (const void *x, const void *y)
 { real a, b; a= *(real*)x; b= *(real*)y; 
   if (a<b) return(-1); else if (a==b) return(0); else return(1); }
 
-int scomp(x,y)
-QSORT_COMPARE_PTR_TO(char) **x, **y; /* does this work? */
+int 
+scomp (
+        const void *x,
+        const void *y /* does this work? */
+)
 { return((int)strcmp(*(char**)x,*(char**)y)); }
 
-int inv_icomp(x,y)
-QSORT_COMPARE_PTR_TO(int) *x, *y;
+int 
+inv_icomp (const void *x, const void *y)
 { return( (*(int*)x) - (*(int*)y) ); }
 
-int inv_rcomp(x,y)
-QSORT_COMPARE_PTR_TO(real) *x, *y;
+int 
+inv_rcomp (const void *x, const void *y)
 { real a, b; a= *(real*)x; b= *(real*)y; 
   if (a>b) return(-1); else if (a==b) return(0); else return(1); }
 
 /* this needs work */
-int rhistogram(data,length,min_num_buckets,
-	scale_quantization,scale_limit_quantization)   /* return T or F */
-real *data; 
-int length, min_num_buckets;
-real scale_quantization;	/* for present, ignored */
-real scale_limit_quantization; 	/* for present, ignored */
+int 
+rhistogram (   /* return T or F */
+    real *data,
+    int length,
+    int min_num_buckets,
+    real scale_quantization,	/* for present, ignored */
+    real scale_limit_quantization 	/* for present, ignored */
+)
 {
     int i, j, index, stars, max_stars;
     int *bucket, num_buckets, largest_bucket; 
@@ -162,9 +178,8 @@ real scale_limit_quantization; 	/* for present, ignored */
 }
 
 
-real rmean(data,length)
-real *data;
-int length;
+real 
+rmean (real *data, int length)
 {
 	int i;
 	real total;
@@ -175,9 +190,8 @@ int length;
 }
 
 
-real rmaxin(data,length)
-real *data;
-int length;
+real 
+rmaxin (real *data, int length)
 {
 	int i;
 	real largest;
@@ -189,9 +203,8 @@ int length;
 }
 
 
-real rmedian(data,length)
-real *data;
-int length;
+real 
+rmedian (real *data, int length)
 {
 	real *copy, median;
 	
@@ -205,9 +218,8 @@ int length;
 }
 
 
-real rmiddle(data,length)
-real *data;
-int length;
+real 
+rmiddle (real *data, int length)
 {
 	if (length==0) return(0.0);
 	if (length<3)  return(data[0]);
@@ -215,47 +227,53 @@ int length;
 }
 	
 
-void rcopy(to,from,length)
-real *to, *from;
-int length;
+void 
+rcopy (real *to, real *from, int length)
 { int i; for (i=0; i<length; i++) to[i]=from[i]; }
 
 
-/*
-void dummy_math_calls()
-{
-    real x,y,z; x=y=z=0.5;
- 
-    x=log10(y);
-    x=pow(y,z);
-    x=log(y);
-    x=exp(y);
-
-    x=floor(y);
-    x=ceil(y);
-    x=fabs(y);
-
-    x=sin(y);
-    x=cos(y);
-    x=tan(y);
-    x=sinh(y);
-    x=cosh(y);
-    x=tanh(y);
-    x=asin(y);
-    x=acos(y);
-    x=atan(y);
-}
-*/
+///*
+//void dummy_math_calls()
+//{
+//    real x,y,z; x=y=z=0.5;
+//
+//    x=log10(y);
+//    x=pow(y,z);
+//    x=log(y);
+//    x=exp(y);
+//
+//    x=floor(y);
+//    x=ceil(y);
+//    x=fabs(y);
+//
+//    x=sin(y);
+//    x=cos(y);
+//    x=tan(y);
+//    x=sinh(y);
+//    x=cosh(y);
+//    x=tanh(y);
+//    x=asin(y);
+//    x=acos(y);
+//    x=atan(y);
+//}
+//*/
 
 
 real two_sigma_sq; 
 
-real normal_func(deviation) /* return P(deviation) */
-real deviation;
+real 
+normal_func ( /* return P(deviation) */
+    real deviation
+)
 { return(exp(-sq(deviation)/two_sigma_sq)); }
 
-DISTRIBUTION *make_normal_dist(mu,sigma,inc,limit)
-real mu, sigma, inc, limit;      /* inc and limit are fractions of sigma */
+DISTRIBUTION *
+make_normal_dist (
+    real mu,
+    real sigma,
+    real inc,
+    real limit      /* inc and limit are fractions of sigma */
+)
 {
     two_sigma_sq= 2.0 * sq(sigma);    
     return(make_distribution(inc*sigma,inc,limit*sigma,mu,normal_func));
@@ -263,9 +281,14 @@ real mu, sigma, inc, limit;      /* inc and limit are fractions of sigma */
 
 
 
-DISTRIBUTION *make_distribution(sigma,inc,limit,mean,prob_func)
-real sigma, inc, limit, mean;   /* inc and limit here are offsets from mean */
-real (*prob_func)();		/* a ptr to a function */
+DISTRIBUTION *
+make_distribution (
+    real sigma,
+    real inc,
+    real limit,
+    real mean,   /* inc and limit here are offsets from mean */
+    real (*prob_func)(real)		/* a ptr to a function */
+)
 {
     real d, total_prob, cum_prob, end;
     real *prob, *deviation;
@@ -312,9 +335,11 @@ real (*prob_func)();		/* a ptr to a function */
 }
 
 
-real pick_from_distribution(dist,prob)
-DISTRIBUTION *dist;
-real *prob;  /* may be NULL */
+real 
+pick_from_distribution (
+    DISTRIBUTION *dist,
+    real *prob  /* may be NULL */
+)
 {
     real p, *probs;
     int i, last;
@@ -327,12 +352,14 @@ real *prob;  /* may be NULL */
 }
 
 
-void eliminate(); /* defined below */
+//void eliminate(); /* defined below */
 
-void mat_invert(m,size,m_inverse)  /* Invert square matrix by Gauss' method */
-real **m;
-int size;
-real **m_inverse;		
+void 
+mat_invert (  /* Invert square matrix by Gauss' method */
+    real **m,
+    int size,
+    real **m_inverse
+)		
 /* m_inverse should be 2*size columns (2nd index) by size rows (first index)
    its left square will be left with the result (ignore the right side) */
 {
@@ -372,10 +399,8 @@ real **m_inverse;
 }
 
 
-void eliminate(row,col,row_to_sub,m,n_cols)
-int row, col, row_to_sub;
-real **m;
-int n_cols;
+void 
+eliminate (int row, int col, int row_to_sub, real **m, int n_cols)
 {
     int j;
     real value;
@@ -392,10 +417,13 @@ int n_cols;
 }
 
 
-void mat_mult(m,m2,size,result) /* NEEDS TESTING */
-real **m, **m2;
-int size;
-real **result;
+void 
+mat_mult ( /* NEEDS TESTING */
+    real **m,
+    real **m2,
+    int size,
+    real **result
+)
 { 
     int i, j, k;
     real entry;
@@ -408,16 +436,11 @@ real **result;
 }
 
 
-void array_times_matrix(a,b,rows,columns,c)
-real *a, **b;
-int rows,columns;
-real *c;
+void 
+array_times_matrix (real *a, real **b, int rows, int columns, real *c)
 {
     int i, j;
     
     for (i=0; i <columns; i++) 
       for (j=0, c[i] = 0.0; j < rows; j++)  c[i] += a[j] * b[j][i];
 }
-
-
-

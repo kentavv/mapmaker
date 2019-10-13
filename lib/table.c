@@ -11,8 +11,8 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-#define INC_LIB
-#define INC_SHELL
+//#define INC_LIB
+//#define INC_SHELL
 #include "system.h"
 #include "table.h"
 
@@ -30,14 +30,12 @@ allows abbreviations.
 ***************************************************************************/
 
 /* Internal declarations */
-TABLE_ENTRY *allocate_table_entries();
-TABLE_ENTRY *get_entry_to_bash();
+//TABLE_ENTRY *allocate_table_entries();
+//TABLE_ENTRY *get_entry_to_bash();
 TABLE_ENTRY *Te; /* used in the for_all...() macros */
 
-TABLE *allocate_table(num_entries,str_len,expand_by,named)
-int num_entries, str_len, expand_by;
-bool named;
-{ 
+TABLE *allocate_table(int num_entries, int str_len, int expand_by, bool named)
+{
     TABLE *p=NULL;
 
     run {
@@ -51,9 +49,8 @@ bool named;
 }
 
 
-TABLE_ENTRY *allocate_table_entries(num_entries,str_len,named)
-int num_entries, str_len;
-bool named;    
+TABLE_ENTRY *
+allocate_table_entries (int num_entries, int str_len, bool named)    
 {
     TABLE_ENTRY *q;
     
@@ -67,8 +64,8 @@ bool named;
 }
 
 
-void free_table(p)
-TABLE *p;
+void 
+free_table (TABLE *p)
 { 
   TABLE_ENTRY *q;
 
@@ -80,25 +77,15 @@ TABLE *p;
 }
 
 
-bool table_full(p)
-TABLE *p;
-{ return(p->unused==NULL && p->expands_by==0); }
-
-
-bool table_empty(p)
-TABLE *p;
-{ return(p->list != (TABLE_ENTRY*)NULL); }
-
-
-int count_table_entries(p)
-TABLE *p;
+int 
+count_table_entries (TABLE *p)
 { int i; TABLE_ENTRY *q;
   for (i=0, q=p->list; q!=NULL; q=q->next) i++;
   return(i); }
   
 
-TABLE_ENTRY *get_entry_to_bash(p)
-TABLE *p;
+TABLE_ENTRY *
+get_entry_to_bash (TABLE *p)
 {
     TABLE_ENTRY *q;
 
@@ -120,9 +107,12 @@ TABLE *p;
 }
 
 
-void put_named_entry(name,str,p)
-char *name, *str;
-TABLE *p; /* side-effected */
+void 
+put_named_entry (
+    char *name,
+    char *str,
+    TABLE *p /* side-effected */
+)
 {
     TABLE_ENTRY *last, *q;
 
@@ -150,11 +140,14 @@ TABLE *p; /* side-effected */
 }
   
 
-bool get_named_entry(name,p_real_name,p_str,p,fail_reason)
-char *name;
-char **p_real_name, **p_str;  /* side-effected */
-TABLE *p; /* side-effected */
-flag *fail_reason; /* side-effected */
+bool 
+get_named_entry (
+    char *name,
+    char **p_real_name,
+    char **p_str,  /* side-effected */
+    TABLE *p, /* side-effected */
+    flag *fail_reason /* side-effected */
+)
 {
     TABLE_ENTRY *q;
 
@@ -171,10 +164,8 @@ flag *fail_reason; /* side-effected */
 }
     
 
-bool delete_named_entry(name,p,fail_reason)
-char *name;
-TABLE *p;
-flag *fail_reason;
+bool 
+delete_named_entry (char *name, TABLE *p, flag *fail_reason)
 {
     TABLE_ENTRY *match, *match_prev, *q;
 
@@ -187,18 +178,15 @@ flag *fail_reason;
     }
     *fail_reason=NAME_DOESNT_MATCH;
     return(FALSE);
-
-//    if (match_prev==NULL) p->list=p->list->next; /* if its the first entry */
-//        else match_prev->next=match->next;       /* delete from list */
-//    match->next=p->unused; p->unused=match; /* add q to unused list */
-//    return(TRUE);
 }
 
 
-void put_numbered_entry(str,p,num)
-char *str;
-TABLE *p;
-int *num; /* side-effected */
+void 
+put_numbered_entry (
+    char *str,
+    TABLE *p,
+    int *num /* side-effected */
+)
 {
     TABLE_ENTRY *q, *last;
     if (p->named_entries) send(CRASH);
@@ -216,10 +204,8 @@ int *num; /* side-effected */
 }
 
 
-bool get_numbered_entry(num,p_str,p)
-int num;
-char **p_str;
-TABLE *p;
+bool 
+get_numbered_entry (int num, char **p_str, TABLE *p)
 {
     TABLE_ENTRY *q;
     if (p->named_entries) send(CRASH);
@@ -231,18 +217,8 @@ TABLE *p;
 }
 
 
-#if 0
-bool delete_numbered_entry(num,p)
-int num;
-TABLE *p;
-{ send(CRASH); /* NOT IMPLEMENTED */ }
-#endif
-
-
-void save_table(p,fp,index)
-TABLE *p;
-FILE *fp;
-int index;
+void 
+save_table (TABLE *p, FILE *fp, int index)
 {
     if(index == INDEX_BY_NAME) {
 	for(Te=p->list; Te!=NULL; Te=Te->next) {
@@ -257,10 +233,8 @@ int index;
     }
 }
 
-void load_table(p,fp,index,num_entries)
-TABLE *p;
-FILE *fp;
-int index, num_entries;
+void 
+load_table (TABLE *p, FILE *fp, int index, int num_entries)
 {
     char *str=NULL, *ptr, name[TOKLEN+1];
     int num,i;
@@ -292,6 +266,3 @@ int index, num_entries;
 	relay_messages;
     }
 }
-
-
-

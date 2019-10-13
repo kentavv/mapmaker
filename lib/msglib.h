@@ -57,27 +57,53 @@ extern int msg;		/* the message # */
 extern char **mname;    /* [msg] => name for this msg # */
 extern char *msgstr;    /* use for msg vars - is MAXLINE long */
 
-void setmsg();	/* sets up a message */
-/* args int msg; char *msgname; void (*send_proc)(),(*message_proc)(); 
-   message_proc may be NULL */
 
-void untrapped_msg();   /* Deal with unhandled messages - in syscode.c */
-void trapped_msg();
-void verbose_untrapped_msg();
-
-/* Possible send_procs - happen when we call send(MSG); args: message msg; */
+void strmsg_default(char *str);
+void strmsg_MATHERROR(char *str);
+void strmsg_NOMEMORY(char *str);
+void strmsg_CANTOPEN(char *str);
+void strmsg_IOERROR(char *str);
+void strmsg_SYSERROR(char *str);
+void msg_init(void);
+void setmsg(int var, char *nam, void (*action)(int), void (*disp)(char *));
+int lvl_plus_plus(void);
 void sender(int num);
-void trapper();
-void punter();
-void default_action(int num); /* DON'T USE */
+void punter(void);
+void trapper(int num);
+void default_action(int num);
+void handle_interrupt(int n);
+void handle_quit(int n);
+void handle_matherror(int n);
+void handle_buserror(int n);
+void handle_weird_signal(int n);
+//int matherr(struct exception *ex);
+bool stack_check(int *var);
 
-/* Possible message_procs in msglib.c. These produce an error message string  
-   for untrapped messages. */
-void strmsg_default(char *);
-void strmsg_NOMEMORY();
-void strmsg_MATHERROR();
-void strmsg_CANTOPEN();
-void strmsg_SYSERROR();
+
+
+
+
+//void setmsg();	/* sets up a message */
+///* args int msg; char *msgname; void (*send_proc)(),(*message_proc)();
+//   message_proc may be NULL */
+
+//void untrapped_msg();   /* Deal with unhandled messages - in syscode.c */
+//void trapped_msg();
+//void verbose_untrapped_msg();
+
+///* Possible send_procs - happen when we call send(MSG); args: message msg; */
+//void sender(int num);
+//void trapper();
+//void punter();
+//void default_action(int num); /* DON'T USE */
+
+///* Possible message_procs in msglib.c. These produce an error message string
+//   for untrapped messages. */
+//void strmsg_default(char *);
+//void strmsg_NOMEMORY();
+//void strmsg_MATHERROR();
+//void strmsg_CANTOPEN();
+//void strmsg_SYSERROR();
 
 /* Stuff for internal use only! - see msglib.c */
 extern jmp_buf stk[];   		
@@ -90,8 +116,8 @@ extern void (*(mstrmsg[]))(char *);
 #define TRAP_DEPTH  100
 #define MAX_IO_FAILURES 20
 #define MAX_BAD_SIGNALS 20
-void sigcounter();    /* count weird signals & CRASH if too many */
-int lvl_plus_plus();  /* return lvl for push onto stk[], chacking overflow */  
+//void sigcounter();    /* count weird signals & CRASH if too many */
+//int lvl_plus_plus();  /* return lvl for push onto stk[], chacking overflow */
 
 /*****************************************************************************/
 /* Trap Syntax: (Braces are USUALLY not required for single statements)
@@ -211,20 +237,20 @@ int lvl_plus_plus();  /* return lvl for push onto stk[], chacking overflow */
    not be building up run...except calls.  If stack_check() fails, the
    program should be aborted! */
 
-bool stack_check();       /* args: int *var; return TRUE if all is OK */
-void init_stack_check();  /* args: int *var; */
+//bool stack_check();       /* args: int *var; return TRUE if all is OK */
+//void init_stack_check();  /* args: int *var; */
 
 
 /******************** Support for Unix style signals ********************/
 
-/* Signal trap functions for signal_trap_init (which is in syscode.c) */
-void handle_quit();
-void handle_matherror();
-void handle_weird_signal();
-void handle_interrupt();
-void handle_buserror();
-
-void msg_init();
+///* Signal trap functions for signal_trap_init (which is in syscode.c) */
+//void handle_quit();
+//void handle_matherror();
+//void handle_weird_signal();
+//void handle_interrupt();
+//void handle_buserror();
+//
+//void msg_init();
 
 
 /***** THE FOLLOWING IS AS YET UNUSED, AND MAYBE BEST LEFT THAT WAY *****/

@@ -11,21 +11,21 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-#define INC_IO
-#define INC_MSG
-#define INC_MEM
-#define INC_STR
-#define INC_MATH
-#define INC_HELP_DEFS
+//#define INC_IO
+//#define INC_MSG
+//#define INC_MEM
+//#define INC_STR
+//#define INC_MATH
+//#define INC_HELP_DEFS
 #include "system.h"
 #include "shell.h" /* just to get the decl of error()? */
 #include "iolib.h"
 
 static void dump_memory_lines(int start, int num) /* internal */;
 
-bool get_home_directory(char *buf);
-bool get_code_directory(char *buf);
-bool get_directory(char *buf);
+//bool get_home_directory(char *buf);
+//bool get_code_directory(char *buf);
+//bool get_directory(char *buf);
 
 /***** globals- see descriptions in iolib.h *****/
 char *ps, *ps_, *ln, *ln_; 
@@ -47,11 +47,11 @@ char *lnptr;
 int  temp_print_spaces;
 #define temp_print_up (temp_print_spaces>0)
 
-void flush_linebuf();
-bool dump_held_lines();
-void kill_temp_print();
-bool lib_clear_screen();
-bool really_do_more();
+//void flush_linebuf();
+//bool dump_held_lines();
+//void kill_temp_print();
+//bool lib_clear_screen();
+//bool really_do_more();
 
 char **memory, **held;
 int memory_end, memory_wrapped, holding, hold_count;

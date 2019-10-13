@@ -11,13 +11,22 @@
    This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-#define INC_LIB
-#define INC_SHELL
-#define INC_MISC
+//#define INC_LIB
+//#define INC_SHELL
+//#define INC_MISC
 #include "mapm.h"
+//#include "toplevel.h"
+//#include "lowlevel.h"
 
 /* internal procedures and variables */
-bool try_marker();
+static bool try_marker (
+        int *marker,
+        MAP *original_map, /* contains the list of loci in the order */
+        SAVED_LIST *list,
+        bool *excluded,
+        bool *zero,
+        int *count
+);
 
 bool find_seed_order(bool is_subset, int *locus, int num_loci, int size, int max_tries, real thresh, MAP *map, MAP *temp_map, bool **temp /* [num_loci][num_loci] */);
 
@@ -30,14 +39,16 @@ int cum_not[ESTEPS], cum_err[ESTEPS];
 real ratio[ESTEPS];
 
 
-void npt_cmds_init()
+void 
+npt_cmds_init (void)
 { 
     int i;
     for (i=0; i<ESTEPS; i++) errs[i]=noterrs[i]=0;
 }
 
 
-command make_map()
+command 
+make_map (void)
 {
     MAP *map;
     int num_loci;
@@ -62,7 +73,8 @@ command make_map()
 }
 
 
-command draw_map()
+command 
+draw_map (void)
 {
     MAP *map;
     int num_loci;
@@ -105,7 +117,8 @@ command draw_map()
 }
 
 
-command genotypes()
+command 
+genotypes (void)
 {
     MAP *map;
     int num_loci;
@@ -120,8 +133,8 @@ command genotypes()
 	for_all_orders(seq, map) {
 	    init_rec_fracs(map); 	
 	    converge_to_map(map);
-	    print_f2_map_genotypes(map,use_haplotypes,TRUE,0);
-	    print(MAP_DIVIDER);
+	    print_f2_map_genotypes(map,use_haplotypes,TRUE,0, NULL);
+        print(MAP_DIVIDER);
 	}
     } on_exit {
 	free_map(map); 
@@ -137,7 +150,8 @@ command genotypes()
 #define BEST_ORDER  "\nBest order"
 #define N_EXCLUDED  " (%d excluded by three-point analysis)"
 
-command compare()
+command 
+compare (void)
 {
     SAVED_LIST *list=NULL;
     MAP *map;
@@ -210,7 +224,8 @@ command compare()
 }
 
 
-command ripple()
+command 
+ripple (void)
 {
     MAP *map0=NULL, *map;
     SAVED_LIST *list;
@@ -296,7 +311,8 @@ command ripple()
 #define TRY_TOO_MANY "too many loci to try"
 #define MAX_PAIRED 20
 
-command try()
+command 
+try (void)
 {
     SAVED_LIST **list=NULL;
     MAP *map=NULL;
@@ -450,12 +466,15 @@ command try()
 #define is_zero(rec_frac,sex) \
   (rec_frac[MALE]<ZERO_DIST && (!sex || rec_frac[FEMALE]<ZERO_DIST))
 
-bool try_marker(marker,original_map,list,excluded,zero,count)
-int *marker;
-MAP *original_map; /* contains the list of loci in the order */
-SAVED_LIST *list;
-bool *excluded, *zero;
-int *count;
+bool 
+try_marker (
+    int *marker,
+    MAP *original_map, /* contains the list of loci in the order */
+    SAVED_LIST *list,
+    bool *excluded,
+    bool *zero,
+    int *count
+)
 {
     int i, j, num_ok, last, sex, num_paired, best_i=0;
     MAP *map;
@@ -532,7 +551,8 @@ int *count;
 #define LINK_CRITERIA \
  "Linkage Groups at min LOD %.2lf, max Distance %s\n"
 
-command order_maker()
+command 
+order_maker (void)
 {
     int *loci=NULL, num_loci, *linkage_group=NULL, num_unlinked, group_size;
     int *subset=NULL, **seed_temp=NULL, subset_size, groups_done;
@@ -727,7 +747,8 @@ command order_maker()
 }
 
 
-command greedy()
+command 
+greedy (void)
 {
     int *locus=NULL, num_loci=0, num_order=0, *all_loci=NULL, total;
     int i=0, prev=0, num=0, num_unplaced=0;

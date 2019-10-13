@@ -1,3 +1,6 @@
+#ifndef _MATHLIB_H_
+#define _MATHLIB_H_
+
 /******************************************************************************
 
  #    #    ##     #####  #    #  #          #    #####           #    #
@@ -11,27 +14,87 @@
 
 /* Numeric stuff for the helpers library */
 
-/********** THE FOLLOWING MATH FUNCTIONS AWRE KNOWN TO BE PORTABLE. **********
-
-THESE MUST BE CALLED WITH REAL (THAT IS, DOUBLE) ARGS:
-log10(); exp(); pow(); log(); floor(); ceil(); fabs(); sqrt(); 
-sin(); cos(); tan(); asin(); acos(); atan(); sinh(); cosh(); tanh(); atan2();
-
-INTEGER FUNCTIONS:  abs(); 
-
-DO NOT USE ANY OTHER MATH FUNCTIONS WHICH EXIST ON PARTICULAR SYSTEMS, 
-INCLUDING:
-
-hypot(); acosh(); asinh(); atanh(); cabs(); fmod(); ldexp(); frexp();
-ldiv(); div(); labs(); modf(); bessel and gamma functions; many other
-BSD UNIX math library functions; and particular random number
-generator functions (use randnum() below).
-******************************************************************************/
+///********** THE FOLLOWING MATH FUNCTIONS AWRE KNOWN TO BE PORTABLE. **********
+//
+//THESE MUST BE CALLED WITH REAL (THAT IS, DOUBLE) ARGS:
+//log10(); exp(); pow(); log(); floor(); ceil(); fabs(); sqrt();
+//sin(); cos(); tan(); asin(); acos(); atan(); sinh(); cosh(); tanh(); atan2();
+//
+//INTEGER FUNCTIONS:  abs();
+//
+//DO NOT USE ANY OTHER MATH FUNCTIONS WHICH EXIST ON PARTICULAR SYSTEMS,
+//INCLUDING:
+//
+//hypot(); acosh(); asinh(); atanh(); cabs(); fmod(); ldexp(); frexp();
+//ldiv(); div(); labs(); modf(); bessel and gamma functions; many other
+//BSD UNIX math library functions; and particular random number
+//generator functions (use randnum() below).
+//******************************************************************************/
 
 /* Other useful ones... */
 #define exp10(x) pow(10.0,x)
 #define eq(x,y)  (rabs((x)-(y))<VERY_SMALL)
-real sq(); /* arg: real x; returns x squared */
+
+
+/***** SUPPORT FOR SOME GENERALLY USEFUL MATH FUNCTIONS *****/
+
+typedef struct {
+    int entries;
+    real start, increment, mean;
+    real *deviation, *prob; /* [entries], prob is cumulative */
+} DISTRIBUTION;
+
+//DISTRIBUTION *make_distribution();
+///* args: real increment,limit,mean,(*function)();
+//   Makes a probability distribution for d= mean-limit to mean+limit by
+//   increment, where function(d) is the probability of deviation d from mean. */
+//
+//DISTRIBUTION *make_normal_distribution();
+///* args: real mu, sigma, increment, limit;
+//   Makes a normal probability distribution with sigma about mean mu, where
+//   increment and limit are both expressed as fractions of sigma (eg std
+//   deviations, unlike the case in make_distribution()) */
+//
+//real pick_from_distribution();  /* args: DISTRIBUTION *dist; real *prob;
+//  Return a randomly chosen deviation d from the distribution, and optionally
+//  set *prob (if non-NULL) to d's CUMULATIVE probability. */
+
+real sq(real r);
+real rmaxf(real r, real s);
+real rminf(real r, real s);
+long lpow2(int i);
+int ipow2(int i);
+long lpow(int x, int i);
+int ipow(int x, int i);
+int ichoose(int n, int k);
+int imaxf(int r, int s);
+int iminf(int r, int s);
+long lmaxf(long r, long s);
+long lminf(long r, long s);
+int icomp(const void *x, const void *y);
+int lcomp(const void *x, const void *y);
+int rcomp(const void *x, const void *y);
+int scomp(const void *x, const void *y);
+int inv_icomp(const void *x, const void *y);
+int inv_rcomp(const void *x, const void *y);
+int rhistogram(real *data, int length, int min_num_buckets, real scale_quantization, real scale_limit_quantization);
+real rmean(real *data, int length);
+real rmaxin(real *data, int length);
+real rmedian(real *data, int length);
+real rmiddle(real *data, int length);
+void rcopy(real *to, real *from, int length);
+real normal_func(real deviation);
+DISTRIBUTION *make_normal_dist(real mu, real sigma, real inc, real limit);
+DISTRIBUTION *make_distribution(real sigma, real inc, real limit, real mean, real (*prob_func)(real));
+real pick_from_distribution(DISTRIBUTION *dist, real *prob);
+void mat_invert(real **m, int size, real **m_inverse);
+void eliminate(int row, int col, int row_to_sub, real **m, int n_cols);
+void mat_mult(real **m, real **m2, int size, real **result);
+void array_times_matrix(real *a, real **b, int rows, int columns, real *c);
+
+
+
+//real sq(); /* arg: real x; returns x squared */
 
 /* Portable functions to extract the real and fractional portions of real 
    numbers. For example:
@@ -45,10 +108,10 @@ real sq(); /* arg: real x; returns x squared */
 #define sign(x)    (x>=0.0 ? 1.0 : -1.0)
 
 /* NOTE: all of the args here are ints, even if a long is returned */
-long lpow();  /* arg: int x,i; returns x to the i, for i<=31*/
-int  ipow();  /* arg: int x,i; returns x to the i, for small x,i */
-long lpow2(); /* arg: int i;   returns 2 to the i, for i<=31*/
-int  ipow2(); /* arg: int i;   returns 2 to the i, for i<=15*/
+//long lpow();  /* arg: int x,i; returns x to the i, for i<=31*/
+//int  ipow();  /* arg: int x,i; returns x to the i, for small x,i */
+//long lpow2(); /* arg: int i;   returns 2 to the i, for i<=31*/
+//int  ipow2(); /* arg: int i;   returns 2 to the i, for i<=15*/
 
 
 /* Remember, its a no-no to change any of these defs! VAX is the smallest! */
@@ -87,19 +150,19 @@ int  ipow2(); /* arg: int i;   returns 2 to the i, for i<=15*/
    side-effects something, or where f() takes lots of time. Hard code
    a conditional expression instead if speed is really critical... */
 
-real rmaxf();   /* args: real r,s; returns largest of r and s */
-real rminf();   /* args: real r,s; returns smallest of r and s */
-int  imaxf();   /* args: int i,j;  returns largest of i and j */
-int  iminf();   /* args: int i,j;  returns smallest of i and j */
-long lmaxf();   /* args: long i,j; returns largest of i and j */
-long lminf();   /* args: long i,j; returns smallest of i and j */
+//real rmaxf();   /* args: real r,s; returns largest of r and s */
+//real rminf();   /* args: real r,s; returns smallest of r and s */
+//int  imaxf();   /* args: int i,j;  returns largest of i and j */
+//int  iminf();   /* args: int i,j;  returns smallest of i and j */
+//long lmaxf();   /* args: long i,j; returns largest of i and j */
+//long lminf();   /* args: long i,j; returns smallest of i and j */
 
 
-real randnum(); /* no args; number from 0...(1-epsilon) */
+//real randnum(); /* no args; number from 0...(1-epsilon) */
 #define coin_flip() (randnum()>0.5)
 #define biased_flip(p_heads) (randnum()<(p_heads))
 
-void do_seedrand();
+//void do_seedrand();
 #define seedrand(x) do_seedrand((long)(x))
 /* effectively: void seedrand(x); long x; x may be one of: */
 #define RANDOM    0l
@@ -107,4 +170,34 @@ void do_seedrand();
 
 #define math_init() { seedrand(NONRANDOM); } /* called by lib_init() */
 
+/***** OTHER USEFUL OPERATIONS FOR REAL NUMBER ARRAYS *****/
 
+//real rmean();	/* real *data; int array_len; returns mean */
+//real rmaxin();	/* real *data; int array_len; returns largest */
+//real rminin();	/* real *data; int array_len; returns smallest */
+//real rmedian();	/* real *data; int array_len; returns median */
+//real rmiddle();	/* real *data; int array_len; returns middle entry */
+//void rcopy(); 	/* real *to, *from; int array_len; copies array */
+
+///* This one needs work */
+//bool rhistogram();	/* real *data; int array_len, min_num_buckets;... */
+//			/* real foo, bar; (unused) - returns T or F */
+//
+///***** AND MATRICIES... *****/
+//
+//void mat_invert(); /* args: real **m; int size; real **m_inverse; */
+///* Invert square matrix m by Gauss' method, side-effecting the
+//   (already allocated!) matrix m_inverse. m_inverse should be 2*size
+//   columns (2nd index) by size rows (first index) - its left square will be
+//   left with the result (ignore the right side). */
+//
+//void mat_mult(); /* args: real **m, **m2; int size; real **m_times_m2; */
+///* Multiply square matricies m and m2, side-effecting the (already allocated!)
+//   matrix m_times_m2, which should be the same size as m and m2 */
+//
+//void array_times_matrix(); /* real *a, **m; int rows, columns; real *result; */
+///* Multiply array a (length=rows) times matrix b (indicies=[row][column]),
+//   side effecting the (already allocated!) array c (length=columns). */
+
+
+#endif

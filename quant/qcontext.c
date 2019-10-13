@@ -11,18 +11,21 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-#define INC_LIB
-#define INC_SHELL
-#define INC_TABLE
-#define INC_CALLQCTM
-#define INC_QTOPLEVEL
+//#define INC_LIB
+//#define INC_SHELL
+//#define INC_TABLE
+//#define INC_CALLQCTM
+//#define INC_QTOPLEVEL
 #include "qtl.h"
+
+void allocate_context (STATUS_CONTEXT *con);
 
 #define MAX_CONTEXTS 10
 STATUS_CONTEXT **context;
 int active_context, num_contexts;
 
-void context_init()
+void 
+context_init (void)
 {
     context = NULL;
     run {
@@ -39,8 +42,8 @@ void context_init()
 }
 
 
-void allocate_context(con)
-STATUS_CONTEXT *con;
+void 
+allocate_context (STATUS_CONTEXT *con)
 {
     TABLE *seqhist,*names;
 
@@ -59,16 +62,16 @@ STATUS_CONTEXT *con;
     }
 }
 
-void free_context(con)
-STATUS_CONTEXT *con;
+void 
+free_context (STATUS_CONTEXT *con)
 {
     free_table(con->named_sequences);
     free_table(con->sequence_history);
 }
 
 
-bool change_context(new_context)
-int new_context;
+bool 
+change_context (int new_context)
 {
     if(context[new_context] != NULL) {
 	active_context = new_context;
@@ -81,8 +84,8 @@ int new_context;
 }
 
 
-bool create_new_context(new_context)
-int new_context;
+bool 
+create_new_context (int new_context)
 {
     if(context[new_context] != NULL || new_context > MAX_CONTEXTS)
       return(FALSE);
@@ -96,9 +99,8 @@ int new_context;
 }
 
 
-void kill_context(con,save_it)
-STATUS_CONTEXT *con;
-bool save_it;
+void 
+kill_context (STATUS_CONTEXT *con, bool save_it)
 {
     char *err;
 
@@ -110,6 +112,3 @@ bool save_it;
     }
     free_context(con);
 }
-
-
-

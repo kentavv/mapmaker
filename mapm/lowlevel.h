@@ -1,3 +1,6 @@
+#ifndef _LOWLEVEL_H_
+#define _LOWLEVEL_H_
+
 /******************************************************************************
 
  #        ####   #    #  #       ######  #    #  ######  #               #    #
@@ -10,6 +13,8 @@
 ******************************************************************************/
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
+
+#include "map_info.h"
 
 
 /********************** Raw Data Struct ************************************/
@@ -54,14 +59,14 @@ extern RAW_DATA raw;
 
 #define RIGHT 		1
 #define LEFT		0
-#define NEGATIVE        1
-#define POSITIVE        0
+//#define NEGATIVE        1
+//#define POSITIVE        0
 
 typedef real   RECVECTOR[2];
-typedef real   RECARRAY[2][2];
-typedef char   CONV_HIST;
-typedef int    (*PFI)();   /* pointer to function returning an integer */
-typedef int    (*PFB)();   /* pointer to function returning a bool(int) */
+//typedef real   RECARRAY[2][2];
+//typedef char   CONV_HIST;
+//typedef int    (*PFI)();   /* pointer to function returning an integer */
+//typedef int    (*PFB)();   /* pointer to function returning a bool(int) */
 
 /* Locus structure for converge_to_map() down.  Used to store
    the markers that converge_to_map() is being used on. */
@@ -123,8 +128,8 @@ typedef struct {
 			COOKED F2 TYPE DATA
 *****************************************************************************/
 
-#define NEUTER                      0    
-#define APRIORI                     2
+//#define NEUTER                      0
+//#define APRIORI                     2
 
 /* Definition for processed backcross data storage. */
 /* As with phase known data, backcross data needs no preprocessing. */
@@ -142,7 +147,7 @@ typedef struct {
     real      prob_dist[3][4]; /* [apriori,left,right][event: AA,AB,BA,BB] */
 }		F2_INHER_STR;
     
-typedef real PROB_DIST[3][4];  /* as in F2_INHER_STR */
+//typedef real PROB_DIST[3][4];  /* as in F2_INHER_STR */
 
 typedef struct {
     int             number_indivs;
@@ -163,50 +168,50 @@ typedef union {
 
 /* Functions */
 /*in ctm.c */
-void converge_to_map();  /* arg: MAP; calls map making functions and returns
+void converge_to_map(MAP *map);  /* arg: MAP; calls map making functions and returns
 			    the converged map (alters: rec_frac, log-like) */
 /* in multipt.c */
-void allocate_recs();    /* These procedures are called by converge_to_map */
-void allocate_temps();   /* and assist in the map making. */
-void free_memory_temps();
-void no_history();
-bool norm_conv_rule();
-bool norm_inner_conv_rule();
-bool inner_converge_instantly();
-bool converge_instantly();
-void norm_make_new_map();
+//void allocate_recs();    /* These procedures are called by converge_to_map */
+//void allocate_temps();   /* and assist in the map making. */
+//void free_memory_temps();
+//void no_history();
+//bool norm_conv_rule();
+//bool norm_inner_conv_rule();
+//bool inner_converge_instantly();
+//bool converge_instantly();
+//void norm_make_new_map();
 
-/* map making procedures (separated by data type) */
-/* in interx.c */
-void f2_init_for_em();
-void f2_count_recs();
-void f2_free_memory_from_em();
-/* the following are also in interx.c but are used by other functions */
-int symbol_value();
-int changes();
-real f2_prob(), f3_prob();
-real power();
+///* map making procedures (separated by data type) */
+///* in interx.c */
+//void f2_init_for_em();
+//void f2_count_recs();
+//void f2_free_memory_from_em();
+///* the following are also in interx.c but are used by other functions */
+//int symbol_value();
+//int changes();
+//real f2_prob(), f3_prob();
+//real power();
 
-/* in known.c */
-void known_init_for_em();
-void known_count_recs();
-void known_free_memory_from_em();
-
-/* in backx.c */
-void backcross_init_for_em();
-void backcross_count_recs();
-void backcross_free_memory_from_em();
-
-/* in unk_init.c */
-void unk_init_for_em();
-void unk_free_memory_from_em();
-/*in unk_cnt.c */
-void unk_count_recs();
-
-/* in new_count.c */
-void new_unk_init_for_em();
-void new_unk_free_memory_from_em();
-void new_unk_count_recs();
+///* in known.c */
+//void known_init_for_em();
+//void known_count_recs();
+//void known_free_memory_from_em();
+//
+///* in backx.c */
+//void backcross_init_for_em();
+//void backcross_count_recs();
+//void backcross_free_memory_from_em();
+//
+///* in unk_init.c */
+//void unk_init_for_em();
+//void unk_free_memory_from_em();
+///*in unk_cnt.c */
+//void unk_count_recs();
+//
+///* in new_count.c */
+//void new_unk_init_for_em();
+//void new_unk_free_memory_from_em();
+//void new_unk_count_recs();
 
 
 /* Constant definitions useful in converge_to_map() and 
@@ -218,16 +223,16 @@ void new_unk_count_recs();
 
 #define UNINFORM	-1             /* Defs for marker types */
 #define INFORM		0              /*   and zygosity.  	*/
-#define HETERO		INFORM
-#define HOMO		UNINFORM
-#define EITHER		4
-#define FIRSTHETERO	2
+//#define HETERO		INFORM
+//#define HOMO		UNINFORM
+//#define EITHER		4
+//#define FIRSTHETERO	2
 
 #define REC 		1
 #define NOREC 		0
-#define for_recs(r)	for(r=REC;r>=NOREC;r--)
+//#define for_recs(r)	for(r=REC;r>=NOREC;r--)
 
 #define SMALLRECOMBS    0.00001
 #define BIGRECOMBS      0.50
 
-
+#endif

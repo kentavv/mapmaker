@@ -13,11 +13,11 @@
 
 /* QTL raw data */
 
-#define INC_LIB
-#define INC_SHELL
-#define INC_QLOWLEVEL
-#define INC_CALLQCTM
-#define INC_QTOPLEVEL
+//#define INC_LIB
+//#define INC_SHELL
+//#define INC_QLOWLEVEL
+//#define INC_CALLQCTM
+//#define INC_QTOPLEVEL
 #include <stdlib.h>
 //#undef CRASH
 #include "qtl.h"
@@ -41,18 +41,30 @@ int nam_len;
 #define RIGHT 1
 #define F2VERSION 3
 
-void getdataln();
-void read_map_locus();
-void read_quant_trait();
-real interval_likelihood();
-real pheno_given_geno();
-
-void make_count_recs_etc();
-
-bool missing_data(); /* OBSOLETE, NOT USED */
-void initial_prob();
-void condition();
-void altered_chroms_message();
+void make_count_recs_etc(void);
+void read_map_locus(FILE *fp, int indivs, int t_loc, int *order, int n_loci);
+real read_map_distance(FILE *fp);
+void read_quant_trait(FILE *fp, int num, int indivs);
+void read_olddata(FILE *fp, char *path);
+void read_oldmap_locus(FILE *fp, int num, int indivs);
+void read_oldquant_trait(FILE *fp, int num, int indivs);
+void read_oldmap_distance(FILE *fp, int num);
+void initial_prob(LOCUS_GENOTYPE_PROBS *prob, int locus, int this_genotype);
+real pheno_given_geno(int observation, int genotype);
+void condition(LOCUS_GENOTYPE_PROBS *prob, int locus, int prev_locus, int observation, real rec_frac, int side);
+void altered_chroms_message(void);
+//void getdataln();
+//void read_map_locus();
+//void read_quant_trait();
+//real interval_likelihood();
+//real pheno_given_geno();
+//
+//void make_count_recs_etc();
+//
+//bool missing_data(); /* OBSOLETE, NOT USED */
+//void initial_prob();
+//void condition();
+//void altered_chroms_message();
 
 #define MAXEXCEED "max # indiv or inter exceeded"
 
@@ -66,7 +78,8 @@ need to re-prepare it using the 'prepare data' command in MAPMAKER."
 
 /********** PRELIMINARIES **********/
 
-void raw_init()
+void 
+raw_init (void)
 {
     raw.n_loci= 0; 		raw.n_traits= 0;
     raw.trait= NULL; 		raw.trait_name= NULL;
@@ -81,7 +94,8 @@ void raw_init()
     make_count_recs_etc();
 }
 
-void make_count_recs_etc() 
+void 
+make_count_recs_etc (void) 
 {
     int **x, *y;
 
@@ -106,7 +120,8 @@ void make_count_recs_etc()
 }
 
 
-void free_raw()  /* alloced by read_data - NEVER BEEN TESTED!! */
+void 
+free_raw (void)  /* alloced by read_data - NEVER BEEN TESTED!! */
 {
 	unmatrix(raw.locus, raw.n_indivs, char);
 	unmatrix(raw.locus_name, raw.n_loci, char);
@@ -120,25 +135,24 @@ void free_raw()  /* alloced by read_data - NEVER BEEN TESTED!! */
 	raw.file[0]='\0';
 }
 
-int data_loaded() { return(raw.file[0]!='\0'); }
+int 
+data_loaded (void) { return(raw.file[0]!='\0'); }
 
 
 
 /********** THE DATA READER **********/
 
-void getdataln(fp) /* get next nonblank/noncomment data file line */
-FILE *fp;
+void 
+getdataln ( /* get next nonblank/noncomment data file line */
+    FILE *fp
+)
 { do { fgetln(fp); BADDATA_line_num++; } while(nullstr(ln) || ln[0]=='#'); 
   BADDATA_ln= ln; }
-real read_map_distance();
-void read_map_locus();
-void read_quant_trait();
 
 #define DUMMY_LOCI 1
 
-void read_data(fpa,fpb,fpm,temp/*,int number_of_file*/)
-FILE *fpa, *fpb, *fpm;
-char *temp;
+void 
+read_data (FILE *fpa, FILE *fpb, FILE *fpm, char *temp)
 {
  
     int k=0,v,l,i,num_chrom,num_loc=0,t_loc=0,j=0,loc;
@@ -244,7 +258,7 @@ char *temp;
 		} 
 		map_space[k] = .499; k++;
 		for (l=0; l<num_loc-2; l++,k++) 
-		  map_space[k] = read_map_distance(fpm,l);
+		  map_space[k] = read_map_distance(fpm/*,l*/);
 		map_space[k] = 0.499; k++;
 		getdataln(fpm);
 	    }
@@ -273,7 +287,7 @@ char *temp;
 		    map_space[k] = .499; k++;
 		}
 		for (l=0; l<num_loc-1; l++,k++) 
-		  map_space[k] = read_map_distance(fpm,l);
+		  map_space[k] = read_map_distance(fpm/*,l*/);
 		map_space[k] = 0.499; k++;
 		getdataln(fpm);
 	    }
@@ -409,8 +423,8 @@ char *temp;
 }
 
 
-void save_traitfile(fp)
-FILE *fp;
+void 
+save_traitfile (FILE *fp)
 {
     int i,j,loci_tot,map_tot;
     
@@ -494,9 +508,8 @@ FILE *fp;
 }
 
 
-void read_map_locus(fp,indivs,t_loc,order,n_loci)
-FILE *fp;
-int indivs, t_loc, n_loci, *order;
+void 
+read_map_locus (FILE *fp, int indivs, int t_loc, int *order, int n_loci)
 /* could send BADDATA or IOERROR */
 {
     
@@ -561,9 +574,8 @@ real read_map_distance(FILE *fp/*int num*/)
     }
 
 
-void read_quant_trait(fp,num,indivs)
-FILE *fp;
-int num, indivs;
+void 
+read_quant_trait (FILE *fp, int num, int indivs)
 /* could send IOERROR or BADDATA */
 {
     
@@ -592,11 +604,8 @@ int num, indivs;
 }
   
 
-void read_oldmap_locus(), read_oldquant_trait(), read_oldmap_distance();
-
-void read_olddata(fp,path)
-FILE *fp;
-char *path;
+void
+read_olddata (FILE *fp, char *path)
 {
     int i, j, n_indivs, n_loci, n_traits;
     char tok[TOKLEN + 1];
@@ -657,9 +666,8 @@ char *path;
 }
 
 
-void read_oldmap_locus(fp,num,indivs)
-FILE *fp;
-int num, indivs;
+void 
+read_oldmap_locus (FILE *fp, int num, int indivs)
 /* could send BADDATA or IOERROR */
 {
     char c;
@@ -681,9 +689,8 @@ int num, indivs;
 }
 		
 
-void read_oldquant_trait(fp,num,indivs)
-FILE *fp;
-int num, indivs;
+void 
+read_oldquant_trait (FILE *fp, int num, int indivs)
 /* could send IOERROR or BADDATA */
 {
     char tok[TOKLEN+1];
@@ -706,9 +713,8 @@ int num, indivs;
     if (!nullstr(ln)) { why_("extra data"); send(BADDATA); }
 }
 
-void read_oldmap_distance(fp,num)
-FILE *fp;
-int num;
+void 
+read_oldmap_distance (FILE *fp, int num)
 {
 	int bar;
 
@@ -740,7 +746,8 @@ int num;
 #define PROBS_NOT_1 \
 "*** WARNING: interval genotype probs not 1: indiv %d interval %d\n"
 
-void crunch_data() /* side effects the raw data struct */
+void 
+crunch_data (void) /* side effects the raw data struct */
 {
     int i, k, first, last;
 
@@ -1126,7 +1133,8 @@ int data_type, geno;
 }
 
 
-void altered_chroms_message()
+void 
+altered_chroms_message (void)
 {
 if(!already_printed) {
     print("The linkage map data in the '.data' file has been altered since its\n");

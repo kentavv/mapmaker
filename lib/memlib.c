@@ -11,14 +11,12 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-#define INC_IO
-#define INC_STR
-#define INC_MSG
-#define INC_MEM
-#define INC_HELP_DEFS
+//#define INC_IO
+//#define INC_STR
+//#define INC_MSG
+//#define INC_MEM
+//#define INC_HELP_DEFS
 #include "system.h"
-
-CALLOC_PTR_TO *xalloc(); /* INTERNAL USE ONLY! */
 
 int verbose_mem; 	   /* may be set by user */
 long n_alloced;
@@ -30,9 +28,9 @@ int yy, zz;
 #define ALLOC_FAIL_MSG \
 	"FAILED:\t%ldx%ld\tbytes              total bytes alloced=%ld\n"
 
-CALLOC_PTR_TO *xalloc(CALLOC_NUM_TYPE num, SIZEOF_TYPE cell_sizeof)
+void *xalloc(size_t num, size_t cell_sizeof)
 {
-	CALLOC_PTR_TO *p;	
+	void *p;
 
 	if (num==REALLY_1) num=1;
 	else if (num<=0) send(CRASH); 
@@ -43,7 +41,7 @@ CALLOC_PTR_TO *xalloc(CALLOC_NUM_TYPE num, SIZEOF_TYPE cell_sizeof)
 	   causes things to take up more space than their sizeof()! */
 	/* if (chars > 65472L) send(CRASH);  64K-64 bytes max KLUDGE */
 
-	if ((p=calloc((CALLOC_NUM_TYPE)num,cell_sizeof))==NULL) {
+	if ((p=calloc(num,cell_sizeof))==NULL) {
 	      if (TRUE || verbose_mem) { /* KLUDGE */
 		   sprintf(ps_, ALLOC_FAIL_MSG, num, cell_sizeof, n_alloced);
 		   print(ps_);
@@ -62,8 +60,8 @@ CALLOC_PTR_TO *xalloc(CALLOC_NUM_TYPE num, SIZEOF_TYPE cell_sizeof)
 }
 
 
-real ***alloc_real_3d_matrix(i,j,k)
-int i,j,k;
+real ***
+alloc_real_3d_matrix (int i, int j, int k)
 {
     int z;
     real ***p;
@@ -83,9 +81,8 @@ int i,j,k;
 }
 
 
-void free_real_3d_matrix(p,i,j)
-real ***p;
-int i,j;
+void 
+free_real_3d_matrix (real ***p, int i, int j)
 {
     int z;
 
@@ -94,8 +91,8 @@ int i,j;
     unarray(p,real**);
 }
 
-char ***alloc_char_3d_matrix(i,j,k)
-int i,j,k;
+char ***
+alloc_char_3d_matrix (int i, int j, int k)
 {
     int z;
     char ***p;
@@ -115,9 +112,8 @@ int i,j,k;
 }
 
 
-void free_char_3d_matrix(p,i,j)
-char ***p;
-int i,j;
+void 
+free_char_3d_matrix (char ***p, int i, int j)
 {
     int z;
 
@@ -127,10 +123,8 @@ int i,j;
 }
 
 
-void pmat_r(n,x,a,b)
-char *n;
-real **x;
-int a,b;
+void 
+pmat_r (char *n, real **x, int a, int b)
 {
 	int i,j;
 	print(n); print(":\n");
@@ -150,10 +144,8 @@ int a,b;
 }
 
 
-void pary_r(n,x,a)
-char *n;
-real *x;
-int a;
+void 
+pary_r (char *n, real *x, int a)
 {
 	int i;
 	
@@ -164,10 +156,8 @@ int a;
 }
 
 
-void pary_r2x2(n,x,a)
-char *n;
-REAL2x2* x;
-int a;
+void 
+pary_r2x2 (char *n, REAL2x2 *x, int a)
 {
 	int i;
 
@@ -181,10 +171,8 @@ int a;
 }
 
 
-void pary_r4(n,x,a)
-char *n;
-REAL4 *x;
-int a;
+void 
+pary_r4 (char *n, REAL4 *x, int a)
 {
 	int i;
 	print(n); print(":\n");
@@ -197,6 +185,7 @@ int a;
 }
 
 
-void mem_init()
+void 
+mem_init (void)
 { n_alloced=0l; verbose_mem=FALSE; }
 

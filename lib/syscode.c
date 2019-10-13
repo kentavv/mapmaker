@@ -15,9 +15,9 @@
 /* Most of this file is doccumented in system.h - it contains most of the 
    system dependent code for the helpers library. */
 
-#define INC_LIB
-#define INC_EQN
-#define INC_HELP_DEFS
+//#define INC_LIB
+//#define INC_EQN
+//#define INC_HELP_DEFS
 #include "system.h"
 #include "syscode.h"
 
@@ -32,23 +32,23 @@
 /* Note that time() and ctime() seem to be the only portable time functions.
    However, time() returns different types with different C compilers! */
 
-static TIME_TYPE old_stamp, new_stamp;   /* For local use only! */
+static time_t old_stamp, new_stamp;   /* For local use only! */
 
 real usertime(bool do_reset) /* return time in seconds, or -1.0 if fail */
 {
     real rtime;
-    new_stamp= time((TIME_TYPE *)NULL); rtime= (real)(new_stamp - old_stamp);
+    new_stamp= time(NULL); rtime= (real)(new_stamp - old_stamp);
     if (do_reset) old_stamp= new_stamp;
     return(rtime);
 }
 
 char *time_string(void)    /* return ptr to "" if fail */
-{ 
-    TIME_TYPE the_time;  /* note that asctime() does not always exist */
+{
+    time_t the_time;  /* note that asctime() does not always exist */
     char *str;
     int end;
 
-    the_time=time((TIME_TYPE *)NULL); 
+    the_time=time(NULL);
     str=ctime(&the_time); 
     if (str==NULL) return(ptr_to(""));
     end=len(str)-1;
@@ -205,7 +205,8 @@ long mkseed(long x)
 
 //#ifdef USE_RANDOM
 void do_seedrand(long x) { srandom((int)mkseed(x)); }
-real randnum() { return(((real)random())/2147483648.0); }
+real 
+randnum (void) { return(((real)random())/2147483648.0); }
 //#else
 //#ifdef USE_DRAND48
 //void do_seedrand(long x) long x; { srand48(mkseed(x)); }
@@ -447,7 +448,7 @@ void lib_puts(FILE *fp, char *str)
 }
 
 
-void iocheck(void) { return; }
+//void iocheck(void) { return; }
 
 
 void tty_init(void)
@@ -570,7 +571,7 @@ void hp_cursor_left(int i, char *s)
 #define mac_highlight(on)   	{}
 #define mac_del_prev_ln()   	{}
 #define mac_boing()       	{}
-void mac_cursor_left(void)		{}
+//void mac_cursor_left(void)		{}
 
 void tty_hello(void)
 {
@@ -634,16 +635,16 @@ bool do_cursor_left(int num_spaces /* might be FAR_LEFT */, char *str_to_print)
 }
 
 
-bool boing(void)
-{
-/* NEEDS WIMP AND MAC CONSOLE HOOK */
-    if (term==HP_TERM)     { hp_boing(); return(TRUE); } 
-    else if (term==ANSI)   { ansi_boing(); return(TRUE); } 
-#ifdef HAVE_CURSES
-    else if (term==CURSES) { curses_boing(); return(TRUE); } 
-#endif
-    else return(FALSE);
-}
+//bool boing(void)
+//{
+///* NEEDS WIMP AND MAC CONSOLE HOOK */
+//    if (term==HP_TERM)     { hp_boing(); return(TRUE); }
+//    else if (term==ANSI)   { ansi_boing(); return(TRUE); }
+//#ifdef HAVE_CURSES
+//    else if (term==CURSES) { curses_boing(); return(TRUE); }
+//#endif
+//    else return(FALSE);
+//}
 
 
 /****************************** TOPLEVEL STUFF ******************************/
@@ -679,13 +680,13 @@ void lib_init(void)
     tty_hello();
 }
 
-void lib_inits(int *argc_ptr, char *argv[])
-{
-    custom_lib_init();
-    /* if (!screen_init(argc_ptr,argv)) */ 
-    get_cmd_line_args(argc_ptr,argv);
-    tty_hello();
-}
+//void lib_inits(int *argc_ptr, char *argv[])
+//{
+//    custom_lib_init();
+//    /* if (!screen_init(argc_ptr,argv)) */
+//    get_cmd_line_args(argc_ptr,argv);
+//    tty_hello();
+//}
 
 
 /* This is a little specialized for MAPMAKER right now. Generalize soon... */

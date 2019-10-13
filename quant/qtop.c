@@ -14,11 +14,11 @@
 /* QTOP.C - The toplevel for MAPMAKER/QTL, including lots of utility functions
    for the commands, and the main() procedure. */
 
-#define INC_LIB
-#define INC_SHELL
-#define INC_CALLQCTM
-#define INC_QTOPLEVEL
-#define INC_QLOWLEVEL
+//#define INC_LIB
+//#define INC_SHELL
+//#define INC_CALLQCTM
+//#define INC_QTOPLEVEL
+//#define INC_QLOWLEVEL
 #include "qtl.h"
 
 /***** User State Variables - global *****/
@@ -36,17 +36,17 @@ real startrecombs = .05;
 /**************************************************/
  
 /***** for internal use only *****/
-int main();
-int get_pair_entry();
-void qtl_top();
-char *genetics_str();
+//int main();
+//int get_pair_entry();
+//void qtl_top();
+//char *genetics_str();
 DATA *map_data; /* allocated max_intervals long - used for scratch space */
 
 bool isa_locus_name(char *str, int *num /* the locus# if TRUE, else the #matched if FALSE */, bool *exact);
 bool isa_seq_name(char *str, int *num /* the #matched if FALSE - undefined if true */, bool *exact);
 bool isa_trait_name(char *str, int *num /* the trait# if TRUE, else the #matched if FALSE */, bool *exact);
 
-void make_help_entries();
+void make_help_entries(void);
 
 /********** Message definitions for QTL **********/
 char *BADDATA_ln;
@@ -59,14 +59,17 @@ int   BADSEQ_errpos;
 char *BADSEQ_errmsg;
 char *BADTRAIT_errmsg;
 
-void ps_MATINV();
-void ps_BADDATA();
+//void ps_MATINV();
+//void ps_BADDATA();
 
-void ps_MATINV()  { sprintf(ps, "diff= %lf", MATINV_diff); }
-void ps_BADDATA() { sprintf(ps, "line=\"%s\"\nerror=%s",
+void
+ps_MATINV (char *a)  { sprintf(ps, "diff= %lf", MATINV_diff); }
+void 
+ps_BADDATA (char *a) { sprintf(ps, "line=\"%s\"\nerror=%s",
                             truncstr(BADDATA_ln,60), truncstr(BADDATA_error,70)); }
 
-void top_init()
+void 
+top_init (void)
 { 
   BADDATA_ln= BADDATA_error= NULL; 
   MATINV_diff= 0.0; NOPARSE_err= 0;
@@ -133,7 +136,7 @@ int main(int argc, char *argv[])
             } on_error { print("error opening photo file\n"); }
     }
 
-    if (!nullstr(file_arg[RUN_FILE_ARG],READ)) {
+    if (!nullstr(file_arg[RUN_FILE_ARG])) {
         run {
                 redirect_input(file_arg[RUN_FILE_ARG], TRUE);
             } on_error { print("error opening run file\n"); }
@@ -159,9 +162,8 @@ sequence #123: blah blah blah
 #define LINE1 "trait: %-15s units: %-11s     photo: %s"
 #define LINE2 "sequence #%d: %-64s"
 
-void qtl_top(line,lines,cols)
-char **line;
-int lines, cols;
+void 
+qtl_top (char **line, int lines, int cols)
 {
     char tr[16], file[PATH_LENGTH+1];
 
@@ -185,8 +187,8 @@ int lines, cols;
 
 /********** QTL_MAP handling routines **********/
 
-QTL_MAP *alloc_qtl_map(num_intervals,num_cont_vars)
-int num_intervals, num_cont_vars;
+QTL_MAP *
+alloc_qtl_map (int num_intervals, int num_cont_vars)
 {
     QTL_MAP *map=NULL;
         
@@ -224,8 +226,8 @@ int num_intervals, num_cont_vars;
 }
 
 
-void free_qtl_map(map)
-QTL_MAP *map;
+void 
+free_qtl_map (QTL_MAP *map)
 {
     if (map==NULL) return;
 
@@ -257,8 +259,8 @@ QTL_MAP *map;
    except to the extent that ->num_intervals=0 and
    ->num_continuous_vars=0. */
 
-bool reset_map(map)  
-QTL_MAP *map;    
+bool 
+reset_map (QTL_MAP *map)    
 {
     if (map==NULL) send(CRASH);
 
@@ -272,11 +274,14 @@ QTL_MAP *map;
 }
 
 
-int add_interval(map,left,right,fix_pos,genetics)
-QTL_MAP *map;
-int left, right; /* loci */
-real fix_pos; 
-GENETICS *genetics;
+int 
+add_interval (
+    QTL_MAP *map,
+    int left,
+    int right, /* loci */
+    real fix_pos,
+    GENETICS *genetics
+)
 {
     int i;
     if (map==NULL || map->num_intervals>=map->max_intervals) send(CRASH); 
@@ -310,8 +315,11 @@ int add_continuous_var(QTL_MAP *map, int trait, real fix_weight)
 
 
 /* This is (I think) as yet unused, and hence, really untested */
-void mapcpy(to,from)   /* strcpy()-ish backasswards notation */
-QTL_MAP *to, *from;
+void 
+mapcpy (   /* strcpy()-ish backasswards notation */
+    QTL_MAP *to,
+    QTL_MAP *from
+)
 {
     int i;
 	
@@ -352,8 +360,8 @@ QTL_MAP *to, *from;
 }
 
 
-void copy_genetics(to,from)
-GENETICS *to, *from;
+void 
+copy_genetics (GENETICS *to, GENETICS *from)
 {
     to->backx_weight= from->backx_weight;
     to->interx_type=  from->interx_type;
@@ -361,8 +369,8 @@ GENETICS *to, *from;
 }
 
 
-bool constrained(genetics)
-GENETICS *genetics;
+bool 
+constrained (GENETICS *genetics)
 {
     if (raw.data_type==BACKCROSS) return(genetics->backx_weight!=DONT_FIX);
     else return(genetics->interx_type!=FREE);
@@ -387,9 +395,8 @@ Otherwise, if you do return it, it will be freed, and thus any ptrs to it
 should be thrown away. */
 
 
-SAVE_QTL_MAPS *alloc_saved_maps(num_maps, num_intervals, threshold)
-int num_maps, num_intervals;
-real threshold;
+SAVE_QTL_MAPS *
+alloc_saved_maps (int num_maps, int num_intervals, real threshold)
 {
 	SAVE_QTL_MAPS *p;
 	int i;
@@ -409,8 +416,8 @@ real threshold;
 }
 	
 
-void free_saved_maps(p)
-SAVE_QTL_MAPS *p;
+void 
+free_saved_maps (SAVE_QTL_MAPS *p)
 {
 	int i;
 	
@@ -425,9 +432,8 @@ SAVE_QTL_MAPS *p;
 }
 
 
-QTL_MAP *save_map(map_to_save, the_maps)
-QTL_MAP *map_to_save;
-SAVE_QTL_MAPS *the_maps;
+QTL_MAP *
+save_map (QTL_MAP *map_to_save, SAVE_QTL_MAPS *the_maps)
 {
 	int i;
 	QTL_MAP *prev, *temp;
@@ -461,8 +467,8 @@ SAVE_QTL_MAPS *the_maps;
 }
 
 
-QTL_MAP *get_unused_map(the_maps)
-SAVE_QTL_MAPS *the_maps;
+QTL_MAP *
+get_unused_map (SAVE_QTL_MAPS *the_maps)
 {
 	if (the_maps->unused_checked_out) send(CRASH);
 	the_maps->unused_checked_out= TRUE;
@@ -470,9 +476,8 @@ SAVE_QTL_MAPS *the_maps;
 }
 
 
-void return_unused_map(map_to_return, the_maps)
-QTL_MAP *map_to_return;
-SAVE_QTL_MAPS *the_maps;
+void 
+return_unused_map (QTL_MAP *map_to_return, SAVE_QTL_MAPS *the_maps)
 {
   	if (!the_maps->unused_checked_out || 
 	    map_to_return != the_maps->unused) send(CRASH);
@@ -500,9 +505,8 @@ SAVE_QTL_MAPS *the_maps;
 "The current sequence is not apropriate for the '%s' command.\nOnly one interval may be specified."  /* FROB */
 
 
-void qtl_ready(data_type,need_seq,need_trait,will_call_qctm)
-int data_type, need_seq;
-bool need_trait, will_call_qctm;
+void 
+qtl_ready (int data_type, int need_seq, bool need_trait, bool will_call_qctm)
 /* Side-effects globals num_intervals, num_orders, num_ints_to_wiggle, 
    free_genetics, and allocate map and map_data, if needed. */
 {
@@ -558,10 +562,12 @@ bool need_trait, will_call_qctm;
   "The name '%s' is too long - limit names to %d characters."
 #define eTRAITNEEDNAME "You must specify a name (not a number) for the trait."
 
-bool valid_locus_str(str,num,errmsg)  /* return TRUE or FALSE */
-char *str;     /* assume this is a despaced/lowercased/filtered token */
-int *num;      /* side-effect with the number if TRUE */
-char *errmsg;  /* side-effect with a message if FALSE */
+bool 
+valid_locus_str (  /* return TRUE or FALSE */
+    char *str,     /* assume this is a despaced/lowercased/filtered token */
+    int *num,      /* side-effect with the number if TRUE */
+    char *errmsg  /* side-effect with a message if FALSE */
+)
 {
     int match, exact;
     char *name= get_temp_string();
@@ -613,10 +619,12 @@ char *errmsg;  /* side-effect with a message if FALSE */
 }
 
 
-bool valid_trait_str(str,num,errmsg)  /* return TRUE or FALSE */
-char *str;    /* assume this is a despaced/lowercased/filtered token */
-int *num;     /* side-effect with the number if TRUE */
-char *errmsg; /* side-effect with a message if FALSE */
+bool 
+valid_trait_str (  /* return TRUE or FALSE */
+    char *str,    /* assume this is a despaced/lowercased/filtered token */
+    int *num,     /* side-effect with the number if TRUE */
+    char *errmsg /* side-effect with a message if FALSE */
+)
 {
     int match, exact;
     char *name= get_temp_string();
@@ -672,9 +680,11 @@ char *errmsg; /* side-effect with a message if FALSE */
 }
 
 
-bool valid_new_trait_name(str,errmsg)  /* return TRUE or FALSE */
-char *str;     /* assume this is a despaced/lowercased/filtered token */
-char *errmsg;  /* side-effect with a message if FALSE */
+bool 
+valid_new_trait_name (  /* return TRUE or FALSE */
+    char *str,     /* assume this is a despaced/lowercased/filtered token */
+    char *errmsg  /* side-effect with a message if FALSE */
+)
 {
     int match, exact;
     char *name= get_temp_string();
@@ -713,8 +723,8 @@ char *errmsg;  /* side-effect with a message if FALSE */
 }
 
 
-bool valid_locus_num(num)
-int *num;
+bool 
+valid_locus_num (int *num)
 { 
     int i, x, new_num = -1;
 
@@ -727,8 +737,8 @@ int *num;
     return(*num>=0);
 }
 
-bool valid_trait_num(num)
-int num;
+bool 
+valid_trait_num (int num)
 { return(irange(&num,0,raw.n_traits-1) && !nullstr(raw.trait_name[num])); }
 
 /* bool new_trait_num(num) UNUSED?
@@ -798,8 +808,8 @@ bool isa_seq_name(char *str, int *num /* the #matched if FALSE - undefined if tr
 
 /* Upper level */
 
-void set_trait_spec(str)
-char *str;
+void 
+set_trait_spec (char *str)
 {
     int trait_num;
 
@@ -812,8 +822,8 @@ char *str;
 }
 
 
-void make_qtl_map(map)
-QTL_MAP *map;
+void 
+make_qtl_map (QTL_MAP *map)
 {
     map->trait = trait;
     /* map_data is a global we keep handy just for this! */
@@ -821,9 +831,3 @@ QTL_MAP *map;
     initial_qctm_values(map_data,map);
     qtl_conv_to_map(map_data,map);
 }
-
-
-
-
-
-

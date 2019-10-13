@@ -11,19 +11,25 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-#define INC_LIB
-#define INC_SHELL
+//#define INC_LIB
+//#define INC_SHELL
 #include "mapm.h"
+//#include "toplevel.h"
+//#include "lowlevel.h"
 
 #define LONGEST_MAP 300.0  /* longest map allowed for one page output */
 
-void ps_file_start(), ps_file_end(), ps_page_start(), ps_page_end();
-void ps_dump_chrom();
-real ps_scale();
-char *ps_loc_str(), *ps_frame_str();
+void ps_file_start(FILE *fp);
+void ps_file_end(FILE *fp);
+void ps_page_start(FILE *fp, int pagenum);
+void ps_page_end(FILE *fp);
+real ps_scale(real map_length);
+void ps_dump_chrom(FILE *fp, int chrom, real scale);
+char *ps_loc_str(int i);
+char *ps_frame_str(int i);
 
-void ps_file_start(fp)
-FILE *fp;
+void 
+ps_file_start (FILE *fp)
 {
     fprintf(fp,"%%!PS-Adobe-3.0\n");
     fprintf(fp,"%%%%Creator: MAPMAKER\n");
@@ -73,8 +79,8 @@ FILE *fp;
     fprintf(fp,"%%%%EndSetup\n");
 }
 
-void ps_file_end(fp)
-FILE *fp;
+void 
+ps_file_end (FILE *fp)
 {
     fprintf(fp,"%%%%Trailer\n");
     fprintf(fp,"grestore\n");
@@ -82,9 +88,8 @@ FILE *fp;
     fprintf(fp,"%%%%EOF\n");
 }
 
-void ps_page_start(fp,pagenum)
-FILE *fp;
-int pagenum;
+void 
+ps_page_start (FILE *fp, int pagenum)
 {
     fprintf(fp,"%%%%Page: ? %d\n",pagenum);
     fprintf(fp,"%%%%BeginPageSetup\n");
@@ -92,17 +97,16 @@ int pagenum;
     fprintf(fp,"%%%%EndPageSetup\n");
 }
 
-void ps_page_end(fp)
-FILE *fp;
+void 
+ps_page_end (FILE *fp)
 {
     fprintf(fp,"GM showpage\n");
 }
 
 #define LAST_INTERVAL (-999.0)
 
-void print_ps_map(fp,map)
-FILE *fp;
-MAP *map;
+void 
+print_ps_map (FILE *fp, MAP *map)
 {
     int i;
     double map_length=0.0, interval_length, ps_length, scale;
@@ -157,9 +161,8 @@ MAP *map;
     ps_file_end(fp);
 }
 
-void print_ps_chrom(fp,chrom)
-FILE *fp;
-int chrom;
+void 
+print_ps_chrom (FILE *fp, int chrom)
 {
     int i;
     real map_length, scale;
@@ -181,8 +184,8 @@ int chrom;
     ps_file_end(fp);
 }
 
-void print_all_ps_chroms(fp)
-FILE *fp;
+void 
+print_all_ps_chroms (FILE *fp)
 {
     int i, j;
     real map_length, best, scale;
@@ -207,8 +210,8 @@ FILE *fp;
     ps_file_end(fp);
 }
 
-real ps_scale(map_length)
-real map_length;
+real 
+ps_scale (real map_length)
 {
     real scale;
 
@@ -221,10 +224,8 @@ real map_length;
 
 #define PLACE_STRING 200
 
-void ps_dump_chrom(fp, chrom, scale)
-FILE *fp;
-int chrom;
-real scale;
+void 
+ps_dump_chrom (FILE *fp, int chrom, real scale)
 {
     int i, j, k, l, num_crunched, interval=0, marker;
     double interval_length, ps_length, dist=0.;
@@ -371,8 +372,8 @@ real scale;
 }
 
 
-char *ps_loc_str(i)
-int i;
+char *
+ps_loc_str (int i)
 {
     char *tempstr;
 
@@ -384,8 +385,8 @@ int i;
     }
 }
 
-char *ps_frame_str(i)
-int i;
+char *
+ps_frame_str (int i)
 {
     int mark;
     char *tempstr;

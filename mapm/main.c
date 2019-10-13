@@ -11,14 +11,16 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-#define INC_LIB
-#define INC_SHELL
+//#define INC_LIB
+//#define INC_SHELL
 #include "mapm.h"
+//#include "toplevel.h"
+//#include "lowlevel.h"
 
-void setup_commands();
+void setup_commands(void);
 
-void make_help_entries();    /* move these to lib */
-extern char help_filename[];
+void make_help_entries(void); /* move these to lib */
+//extern char help_filename[];
 
 int main(int argc, char *argv[])
 {
@@ -82,8 +84,8 @@ int main(int argc, char *argv[])
 }
 
 
-bool mapm_save_on_exit(do_it_now)
-bool do_it_now;
+bool 
+mapm_save_on_exit (bool do_it_now)
 { 
     if (!do_it_now) return(auto_save && data_loaded());
     if (auto_save && data_loaded()) do_save_data(raw.filename,FALSE);
@@ -120,11 +122,13 @@ The '%s' command ignores order and distance information.\n%s"
 #define SEQ_EXP_EMPTY "After expanding names, the current sequence is empty."
 #define SEQ_HELP      "Type 'help sequence' for details."
 
-void mapm_ready(data_type,min_seq_loci,permable_seq,seq_loci) 
-int data_type;     /* CEPH, F2, NO_DATA, ANY_DATA, or MAYBE_DATA */
-int min_seq_loci;  /* 0 indicates no seq is needed */
-bool permable_seq; /* TRUE, FALSE or MAYBE, ignored if min_seq_loci==0 */
-int *seq_loci;
+void 
+mapm_ready (
+    int data_type,     /* CEPH, F2, NO_DATA, ANY_DATA, or MAYBE_DATA */
+    int min_seq_loci,  /* 0 indicates no seq is needed */
+    bool permable_seq, /* TRUE, FALSE or MAYBE, ignored if min_seq_loci==0 */
+    int *seq_loci
+)
 {
     int loci;
 
@@ -219,11 +223,14 @@ int *seq_loci;
 #define WARN_HAPLO_DUPS \
   "%s: haplotype group(s) listed %smultiple times... %s"
 
-bool crunch_locus_list(locus,num_loci,verbose,check_assignments,in_sequence)
-int *locus, *num_loci;
-bool verbose; /* ORDER_ERRORS, or CRUNCH_WARNINGS, or FALSE (silent) */
-bool check_assignments;
-bool in_sequence; /* adjusts output: TRUE, FALSE, or MAYBE */
+bool 
+crunch_locus_list (
+    int *locus,
+    int *num_loci,
+    bool verbose, /* ORDER_ERRORS, or CRUNCH_WARNINGS, or FALSE (silent) */
+    bool check_assignments,
+    bool in_sequence /* adjusts output: TRUE, FALSE, or MAYBE */
+)
 {
     int i, n;
     bool haplos_converted, haplo_dups, other_dups, wrong_chrom;
@@ -297,8 +304,8 @@ bool in_sequence; /* adjusts output: TRUE, FALSE, or MAYBE */
 #define CHROM_NOT_SET    "no chromosome is selected"
 #define CHROM_NOT_ANY    "you must select a chromosome ('any' is not allowed)"
 
-int get_chrom_arg(allow_no_chrom)
-bool allow_no_chrom;
+int 
+get_chrom_arg (bool allow_no_chrom)
 {
     char name[TOKLEN+1];
     int chrom;
@@ -319,8 +326,8 @@ bool allow_no_chrom;
 }
 
 
-bool input_dist(dist)
-real *dist;
+bool 
+input_dist (real *dist)
 {
     if (*dist<0.0) return(FALSE);
     else if (*dist<=0.5) return(TRUE);
@@ -334,9 +341,8 @@ real *dist;
 
 /********** We don't use these anymore, do we? ************/
 
-bool get_markers(prompt,command_str,marker_list,num_markers)
-char *prompt,*command_str;
-int **marker_list, *num_markers;
+bool 
+get_markers (char *prompt, char *command_str, int **marker_list, int *num_markers)
 {
     int i;
     char token[TOKLEN+1], *str, *save_str, *errmsg;
@@ -369,12 +375,8 @@ int **marker_list, *num_markers;
 #define GETI_BAD_NUM \
 "bad interval number (must be an integer from %d to %d)\n"
 
-bool get_intervals(prompt,command_str,selected_interval,
-		   marker,num_markers,edges_ok)
-char *prompt, *command_str;
-bool **selected_interval;
-int *marker, num_markers;
-bool edges_ok;
+bool 
+get_intervals (char *prompt, char *command_str, bool **selected_interval, int *marker, int num_markers, bool edges_ok)
 {
     int interval, to_interval, i, first, last;
     char *str, *save_str, c;
@@ -428,10 +430,8 @@ bool edges_ok;
 }
 
 
-bool get_reals(prompt,real_list,command_str,num_reals)
-char *prompt, *command_str;
-real *real_list;
-int *num_reals;
+bool 
+get_reals (char *prompt, real *real_list, char *command_str, int *num_reals)
 {
     int i;
 
@@ -455,44 +455,44 @@ int *num_reals;
 }
 
 
-#ifdef OBSOLETE_CODE
-char *print_using();
+//#ifdef OBSOLETE_CODE
+//char *print_using();
+//
+///* The screen header:
+//         1         2         3         4         5         6         7
+//1234567890123456789012345678901234567890123456789012345678901234567890123456789
+//-------------------------------------------------------------------------------
+//MAPMAKER 3.0b     units: kossambi CM             photo: 123456789012.out
+//using %-24s photo: %s"
+//sequence #123: blah blah blah
+//-------------------------------------------------------------------------------
+//*/
+//
+//#define LINE0 "MAPMAKER V3.0b   map function %-17s  data: %-22s"
+//#define LINE1 "units: %-9s using: %-24s photo: %-22s"
+//#define LINE2 "sequence #%d: %-64s"
+//
+//void
+//mapm_top (char **line, int lines, int cols)
+//{
+//    char file[PATH_LENGTH+1];
+//
+//    if(!data_loaded()) { sprintf(line[0],LINE0,mapfunction->name,"<none>"); }
+//    else { nstrcpy(file,raw.filename,cols-55);
+//	   sprintf(line[0],LINE0,mapfunction->name,file); }
+//
+//    if(!log_open) { strcpy(file,"<off>"); }
+//    else { nstrcpy(file,photo_file,cols-36); }
+//
+//    sprintf(line[1],LINE1,(units == RECFRACS)?"rec-fracs":"cM",print_using(),file);
+//
+//    sprintf(line[2],LINE2,context[active_context]->seq_history_num,seq_string);
+//}
+//#endif
 
-/* The screen header:
-         1         2         3         4         5         6         7
-1234567890123456789012345678901234567890123456789012345678901234567890123456789
--------------------------------------------------------------------------------
-MAPMAKER 3.0b     units: kossambi CM             photo: 123456789012.out
-using %-24s photo: %s"
-sequence #123: blah blah blah
--------------------------------------------------------------------------------
-*/
 
-#define LINE0 "MAPMAKER V3.0b   map function %-17s  data: %-22s"
-#define LINE1 "units: %-9s using: %-24s photo: %-22s"
-#define LINE2 "sequence #%d: %-64s"
-
-void mapm_top(line,lines,cols)
-char **line;
-int lines,cols;
-{
-    char file[PATH_LENGTH+1];
-
-    if(!data_loaded()) { sprintf(line[0],LINE0,mapfunction->name,"<none>"); }
-    else { nstrcpy(file,raw.filename,cols-55);
-	   sprintf(line[0],LINE0,mapfunction->name,file); }
-    
-    if(!log_open) { strcpy(file,"<off>"); }
-    else { nstrcpy(file,photo_file,cols-36); }
-
-    sprintf(line[1],LINE1,(units == RECFRACS)?"rec-fracs":"cM",print_using(),file);
-    
-    sprintf(line[2],LINE2,context[active_context]->seq_history_num,seq_string);
-}
-#endif
-
-
-void setup_commands()
+void 
+setup_commands (void)
 {
     two_pt_touched = FALSE;
     three_pt_touched = FALSE;

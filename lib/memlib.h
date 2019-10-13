@@ -1,3 +1,6 @@
+#ifndef _MEMLIB_H_
+#define _MEMLIB_H_
+
 /******************************************************************************
 
  #    #  ######  #    #  #          #    #####           #    #
@@ -28,7 +31,6 @@ typedef real REAL4[4];
 
 extern bool verbose_mem;    /* may be set by user code */
 extern int yy, zz;	    /* INTERNAL USE ONLY! */
-CALLOC_PTR_TO *xalloc(CALLOC_NUM_TYPE num, SIZEOF_TYPE cell_sizeof); /* INTERNAL USE ONLY! */
 
 /***************************************************************************
    Syntax for allocating and freeing things:	
@@ -73,9 +75,9 @@ to similar specs.
 
 /***** allocate *****/
 
-#define xL(i) (CALLOC_NUM_TYPE)(i)
-#define xS(c) (SIZEOF_TYPE)sizeof(c)
-#define REALLY_1 (CALLOC_NUM_TYPE)(-32768)
+#define xL(i) ((size_t)(i))
+#define xS(c) sizeof(c)
+#define REALLY_1 ((size_t)(-32768))
 
 #define single(var,cell) \
 { var=NULL; if ((var=(cell*)xalloc(REALLY_1,xS(cell)))==NULL) send(NOMEMORY); }
@@ -97,7 +99,7 @@ to similar specs.
 
 /***** free *****/
 
-#define unarray(ptr,cell) {if(ptr!=NULL) free((CALLOC_PTR_TO*)ptr); ptr=NULL;}
+#define unarray(ptr,cell) {if(ptr!=NULL) free(ptr); ptr=NULL;}
 
 #define unsingle(ptr,cell) unarray(ptr,cell)
 
@@ -110,15 +112,30 @@ to similar specs.
 /***************************************************************************
 Other useful allocators go here...
 ***************************************************************************/
-real ***alloc_real_3d_matrix(); /* args: int i,j,k; */
-void free_real_3d_matrix();     /* args: real ***ptr; int i,j; */
-char ***alloc_char_3d_matrix(); 
-void free_char_3d_matrix();
-void mem_init();
 
-/* debugging helpers */
-void pmat_r();
-void pary_r();
-void pary_r2x2();
-void pary_r4();
+void *xalloc(size_t num, size_t cell_sizeof); /* INTERNAL USE ONLY! */
+real ***alloc_real_3d_matrix(int i, int j, int k);
+void free_real_3d_matrix(real ***p, int i, int j);
+char ***alloc_char_3d_matrix(int i, int j, int k);
+void free_char_3d_matrix(char ***p, int i, int j);
+void pmat_r(char *n, real **x, int a, int b);
+void pary_r(char *n, real *x, int a);
+void pary_r2x2(char *n, REAL2x2 *x, int a);
+void pary_r4(char *n, REAL4 *x, int a);
+void mem_init(void);
 
+//
+//real ***alloc_real_3d_matrix(); /* args: int i,j,k; */
+//void free_real_3d_matrix();     /* args: real ***ptr; int i,j; */
+//char ***alloc_char_3d_matrix();
+//void free_char_3d_matrix();
+//void mem_init();
+//
+///* debugging helpers */
+//void pmat_r();
+//void pary_r();
+//void pary_r2x2();
+//void pary_r4();
+//
+
+#endif

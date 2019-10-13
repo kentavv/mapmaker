@@ -11,6 +11,39 @@
 /* This file is part of MAPMAKER, Copyright 1987-1992 Whitehead Institute.
    See the READ.ME file for license agreement and non-warranty information. */
 
+#include <ctype.h>
+#include <errno.h>
+#include <malloc.h>
+#include <math.h>
+#include <setjmp.h>
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/ioctl.h>
+#include <sys/types.h>
+#include <time.h>
+#include <unistd.h>
+
+typedef double  real;
+typedef int     flag;
+typedef int     bool;
+#define TRUE 	(1)
+#define FALSE	(0)
+#define MAYBE	(-1)
+
+#include "eqn.h"
+#include "iolib.h"
+#include "mathlib.h"
+#include "memlib.h"
+#include "misclib.h"
+#include "msglib.h"
+#include "shell.h"
+#include "stats.h"
+#include "strlib.h"
+#include "table.h"
+
+
 /***************************************************************************
 This file, along with the syscode.c file, is used to provide most, if
 not all system specific, definitions allowing our library files to
@@ -192,13 +225,13 @@ type of a signal handling function used as an argument to signal().
 
 
 
-/************************* Random Numbers **********************************
-There are at least 3 standard random number generators in C-libraries:
-rand() (ANSI, fairly ubiquitous), drand48() (System V), and random() (BSD).
-Rand() is a lousy random number generator: don't use it unless no
-other is available. See the code for these in syscode.c.  The limits sont
-seem to be real portable, so be careful.
-***************************************************************************/
+/// ************************* Random Numbers **********************************
+//There are at least 3 standard random number generators in C-libraries:
+//rand() (ANSI, fairly ubiquitous), drand48() (System V), and random() (BSD).
+//Rand() is a lousy random number generator: don't use it unless no
+//other is available. See the code for these in syscode.c.  The limits sont
+//seem to be real portable, so be careful.
+//***************************************************************************/
 //#ifdef _SYS_AUX
 //#define USE_DRAND48
 //#else
@@ -214,63 +247,63 @@ seem to be real portable, so be careful.
 //#endif
 
 
-/***************************** C-Library **************************************
-Here are some casts to make various incompatible C-library functions
-compatible accross machines. NONE OF THESE FUNCTIONS SHOULD BE CALLED
-DIRECTLY! RATHER, THEY SHOULD BE CALLED ONLY BY THE HELPERS ROUTINES
-WHICH DRIVE THEM!  Define the constants appropriately so that the
-following declarations are correct on the target machine:
-
-      CALLOC_PTR_TO *calloc(num,sizeof(...)) 
-          CALLOC_NUM_TYPE num;
-	  SIZEOF_TYPE size;
-
-      TIME_TYPE time(); 
-      char *ctime(ptr) 
-          TIME_TYPE *ptr;
-
-      qsort(data,array_length,width,compare)  \*** portability hell ***\
-          QSORT_DATA_PTR_TO *data; \* an array \* 
-          QSORT_LENGTH array_length;
-	  SIZEOF_TYPE width;
-          int (*compare)();
-      int compare(a,b)
-          QSORT_COMPARE_PTR_TO(type) *a, *b;
-
-where type is the type of thing that pointers into data (eg a and b) really 
-point to. For example, to compare long integers, the code should read (Note: 
-better interfaces are provided in the library - see misclib.h for them!) 
-
-      int long_compare(a,b)
-      QSORT_COMPARE_PTR_TO(long) *a;
-      QSORT_COMPARE_PTR_TO(long) *b;
-      { 
-          long x,y; 
-	  x= *(long*)a; y= *(long*)b; 
-	  if (x<y) return(-1); else if (x==y) return(0); else return(1); 
-      }
-      ...
-      qsort(QSORT_CAST(data),(QSORT_LENGTH)length,sizeof(long),long_compare)
-
-Qsort()'s return value, if it has one, is ignored. We assume that qsort never
-fails (perhaps this is stupid).
-
-Define (and use!) exit_main as the statement which main() should execute 
-when the program normally terminates. abnormal_exit should be an exit()
-call for abnormal situations (mostly for the HP 800 exit() bus-error bug!)
-
-Define HAVE_CHDIR, HAVE_GETCWD, and/or HAVE_GETENV if those functions exist.
-Check out their usage (arguments, etc) in syscode.c to be safe! 
-***************************************************************************/
+// ***************************** C-Library **************************************
+//Here are some casts to make various incompatible C-library functions
+//compatible accross machines. NONE OF THESE FUNCTIONS SHOULD BE CALLED
+//DIRECTLY! RATHER, THEY SHOULD BE CALLED ONLY BY THE HELPERS ROUTINES
+//WHICH DRIVE THEM!  Define the constants appropriately so that the
+//following declarations are correct on the target machine:
+//
+//      CALLOC_PTR_TO *calloc(num,sizeof(...))
+//          CALLOC_NUM_TYPE num;
+//	  SIZEOF_TYPE size;
+//
+//      TIME_TYPE time();
+//      char *ctime(ptr)
+//          TIME_TYPE *ptr;
+//
+//      qsort(data,array_length,width,compare)  \*** portability hell ***
+//          QSORT_DATA_PTR_TO *data; \* an array \*
+//          QSORT_LENGTH array_length;
+//	  SIZEOF_TYPE width;
+//          int (*compare)();
+//      int compare(a,b)
+//          QSORT_COMPARE_PTR_TO(type) *a, *b;
+//
+//where type is the type of thing that pointers into data (eg a and b) really
+//point to. For example, to compare long integers, the code should read (Note:
+//better interfaces are provided in the library - see misclib.h for them!)
+//
+//      int long_compare(a,b)
+//      QSORT_COMPARE_PTR_TO(long) *a;
+//      QSORT_COMPARE_PTR_TO(long) *b;
+//      {
+//          long x,y;
+//	  x= *(long*)a; y= *(long*)b;
+//	  if (x<y) return(-1); else if (x==y) return(0); else return(1);
+//      }
+//      ...
+//      qsort(QSORT_CAST(data),(QSORT_LENGTH)length,sizeof(long),long_compare)
+//
+//Qsort()'s return value, if it has one, is ignored. We assume that qsort never
+//fails (perhaps this is stupid).
+//
+//Define (and use!) exit_main as the statement which main() should execute
+//when the program normally terminates. abnormal_exit should be an exit()
+//call for abnormal situations (mostly for the HP 800 exit() bus-error bug!)
+//
+//Define HAVE_CHDIR, HAVE_GETCWD, and/or HAVE_GETENV if those functions exist.
+//Check out their usage (arguments, etc) in syscode.c to be safe!
+//***************************************************************************/
 #define HAVE_GETENV   /* Don't all ANSI compilers have these now? */
 #define HAVE_GETCWD
 #define HAVE_CHDIR
 #define normal_exit()     exit(0)
 #define abnormal_exit()   exit(1)	
 #define exit_main()       return(0)
-#define TIME_TYPE 	  time_t /* for ctime - yes even on SunOS! */
-#define QSORT_CAST(x)      ((QSORT_DATA_PTR_TO*)(x))
-#define QSORT_COMPARE_PTR_TO(type) type
+//#define TIME_TYPE 	  time_t /* for ctime - yes even on SunOS! */
+//#define QSORT_CAST(x)      ((QSORT_DATA_PTR_TO*)(x))
+//#define QSORT_COMPARE_PTR_TO(type) type
 
 //#ifdef _SYS_ULTRIX     /* way old and quite kludgey C specs, BSD 4.2 da! */
 //#define CALLOC_PTR_TO      char
@@ -289,13 +322,13 @@ Check out their usage (arguments, etc) in syscode.c to be safe!
 //#endif
 
 //#ifdef _SYS_SUNOS     /* semi-ANSI is neither better nor worse */
-#define CALLOC_PTR_TO      void   /* the man pages lie? */
-#define CALLOC_NUM_TYPE	   size_t
-#define SIZEOF_TYPE	   size_t
-#define QSORT_DATA_PTR_TO  char
-#define QSORT_LENGTH       int   /* actually width is an int, not a unsigned */
-int system(); /* why is this in no include file */
-int fseek();  /* ditto */
+//#define CALLOC_PTR_TO      void   /* the man pages lie? */
+//#define CALLOC_NUM_TYPE	   size_t
+//#define SIZEOF_TYPE	   size_t
+//#define QSORT_DATA_PTR_TO  char
+//#define QSORT_LENGTH       int   /* actually width is an int, not a unsigned */
+//int system(); /* why is this in no include file */
+//int fseek();  /* ditto */
 ///* Fucking Suns: exit() is really of type int, but it's void in the lint-lib */
 //#endif
 
@@ -465,15 +498,7 @@ changed! They exist only to clarify code, not to allow any sort of
 data-type abstraction!
 ******************************************************************************/
 
-#ifndef NO_INCLUDE_HELPERS
-
-typedef double  real;
-typedef int     flag;
-typedef int     bool;
-#define TRUE 	(1)
-#define FALSE	(0)
-#define MAYBE	(-1)
-/* rely on the system to define NULL */
+//#ifndef NO_INCLUDE_HELPERS
 
 /* One of the lib_init() routines must be called before ANYTHING else
 is done, or the program will crash in wierd ways! In general, user's
@@ -481,94 +506,77 @@ _init routines should come right after the lib_init() call and should
 just initialize variables, malloc things, etc. They should not do
 anything important, and particularly should not generate any I/O. */
 
-void lib_init(); /* no args - assumes line type tty I/O */ 
+//void lib_init(); /* no args - assumes line type tty I/O */
+//
+//void lib_inits(); /* args: int *argc_pointer; char *argv[]; both are
+//   side-effected. This is more or less the same as lib_init() except that it
+//   checks the environment and may start up either curses or wimp I/O via
+//   screen_init(); */
+//
+//void custom_lib_init(); /* no args: This is like lib_init() except
+//   that tty_init() is not called. A screen_init() routine must be invoked
+//   before ANY I/O is attempted, or else... (see iolib.h) */
+//
+//void get_cmd_line_args();  /* args: int *argc_ptr; char **argv;
+//   side-effects file_arg[] and nulls the args it parses, so another
+//   arg sucker can go at it afterwards */
 
-void lib_inits(); /* args: int *argc_pointer; char *argv[]; both are 
-   side-effected. This is more or less the same as lib_init() except that it 
-   checks the environment and may start up either curses or wimp I/O via 
-   screen_init(); */
-
-void custom_lib_init(); /* no args: This is like lib_init() except
-   that tty_init() is not called. A screen_init() routine must be invoked
-   before ANY I/O is attempted, or else... (see iolib.h) */
-
-void get_cmd_line_args();  /* args: int *argc_ptr; char **argv;
-   side-effects file_arg[] and nulls the args it parses, so another
-   arg sucker can go at it afterwards */
-
-#endif
+//#endif
 
 
 /*************************** Library Include files **************************/
-#ifdef  INC_LIB
-#define INC_MATH
-#define INC_MSG
-#define INC_IO
-#define INC_STR
-#define INC_MEM
-#endif
-
-#include <stdlib.h>
-//#ifndef _SYS_WATCOM
-#include <unistd.h>  /* not quite sure why we need this */
+//#ifdef  INC_LIB
+//#define INC_MATH
+//#define INC_MSG
+//#define INC_IO
+//#define INC_STR
+//#define INC_MEM
 //#endif
 
-#ifdef INC_IO
-#include <stdio.h>
-#include "iolib.h"
-#endif
+//#ifndef _SYS_WATCOM
+//#endif
 
-#ifdef INC_MATH
+//#ifdef INC_IO
+//#endif
+
+//#ifdef INC_MATH
 //#ifdef _SYS_WATCOM
 //#undef real
 //#endif
-#include <math.h>   /* WATCOM has problems with this if "real" is a macro */
 //#ifdef _SYS_WATCOM
 //#define real double
 //#endif
-#include "mathlib.h"
-#endif
+//#endif
 
-#ifdef INC_MSG
-#include <setjmp.h>	
-#include "msglib.h"
-#endif
+//#ifdef INC_MSG
+//#endif
 
-#ifdef INC_MEM
-#include "memlib.h"
-#endif
+//#ifdef INC_MEM
+//#endif
 
-#ifdef INC_STR
-#include <string.h>
-#include <ctype.h>
-#include "strlib.h"
-#endif
+//#ifdef INC_STR
+//#endif
 
 /* The following are NOT included by INC_LIB */
 
-#ifdef INC_MISC
-#include "misclib.h"
-#endif
+//#ifdef INC_MISC
+//#endif
 
-#ifdef INC_SHELL
-#include "shell.h"
-#endif
+//#ifdef INC_SHELL
+//#endif
 
-#ifdef INC_TABLE
-#include "table.h"
-#endif
+//#ifdef INC_TABLE
+//#endif
 
-#ifdef INC_EQN
-#include "eqn.h"
-#endif
+//#ifdef INC_EQN
+//#endif
 
 //#ifdef INC_HISTO
 //void make_histo(); /* that's all? */
 //#endif
 
-#ifdef INC_STATS
-#include "stats.h"
-#endif
+//#ifdef INC_STATS
+//#endif
 
 /********************* Defs internal to the library *********************
 Here are definitions needed ONLY to compile the helpers files themselves.
@@ -576,18 +584,10 @@ None of this stuff should be used by the user code: much better (that is,
 robust and portable) interfaces are provided by the library. */
 /*************************************************************************/
 
-#ifdef INC_HELP_DEFS
+//#ifdef INC_HELP_DEFS
 
-#include <stdlib.h>
-#include <signal.h>
-#include <errno.h> 	
-#include <time.h>       /* for ctime() def - Who does not have this file? */
-#include <malloc.h>
-#include <sys/types.h>
-
-#ifdef TRY_WINSIZE
-#include <sys/ioctl.h>
-#endif
+//#ifdef TRY_WINSIZE
+//#endif
 
 ///* The BSD random number functions... seemingly not declared anywhere */
 //#ifdef USE_RANDOM
@@ -603,9 +603,9 @@ robust and portable) interfaces are provided by the library. */
 
 /* Library declarations only to be used by the helpers library code itself */
 extern char *ps_, *ln_; /* defined in iolib.c */
-void dummy_math_calls();
+//void dummy_math_calls();
 
-#endif /* for #ifdef INC_HELP_DEFS */
+//#endif /* for #ifdef INC_HELP_DEFS */
 
 #undef fflush  /* a special version is used by the application code */
 

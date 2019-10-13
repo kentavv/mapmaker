@@ -11,15 +11,23 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-#define INC_LIB
-#define INC_SHELL
-#define INC_CALLQCTM
-#define INC_QTOPLEVEL
-#define INC_QLOWLEVEL
+//#define INC_LIB
+//#define INC_SHELL
+//#define INC_CALLQCTM
+//#define INC_QTOPLEVEL
+//#define INC_QLOWLEVEL
 #include "qtl.h"
 
-void ps_file_start(), ps_file_end(), ps_page_start(), ps_page_end();
-void do_bezier(), draw_axes(), draw_x();
+//void print_ps_wiggle_order(int wiggle, int order, real threshold);
+void draw_axes(FILE *fp, double *xnotch, int num_notches, char **label, char *y_name, double dotted_val);
+void do_bezier(FILE *fp, double *xval, double *yval, int num_points, double s0, double sn, char *line_type);
+void draw_x(void);
+void ps_file_start(FILE *fp);
+void ps_file_end(FILE *fp);
+void ps_page_start(FILE *fp, int pagenum);
+void ps_page_end(FILE *fp);
+//void print_ps_multi_wiggle(int wiggle, real threshold);
+//char *line_choice(int order);
 
 #define XZERO 0.0
 #define YZERO 0.0
@@ -35,9 +43,7 @@ void do_bezier(), draw_axes(), draw_x();
 real xscale, yscale, best;
 #define MAX_CHROM_LEN 1000
 
-void print_ps_wiggle_order(wiggle, order, threshold)
-int wiggle, order;
-real threshold;
+void print_ps_wiggle_order(int wiggle, int order, real threshold)
 {
     int i, j, count=0, num_notches=0, pagenum=1;
     double *xval, *yval, *notch, highest, longest, current_len;
@@ -142,12 +148,8 @@ real threshold;
 }
 
 
-void draw_axes(fp, xnotch, num_notches, label, y_name, dotted_val)
-FILE *fp;
-double *xnotch;
-int num_notches;
-char **label, *y_name;
-double dotted_val;
+void 
+draw_axes (FILE *fp, double *xnotch, int num_notches, char **label, char *y_name, double dotted_val)
 {
     int i;
     double prev, next, current;
@@ -186,15 +188,12 @@ double dotted_val;
     fprintf(fp,"%.2lf %.2lf moveto\n", XZERO, YZERO-4);
     fprintf(fp,"GS -90 rotate 0 -3 rmoveto /Times-Roman FF 8 SF F (%s)S GR\n",
 	    label[0]);
-    draw_x(fp);
+    draw_x(/*fp*/);
 }
 
 
-void do_bezier(fp, xval, yval, num_points, s0, sn, line_type)
-FILE *fp;
-double *xval, *yval, s0, sn;
-int num_points;
-char *line_type;
+void 
+do_bezier (FILE *fp, double *xval, double *yval, int num_points, double s0, double sn, char *line_type)
 {
     int i;
     double *x0, *x1, *x2, *x3, *y0, *y1, *y2, *y3, *slope, s1, s2;
@@ -266,10 +265,10 @@ char *line_type;
         fprintf(fp,"GS %s %.2lf %.2lf %.2lf %.2lf %.2lf %.2lf curveto stroke GR\n",
 		line_type, x1[i], y1[i], x2[i], y2[i], x3[i], y3[i]);
         fprintf(fp,"%.2lf %.2lf moveto\n", x3[i], y3[i]);
-	draw_x(fp);
+	draw_x(/*fp*/);
     }
     fprintf(fp,"%.2lf %.2lf moveto\n", x3[i-1], y3[i-1]);
-    draw_x(fp);
+    draw_x(/*fp*/);
 
     unarray(x0, real);
     unarray(x1, real);
@@ -283,7 +282,8 @@ char *line_type;
 }
 
 
-void draw_x(/*FILE *fp*/)
+void 
+draw_x (void)
 {
 #ifdef DRAWX
     fprintf(fp,"GS -3 -3 rlineto stroke GR\n");
@@ -295,8 +295,8 @@ void draw_x(/*FILE *fp*/)
 
 
 
-void ps_file_start(fp)
-FILE *fp;
+void 
+ps_file_start (FILE *fp)
 {
     fprintf(fp,"%%!PS-Adobe-3.0\n");
     fprintf(fp,"%%%%Creator: MAPMAKER\n");
@@ -363,8 +363,8 @@ FILE *fp;
     fprintf(fp,"%%%%EndSetup\n");
 }
 
-void ps_file_end(fp)
-FILE *fp;
+void 
+ps_file_end (FILE *fp)
 {
     fprintf(fp,"%%%%Trailer\n");
     fprintf(fp,"grestore\n");
@@ -372,9 +372,8 @@ FILE *fp;
     fprintf(fp,"%%%%EOF\n");
 }
 
-void ps_page_start(fp,pagenum)
-FILE *fp;
-int pagenum;
+void 
+ps_page_start (FILE *fp, int pagenum)
 {
     fprintf(fp,"%%%%Page: ? %d\n",pagenum);
     fprintf(fp,"%%%%BeginPageSetup\n");
@@ -382,8 +381,8 @@ int pagenum;
     fprintf(fp,"%%%%EndPageSetup\n");
 }
 
-void ps_page_end(fp)
-FILE *fp;
+void 
+ps_page_end (FILE *fp)
 {
     fprintf(fp,"GM showpage\n");
 }
@@ -391,9 +390,8 @@ FILE *fp;
 
 
 
-void print_ps_multi_wiggle(wiggle, threshold)
-int wiggle;
-real threshold;
+void 
+print_ps_multi_wiggle (int wiggle, real threshold)
 {
     int i, j, count=0, num_notches=0, pagenum=1, order;
     double **xval, **yval, *notch, highest, longest, current_len;
@@ -517,8 +515,8 @@ real threshold;
     unmatrix(label, MAX_CHROM_LOC, char);
 }
 
-char *line_choice(order)
-int order;
+char *
+line_choice (int order)
 {
     switch(order) {
         case 0: return(THICK_LINE);

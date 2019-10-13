@@ -11,16 +11,18 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-#define INC_LIB
-#define INC_SHELL
+//#define INC_LIB
+//#define INC_SHELL
 #include "mapm.h"
+//#include "lowlevel.h"
+//#include "toplevel.h"
 
 /* Auxilliary stuff for load/save/prep */
-FILE *try_to_open();
-void try_to_unload();
-void try_to_load();
+FILE *try_to_open(char *name, int mode, char *ext, bool prev_data) /* return fp or send error */;
+void try_to_unload (FILE *fp, /* file to READ just so we can close it if an error occurs */ bool ask_first, bool do_save, bool do_unload, bool genos_too);
+//void try_to_load (FILE *fp, char *name, bool prev_data, bool raw);
 
-bool is_an_old_sequence();
+bool is_an_old_sequence(char *str, char **seq, char **why_not);
 bool is_a_named_sequence(char *str, char **seq);  /* internal use only */
 
 #define SAVE_ERR1 \
@@ -40,11 +42,7 @@ bool is_a_named_sequence(char *str, char **seq);  /* internal use only */
 
 bool just_prepared=FALSE;
 
-FILE *try_to_open(name,mode,ext,prev_data) /* return fp or send error */
-char *name;
-int  mode;
-char *ext;
-bool prev_data;
+FILE *try_to_open(char *name, int mode, char *ext, bool prev_data) /* return fp or send error */
 {
     FILE *fp;
     run {
@@ -57,9 +55,14 @@ bool prev_data;
 }
 
 
-void try_to_unload(fp,ask_first,do_save,do_unload,genos_too)
-FILE *fp; /* file to READ just so we can close it if an error occurs */
-bool ask_first, do_save, do_unload, genos_too;
+void 
+try_to_unload (
+    FILE *fp, /* file to READ just so we can close it if an error occurs */
+    bool ask_first,
+    bool do_save,
+    bool do_unload,
+    bool genos_too
+)
 {
     bool doit;
     char token[TOKLEN+1];
@@ -88,10 +91,8 @@ bool ask_first, do_save, do_unload, genos_too;
 }
 
 
-void try_to_load(fp,name,prev_data,raw)
-FILE *fp;
-char *name;
-bool prev_data, raw;
+void 
+try_to_load (FILE *fp, char *name, bool prev_data, bool raw)
 {
     char run_file[PATH_LENGTH+1];
 
@@ -122,8 +123,8 @@ bool prev_data, raw;
 }
 
 
-void mapm_data_info(fp)
-FILE *fp;
+void 
+mapm_data_info (FILE *fp)
 {
     if (!data_loaded()) return;
     sprintf(ps, DATA_LOADED, raw.filename, data_info(TRUE)); fpr(fp);
@@ -133,7 +134,8 @@ FILE *fp;
 
 /* Now the real stuff */
 
-command new_load_data()
+command 
+new_load_data (void)
 {
     FILE *fp=NULL;
     char name[PATH_LENGTH+1];
@@ -156,7 +158,8 @@ command new_load_data()
 }
 
 
-command new_prepare()
+command 
+new_prepare (void)
 {
     char name[PATH_LENGTH+1];
     FILE *fp=NULL;
@@ -178,7 +181,8 @@ command new_prepare()
 }
 
 
-command new_save_data()
+command 
+new_save_data (void)
 {
     char name[PATH_LENGTH+1], old[PATH_LENGTH+1];
     bool new_name;
@@ -208,7 +212,8 @@ command new_save_data()
 #define NOT_A_CLASS "'%s' is not a defined class\nEither use 'make class' first or select a defined class name."
 #define CANT_MAKE_CLASS "warning: unable to make class named '%s'\n%s\n"
 
-command set_class()
+command 
+set_class (void)
 {
     int classnum, i, n_loci, *locus=NULL;
     char name[TOKLEN+1];
@@ -230,7 +235,8 @@ command set_class()
 
 
 
-command make_classes()
+command 
+make_classes (void)
 {
     char name[TOKLEN+1], *errmsg;
 
@@ -245,7 +251,8 @@ command make_classes()
 
 
 
-command set_age()
+command 
+set_age (void)
 {
     int mod, i, n_loci, *locus=NULL;
     char token[TOKLEN+1];
@@ -273,7 +280,8 @@ command set_age()
 #define ERROR_PROB_IS \
 "markers in sequence now have apriori error probability %.2lf percent\n"
 
-command set_error_rate()
+command 
+set_error_rate (void)
 {
     int i, n_loci, *locus=NULL;
     real rate, prob;
@@ -298,7 +306,8 @@ command set_error_rate()
 
 #define NOTE_FORM "%10s: %s\n"
 
-command make_note()
+command 
+make_note (void)
 {
     int n, n_loci, i, *locus=NULL;
     char *name=get_temp_string(), *rest, *errmsg;
@@ -351,7 +360,8 @@ command make_note()
 
 /***************************** Sequence Commands *****************************/
 
-command sequence()
+command 
+sequence (void)
 {
     int *locus=NULL, num_loci;
     use_uncrunched_args();
@@ -370,7 +380,8 @@ command sequence()
 }
 
 
-command expand_sequence()
+command 
+expand_sequence (void)
 {
     int *locus=NULL, num_loci;
     use_uncrunched_args();
@@ -392,7 +403,8 @@ command expand_sequence()
 
 
 #define BADEDITEDSEQ "An illegal sequence was specified.\nsequence= %s\n"
-command edit_sequence()
+command 
+edit_sequence (void)
 {
     char name[TOKLEN+1], prompt[TOKLEN+1], *value, *err;
     int *locus=NULL, num_loci;
@@ -434,7 +446,8 @@ command edit_sequence()
 }
     
 
-command show_seq_history()
+command 
+show_seq_history (void)
 {
     int num_to_do;
 
@@ -446,7 +459,8 @@ command show_seq_history()
 }
 
 
-command let()
+command 
+let (void)
 {
     char name[TOKLEN+1], *seq, *err;
     use_uncrunched_args();
@@ -461,7 +475,8 @@ command let()
 }
 
 
-command let_expanding()
+command 
+let_expanding (void)
 {
     char name[TOKLEN+1], *seq, *err;
     bool set_me=FALSE;
@@ -485,7 +500,8 @@ command let_expanding()
 }
 
 
-command names()
+command 
+names (void)
 {
     mapm_ready(ANY_DATA,0,0,NULL);
     nomore_args(0);
@@ -495,7 +511,8 @@ command names()
 }
 
 
-command forget()
+command 
+forget (void)
 {
     char *errmsg, *name= get_temp_string();
 
@@ -509,7 +526,8 @@ command forget()
 }
 
 
-command new_delete()
+command 
+new_delete (void)
 {
     int i, j, found, num_seq_tokens, k, *locus=NULL, num_loci;
     int *seq_locus=NULL, seq_loci;
@@ -559,7 +577,8 @@ command new_delete()
 }  
 
 
-command new_append()
+command 
+new_append (void)
 {
     int *locus=NULL, num_loci;
 
@@ -580,7 +599,8 @@ command new_append()
 }
 
 
-command new_insert()
+command 
+new_insert (void)
 {
     int i, j, locus, found, num_seq_tokens, append_at_top;
     char locus_name[TOKLEN+1], locus_num[TOKLEN+1], locus_plus[TOKLEN+1];
@@ -632,7 +652,8 @@ command new_insert()
 }
 
 
-command translate()
+command 
+translate (void)
 {
     int i, num_loci, *locus=NULL, source;
     char c;

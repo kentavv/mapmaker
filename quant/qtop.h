@@ -1,3 +1,6 @@
+#ifndef _QTOP_H_
+#define _QTOP_H_
+
 /******************************************************************************
 
   ####    #####   ####   #####           #    #
@@ -10,6 +13,8 @@
 ******************************************************************************/
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
+
+#include "table.h"
 
 /***** qtop.h - Declarations of things which help the QTL commands
 deal with data produced by QCTM - this file requires that qmap.h and
@@ -80,12 +85,12 @@ typedef struct {
 extern STATUS_CONTEXT **context;
 extern int num_contexts, active_context;
 
-void allocate_context();
-void context_init();
-bool change_context();
-bool create_new_context();
-void kill_context();
-void free_context();
+//void allocate_context();
+void context_init(void);
+//bool change_context();
+//bool create_new_context();
+void kill_context(STATUS_CONTEXT *con, bool save_it);
+void free_context(STATUS_CONTEXT *con);
 
 /* This the standard ways to loop through the intervals in the qtl_sequence: */
 #define for_all_orders(seq,map,perm)				\
@@ -113,7 +118,7 @@ WIGGLE, CONTIG, SKIP, TEST or ORDER */
 #define ORDER  5  /* A discontiguous perm. Any left seq permutation in wiggle,
 		     including a test perm, is flagged as ORDER. */
 
-bool set_qtl_sequence(); /* args: char *str, *errmsg; int *errpos;
+bool set_qtl_sequence(char *str, char *errmsg, int *errpos); /* args: char *str, *errmsg; int *errpos;
    Side-effect globals ints and ints_string, returns TRUE if all is ok or
    FALSE on error, in which case neither ints nor ints_string are touched,
    while the args errmsg and errpos are side-effected with an error message
@@ -121,7 +126,7 @@ bool set_qtl_sequence(); /* args: char *str, *errmsg; int *errpos;
 
 /* The lower level functions... */
 
-bool reset_state(); /* args: QTL_SEQUENCE *seq; bool wiggle; int *num_ints;
+bool reset_state(QTL_SEQUENCE *p, bool wiggle, int *pnum_intervals, int *pcont_vars, int *pnum_orders, int *pwiggle_ints); /* args: QTL_SEQUENCE *seq; bool wiggle; int *num_ints;
 		       int *num_orders, *num_wiggle_ints; 
    Resets the permutation state of the seq struct and also counts the
    #intervals per order and the #orders specified (either pointer may be
@@ -132,41 +137,50 @@ bool reset_state(); /* args: QTL_SEQUENCE *seq; bool wiggle; int *num_ints;
    be returned if the sequence is not appropriate for for_wiggle_orders(),
    otherwise TRUE is returned. */
 
-bool get_order();   /* args: QTL_SEQUENCE *seq; bool wiggle; QTL_MAP *map; 
+bool get_order(QTL_SEQUENCE *p, bool wiggle, QTL_MAP *map);   /* args: QTL_SEQUENCE *seq; bool wiggle; QTL_MAP *map;
    For a permutation of the seq struct, this APPENDS that sequence of
    intervals to those in a QTL_MAP - this always returns TRUE */
 
-bool next_order(); /* args: QTL_SEQUENCE *seq; int *perm;
+bool next_order(QTL_SEQUENCE *p, int *perm); /* args: QTL_SEQUENCE *seq; int *perm;
    Permutes the seq struct and returns TRUE if there is another
    permutation, or returns FALSE otherwise. perm is side-effected as 
    described above. */
 
-bool next_wiggle(); /* args: QTL_SEQUENCE *seq; int *perm; real *cm_step;
+bool next_wiggle(QTL_SEQUENCE *p, int *perm, real cm_step); /* args: QTL_SEQUENCE *seq; int *perm; real *cm_step;
    Like next_order(), except the rightmost qtl is wiggled through at the 
    cm_step rather than more simply permuted. */
 
-QTL_SEQUENCE *compile_intervals(); /* args: char *str; sends msg on error */
+QTL_SEQUENCE *compile_intervals(char *str); /* args: char *str; sends msg on error */
 
-void free_qtl_sequence(); /* args: QTL_SEQUENCE *ints; */
+//void free_qtl_sequence(); /* args: QTL_SEQUENCE *ints; */
 
-bool valid_locus_str();     /* which of these are obsolete? */
-bool valid_interval_num();
-bool valid_locus_num();
+void getdataln(FILE *fp);
+bool name_sequence(char *name, char *seq, char **why_not);
+bool unname_sequence(char *name, char **why_not);
+void add_to_seq_history(char *seq);
+bool valid_locus_str(char *str, int *num, char *errmsg);
+bool valid_locus_num(int *num);
+void get_compare_nums(char *str, int *compare, int *contig);
 
-bool name_sequence();
-bool unname_sequence();
-void add_to_seq_history();
-void name_peaks();
+//bool valid_locus_str();     /* which of these are obsolete? */
+//bool valid_interval_num();
+//bool valid_locus_num();
+//
+//bool name_sequence();
+//bool unname_sequence();
+//void add_to_seq_history (char *seq);
+//void add_to_seq_history();
+//void name_peaks();
 #define MAX_HISTORY_SEQS 23
 #define MAX_NAMED_SEQS   44
-void getdataln();
-void get_compare_nums();
+//void getdataln();
+//void get_compare_nums();
 
 /* For qctm.c */
 
 
 /*** things in QTOP.C ***/
-void qtl_ready(); /* args: int data_type, need_seq; bool need_trait,calls_qctm;
+void qtl_ready(int data_type, int need_seq, bool need_trait, bool will_call_qctm); /* args: int data_type, need_seq; bool need_trait,calls_qctm;
    Checks if qtl is set up as required, and calls error (which sends
    SOFTABORT, see shell.h) if she's not. In this process, reset_state() is
    called. If she is and if min_interval_permutations>0 then
@@ -193,27 +207,32 @@ extern int print_maps;
 extern int num_intervals, num_orders, num_ints_to_wiggle;
 extern bool *free_genetics; /* [interval#] => TRUE if genetics are free */
 extern QTL_MAP *map; /* allocated for max_intervals */
-char *trait_str();
-bool valid_trait_str(); /* args: char *str; int *trait_num; char *error_msg;
-   side-effect *trait_num and return TRUE if str is a valid trait number or
-   name, or return FALSE and side-effect error_msg (WHICH MAY NOT BE NULL!) 
-   otherwise. str must contain only a single token, or you will get FALSE. */
+//char *trait_str();
+bool valid_trait_str(char *str, int *num, char *errmsg);
+bool valid_new_trait_name(char *str, char *errmsg);
+bool valid_trait_num(int num);
+void set_trait_spec(char *str);
 
-void set_trait_spec(); /* args: char *str; sets the global vars trait and
-   trait_string if str passes valid_trait_num, or sends BADTRAIT message */
-
-bool valid_new_trait_name(); /* args: char *str, *error_msg; return TRUE
-   if str is a valid name for a new trait. Return false and side-effect 
-   error_msg (WHICH MAY NOT BE NULL!) otherwise. str must contain only a 
-   single token, or you will get FALSE. */
-
-bool valid_trait_num(); /* args: int num; return TRUE if num is a valid trait 
-   number FROM THE COMPUTER'S PERSPECTIVE (that is 0...#traits-1), not the
-   user's perspective (which is 1...#traits). */
-
-bool new_trait_num(); /* args: int *num; return TRUE if there is room for
-   another trait in the raw struct, and side-effect *num to be the appropriate
-   number for it. Return FALSE otherwise. */
+//bool valid_trait_str(); /* args: char *str; int *trait_num; char *error_msg;
+//   side-effect *trait_num and return TRUE if str is a valid trait number or
+//   name, or return FALSE and side-effect error_msg (WHICH MAY NOT BE NULL!)
+//   otherwise. str must contain only a single token, or you will get FALSE. */
+//
+//void set_trait_spec(); /* args: char *str; sets the global vars trait and
+//   trait_string if str passes valid_trait_num, or sends BADTRAIT message */
+//
+//bool valid_new_trait_name(); /* args: char *str, *error_msg; return TRUE
+//   if str is a valid name for a new trait. Return false and side-effect
+//   error_msg (WHICH MAY NOT BE NULL!) otherwise. str must contain only a
+//   single token, or you will get FALSE. */
+//
+//bool valid_trait_num(); /* args: int num; return TRUE if num is a valid trait
+//   number FROM THE COMPUTER'S PERSPECTIVE (that is 0...#traits-1), not the
+//   user's perspective (which is 1...#traits). */
+//
+//bool new_trait_num(); /* args: int *num; return TRUE if there is room for
+//   another trait in the raw struct, and side-effect *num to be the appropriate
+//   number for it. Return FALSE otherwise. */
 
 
 /*** To save wiggle data... ***/ 
@@ -294,7 +313,7 @@ typedef struct comp_data {
     COMPARE_OPERATION *op;
 } COMPARE_DATA;
 
-extern COMPARE_OPERATION **compares;   
+extern COMPARE_OPERATION **compares;
 extern int num_compares, max_compares, first_compare;
 
 /* Qtls is a global collection of the wiggle data for single interval models,
@@ -308,12 +327,12 @@ extern int num_compares, max_compares, first_compare;
 /* extern WIGGLE_INTERVAL ****qtls; */
 
 
-void allocate_qtl_struct(); /* args: int n_wiggles, n_compares; Allocates
+void allocate_qtl_struct(int n_wiggles, int n_compares); /* args: int n_wiggles, n_compares; Allocates
    most of the global structs qtls, wiggles, and compares, using globals 
    raw.max_traits, raw.data_type, and raw.n_loci as params. Thus, this should
    happen upon data loading. Parts of these structs are filled in however. */
 
-int allocate_wiggle_struct(); /* args: int trait; QTL_SEQUENCE *seq;
+int allocate_wiggle_struct(int trait, QTL_SEQUENCE *seq, char *seq_str, int n_intervals, int n_orders, int n_wiggled); /* args: int trait; QTL_SEQUENCE *seq;
 				 char *seq_str; int n_intervals, n_orders; 
 				 int n_wiggled_intervals; 
    Returns and index into the wiggles struct, or -1 if it can't (maybe
@@ -323,7 +342,7 @@ int allocate_wiggle_struct(); /* args: int trait; QTL_SEQUENCE *seq;
    n_wiggled_intervals are not maximums - they must be precisely correct
    (this is enforced). */
 
-void store_wiggle_interval(); /* args: int wiggle_num; QTL_MAP *map;
+void store_wiggle_interval(int wiggle_num, QTL_MAP *map, bool new_left_order, bool contig, real cm_step); /* args: int wiggle_num; QTL_MAP *map;
 				 bool new_left_order, contig; real cm_step;
    Initiates storing of wiggle data for the specified interval. The
    data wil be stored in both wiggles[wiggle_num] and qtls if
@@ -331,31 +350,37 @@ void store_wiggle_interval(); /* args: int wiggle_num; QTL_MAP *map;
    and thus assumes that the for_wiggle_orders() macro is being used in
    how much space it allocates. */
 
-void store_wiggle_point(); /* int wiggle_num; QTL_MAP *map; Stores the 
+void store_wiggle_point(int wiggle_num, QTL_MAP *map); /* int wiggle_num; QTL_MAP *map; Stores the
    map data in the appropriate WIGGLE_DATA_POINT struct. This also 
    assumes that for_wiggle_orders() is being used! */
 
-void bash_wiggle_struct(); /* args: int index; This kills the wiggle struct 
+void bash_wiggle_struct(int n); /* args: int index; This kills the wiggle struct
    entry number index. No effort is made to recycle it or its slot in 
    the wiggles struct, and this is really intended for exception handling
    in the wiggle command. This is a KLUDGE for now. */
 
-int allocate_compare_struct(); /* args: int trait; QTL_SEQUENCE *seq; 
+int allocate_compare_struct(int trait, QTL_SEQUENCE *seq, char *seq_str, int n_intervals, int n_orders); /* args: int trait; QTL_SEQUENCE *seq;
 				  char *seq_str; int n_intervals, n_orders;
    Like allocate_wiggle_struct(). */
 
-void bash_compare_struct(); /* args: int n; like bash_wiggle_struct(). */
+void bash_compare_struct(int n); /* args: int n; like bash_wiggle_struct(). */
 
-void store_compare_map(); /* args: int compare_num; QTL_MAP *map;
+void store_compare_map(int compare_num, QTL_MAP *map, bool contig); /* args: int compare_num; QTL_MAP *map;
 				  bool contig;
    Kind of like store_wiggle_interval(). */
-void get_seq_free_genetics();
-void get_wiggle_nums(); /* args: int *wiggle_num, *order_num; gets cmd args */
-bool isa_wiggle_interval(); /* args: int wiggle_num; */
-void save_wiggle();
-void save_compare();
-void load_wiggle();
-void load_compare();
+void get_seq_free_genetics(QTL_SEQUENCE *p, bool *free);
+void get_wiggle_nums(char *str, int *wiggle, int *order);
+void save_wiggle(FILE *fp, int n);
+void load_wiggle(FILE *fp);
+void save_compare(FILE *fp, int n);
+void load_compare(FILE *fp);
+//
+//void get_wiggle_nums(); /* args: int *wiggle_num, *order_num; gets cmd args */
+//bool isa_wiggle_interval(); /* args: int wiggle_num; */
+//void save_wiggle();
+//void save_compare();
+//void load_wiggle();
+//void load_compare();
 
 /* The WIGGLE_PEAK struct is a distilation of wiggles/qtls data... */
 
@@ -378,48 +403,85 @@ typedef struct wiggle_peak {
     struct wiggle_peak *next; /* a linked list */
 } WIGGLE_PEAK;
 
-WIGGLE_PEAK *find_wiggle_peaks();
+void name_peaks(WIGGLE_PEAK *peak, char *prefix, bool forget);
+
+WIGGLE_PEAK *find_wiggle_peaks(int wiggle_num, int left_order_num, real threshold, real qtl_falloff, real confidence_falloff, real min_peak_delta, bool get_peak_maps);
 #define OFF_END (-1)
 
-void free_wiggle_peaks(); /* args: WIGGLE_PEAK *peaks; */
+void free_wiggle_peaks(WIGGLE_PEAK *p);
 
-/** The myriad of QTL_MAP printing routines: All are now in qprint.c */
-void print_map_divider();
-void print_qtl_map();  
-void print_short_qtl_map(); /* FROB */
-void print_short_title();   /* FROB */
-void print_tiny_map();  /* unused and broken */
+void print_qtl_map(QTL_MAP *map, bool *free_genetics);
+void map_printer(QTL_MAP *map, bool print_genetics);
+void print_short_title(void);
+void print_short_qtl_map(QTL_MAP *map, real threshold, real scale);
+void print_iteration(int iter, QTL_MAP *map, real delta_log_like);
+void print_null_iteration(QTL_MAP *map);
+//void do_print_E_step(real **expected_genotype, real **S_matrix, GENO_PROBS *expected_recs, int n_individuals, int n_genotype_vars, int n_continuous_vars, int n_intervals);
+void print_wiggle_title(void);
+void print_wiggle_interval(QTL_MAP *map);
+void print_wiggle_map(QTL_MAP *map, real base_like, real scale);
+void print_wiggle_genetics(GENETICS *genetics);
+void print_wiggle_left_seq(QTL_MAP *map);
+void print_saved_wiggles(void);
+void print_saved_wiggle(int wiggle);
+void print_saved_wiggle_order(int wiggle, int order, real base_like, real scale);
+void print_peak(WIGGLE_PEAK *peak, int num);
+void print_test_wiggle_map(WIGGLE_POINT **point, real threshold);
+void print_test_wiggle_interval(QTL_MAP *map);
+void print_test_wiggle_title(void);
+void print_test_wiggle_order(int wiggle, int order, real threshold);
+void print_trait(int for_num_maps);
+void print_seq(void);
+void print_old_seq(char *str);
+char *trait_str(void);
+char *interval_str(int left, int right, bool fill);
+char *dist_str(real rec_frac, bool fill);
+//char *units_str(bool fill);
+char *genetics_str(GENETICS *genetics, bool verbose);
+//char *left_seq_str(QTL_MAP *map);
+void print_tiny_map(QTL_MAP *map, int num, real offset);
+void print_saved_compares(void);
+void print_best_saved_maps(int compare, int contig, real threshold, real falloff);
+void print_saved_maps(int compare, int contig);
+void get_fixed_qtl_weights(QTL_MAP *map);
 
-void print_wiggle_title();     /* no args */
-void print_wiggle_interval();  /* args: QTL_MAP *map; */
-void print_wiggle_map();       /* args: QTL_MAP *map; real threshold, scale; */
-void print_wiggle_genetics();  /* args: GENETICS *genetics; */
-void print_wiggle_left_seq();  /* args: QTL_MAP *map; */
+///** The myriad of QTL_MAP printing routines: All are now in qprint.c */
+void print_map_divider(void);
+//void print_qtl_map();
+//void print_short_qtl_map(); /* FROB */
+//void print_short_title();   /* FROB */
+//void print_tiny_map();  /* unused and broken */
+//
+//void print_wiggle_title();     /* no args */
+//void print_wiggle_interval();  /* args: QTL_MAP *map; */
+//void print_wiggle_map();       /* args: QTL_MAP *map; real threshold, scale; */
+//void print_wiggle_genetics();  /* args: GENETICS *genetics; */
+//void print_wiggle_left_seq();  /* args: QTL_MAP *map; */
+//
+//void print_saved_wiggle();
+//void print_saved_wiggles();
+//void print_saved_wiggle_order();
+//void print_peak(); /* arg: WIGGLE_PEAK *peak; */
+//
+//void print_saved_compares();
+//void print_saved_maps();
+//void print_best_saved_maps();
+//
+//void print_test_wiggle_title();    /* no args */
+////void print_test_wiggle_interval(); /* args: QTL_MAP *map; */
+//void print_test_wiggle_order();    /* args: int wiggle, order; real thresh;*/
 
-void print_saved_wiggle();
-void print_saved_wiggles();
-void print_saved_wiggle_order();
-void print_peak(); /* arg: WIGGLE_PEAK *peak; */
+//char *genetics_str();  /* args: GENETICS *ptr; bool verbose; */
+//char *interval_str();  /* args: int left, right; bool pad; */
+//char *left_seq_str();  /* args: QTL_MAP *map; */
+//char *dist_str();
+//char *units_str();
 
-void print_saved_compares();
-void print_saved_maps();
-void print_best_saved_maps();
+//void print_trait();   /* arg: int for_how_many_traits; */
+//void print_seq();     /* no args */
+//void print_old_seq(); /* args: char *seq_string; */
 
-void print_test_wiggle_title();    /* no args */
-void print_test_wiggle_interval(); /* args: QTL_MAP *map; */
-void print_test_wiggle_order();    /* args: int wiggle, order; real thresh;*/
-
-char *genetics_str();  /* args: GENETICS *ptr; bool verbose; */
-char *interval_str();  /* args: int left, right; bool pad; */
-char *left_seq_str();  /* args: QTL_MAP *map; */
-char *dist_str();      
-char *units_str();
-
-void print_trait();   /* arg: int for_how_many_traits; */
-void print_seq();     /* no args */
-void print_old_seq(); /* args: char *seq_string; */
-
-void get_fixed_qtl_weights(); /* args: QTL_MAP *map; */
+//void get_fixed_qtl_weights(); /* args: QTL_MAP *map; */
 
 #define MAP_DIVIDER \
 "=============================================================\n"
@@ -443,12 +505,18 @@ typedef struct sav_map_struct {
 	int unused_checked_out;		/* and we keep track of it */
 } SAVE_QTL_MAPS;
 
-SAVE_QTL_MAPS *alloc_saved_maps();
-QTL_MAP *save_map();
-QTL_MAP *get_unused_map();
-void free_saved_maps();
-void return_unused_map();
-#define maps_saved(saved_maps) (saved_maps->num_maps)
-#define nth_map(saved_maps,i)  (saved_maps->map[i])
-#define best_map(saved_maps)   (saved_maps->map[0])
+SAVE_QTL_MAPS *alloc_saved_maps(int num_maps, int num_intervals, real threshold);
+void free_saved_maps(SAVE_QTL_MAPS *p);
+QTL_MAP *save_map(QTL_MAP *map_to_save, SAVE_QTL_MAPS *the_maps);
+QTL_MAP *get_unused_map(SAVE_QTL_MAPS *the_maps);
+void return_unused_map(QTL_MAP *map_to_return, SAVE_QTL_MAPS *the_maps);
+//SAVE_QTL_MAPS *alloc_saved_maps();
+//QTL_MAP *save_map();
+//QTL_MAP *get_unused_map();
+//void free_saved_maps();
+//void return_unused_map();
+//#define maps_saved(saved_maps) (saved_maps->num_maps)
+//#define nth_map(saved_maps,i)  (saved_maps->map[i])
+//#define best_map(saved_maps)   (saved_maps->map[0])
 
+#endif
