@@ -11,12 +11,7 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-//#define INC_LIB
-//#define INC_SHELL
-//#define INC_EQN
 #include "mapm.h"
-//#include "toplevel.h"
-//#include "lowlevel.h"
 
 int symbol_value (int chr, char *symb);
 

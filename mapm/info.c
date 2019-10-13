@@ -204,8 +204,8 @@ compute_two_pt ( /* internal use only */
 
     if (a<b) { temp=a; a=b; b=temp; }
     two_pt= get_next_two_pt_entry(a,b,&inc);
-    quick_two_pt(a,b,two_pt,FALSE);
-    if (raw.data_type==CEPH) quick_two_pt(a,b,two_pt,TRUE); /* also w/sex */
+    quick_two_pt(a,b,two_pt/*,FALSE*/);
+    if (raw.data_type==CEPH) quick_two_pt(a,b,two_pt/*,TRUE*/); /* also w/sex */
 
     if (two_pt->lodscore[NOSEX] <= UNLINKED_LOD &&
         two_pt->theta[NOSEX] >= UNLINKED_THETA &&

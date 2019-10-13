@@ -11,12 +11,7 @@
    This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-//#define INC_LIB
-//#define INC_SHELL
-//#define INC_MISC
 #include "mapm.h"
-//#include "toplevel.h"
-//#include "lowlevel.h"
 
 /* internal procedures and variables */
 static bool try_marker (
@@ -155,10 +150,13 @@ compare (void)
 {
     SAVED_LIST *list=NULL;
     MAP *map;
-    int maps_to_save, num_to_print, loci_per_map, n, total, excluded, tried, i;
+    int maps_to_save, num_to_print, loci_per_map, n, total, excluded, tried, i, j;
     int *locus, num_loci, prev;
     real threshold, best;
-
+#ifdef THREAD
+    int nqueued, id;
+#endif
+    
     mapm_ready(ANY_DATA,2,PERM_SEQ,&num_loci);
     get_arg(itoken,20,&maps_to_save);
     get_arg(rtoken,0.0,&threshold);
@@ -176,8 +174,9 @@ compare (void)
        if (use_three_pt)
 	 setup_3pt_data(locus,loci_per_map,-three_pt_threshold);
 
-       total=excluded=tried=0; n=0;
+       n=total=excluded=tried=0;
        for_all_orders(seq,map) total++;
+#ifndef THREAD
        for_all_orders(seq,map) {
 	   keep_user_amused("map",++n,total);
 	   if (use_three_pt &&
@@ -188,6 +187,46 @@ compare (void)
 	   insert_map_into_list(list,&map);
 	   tried++;
        }
+#else
+       for(nqueued=0, Oagain = TRUE, reset_seq(seq, map!=NULL);
+	   nqueued<queue_size() && Oagain && clean_map(map) && get_map_order(seq,map);
+           Oagain=perm_seq(seq,FALSE,FALSE)) {
+	   n++;
+	   if (use_three_pt &&
+	       !three_pt_verify(map->locus,map->num_loci,three_pt_window))
+	     { excluded++; continue; }
+	   add_converge_request(map, n);
+	   nqueued++;
+           tried++;
+       }
+       while(nqueued) {
+	 int converged = get_converge_result(map, &id);
+	 if(converged) {
+	   insert_map_into_list(list,&map);
+	 } else {
+           sprintf(ps, "Did not converge: "); pr();
+           for(j=0; j<map->num_loci; j++) {
+             print(loc2str(map->locus[j]));
+           } 
+           nl();
+	 }
+	 nqueued--;
+	 for(;
+	     Oagain && clean_map(map) && get_map_order(seq,map);
+	     Oagain=perm_seq(seq,FALSE,FALSE)) {
+	   n++;
+           if (use_three_pt &&
+               !three_pt_verify(map->locus,map->num_loci,three_pt_window))
+             { excluded++; continue; }
+	   add_converge_request(map, n);
+	   nqueued++;
+	   tried++;	   
+           Oagain=perm_seq(seq,FALSE,FALSE);
+	   keep_user_amused("map",n,total);
+           break;
+	 }
+       }
+#endif
        if (tried==0)
 	 { sprintf(ps, COMPARE_NONE, three_pt_threshold); pr(); abort_command(); }
 
@@ -229,9 +268,12 @@ ripple (void)
 {
     MAP *map0=NULL, *map;
     SAVED_LIST *list;
-    int n_loci, window, excluded, tried, i, j, k, n;
+    int n_loci, window, total, excluded, tried, i, j, k, n;
     real thresh, best;
     bool same;
+#ifdef THREAD
+    int nqueued, id;
+#endif
 
     mapm_ready(ANY_DATA,3,ONE_ORDER,&n_loci);
     get_arg(itoken,5,&window);   if (!irange(&window,3,99)) usage_error(1);
@@ -273,15 +315,59 @@ ripple (void)
 	    /* to_column(17+(print_names ? 10:5)*window); */
 	    flush();
 
-	    excluded=tried=0; 
+	    n=total=excluded=tried=0; 
+	    for_all_orders(seq,map) total++;
+#ifndef THREAD
 	    for_all_orders(seq,map) {
+	        keep_user_amused("map",++n,total);
 		if (use_three_pt && /* only threept the compared part */
 		    !three_pt_verify(map->locus+i,window,three_pt_window))
 		  { excluded++; continue; }
 		init_rec_fracs(map);
 		converge_to_map(map);
-		insert_map_into_list(list,&map); tried++;
+		insert_map_into_list(list,&map);
+		tried++;
 	    }
+#else
+	    for(nqueued=0, Oagain = TRUE, reset_seq(seq, map!=NULL);
+		nqueued<queue_size() && Oagain && clean_map(map) && get_map_order(seq,map);
+		Oagain=perm_seq(seq,FALSE,FALSE)) {
+	      n++;
+	      if (use_three_pt &&
+		  !three_pt_verify(map->locus,map->num_loci,three_pt_window))
+		{ excluded++; continue; }
+	      add_converge_request(map, n);
+	      nqueued++;
+	      tried++;
+	    }
+	    while(nqueued) {
+	      int converged = get_converge_result(map, &id);
+	      if(converged) {
+		insert_map_into_list(list,&map);
+	      } else {
+                sprintf(ps, "Did not converge: "); pr();
+                for(j=0; j<map->num_loci; j++) {
+                  print(loc2str(map->locus[j]));
+                } 
+                nl();
+	      }
+	      nqueued--;
+	      for(;
+		  Oagain && clean_map(map) && get_map_order(seq,map);
+		  Oagain=perm_seq(seq,FALSE,FALSE)) {
+		n++;
+		if (use_three_pt &&
+		    !three_pt_verify(map->locus,map->num_loci,three_pt_window))
+		  { excluded++; continue; }
+		add_converge_request(map, n);
+		nqueued++;
+		tried++;	   
+		Oagain=perm_seq(seq,FALSE,FALSE);
+		keep_user_amused("map",n,total);
+		break;
+	      }
+	    }
+#endif
 	    if (tried==0) { print("(all excluded)\n"); continue; }
 
 	    same=TRUE; map=get_best_map(list); 
@@ -476,10 +562,13 @@ try_marker (
     int *count
 )
 {
-    int i, j, num_ok, last, sex, num_paired, best_i=0;
+    int i, j, num_ok, last, sex=FALSE, num_paired, best_i=0;
     MAP *map;
     real best;
-    
+#ifdef THREAD
+    int nqueued, id;
+#endif
+
     clean_list(list);
     map=get_map_to_bash(list);
     original_map->unlink= NONE_UNLINKED;
@@ -493,6 +582,7 @@ try_marker (
     if (num_paired==0) send(CRASH);
     
     last=original_map->num_loci; best=VERY_UNLIKELY;
+#ifndef THREAD
     for (i=0; i<=last; i++) if (!excluded[i]) {
 	mapcpy(map,original_map,TRUE);
 	for (j=0; j<num_paired; j++) 
@@ -515,6 +605,59 @@ try_marker (
 	  if (i+j<last && !is_zero(map->rec_frac[i+j],sex)) zero[i]=FALSE;
 	insert_map_into_list(list,&map);
     } else keep_user_amused("map",++*count,0);
+#else
+    for(nqueued=i=0;
+	nqueued<queue_size() && i<=last;
+	i++) {
+      if(!excluded[i]) {
+	mapcpy(map,original_map,TRUE);
+	for (j=0; j<num_paired; j++) 
+	  if (!insert_locus(map,i+j,marker[j])) send(CRASH);
+	keep_user_amused("map",++*count,0);
+	add_converge_request(map, i);
+	nqueued++;
+      } else keep_user_amused("map",++*count,0);
+    }
+    while(nqueued) {
+      int converged = get_converge_result(map, &id);
+      if(converged) {
+	if (map->log_like>best) { best=map->log_like; best_i=id; }
+	
+	/* find zero placements. indexing is:
+	   orig-loci:     0   1     |     0   1     |     0   1
+	   intervals:   0   1   2   |   0   1   2   |   0   1   2
+	   new-seq:   x   0   1     |     0 x 1     |     0   1   x
+	   recfracs:    0   1       |      0 1      |       0   1   
+	   index:        i=0        |      i=1      |        i=2       */
+	if (id>0    && is_zero(map->rec_frac[id-1],sex)) zero[id]=TRUE;
+	if (id<last && is_zero(map->rec_frac[id+num_paired-1],sex)) zero[id]=TRUE;
+	if (zero[id]) for (j=1; j<num_paired; j++)
+	  if (id+j<last && !is_zero(map->rec_frac[id+j],sex)) zero[id]=FALSE;
+	insert_map_into_list(list,&map);
+      } else {
+        sprintf(ps, "Did not converge: "); pr();
+        for(j=0; j<map->num_loci; j++) {
+          print(loc2str(map->locus[j]));
+        } 
+        nl();
+      }
+      nqueued--;
+      for(;
+	  i<=last;
+	  i++) {
+	if(!excluded[i]) {
+	  mapcpy(map,original_map,TRUE);
+	  for (j=0; j<num_paired; j++) 
+	    if (!insert_locus(map,i+j,marker[j])) send(CRASH);
+	  keep_user_amused("map",++*count,0);
+	  add_converge_request(map, i);
+	  nqueued++;
+	  i++;
+	  break;
+	} else keep_user_amused("map",++*count,0);
+      }
+    }
+#endif
 
     if (num_ok>0 && zero[best_i]) {
 	for (i=best_i+1; !excluded[i] && i<=last &&

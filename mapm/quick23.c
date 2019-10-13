@@ -11,9 +11,7 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-//#define INC_LIB
 #include "mapm.h"
-//#include "lowlevel.h"
 
 char symbols[]={
     HYBRID_TYPE_H,
@@ -25,7 +23,7 @@ char symbols[]={
 #define NUM_SYMS    5 
 
 /* internal functions */
-void f2_quick_two_pt(int loc1, int loc2, TWO_PT_DATA *two_pt, bool sexflag);
+void f2_quick_two_pt(int loc1, int loc2, TWO_PT_DATA *two_pt/*, bool sexflag*/);
 real quick_back(LOCUS locus, RECVECTOR **rec_frac, real *conv_like, real *unconv_like);
 real quick_f2(LOCUS locus, RECVECTOR **rec_frac, real *conv_like, real *unconv_like);
 void probinit(real probdist[6][4]);
@@ -35,7 +33,7 @@ int changes(int i, int j);
 real f2_prob(real theta, int diffs);
 real power(real a, int x);
 
-void f2_quick_two_pt(int loc1, int loc2, TWO_PT_DATA *two_pt, bool sexflag)
+void f2_quick_two_pt(int loc1, int loc2, TWO_PT_DATA *two_pt/*, bool sexflag*/)
 {
     LOCUS locus;
     real conv_like=0., unconv_like=0.;

@@ -11,13 +11,7 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-//#define INC_LIB
-//#define INC_MISC
-//#define INC_SHELL
 #include "mapm.h"
-//#include "map_info.h"
-//#include "lowlevel.h"
-//#include "toplevel.h"
 
 SAVED_LIST *chromosome;
 ASSIGNMENT **assignment;
@@ -26,6 +20,9 @@ int current_chrom;
 //static void do_assignments (int *locus, int num_loci,  /* is_assignable must have been verified */ real lod1,real unlinked_lod1,real theta1,real lod2,real unlinked_lod2,real theta2,bool haplo);
 //bool do_assignment();
 //int  get_anchors();
+static bool framework_marker(int locus);
+static void unassign_this(int locus, int state);
+static void attach_this(int locus, int state, int chrom);
 static bool do_assignment (int locus,real lodbound,real minlodbound,real thetabound,int **anchor,   /* [num_groups][0..count[this_group]-1] */int *count,     /* [num_groups] */int num_groups);
 static bool get_anchors ( /* internal use only */int **anchor,int *count, /* side-effected if non-null */int *locus,int num_loci, /* markers to assign now */bool haplo   /* take only haplo_firsts */);
 

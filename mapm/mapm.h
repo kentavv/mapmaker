@@ -16,12 +16,6 @@
 
 /***************** Get the common #includes first...  *****************/
 
-//#include <stdio.h>
-
-//#define INC_TABLE /* need TABLE to compile toplevel.h and STATUS_CONTEXT */
-
-//#define command void /* needed if INC_SHELL was not defined */
-
 /***************** MAPM Constants *****************/
 /* you should be able to change these and recompile */
 
@@ -144,6 +138,7 @@ extern char *BADDATA_reason;
 #include "lowlevel.h"
 #include "map_info.h"
 #include "toplevel.h"
+#include "threads.h"
 
 /* Things used by the data readers in reader.c */
 void getdataln(FILE *fp);
@@ -338,6 +333,7 @@ command list_mapping(void);
 command list_haplotypes(void);
 
 command biglods(void);
+command all_lods(void);
 command lodtable(void);
 command near_locus(void);
 command near_chrom(void);
@@ -373,6 +369,7 @@ command edit_sequence(void);
 command new_insert(void);
 command new_delete(void);
 command new_append(void);
+command flip(void);
 command show_seq_history(void); /* previous sequences */
 command set_class(void);
 command make_classes(void);

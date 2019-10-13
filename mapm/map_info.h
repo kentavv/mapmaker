@@ -45,7 +45,7 @@ void allocate_mapping_data(int num_markers);
 void free_mapping_data(int num_markers);
 void free_map(MAP *map);
 bool clean_map(MAP *map);
-void mapcpy(MAP *to, MAP *from, bool clean_it);
+void mapcpy(MAP *to, const MAP *from, bool clean_it);
 int insert_locus(MAP *map, int position, int locus);
 MAP *allocate_map (int maxloci);
 //MAP *allocate_map();   /* arg:  max_loci; alloc map for up to max_loci */
@@ -269,7 +269,7 @@ extern int current_chrom; /* set by the sequence command or reset_state() */
 bool make_new_chrom(char *name, int *num);
 //bool make_new_chrom();   /* args: char *name; returns # */
 MAP *get_chrom_frame(int chrom, int *num_loci);
-bool framework_marker(int locus);
+//bool framework_marker(int locus);
 void set_chrom_frame(int chrom, MAP *new);
 void get_chrom_loci(int chrom, int *locus, int which_loci, int *num_loci, int *num_framework);
 //void set_chrom_frame();  /* int chrom; char *name; MAP *map; */

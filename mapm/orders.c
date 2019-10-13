@@ -11,12 +11,7 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-//#define INC_LIB
-//#define INC_SHELL
-//#define INC_MISC
 #include "mapm.h"
-//#include "toplevel.h"
-//#include "lowlevel.h"
 
 bool good_seed(MAP *map,MAP *temp_map, real thresh);
 
@@ -439,9 +434,16 @@ place_locus (
 )
 {
     int i, j, k, num_allowed, last;
-    real best_like, lod, theta;
+    real best_like, theta;
     real theta1, theta2, dist1, dist2, distframe, distscale;
-    
+#ifdef THREAD
+    int nqueued, id;
+#else
+    real lod;
+#endif
+
+printf("Placing locus %s\n", loc2str(locus));
+
     /* Generate N-point maps from left to right markers with locus 
        inserted into each of the allowed positions, even one */
 
@@ -457,6 +459,7 @@ place_locus (
       
     last=finish+1;
     best_like=VERY_UNLIKELY;
+#ifndef THREAD
     for (i=start; i<=last; i++) /* i=the interval # to place in */
       if (!excluded[i]) {
 	  clean_map(temp); k=0;
@@ -509,6 +512,90 @@ place_locus (
 	      }
 	  }
       } /* next interval i */
+#else
+    for (nqueued=0, i=start; nqueued<queue_size() && i<=last; i++) {/* i=the interval # to place in */
+      if (!excluded[i]) {
+	  clean_map(temp); k=0;
+	  if (i==0) temp->locus[k++]=locus;
+	  for (j=start; j<=finish; j++) { /* locus #s */
+	      temp->locus[k++]=map->locus[j];
+	      if (j+1==i) temp->locus[k++]=locus;
+	  }
+	  temp->num_loci= k;
+	  add_converge_request(temp, i);
+	  nqueued++;
+      }
+    }
+    while(nqueued) {
+      int converged = get_converge_result(temp, &id);
+      if(converged) {
+	result[id]->like=temp->log_like;
+	
+	if (temp->log_like>best_like) { /* keep the best */
+	  best_like=temp->log_like; *best_pos=id; 
+	  mapcpy(best_map,temp,FALSE); 
+	}
+	
+	/* normalize placement dists by any expansion of this interval
+	   if i=first or last interval in the FRAMEWORK, then 
+	   dist= the correct rec frac, otherwise the placement dist = 
+	   DL*(Dframe/(DL+DR)) */
+	if (id==start) {
+	  result[id]->dist= theta= temp->rec_frac[0][0];
+	  if (theta<ZERO_DIST) result[id]->zero=TRUE;
+	} else if (id==last) {
+	  result[id]->dist= theta= temp->rec_frac[id-start-1][MALE];
+	  if (theta<ZERO_DIST) result[id]->zero=TRUE;
+	} else {
+	  theta1= temp->rec_frac[id-start-1][MALE];
+	  theta2= temp->rec_frac[id-start][MALE];
+	  if (theta1<ZERO_DIST || theta2<ZERO_DIST) result[id]->zero=TRUE;
+	  dist1= (*mapfunction->rec_to_dist)(theta1);
+	  dist2= (*mapfunction->rec_to_dist)(theta2);
+	  distframe= (*mapfunction->rec_to_dist)(map->rec_frac[id-1][0]);
+	  distscale= dist1*(distframe/(dist1+dist2));
+	  result[id]->dist= (*mapfunction->dist_to_rec)(distscale);
+	}
+	
+#if 0
+	/* determine the error lods for any particular placement. 
+	   Here is a stupid algorithm which looks only at this locus's
+	   lods. we realy need to look at flankers too! */
+	result[id]->net_error=0.0; result[id]->worst_error=0.0;
+	if (temp->allow_errors && (id>start || id<last) &&
+	    temp->error_rate[id-start]>0.0) {
+	  for (j=0; j<raw.data.f2.num_indivs; j++) { /* must be F2 */
+	    lod= temp->error_lod[id-start][j];
+	    if (lod>result[id]->worst_error) result[id]->worst_error=lod;
+	    if (lod>=error_lod_thresh)      result[id]->net_error+=lod;
+	  }
+	}
+#endif
+      } else {
+         sprintf(ps, "Did not converge: "); pr();
+         for(j=0; j<map->num_loci; j++) {
+           print(loc2str(map->locus[j]));
+         }
+         nl();
+      }
+      nqueued--;
+      for (; i<=last; i++) {/* i=the interval # to place in */
+	if (!excluded[i]) {
+	  clean_map(temp); k=0;
+	  if (i==0) temp->locus[k++]=locus;
+	  for (j=start; j<=finish; j++) { /* locus #s */
+	    temp->locus[k++]=map->locus[j];
+	    if (j+1==i) temp->locus[k++]=locus;
+	  }
+	  temp->num_loci= k;
+	  add_converge_request(temp, i);
+	  nqueued++;
+	  i++;
+	  break;
+	}
+      }  
+    }
+#endif
     if (best_like==VERY_UNLIKELY) send(CRASH);
 
     /* normalize the likes */
@@ -726,8 +813,12 @@ bool find_seed_order(bool is_subset, int *locus, int num_loci, int size, int max
 bool good_seed(MAP *map,MAP *temp_map, real thresh)
 {
     real best2=VERY_UNLIKELY, best=VERY_UNLIKELY;
+#ifdef THREAD
+    int nqueued, id, j;
+#endif
     
     make_compare_seq(temp_map->locus,temp_map->num_loci,0,temp_map->num_loci);
+#ifndef THREAD
     for_all_orders(seq,temp_map) {
 	if (use_three_pt &&
 	    !three_pt_verify(temp_map->locus,temp_map->num_loci,
@@ -738,6 +829,43 @@ bool good_seed(MAP *map,MAP *temp_map, real thresh)
 	  { best2=best; best=temp_map->log_like; mapcpy(map,temp_map,TRUE); }
 	else if (temp_map->log_like>best2) { best2=temp_map->log_like; }
     }
+#else
+    for(nqueued=0, Oagain = TRUE, reset_seq(seq, temp_map != NULL);
+	nqueued<queue_size() && Oagain && clean_map(temp_map) && get_map_order(seq,temp_map);
+	Oagain=perm_seq(seq,FALSE,FALSE)) {
+      if (use_three_pt &&
+	  !three_pt_verify(temp_map->locus,temp_map->num_loci,
+			   three_pt_window)) continue;
+      add_converge_request(temp_map, 0);
+      nqueued++;
+    }
+    while(nqueued) {
+      int converged = get_converge_result(temp_map, &id);
+      if(converged) {
+	if (temp_map->log_like>best) 
+	  { best2=best; best=temp_map->log_like; mapcpy(map,temp_map,TRUE); }
+	else if (temp_map->log_like>best2) { best2=temp_map->log_like; }
+      } else {
+         sprintf(ps, "Did not converge: "); pr();
+         for(j=0; j<map->num_loci; j++) {
+           print(loc2str(map->locus[j]));
+         }
+         nl();
+      }
+      nqueued--;
+      for(;
+	  Oagain && clean_map(temp_map) && get_map_order(seq,temp_map);
+	  Oagain=perm_seq(seq,FALSE,FALSE)) {
+	if (use_three_pt &&
+	    !three_pt_verify(temp_map->locus,temp_map->num_loci,
+			     three_pt_window)) continue;
+	add_converge_request(temp_map, 0);
+	nqueued++;
+	Oagain=perm_seq(seq,FALSE,FALSE);
+	break;
+      }
+    }
+#endif
     if (best==VERY_UNLIKELY) return(FALSE);
     else if (best2==VERY_UNLIKELY || best2-best<thresh) {
 	sprintf(ps, "Got one at log-likelihood %.2lf\n", best - best2); pr();
@@ -772,7 +900,7 @@ extend_order (
     bool print_anyway
 )
 {
-    int i, j, total;
+    int i, j, total=0;
     bool placed_any, contradiction;
     PLACE   **placements=NULL;
     MAP     *temp_map=NULL;
