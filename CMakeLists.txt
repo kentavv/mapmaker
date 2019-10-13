@@ -1,14 +1,15 @@
 cmake_minimum_required(VERSION 3.11)
 project(mapmaker C)
 
-set(CMAKE_C_STANDARD 11)
+#set(CMAKE_C_STANDARD 17)
 
 if (NOT CMAKE_BUILD_TYPE)
     message(STATUS "No build type selected, default to Release")
     set(CMAKE_BUILD_TYPE "Release")
 endif ()
 
-SET(CMAKE_C_FLAGS "-g -O -Wall -Wextra -Wno-unused-parameter -Wno-clobbered -Wno-format-overflow -DTHREAD")
+SET(CMAKE_C_FLAGS "-g -Wall -Wextra -Wno-unused-parameter -Wno-clobbered -Wno-format-overflow -pedantic -std=gnu17")
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DTHREAD")
 SET(CMAKE_C_FLAGS_RELEASE "-O3 -DNDEBUG")
 
 set(CMAKE_VERBOSE_MAKEFILE ON)

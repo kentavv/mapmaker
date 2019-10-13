@@ -95,7 +95,7 @@ computationally critical loops, as iocheck() may take some time itself
 exists but does nothing, and it may never...
 ***************************************************************************/
 
-int lookup_fp(FILE *fp, char **name, char *modechar; /* side-effected if non-null */);
+int lookup_fp(FILE *fp, char **name, char *modechar /* side-effected if non-null */);
 void ioerror(char *errmsg, FILE *fp, char *ioline);
 bool make_filename_in_dir(char *str, /* str is side-effected: it should be PATH_LENGTH+1 chars long */
                           bool force_ext,
