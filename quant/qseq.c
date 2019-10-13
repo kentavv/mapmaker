@@ -32,22 +32,51 @@ TABLE *named_sequences, *sequence_history;
 bool Omore; /* used in for_all_orders iterator macro */
 
 /***** Local *****/
-QTL_SEQUENCE *compile_intervals(); 
-QTL_SEQUENCE *int_compiler();
-QTL_SEQ_OPTION *mkinterval();
-QTL_SEQ_OPTION *mkcontinuous();
-void free_seq_options();
-bool try_fix_pos();
-bool try_range();
-void get_genetics_spec();
-void enumerate_possibilities();
-bool contig_perm();
-bool discont_perm();
-bool wiggle_perm();
-bool test_perm();
-void swap_for_dash();
-void unswap_for_dash();
-
+void seq_init(void);
+bool set_qtl_sequence(char *str, char *errmsg, int *errpos);
+void free_qtl_sequence(QTL_SEQUENCE *p);
+void free_seq_options(QTL_SEQ_OPTION *q);
+QTL_SEQUENCE *compile_intervals(char *str);
+QTL_SEQUENCE *int_compiler(char **str);
+QTL_SEQ_OPTION *mkcontinuous(int trait, real fix_weight);
+QTL_SEQ_OPTION *mkinterval(int left, int right);
+bool try_right(char **str, QTL_SEQ_OPTION *opt);
+bool try_fix_pos(char **str, QTL_SEQ_OPTION *opt);
+bool try_range(char **str, QTL_SEQ_OPTION *opt);
+void get_genetics_spec(char **str, GENETICS *g);
+void enumerate_possibilities(QTL_SEQUENCE *p);
+bool reset_state(QTL_SEQUENCE *p, bool wiggle, int *pnum_intervals, int *pcont_vars, int *pnum_orders, int *pwiggle_ints);
+void get_seq_free_genetics(QTL_SEQUENCE *p, bool *free);
+bool get_order(QTL_SEQUENCE *p, bool wiggle, QTL_MAP *map);
+bool next_order(QTL_SEQUENCE *p, int *perm);
+bool next_wiggle(QTL_SEQUENCE *p, int *perm, real cm_step);
+bool contig_perm(QTL_SEQUENCE *p, int *perm, bool wiggle);
+bool discont_perm(QTL_SEQUENCE *p, int *perm, bool wiggle);
+bool wiggle_perm(QTL_SEQUENCE *p, bool *contig, bool *wiggled, real cm_step);
+bool test_perm(QTL_SEQUENCE *p, int *perm, bool wiggle, bool perm_rightmost);
+bool name_sequence(char *name, char *seq, char **why_not);
+bool unname_sequence(char *name, char **why_not);
+void add_to_seq_history(char *seq);
+char *expand_named_entries(char *str);
+void swap_for_dash(char *str);
+void unswap_for_dash(char *str);
+void name_peaks(WIGGLE_PEAK *peak, char *prefix, bool forget);
+//QTL_SEQUENCE *compile_intervals();
+//QTL_SEQUENCE *int_compiler();
+//QTL_SEQ_OPTION *mkinterval();
+//QTL_SEQ_OPTION *mkcontinuous();
+//void free_seq_options();
+//bool try_fix_pos();
+//bool try_range();
+//void get_genetics_spec();
+//void enumerate_possibilities();
+//bool contig_perm();
+//bool discont_perm();
+//bool wiggle_perm();
+//bool test_perm();
+//void swap_for_dash();
+//void unswap_for_dash();
+//
 bool try_right(char **str /* may be side-effected */, QTL_SEQ_OPTION *opt /* may be side-effected */);
 bool get_order(QTL_SEQUENCE *p, bool wiggle, QTL_MAP *map);
 int ichoose(int n, int k); /* Best algorithm for small k */

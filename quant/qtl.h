@@ -90,7 +90,7 @@ real unkosambi();  /* args: centimorgans;  returns recfrac; CHANGE THESE!!!! */
 
 /*** in QDATA.C ***/
 void data_init();  /* no args */
-extern int map_function;
+//extern int map_function;
 #define HALDANE 0
 #define KOSAMBI 1
 

@@ -17,6 +17,26 @@
 #define INC_QLOWLEVEL
 #include "qtl.h"
 
+void set_qctm_globals(DATA *data, QTL_MAP *map);
+void fill_in_qtl_map(QTL_MAP *map, real new_like, real *qtl_weight);
+void qtl_conv_to_map(DATA *data, QTL_MAP *map);
+real E_step(real *qtl_pos, real *qtl_weight, real *mu, real *sigma_sq, DATA *data, real **expected_genotype, real **S_matrix, GENO_PROBS *expected_recs);
+void likelihood(int *qtl_genotype, real *contribution, GENO_PROBS *trans_prob, real *qtl_weight, real *mu, real *sigma_sq, DATA *data, int indiv, real *total_like, real *total_int_like, INTERVAL_GENOTYPE_PROBS *rec_like);
+void make_rec_probs(real *qtl_pos, real *interval_rf, GENO_PROBS *trans_prob);
+real normal_density(real x, real *sigma_sq);
+void ML_qtl_weight(real **S_matrix, real **expected_genotype, real *phenotype, real *fix_weight, real *mu, real *qtl_weight, real *sigma_sq);
+void kill_entry(real **S_matrix, int size, int i);
+real variance(real *phenotype, real *qtl_weight, real **expected_genotype, real **S_matrix, real *mu, int size);
+void ML_qtl_pos(GENO_PROBS *expected_recs, real *interval_rf, real *fix_pos, real *qtl_pos);
+real do_brute_force(GENO_PROBS *expected_recs, int i, real interval_rf, real start, real end, int steps);
+real pos_like(real left_theta, real interval_theta, GENO_PROBS *expected_recs, int i);
+//int if(int print_brute_force);
+//int if(int unimodal);
+//real do_brute_force(real start, real inc, real theta, GENO_PROBS *expected_recs, int interval, int do_print, int *unimodal);
+//void pos_likes(real lambda, GENO_PROBS *expected_recs, int i, real theta, real *deriv, real *deriv2, real *f);
+real guess_pos(GENO_PROBS *expected_recs, int i, real theta_interval);
+void qtl_noconv_to_map(DATA *data, QTL_MAP *map);
+
 /* Globals available to the outside world: */
 real like_tolerance, pos_tolerance, mat_tolerance;
 bool print_iter, print_rec_mat, bag_qctm, brute_force, print_brute_force;
@@ -26,23 +46,36 @@ int  max_intervals, max_genotype_vars, max_continuous_vars;
    qctm_globals_avail(), qctm_init(), qtl_conv_to_map(); */
 
 /* Local to this file: */
-void qctm();
-void set_qctm_globals();
-void fill_in_qtl_map();
+//void qctm();
+//void set_qctm_globals();
+//void fill_in_qtl_map();
 
-real E_step();
-void likelihood();	
-void make_rec_probs();
+//real E_step();
+void
+likelihood (
+        int *qtl_genotype,
+        real *contribution,
+        GENO_PROBS *trans_prob,
+        real *qtl_weight,
+        real *mu,
+        real *sigma_sq,  	  /* mu and sigma_sq are pointers to single numbers */
+        DATA *data,
+        int indiv,
+        real *total_like,	  /* side-effected - is a  ptr to a single num */
+        real *total_int_like,	  /* side-effected - is also a  ptr to a single num */
+        INTERVAL_GENOTYPE_PROBS *rec_like /* [interval][int-geno] - side-effected */
+);
+//void make_rec_probs();
 
-void ML_qtl_weight();
-void kill_entry();
+//void ML_qtl_weight();
+//void kill_entry();
 
-void ML_qtl_pos();
+//void ML_qtl_pos();
 real do_brute_force();
-real pos_like();
+//real pos_like();
 
-real variance();
-real normal_density();
+//real variance();
+//real normal_density();
 
 bool debug_qctm;
 int n_individuals, n_intervals, n_qtl_genotypes;

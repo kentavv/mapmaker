@@ -38,64 +38,64 @@ bool save_on_exit();
 void print_ps_wiggle_order(), print_ps_multi_wiggle();
 
 /***** QTL Commands in this file *****/
-command set_intervals();	
-command show_seq_history();
-command set_trait();		
-command set_genetics();
-command load_data();		
-command qtl_map();		
-command singles(); /* FROB */
-command qtl_like();		
-command compare();		
-command pheno_histogram();	
-command wiggle();	
-command test_wiggle();	
-command make_trait();
-command predict();
-command forget_trait();
-command forget_compare();
-command forget_all_compares();
-command forget_all_scans();
-command forget_scan();
-command set_units();	
-command set_print_iter();	
-command set_print_long();	
-command set_dbg_qctm();	
-command set_max_ints();
-command set_brute();		
-command set_print_bf();	
-command set_print_nam();	
-command set_print_scans();
-command set_print_rm();	
-command set_tolerance();	
-command set_bag_qctm();	
-command set_autosave();	
-command set_more_mode();
-command translate();		
-command let();
-command names();
-command forget();
-command sequence_editor();
-command show_peaks();
-command show_wiggle();
-command draw_wiggle();
-command show_trait();
-command list_traits();
-command list_wiggles();
-command save_status();
-command show_trait(); 
-command show_test_wiggle();
-command show_best();
-command show_compare();
-command list_compares();
-command new_show_map();
-command tester();
-command dump_traits();
-command dump_genome();
-command dump_scan();
-command tweak_weight();
-command set_min_trait();
-command set_max_trait();
+command set_intervals(void);	
+command show_seq_history(void);
+command set_trait(void);		
+command set_genetics(void);
+command load_data(void);		
+command qtl_map(void);		
+command singles(void); /* FROB */
+command qtl_like(void);		
+command compare(void);		
+command pheno_histogram(void);	
+command wiggle(void);	
+command test_wiggle(void);	
+command make_trait(void);
+command predict(void);
+command forget_trait(void);
+command forget_compare(void);
+command forget_all_compares(void);
+command forget_all_scans(void);
+command forget_scan(void);
+command set_units(void);	
+command set_print_iter(void);	
+command set_print_long(void);	
+command set_dbg_qctm(void);	
+command set_max_ints(void);
+command set_brute(void);		
+command set_print_bf(void);	
+command set_print_nam(void);	
+command set_print_scans(void);
+command set_print_rm(void);	
+command set_tolerance(void);	
+command set_bag_qctm(void);	
+command set_autosave(void);	
+command set_more_mode(void);
+command translate(void);		
+command let(void);
+command names(void);
+command forget(void);
+command sequence_editor(void);
+command show_peaks(void);
+command show_wiggle(void);
+command draw_wiggle(void);
+command show_trait(void);
+command list_traits(void);
+command list_wiggles(void);
+command save_status(void);
+command show_trait(void); 
+command show_test_wiggle(void);
+command show_best(void);
+command show_compare(void);
+command list_compares(void);
+command new_show_map(void);
+command tester(void);
+command dump_traits(void);
+command dump_genome(void);
+command dump_scan(void);
+command tweak_weight(void);
+command set_min_trait(void);
+command set_max_trait(void);
 
 /* QTL Command Topics */
 #define RAWDATA  1
@@ -1765,5 +1765,3 @@ draw_wiggle (void)
 	print_ps_wiggle_order(wiggle, order, threshold);
     }
 }
-    
-

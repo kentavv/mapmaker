@@ -20,8 +20,8 @@
 #define INC_QLOWLEVEL /* why? */
 #include "qtl.h"
 
-char *interval_str();
-char *trait_str();
+//char *interval_str();
+//char *trait_str();
 
 static char * units_str (  /* Takes 5 spaces, if fill, 2 otherwise */bool fill);
 static char *left_seq_str (QTL_MAP *map);

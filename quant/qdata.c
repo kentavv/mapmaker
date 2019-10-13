@@ -21,11 +21,19 @@
 void free_data (DATA *data);
 
 /* internal stuff */
-void assign_probs();
-void make_genotype_arrays();
-int map_function;
+static void
+assign_probs (
+        DATA *data,        /* Needs data->interval_len[interval] */
+        int raw_i,
+        int data_i, /* The individual's numbers in the data and raw structs */
+        int interval,      /* The interval number */
+        int left,
+        int right   /* The left and right locus numbers */
+);
+static void make_genotype_arrays (int data_type, int num_intervals);
+//static int map_function;
 
-bool valid_trait_num();
+bool valid_trait_num (int num);
 
 /********* FUNCTIONS TO DEAL WITH THE DATA AND MAP STRUCTS FOR QCTM *********/
 	

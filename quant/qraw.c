@@ -41,18 +41,41 @@ int nam_len;
 #define RIGHT 1
 #define F2VERSION 3
 
-void getdataln();
-void read_map_locus();
-void read_quant_trait();
-real interval_likelihood();
-real pheno_given_geno();
-
-void make_count_recs_etc();
-
-bool missing_data(); /* OBSOLETE, NOT USED */
-void initial_prob();
-void condition();
-void altered_chroms_message();
+void raw_init(void);
+void make_count_recs_etc(void);
+void free_raw(void);
+int data_loaded(void);
+void getdataln(FILE *fp);
+void read_data(FILE *fpa, FILE *fpb, FILE *fpm, char *temp);
+void save_traitfile(FILE *fp);
+void read_map_locus(FILE *fp, int indivs, int t_loc, int *order, int n_loci);
+real read_map_distance(FILE *fp);
+void read_quant_trait(FILE *fp, int num, int indivs);
+void read_olddata(FILE *fp, char *path);
+void read_oldmap_locus(FILE *fp, int num, int indivs);
+void read_oldquant_trait(FILE *fp, int num, int indivs);
+void read_oldmap_distance(FILE *fp, int num);
+void crunch_data(void);
+void initial_prob(LOCUS_GENOTYPE_PROBS *prob, int locus, int this_genotype);
+real pheno_given_geno(int observation, int genotype);
+void condition(LOCUS_GENOTYPE_PROBS *prob, int locus, int prev_locus, int observation, real rec_frac, int side);
+real transition_prob(int data_type, int geno_was, int geno_is, real theta);
+real map_length(int left, int right);
+void indiv_interval_probs(INTERVAL_GENOTYPE_PROBS *prob, int data_indiv_num, int raw_indiv_num, int left_locus_num, int right_locus_num, real theta);
+real apriori_prob(int data_type, int geno);
+void altered_chroms_message(void);
+//void getdataln();
+//void read_map_locus();
+//void read_quant_trait();
+//real interval_likelihood();
+//real pheno_given_geno();
+//
+//void make_count_recs_etc();
+//
+//bool missing_data(); /* OBSOLETE, NOT USED */
+//void initial_prob();
+//void condition();
+//void altered_chroms_message();
 
 #define MAXEXCEED "max # indiv or inter exceeded"
 
@@ -249,7 +272,7 @@ read_data (FILE *fpa, FILE *fpb, FILE *fpm, char *temp)
 		} 
 		map_space[k] = .499; k++;
 		for (l=0; l<num_loc-2; l++,k++) 
-		  map_space[k] = read_map_distance(fpm,l);
+		  map_space[k] = read_map_distance(fpm/*,l*/);
 		map_space[k] = 0.499; k++;
 		getdataln(fpm);
 	    }
@@ -278,7 +301,7 @@ read_data (FILE *fpa, FILE *fpb, FILE *fpm, char *temp)
 		    map_space[k] = .499; k++;
 		}
 		for (l=0; l<num_loc-1; l++,k++) 
-		  map_space[k] = read_map_distance(fpm,l);
+		  map_space[k] = read_map_distance(fpm/*,l*/);
 		map_space[k] = 0.499; k++;
 		getdataln(fpm);
 	    }

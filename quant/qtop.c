@@ -36,17 +36,17 @@ real startrecombs = .05;
 /**************************************************/
  
 /***** for internal use only *****/
-int main();
-int get_pair_entry();
-void qtl_top();
-char *genetics_str();
+//int main();
+//int get_pair_entry();
+//void qtl_top();
+//char *genetics_str();
 DATA *map_data; /* allocated max_intervals long - used for scratch space */
 
 bool isa_locus_name(char *str, int *num /* the locus# if TRUE, else the #matched if FALSE */, bool *exact);
 bool isa_seq_name(char *str, int *num /* the #matched if FALSE - undefined if true */, bool *exact);
 bool isa_trait_name(char *str, int *num /* the trait# if TRUE, else the #matched if FALSE */, bool *exact);
 
-void make_help_entries();
+void make_help_entries(void);
 
 /********** Message definitions for QTL **********/
 char *BADDATA_ln;
@@ -59,8 +59,8 @@ int   BADSEQ_errpos;
 char *BADSEQ_errmsg;
 char *BADTRAIT_errmsg;
 
-void ps_MATINV();
-void ps_BADDATA();
+//void ps_MATINV();
+//void ps_BADDATA();
 
 void
 ps_MATINV (char *a)  { sprintf(ps, "diff= %lf", MATINV_diff); }
@@ -831,9 +831,3 @@ make_qtl_map (QTL_MAP *map)
     initial_qctm_values(map_data,map);
     qtl_conv_to_map(map_data,map);
 }
-
-
-
-
-
-

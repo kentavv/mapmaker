@@ -18,8 +18,16 @@
 #define INC_QLOWLEVEL
 #include "qtl.h"
 
-void ps_file_start(), ps_file_end(), ps_page_start(), ps_page_end();
-void do_bezier(), draw_axes(), draw_x();
+//void print_ps_wiggle_order(int wiggle, int order, real threshold);
+void draw_axes(FILE *fp, double *xnotch, int num_notches, char **label, char *y_name, double dotted_val);
+void do_bezier(FILE *fp, double *xval, double *yval, int num_points, double s0, double sn, char *line_type);
+void draw_x(void);
+void ps_file_start(FILE *fp);
+void ps_file_end(FILE *fp);
+void ps_page_start(FILE *fp, int pagenum);
+void ps_page_end(FILE *fp);
+//void print_ps_multi_wiggle(int wiggle, real threshold);
+//char *line_choice(int order);
 
 #define XZERO 0.0
 #define YZERO 0.0
@@ -182,7 +190,7 @@ draw_axes (FILE *fp, double *xnotch, int num_notches, char **label, char *y_name
     fprintf(fp,"%.2lf %.2lf moveto\n", XZERO, YZERO-4);
     fprintf(fp,"GS -90 rotate 0 -3 rmoveto /Times-Roman FF 8 SF F (%s)S GR\n",
 	    label[0]);
-    draw_x(fp);
+    draw_x(/*fp*/);
 }
 
 
@@ -259,10 +267,10 @@ do_bezier (FILE *fp, double *xval, double *yval, int num_points, double s0, doub
         fprintf(fp,"GS %s %.2lf %.2lf %.2lf %.2lf %.2lf %.2lf curveto stroke GR\n",
 		line_type, x1[i], y1[i], x2[i], y2[i], x3[i], y3[i]);
         fprintf(fp,"%.2lf %.2lf moveto\n", x3[i], y3[i]);
-	draw_x(fp);
+	draw_x(/*fp*/);
     }
     fprintf(fp,"%.2lf %.2lf moveto\n", x3[i-1], y3[i-1]);
-    draw_x(fp);
+    draw_x(/*fp*/);
 
     unarray(x0, real);
     unarray(x1, real);
