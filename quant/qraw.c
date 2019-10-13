@@ -41,13 +41,7 @@ int nam_len;
 #define RIGHT 1
 #define F2VERSION 3
 
-void raw_init(void);
 void make_count_recs_etc(void);
-void free_raw(void);
-int data_loaded(void);
-void getdataln(FILE *fp);
-void read_data(FILE *fpa, FILE *fpb, FILE *fpm, char *temp);
-void save_traitfile(FILE *fp);
 void read_map_locus(FILE *fp, int indivs, int t_loc, int *order, int n_loci);
 real read_map_distance(FILE *fp);
 void read_quant_trait(FILE *fp, int num, int indivs);
@@ -55,14 +49,9 @@ void read_olddata(FILE *fp, char *path);
 void read_oldmap_locus(FILE *fp, int num, int indivs);
 void read_oldquant_trait(FILE *fp, int num, int indivs);
 void read_oldmap_distance(FILE *fp, int num);
-void crunch_data(void);
 void initial_prob(LOCUS_GENOTYPE_PROBS *prob, int locus, int this_genotype);
 real pheno_given_geno(int observation, int genotype);
 void condition(LOCUS_GENOTYPE_PROBS *prob, int locus, int prev_locus, int observation, real rec_frac, int side);
-real transition_prob(int data_type, int geno_was, int geno_is, real theta);
-real map_length(int left, int right);
-void indiv_interval_probs(INTERVAL_GENOTYPE_PROBS *prob, int data_indiv_num, int raw_indiv_num, int left_locus_num, int right_locus_num, real theta);
-real apriori_prob(int data_type, int geno);
 void altered_chroms_message(void);
 //void getdataln();
 //void read_map_locus();
@@ -159,9 +148,6 @@ getdataln ( /* get next nonblank/noncomment data file line */
 )
 { do { fgetln(fp); BADDATA_line_num++; } while(nullstr(ln) || ln[0]=='#'); 
   BADDATA_ln= ln; }
-real read_map_distance();
-void read_map_locus();
-void read_quant_trait();
 
 #define DUMMY_LOCI 1
 
@@ -618,9 +604,7 @@ read_quant_trait (FILE *fp, int num, int indivs)
 }
   
 
-void read_oldmap_locus(), read_oldquant_trait(), read_oldmap_distance();
-
-void 
+void
 read_olddata (FILE *fp, char *path)
 {
     int i, j, n_indivs, n_loci, n_traits;

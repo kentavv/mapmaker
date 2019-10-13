@@ -100,7 +100,7 @@ baddata ( /* send data reading error message */
   nstrcpy(BADDATA_text,ln,MAXLINE); send(BADDATA); }
 
 
-int 
+bool
 data_loaded (void)
 { return (raw.data_type!=NO_DATA); }
 

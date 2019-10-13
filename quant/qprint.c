@@ -959,7 +959,3 @@ get_fixed_qtl_weights (QTL_MAP *map)
     if (!rtoken(&ln,rREQUIRED,&map->mu) ||
 	!rtoken(&ln,rREQUIRED,&map->sigma_sq)) 	  error("bad weight!"); */
 }
-
-
-
-

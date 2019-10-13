@@ -20,7 +20,7 @@
 
 #define empty_loc_str loc2str(-1)
 #define empty_locs_str locs2str(-1,-1)
-void print_err();
+static void print_err (int indiv, int locus, MAP *map);
 
 #define MAX_LOG_LIKE_COLUMN 66
 

@@ -93,28 +93,34 @@ typedef struct {
 /*** handy functions in QCTM.C ***/
 
 /*** things in QDATA.C ***/
-bool qctm_globals_avail();
-void alloc_qctm_globals();
-void free_qctm_globals();
-real model_prediction(); /* args: QTL_MAP *map; int indiv; */
+void alloc_qctm_globals(void);
+void free_qctm_globals(void);
+bool qctm_globals_avail(void);
+real model_prediction(QTL_MAP *map, int indiv);
 
 /*** things in QTOP.C ***/
-QTL_MAP *alloc_qtl_map(); /* args: int n_intervals, n_continuous_vars; */
-void free_qtl_map();
-bool reset_map();
-//void really_reset_map();
-int  add_interval();
-void mapcpy();
-void make_qtl_map(); /* args: QTL_MAP *map; sets map->trait the runs 
-   prepare_data(), initial_qctm_values(), and qtl_conv_to_map() */
-/* BAGGED THIS:
-real qtl_map_like();  like make_qtl_map(), but it assume that the map->
-   weight, dominance, and cont_var_weight values have been set, and it
-   calls qtl_noconv_to_map(). The likelihood is returned AND map->log_like
-   is set to it. */
+QTL_MAP *alloc_qtl_map(int num_intervals, int num_cont_vars);
+void free_qtl_map(QTL_MAP *map);
+bool reset_map(QTL_MAP *map);
+int add_interval(QTL_MAP *map, int left, int right, real fix_pos, GENETICS *genetics);
+void mapcpy(QTL_MAP *to, QTL_MAP *from);
+void make_qtl_map(QTL_MAP *map);
+//
+//void free_qtl_map();
+//bool reset_map();
+////void really_reset_map();
+//int  add_interval();
+//void mapcpy();
+//void make_qtl_map(); /* args: QTL_MAP *map; sets map->trait the runs
+//   prepare_data(), initial_qctm_values(), and qtl_conv_to_map() */
+///* BAGGED THIS:
+//real qtl_map_like();  like make_qtl_map(), but it assume that the map->
+//   weight, dominance, and cont_var_weight values have been set, and it
+//   calls qtl_noconv_to_map(). The likelihood is returned AND map->log_like
+//   is set to it. */
 
-void copy_genetics();
-bool constrained(); /* args: GENETICS *genetics; */
+void copy_genetics(GENETICS *to, GENETICS *from);
+bool constrained(GENETICS *genetics);
 
 
 /*** random things ***/

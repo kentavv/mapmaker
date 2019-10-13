@@ -323,8 +323,9 @@ extern int Pi, Pj;  /* internal only! */
        Tagain=Tnext(&Ti,&Tj,&Tk,loci,num,seq))
 extern int Ti, Tj, Tk;  /* internal use only! */
 extern bool Tagain;     /* internal use only! */
-SEQ_NODE *Tinit();      /* internal use only! */
-bool Tnext();           /* internal use only! */
+/* internal use only! */
+SEQ_NODE *Tinit(bool *ok, int *i_cnt, int *j_cnt, int *k_cnt, int *locus, int num_loci);
+bool Tnext(int *i_cnt, int *j_cnt, int *k_cnt, int *locus, int num_loci, SEQ_NODE *p);
 
 
 
@@ -370,10 +371,6 @@ is_a_locus() handles them. Token must be despace()ed and filter()ed! */
 
 //void add_to_seq_history (char *seq, bool is_next_entry);
 //void add_to_seq_history(); /* args: char *seq; */
-
-/* bool valid_name(); */
-/* args: char *str; TRUE if str is a valid name token*/
-/* This does NOT necessarily mean that str is defined*/
 
 void print_sequence(void);
 void tokenize_seq(char *seq, char **token, int *num_tokens);

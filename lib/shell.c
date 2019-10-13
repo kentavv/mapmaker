@@ -21,9 +21,9 @@
 char *com, *args;       /* available as globals to the command procedures */
 char *uncrunched_args;
 int com_num, num_args;
-char *((*prompt)());
-char *default_prompt();
-bool (*quit_save_hook)();
+char *((*prompt)(char *));
+//char *default_prompt();
+bool (*quit_save_hook)(bool);
 bool more_mode;
 
 /***** defs for internal use only *****/
@@ -64,7 +64,7 @@ code should only try to run a command when inhibit_menus==FALSE. */
 
 int cmd_history_num;
 bool photo_update_top_hook;
-void (*photo_banner_hook)();
+void (*photo_banner_hook)(FILE *);
 char *the_program, *the_version, *the_copyright;
 
 //int alias_match();

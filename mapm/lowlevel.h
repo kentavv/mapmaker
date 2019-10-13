@@ -57,14 +57,14 @@ extern RAW_DATA raw;
 
 #define RIGHT 		1
 #define LEFT		0
-#define NEGATIVE        1
-#define POSITIVE        0
+//#define NEGATIVE        1
+//#define POSITIVE        0
 
 typedef real   RECVECTOR[2];
-typedef real   RECARRAY[2][2];
-typedef char   CONV_HIST;
-typedef int    (*PFI)();   /* pointer to function returning an integer */
-typedef int    (*PFB)();   /* pointer to function returning a bool(int) */
+//typedef real   RECARRAY[2][2];
+//typedef char   CONV_HIST;
+//typedef int    (*PFI)();   /* pointer to function returning an integer */
+//typedef int    (*PFB)();   /* pointer to function returning a bool(int) */
 
 /* Locus structure for converge_to_map() down.  Used to store
    the markers that converge_to_map() is being used on. */
@@ -126,8 +126,8 @@ typedef struct {
 			COOKED F2 TYPE DATA
 *****************************************************************************/
 
-#define NEUTER                      0    
-#define APRIORI                     2
+//#define NEUTER                      0
+//#define APRIORI                     2
 
 /* Definition for processed backcross data storage. */
 /* As with phase known data, backcross data needs no preprocessing. */
@@ -145,7 +145,7 @@ typedef struct {
     real      prob_dist[3][4]; /* [apriori,left,right][event: AA,AB,BA,BB] */
 }		F2_INHER_STR;
     
-typedef real PROB_DIST[3][4];  /* as in F2_INHER_STR */
+//typedef real PROB_DIST[3][4];  /* as in F2_INHER_STR */
 
 typedef struct {
     int             number_indivs;
@@ -222,14 +222,14 @@ void converge_to_map(MAP *map);  /* arg: MAP; calls map making functions and ret
 
 #define UNINFORM	-1             /* Defs for marker types */
 #define INFORM		0              /*   and zygosity.  	*/
-#define HETERO		INFORM
-#define HOMO		UNINFORM
-#define EITHER		4
-#define FIRSTHETERO	2
+//#define HETERO		INFORM
+//#define HOMO		UNINFORM
+//#define EITHER		4
+//#define FIRSTHETERO	2
 
 #define REC 		1
 #define NOREC 		0
-#define for_recs(r)	for(r=REC;r>=NOREC;r--)
+//#define for_recs(r)	for(r=REC;r>=NOREC;r--)
 
 #define SMALLRECOMBS    0.00001
 #define BIGRECOMBS      0.50

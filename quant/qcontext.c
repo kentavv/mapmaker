@@ -112,6 +112,3 @@ kill_context (STATUS_CONTEXT *con, bool save_it)
     }
     free_context(con);
 }
-
-
-

@@ -33,9 +33,8 @@ real *e_step_temp;     /* [state]- used in LCP and RCP calculations */
 real ***exp_genotype;  /* [indiv][locus][state] for ERROR-KLUDGE */
 
 int *observations; /* [indiv] externed for use as a temp */
-void hmm_converge_to_map();
 
-void (*hmm_set_probs)();
+void (*hmm_set_probs)(MAP *map, real ***trans_prob, real ***obs_prob, real ***implied_recs);
 bool error_kludge; /* TRUE for ERROR-KLUDGE, e.g. error_rate>0 */
 bool separate_recs; 
 /* TRUE if distinct implied_rec/norec entries for each interval */
@@ -90,21 +89,15 @@ int J_BMBM, J_BMAP, J_APBM, J_APAP, B_BMBM, B_BMBP, B_BPBM, B_BPBP;
    used in hmm_f3_self_set_probs() */
 int f3_states, mat_chrom[16], pat_chrom[16], f2_state[16];
 real f2_recs[4][4];
-int  f3_state();
+//int  f3_state();
+int f3_state (char *name, /* for debugging */ int f2, int mat, int pat, int obs);
 
 /**** The internal routines ****/
 
-void free_hmm_temps(int total_loci, int num_indivs, int cross_type);
-void converge_to_map(MAP *map);
-void f2_genotype(int locus, bool haplo, int *observation);
-bool merge_genotypes(int locus, int *observation, int *new_observation);
-int f2_count_infs(int *num_dom, int *num_het, int *observation);
-void hmm_converge_to_map(MAP *map);
 void setup_hmm(MAP *map);
 void setup_bc_like_hmm(int *locus, double *error_rate, int cross_type);
 void setup_f2_hmm(int *locus, double *error_rate);
 void setup_f3_self_hmm(int *locus);
-int f3_state(char *name, int f2, int mat, int pat, int obs);
 void hmm_bc_like_set_probs(MAP *map, real ***trans_prob, real ***obs_prob, real ***implied_recs);
 void hmm_f2_set_probs(MAP *map, real ***trans_prob, real ***obs_prob, real ***implied_recs);
 void hmm_f3_self_set_probs(MAP *map, real ***trans_prob, real ***obs_prob, real ***implied_recs);
@@ -114,12 +107,13 @@ real hmm_e_step(MAP *map, real ***trans_prob, real ***obs_prob, real ***exp_tran
 void test_dump(real ***p, int rows, char *name);
 void test_dump0(real **p, char *name);
 void count_error_lods(real *apriori_rate, real ***obs_prob, real ***exp_genotype, real **error_lod);
-void quick_two_pt(int locus0, int locus1, TWO_PT_DATA *two_pt, bool sex);
 void hmm_fake_converge_to_map(MAP *map);
 
 real null_like;
 bool twopt_kludge;
 MAP *map2;
+
+void hmm_converge_to_map (MAP *map);
 
 
 /**** External Routines, mostly ****/

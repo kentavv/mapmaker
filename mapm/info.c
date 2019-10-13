@@ -66,6 +66,10 @@ bool same_2_loop (TRIPLE_LIST *p, int locus3, real *d1, real *d2, real *d3);
 
 bool get_triple(int locus1, int locus2, int locus3, real *d1, real *d2, real *d3);
 
+static void remove_triple_list (TRIPLE_LIST *p);
+static void return_to_unused (TRIPLE_LIST *p);
+
+
 #define UNFILLED 9999.0
 
 
@@ -793,7 +797,7 @@ print_class_names (void) /* let print() auto_wrap... */
 #define BASH_ORDER3 \
 "Resetting two-point and three-point information for joined loci...\n"
 
-void return_to_unused(), remove_triple_list();
+//void return_to_unused(), remove_triple_list();
 
 void 
 bash_order_info (int *changed, int num_changed)

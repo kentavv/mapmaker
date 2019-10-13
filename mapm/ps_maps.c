@@ -17,10 +17,17 @@
 
 #define LONGEST_MAP 300.0  /* longest map allowed for one page output */
 
-void ps_file_start(), ps_file_end(), ps_page_start(), ps_page_end();
-void ps_dump_chrom();
-real ps_scale();
-char *ps_loc_str(), *ps_frame_str();
+void ps_file_start(FILE *fp);
+void ps_file_end(FILE *fp);
+void ps_page_start(FILE *fp, int pagenum);
+void ps_page_end(FILE *fp);
+void print_ps_map(FILE *fp, MAP *map);
+void print_ps_chrom(FILE *fp, int chrom);
+void print_all_ps_chroms(FILE *fp);
+real ps_scale(real map_length);
+void ps_dump_chrom(FILE *fp, int chrom, real scale);
+char *ps_loc_str(int i);
+char *ps_frame_str(int i);
 
 void 
 ps_file_start (FILE *fp)

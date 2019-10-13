@@ -21,7 +21,7 @@
 #define INC_QLOWLEVEL
 #include "qtl.h"
 
-void free_qtl_sequence (QTL_SEQUENCE *p);
+//void free_qtl_sequence (QTL_SEQUENCE *p);
 
 /***** Global *****/
 QTL_SEQUENCE *ints;
@@ -32,7 +32,7 @@ TABLE *named_sequences, *sequence_history;
 bool Omore; /* used in for_all_orders iterator macro */
 
 /***** Local *****/
-void seq_init(void);
+//void seq_init(void);
 bool set_qtl_sequence(char *str, char *errmsg, int *errpos);
 void free_qtl_sequence(QTL_SEQUENCE *p);
 void free_seq_options(QTL_SEQ_OPTION *q);
@@ -46,7 +46,7 @@ bool try_range(char **str, QTL_SEQ_OPTION *opt);
 void get_genetics_spec(char **str, GENETICS *g);
 void enumerate_possibilities(QTL_SEQUENCE *p);
 bool reset_state(QTL_SEQUENCE *p, bool wiggle, int *pnum_intervals, int *pcont_vars, int *pnum_orders, int *pwiggle_ints);
-void get_seq_free_genetics(QTL_SEQUENCE *p, bool *free);
+//void get_seq_free_genetics(QTL_SEQUENCE *p, bool *free);
 bool get_order(QTL_SEQUENCE *p, bool wiggle, QTL_MAP *map);
 bool next_order(QTL_SEQUENCE *p, int *perm);
 bool next_wiggle(QTL_SEQUENCE *p, int *perm, real cm_step);
@@ -622,7 +622,7 @@ int *pnum_intervals, *pcont_vars, *pnum_orders, *pwiggle_ints;
 }
 
 
-void 
+void
 get_seq_free_genetics (
     QTL_SEQUENCE *p,
     bool *free /* [#intervals] should be alloced - elts are side-effected */
@@ -632,7 +632,7 @@ get_seq_free_genetics (
 
     i=0; do for (j=0; j<p->repeat; j++) {
 	if (p->isa_continuous_var) continue; /* don't increment i */
-	else if (raw.data_type==INTERCROSS) 
+	else if (raw.data_type==INTERCROSS)
 	  free[i++]= (p->genetics.interx_type==FREE);
 	else free[i++]= (p->genetics.backx_weight==DONT_FIX);
     } while ((p=p->next)!=NULL);

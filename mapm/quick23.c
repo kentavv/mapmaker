@@ -24,11 +24,15 @@ char symbols[]={
 #define NUM_SYMS    5 
 
 /* internal functions */
-real quick_back(), quick_f2(), quick_known(), quick_unknown();
-real calc_log_like();
-void probinit(), calclike(), do_scene();
-int lookup(), changes();
-real power(), f2_prob();
+void f2_quick_two_pt(int loc1, int loc2, TWO_PT_DATA *two_pt, bool sexflag);
+real quick_back(LOCUS locus, RECVECTOR **rec_frac, real *conv_like, real *unconv_like);
+real quick_f2(LOCUS locus, RECVECTOR **rec_frac, real *conv_like, real *unconv_like);
+void probinit(real probdist[6][4]);
+void calclike(real prob1[4], real prob2[4], real theta, LOCUS locus, real *likelihood, real *numerator);
+int lookup(int c);
+int changes(int i, int j);
+real f2_prob(real theta, int diffs);
+real power(real a, int x);
 
 void f2_quick_two_pt(int loc1, int loc2, TWO_PT_DATA *two_pt, bool sexflag)
 {

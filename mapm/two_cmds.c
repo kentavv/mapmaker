@@ -18,13 +18,32 @@
 
 /* internal procedures */
 
-bool print_biglod();
-void print_lodtable();
+void print_2pt_criteria(char *str, real lod, real theta);
+void parse_2pt_criteria(char **argptr, real *lod, real *theta);
+void two_point(void);
+void group(void);
+void haplotype(void);
+void unhaplotype(void);
+void list_haplotypes(void);
+void list_loci(void);
+void biglods(void);
+void near_locus(void);
+void near_chrom(void);
+void lodtable(void);
+void pairwise(void);
+bool print_biglod(int i, int j, real lodbound, real thetabound, bool sex, int chrom);
+void print_lodtable(int *locus1, int *locus2, int num_loci1, int num_loci2, int how);
+void print_lod_line(int loc, int *toploc, int topnum, int how, int topref, int downref);
+void three_point(void);
+void forget_three_point(void);
+void suggest_subset(void);
+//bool print_biglod();
+//void print_lodtable();
 #define PRINT_HALF_LODTABLE 1
 #define PRINT_FULL_LODTABLE 2
-void print_2pt_criteria();
-void parse_2pt_criteria();
-void print_lod_line();
+//void print_2pt_criteria();
+//void parse_2pt_criteria();
+//void print_lod_line();
 
 void 
 print_2pt_criteria (char *str, real lod, real theta)

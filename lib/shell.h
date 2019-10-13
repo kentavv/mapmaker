@@ -19,7 +19,7 @@ extern bool wizard_mode;
 extern FILE *help_file;
 #define command void
 
-extern bool (*quit_save_hook)();
+extern bool (*quit_save_hook)(bool);
 extern bool more_mode;
 
 
@@ -160,7 +160,7 @@ extern int cmd_history_num;   /* in shell.c -- looks nice in prompt() */
 //command set_wizard();
 
 extern bool photo_update_top_hook;  /* make photo call update_top() */
-extern void (*photo_banner_hook)(); /* make photo_banner call this w/arg fp */
+extern void (*photo_banner_hook)(FILE*); /* make photo_banner call this w/arg fp */
 
 //void maybe_ok(); /* args: char *str; prints the str then a '\n',
 //   although only "ok\n" is printed to the screen if update_top() succeeds.
@@ -236,7 +236,7 @@ typedef struct {
 	char *name;
 	char abbreviation[MAX_ABBREV_LEN+1];
 	char **tokens;		 /* [token#] -> string */
-	void (*procedure)();     /* ptr to a void function of no arguments */
+	void (*procedure)(void);     /* ptr to a void function of no arguments */
 	char *cmd_help;
 	char *args_help;
 	char *def_help;
@@ -245,9 +245,9 @@ typedef struct {
 	long help_key;   /* index into the help file */
 	int  help_entry; /* entry number in the help file, 1...N */
 	int  code, topic;
-	void (*wimp_procedure)();
-	void (*status_function)();
-	void (*wimp_help)();
+	void (*wimp_procedure)(void);
+	void (*status_function)(void);
+	void (*wimp_help)(void);
 	int wimp_menu_num;	
 	char *menu_entry;
 	char wimp_shortcut;

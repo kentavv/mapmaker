@@ -17,7 +17,14 @@
 #include "mapm.h"
 
 /* internal procedures and variables */
-bool try_marker();
+static bool try_marker (
+        int *marker,
+        MAP *original_map, /* contains the list of loci in the order */
+        SAVED_LIST *list,
+        bool *excluded,
+        bool *zero,
+        int *count
+);
 
 bool find_seed_order(bool is_subset, int *locus, int num_loci, int size, int max_tries, real thresh, MAP *map, MAP *temp_map, bool **temp /* [num_loci][num_loci] */);
 

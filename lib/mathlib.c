@@ -232,31 +232,31 @@ rcopy (real *to, real *from, int length)
 { int i; for (i=0; i<length; i++) to[i]=from[i]; }
 
 
-/*
-void dummy_math_calls()
-{
-    real x,y,z; x=y=z=0.5;
- 
-    x=log10(y);
-    x=pow(y,z);
-    x=log(y);
-    x=exp(y);
-
-    x=floor(y);
-    x=ceil(y);
-    x=fabs(y);
-
-    x=sin(y);
-    x=cos(y);
-    x=tan(y);
-    x=sinh(y);
-    x=cosh(y);
-    x=tanh(y);
-    x=asin(y);
-    x=acos(y);
-    x=atan(y);
-}
-*/
+///*
+//void dummy_math_calls()
+//{
+//    real x,y,z; x=y=z=0.5;
+//
+//    x=log10(y);
+//    x=pow(y,z);
+//    x=log(y);
+//    x=exp(y);
+//
+//    x=floor(y);
+//    x=ceil(y);
+//    x=fabs(y);
+//
+//    x=sin(y);
+//    x=cos(y);
+//    x=tan(y);
+//    x=sinh(y);
+//    x=cosh(y);
+//    x=tanh(y);
+//    x=asin(y);
+//    x=acos(y);
+//    x=atan(y);
+//}
+//*/
 
 
 real two_sigma_sq; 
@@ -352,7 +352,7 @@ pick_from_distribution (
 }
 
 
-void eliminate(); /* defined below */
+//void eliminate(); /* defined below */
 
 void 
 mat_invert (  /* Invert square matrix by Gauss' method */

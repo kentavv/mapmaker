@@ -43,9 +43,7 @@ void ps_page_end(FILE *fp);
 real xscale, yscale, best;
 #define MAX_CHROM_LEN 1000
 
-void print_ps_wiggle_order(wiggle, order, threshold)
-int wiggle, order;
-real threshold;
+void print_ps_wiggle_order(int wiggle, int order, real threshold)
 {
     int i, j, count=0, num_notches=0, pagenum=1;
     double *xval, *yval, *notch, highest, longest, current_len;

@@ -191,12 +191,19 @@ void write_three_pt(FILE *fp);
 
 /**************** Order building code in orders.c ****************/
 
-void get_linkage_group();
+void get_linkage_group (int *locus, int *num_loci, int *linkage_group, int *group_size, real lodbound, real thetabound);
 
-void setup_haplo_group();   /* args: loci, num_loci; */
-bool delete_haplo_groups(); /* args: loci, num_loci; TRUE if any deleted */
-void find_haplo_group();    /* args: loci *#loci group *#group obs1 obs2 */
-bool force_haplo_sanity();  /* int *locus; bool verbose; FALSE if changed */
+void setup_haplo_group(int *locus, int num_loci);
+bool delete_haplo_groups(int *locus, int num_loci, int *old_locus, int *num_old);
+bool force_haplo_sanity(int *locus, bool verbose);
+void find_haplo_group(int *locus, int *num_loci, int *haplo_group, int *num_haplo, int *old_obs, int *new_obs);
+//
+//void get_linkage_group();
+//
+//void setup_haplo_group();   /* args: loci, num_loci; */
+//bool delete_haplo_groups(); /* args: loci, num_loci; TRUE if any deleted */
+//void find_haplo_group();    /* args: loci *#loci group *#group obs1 obs2 */
+//bool force_haplo_sanity();  /* int *locus; bool verbose; FALSE if changed */
 
 void setup_3pt_data(int *locus, int num_loci, real threshold);
 /* args: int locus[], num_loci; real three_pt_threshold;
@@ -227,10 +234,6 @@ void informative_subset(int *locus, int num_loci, int min_infs, real min_theta, 
    smart with mixed typings. */
 
 void extend_order(MAP *placed, PLACEME **unplaced, int *num_unplaced, real npt_thresh, bool print_anyway);
-/* int create_order(); OBSOLETE */
-/* args: int *loci, *num_loci, *order, *num_ordered; real npt_threshold;
-   Iteratively tries to place loci in order - side-effecting order[i] and 
-   *num_ordered. Is rather chatty. */
 
 void find_window(int *order, int num_placed, int new_locus, int *excluded, int min_window, int *start, int *end);
 /* int order[], num_placed, new_locus,  excluded[], min_window, *start, *end;
@@ -485,11 +488,11 @@ void read_order_data(FILE *fp);
 /*************** Haldane/Kosambi Map Functions - now in maps.c ***************/
 typedef struct {
     char	name[12];
-    double	(*add)();
-    double	(*apportion)();
-    double	(*rec_to_dist)();
-    double	(*dist_to_rec)();
-    double      (*d_to_r_deriv)();
+    double	(*add)(real, real);
+    double	(*apportion)(bool, real, real, real);
+    double	(*rec_to_dist)(real);
+    double	(*dist_to_rec)(real);
+    double      (*d_to_r_deriv)(real);
 }	MAP_FUNCTION;
 
 #define TEN_CM      0.0906346 /* haldane, that is */

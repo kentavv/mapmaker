@@ -22,17 +22,34 @@ bool good_seed(MAP *map,MAP *temp_map, real thresh);
   three_pt_excluded[three_pt_index[a]][three_pt_index[b]][three_pt_index[c]] \
     =EXCLUDED /* OBSOLETE? */
 
-void left_exclusion(), right_exclusion(), middle_exclusion();
-bool is_excluded(), is_computed();
-
-void add_to_order();
-int  compare_markers_to_try();
-void randomize_markers_to_try();
-void rank_markers_to_try();
-void add_order();
-bool extend_order_by_1();
-int  **add_orders();
-bool middles_excluded();
+void get_linkage_group(int *locus, int *num_loci, int *linkage_group, int *group_size, real lodbound, real thetabound);
+void find_haplo_group(int *locus, int *num_loci, int *haplo_group, int *num_haplo, int *old_obs, int *new_obs);
+void alloc_3pt_matrix(int num_group);
+void free_3pt_matrix(void);
+void setup_3pt_data(int *locus, int num_loci, real threshold);
+void free_3pt_data(void);
+bool start_3pt(int *locus, int *num_loci, real threshold, int *order, int *num_ordered);
+bool is_excluded(int a, int b, int c);
+bool is_computed(int a, int b, int c);
+void left_exclusion(bool *excluded, int *locus, int num_loci, int newmarker);
+void right_exclusion(bool *excluded, int *locus, int num_loci, int newmarker);
+void middle_exclusion(bool *excluded, int *locus, int num_loci, int leftmost, int rightmost, int init_window_size, int newmarker);
+int three_pt_exclusions(int *order, int num_placed, int newmarker, bool *excluded);
+bool three_pt_verify(int *locus, int num_loci, int window_size);
+void place_locus(MAP *map, int locus, int start, int finish, bool *excluded, PLACE **result, int *best_pos, MAP *best_map, MAP *temp);
+int npt_exclusions(PLACE **place, int num_loci, real like_thresh, real one_err_thresh, real net_err_thresh, bool *excluded, bool *zero_place, int *off_ends, real *error_lod, bool *single_error, real *next_best, real *best_unallowed);
+void informative_subset(int *locus, int num_loci, int min_infs, real min_theta, bool codom_only, bool haplos, int *subset, int *num);
+bool find_seed_order(bool is_subset, int *locus, int num_loci, int size, int max_tries, real thresh, MAP *map, MAP *temp_map, bool **temp);
+bool good_seed(MAP *map, MAP *temp_map, real thresh);
+void extend_order(MAP *placed, PLACEME **unplaced, int *num_unplaced, real npt_thresh, bool print_anyway);
+bool extend_order_by_1(MAP *placed, PLACEME **unplaced, int *num_unplaced, real npt_thresh, bool *contradiction, PLACE **placements, MAP *temp_map);
+void randomize_markers_to_try(PLACEME **unplaced, int num_unplaced);
+void rank_markers_to_try(PLACEME **unplaced, int num_unplaced);
+int compare_markers_to_try(const void *a, const void *b);
+void add_to_order(int how, int *order, int *num_ordered, PLACEME **unplaced, int index, int *num_unplaced);
+void find_window(int *order, int num_placed, int new_locus, int *excluded, int min_window, int *start, int *end);
+int count_positions(int *excluded, int num_order, int *first_place);
+bool middles_excluded(int *excluded, int num_order);
 
 char ***three_pt_excluded=NULL;
 int  three_pt_size=0;
@@ -42,9 +59,9 @@ int *three_pt_index=NULL;
 #define ALLOWED    1
 #define UNCOMPUTED 2
 
-void alloc_3pt_matrix(); /* args: int num_loci; sets a global, will free 
-   and realloc if it's too small, use to prealloc for efficiency */
-void free_3pt_matrix(); 
+//void alloc_3pt_matrix(); /* args: int num_loci; sets a global, will free
+//   and realloc if it's too small, use to prealloc for efficiency */
+//void free_3pt_matrix();
 
 
 

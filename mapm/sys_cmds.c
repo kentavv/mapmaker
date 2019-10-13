@@ -20,7 +20,7 @@ FILE *try_to_open(char *name, int mode, char *ext, bool prev_data) /* return fp 
 void try_to_unload (FILE *fp, /* file to READ just so we can close it if an error occurs */ bool ask_first, bool do_save, bool do_unload, bool genos_too);
 //void try_to_load (FILE *fp, char *name, bool prev_data, bool raw);
 
-bool is_an_old_sequence();
+bool is_an_old_sequence(char *str, char **seq, char **why_not);
 bool is_a_named_sequence(char *str, char **seq);  /* internal use only */
 
 #define SAVE_ERR1 \

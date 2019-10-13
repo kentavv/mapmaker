@@ -71,7 +71,7 @@ likelihood (
 //void kill_entry();
 
 //void ML_qtl_pos();
-real do_brute_force();
+//real do_brute_force();
 //real pos_like();
 
 //real variance();

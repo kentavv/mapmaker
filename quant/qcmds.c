@@ -32,10 +32,13 @@ real min_trait_val, max_trait_val;
 
 /***** INTERNAL *****/
 char *temp, errmsg[MAXLINE+1];
-int get_pair_entry();
-void load_qtl_files(), save_qtl_files();
-bool save_on_exit();
-void print_ps_wiggle_order(), print_ps_multi_wiggle();
+//int get_pair_entry();
+//void load_qtl_files(), save_qtl_files();
+//bool save_on_exit();
+//void print_ps_wiggle_order(), print_ps_multi_wiggle();
+void load_qtl_files (void);
+bool save_on_exit (bool do_it_now);
+void save_qtl_files (FILE *fp);
 
 /***** QTL Commands in this file *****/
 command set_intervals(void);	
@@ -1394,7 +1397,7 @@ command
 load_data (void) 
 {
     FILE *fpa=NULL, *fpb=NULL, *fpc=NULL;
-    int num_of_file=0;
+//    int num_of_file=0;
     char *dfile= get_temp_string(), *tfile= get_temp_string(), *mfile= get_temp_string();
 
     if (nullstr(args)) {
@@ -1440,7 +1443,7 @@ load_data (void)
 	      send(CANTOPEN);
 	    fpc = open_file(mfile,READ);
 
-	    read_data(fpa,fpb,fpc,dfile,num_of_file);
+	    read_data(fpa,fpb,fpc,dfile/*,num_of_file*/);
 
 	    crunch_data();
 	    allocate_qtl_struct(raw.max_traits*2,raw.max_traits*2);

@@ -482,5 +482,3 @@ model_prediction (QTL_MAP *map, int indiv)
     } /* do next interval */
     return(pheno);
 }
-
-

@@ -23,9 +23,9 @@
 
 static void dump_memory_lines(int start, int num) /* internal */;
 
-bool get_home_directory(char *buf);
-bool get_code_directory(char *buf);
-bool get_directory(char *buf);
+//bool get_home_directory(char *buf);
+//bool get_code_directory(char *buf);
+//bool get_directory(char *buf);
 
 /***** globals- see descriptions in iolib.h *****/
 char *ps, *ps_, *ln, *ln_; 
@@ -47,11 +47,11 @@ char *lnptr;
 int  temp_print_spaces;
 #define temp_print_up (temp_print_spaces>0)
 
-void flush_linebuf();
-bool dump_held_lines();
-void kill_temp_print();
-bool lib_clear_screen();
-bool really_do_more();
+//void flush_linebuf();
+//bool dump_held_lines();
+//void kill_temp_print();
+//bool lib_clear_screen();
+//bool really_do_more();
 
 char **memory, **held;
 int memory_end, memory_wrapped, holding, hold_count;

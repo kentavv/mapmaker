@@ -86,36 +86,44 @@ typedef struct {
 
 extern DATA *data; /* a global used by make_qtl_map() */
 
-/*** Functions in QDATA.C ***/
-DATA *alloc_data();  /* args: int max_intervals, max_continuous_vars; */
-//void free_data();    /* args: DATA *ptr; */
+void qtl_conv_to_map(DATA *data, QTL_MAP *map);
+DATA *alloc_data(int num_intervals, int num_cont_vars);
+void prepare_data(QTL_MAP *map, DATA *data);
+void initial_qctm_values(DATA *data, QTL_MAP *map);
+void print_iteration(int iter, QTL_MAP *map, real delta_log_like);
+void print_null_iteration(QTL_MAP *map);
+void do_print_E_step(real **expected_genotype, real **S_matrix, GENO_PROBS *expected_recs, int n_individuals, int n_genotype_vars, int n_continuous_vars, int n_intervals);
 
-void prepare_data(); /* args: QTL_MAP *map; DATA *data; in qdata.c */
-/* Prepare_data() uses the trait, left, right and num_intervals elements
-   of the map struct, along with the global raw struct, to side-effect an 
-   existing data struct. */	   
-
-void initial_qctm_values(); /* args: DATA *data; QTL_MAP *map; in qdata.c */
-/* map->fix_pos, ->fix_weight, ->fix_dominance, ->trait, ->left, and
-   ->right must be set, and prepare_data() must have been run on data;
-   map is side-effected. */
-
-/*** In QCTM.C ***/
-void qtl_conv_to_map(); /* args: DATA *data; QTL_MAP *map; in qctm.c */
-/* side-effects map */
-
-/* Those three routines do all the work needed to make QTL maps. */
-
-/* These are in qprint.c, and are called in the guts of QCTM */
-void print_iteration();        
-void print_null_iteration();
-void do_print_E_step();
+///*** Functions in QDATA.C ***/
+//DATA *alloc_data();  /* args: int max_intervals, max_continuous_vars; */
+////void free_data();    /* args: DATA *ptr; */
+//
+//void prepare_data(); /* args: QTL_MAP *map; DATA *data; in qdata.c */
+///* Prepare_data() uses the trait, left, right and num_intervals elements
+//   of the map struct, along with the global raw struct, to side-effect an
+//   existing data struct. */
+//
+//void initial_qctm_values(); /* args: DATA *data; QTL_MAP *map; in qdata.c */
+///* map->fix_pos, ->fix_weight, ->fix_dominance, ->trait, ->left, and
+//   ->right must be set, and prepare_data() must have been run on data;
+//   map is side-effected. */
+//
+///*** In QCTM.C ***/
+//void qtl_conv_to_map(); /* args: DATA *data; QTL_MAP *map; in qctm.c */
+///* side-effects map */
+//
+///* Those three routines do all the work needed to make QTL maps. */
+//
+///* These are in qprint.c, and are called in the guts of QCTM */
+//void print_iteration();
+//void print_null_iteration();
+//void do_print_E_step();
 
 
 /*** QCTM's state and global variables - declared and used in qctm.c, but
      alloced in qdata.c ***/
 
-extern int max_intervals; /* this var is used all over the code */
+//extern int max_intervals; /* this var is used all over the code */
 extern int max_genotype_vars; 
 extern int max_interx_genotypes, max_backx_genotypes;
 extern int **lookup_genotype;
@@ -163,18 +171,28 @@ typedef struct {
 extern RAW raw;
 
 /*** Functions defined in QRAW.C ***/
-void raw_init();             /* no args */
-void read_data();            /* args FILE *fp; char *path; */
+void raw_init(void);             /* no args */
+void read_data (FILE *fpa, FILE *fpb, FILE *fpm, char *temp);            /* args FILE *fp; char *path; */
+
+void free_raw(void);
+bool data_loaded(void);
+void save_traitfile(FILE *fp);
+void crunch_data(void);
+
 //void read_olddata();         /* same args as read_data     */
-void crunch_data();          /* no args; makes L&R cond_probs in raw struct */
-bool data_loaded();          /* no args; return TRUE if data is loaded */
-real map_length();           /* args: int left_locus, right_locus; */
-real transition_prob();      /* args: int data_type, left, right; real theta;*/
-real apriori_prob();         /* args: int data_type, geno; */
-void indiv_interval_probs(); /* args: INTERVAL_GENOTYPE_PROBS *prob; 
-			        int index, indiv, left, right; real theta; */
-void save_traitfile();       /* command call "store status" */
-void free_raw();             /* no args; never been used! */
+//void crunch_data();          /* no args; makes L&R cond_probs in raw struct */
+//bool data_loaded();          /* no args; return TRUE if data is loaded */
+real map_length(int left, int right);
+//real map_length();           /* args: int left_locus, right_locus; */
+real transition_prob(int data_type, int geno_was, int geno_is, real theta);
+//real transition_prob();      /* args: int data_type, left, right; real theta;*/
+real apriori_prob(int data_type, int geno);
+//real apriori_prob();         /* args: int data_type, geno; */
+void indiv_interval_probs(INTERVAL_GENOTYPE_PROBS *prob, int data_indiv_num, int raw_indiv_num, int left_locus_num, int right_locus_num, real theta);
+//void indiv_interval_probs(); /* args: INTERVAL_GENOTYPE_PROBS *prob;
+//			        int index, indiv, left, right; real theta; */
+//void save_traitfile();       /* command call "store status" */
+//void free_raw();             /* no args; never been used! */
 
 
 
@@ -211,11 +229,11 @@ extern SAVED_LIST *list;
 #define NONE_UNLINKED -1
 
 //void create_status();
-SAVED_LIST *allocate_map_list();
-MAP *allocate_map();
+//SAVED_LIST *allocate_map_list();
+//MAP *allocate_map();
 //void sort_last();
-void free_map();
-void free_map_list();
+//void free_map();
+//void free_map_list();
 //int symbol_value();
 
 #define PARENTAL_TYPE_A           'A'

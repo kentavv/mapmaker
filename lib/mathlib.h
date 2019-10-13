@@ -14,22 +14,22 @@
 
 /* Numeric stuff for the helpers library */
 
-/********** THE FOLLOWING MATH FUNCTIONS AWRE KNOWN TO BE PORTABLE. **********
-
-THESE MUST BE CALLED WITH REAL (THAT IS, DOUBLE) ARGS:
-log10(); exp(); pow(); log(); floor(); ceil(); fabs(); sqrt(); 
-sin(); cos(); tan(); asin(); acos(); atan(); sinh(); cosh(); tanh(); atan2();
-
-INTEGER FUNCTIONS:  abs(); 
-
-DO NOT USE ANY OTHER MATH FUNCTIONS WHICH EXIST ON PARTICULAR SYSTEMS, 
-INCLUDING:
-
-hypot(); acosh(); asinh(); atanh(); cabs(); fmod(); ldexp(); frexp();
-ldiv(); div(); labs(); modf(); bessel and gamma functions; many other
-BSD UNIX math library functions; and particular random number
-generator functions (use randnum() below).
-******************************************************************************/
+///********** THE FOLLOWING MATH FUNCTIONS AWRE KNOWN TO BE PORTABLE. **********
+//
+//THESE MUST BE CALLED WITH REAL (THAT IS, DOUBLE) ARGS:
+//log10(); exp(); pow(); log(); floor(); ceil(); fabs(); sqrt();
+//sin(); cos(); tan(); asin(); acos(); atan(); sinh(); cosh(); tanh(); atan2();
+//
+//INTEGER FUNCTIONS:  abs();
+//
+//DO NOT USE ANY OTHER MATH FUNCTIONS WHICH EXIST ON PARTICULAR SYSTEMS,
+//INCLUDING:
+//
+//hypot(); acosh(); asinh(); atanh(); cabs(); fmod(); ldexp(); frexp();
+//ldiv(); div(); labs(); modf(); bessel and gamma functions; many other
+//BSD UNIX math library functions; and particular random number
+//generator functions (use randnum() below).
+//******************************************************************************/
 
 /* Other useful ones... */
 #define exp10(x) pow(10.0,x)

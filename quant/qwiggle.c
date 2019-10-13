@@ -26,11 +26,13 @@ COMPARE_OPERATION **compares;
 int num_compares, max_compares, first_compare;
 
 /* local to this file */
-bool step();
-WIGGLE_PEAK *peak_finder();
-void save_wiggle(),save_interval(),save_qtl_map(),save_compare();
-void load_wiggle(),load_interval(),load_compare();
-QTL_MAP *load_qtl_map();
+static bool step(int *interval, int * point, bool *contig, WIGGLE_INTERVAL **wig, int n_intervals, bool forwards);
+static WIGGLE_PEAK *peak_finder(int *interval, int * point, bool *off_end, bool get_peak_maps /* if TRUE, fill in peak->map MAY REQUIRE CALCULATION! */, WIGGLE_INTERVAL **wig, int n_intervals,
+                         real threshold, real falloff);
+QTL_MAP *load_qtl_map(FILE *fp);
+void save_qtl_map(FILE *fp, QTL_MAP *map);
+void save_interval(FILE *fp, WIGGLE_INTERVAL *interval);
+void load_interval(FILE *fp, WIGGLE_INTERVAL *interval);
 
 /* functions */
 

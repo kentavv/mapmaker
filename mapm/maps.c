@@ -18,10 +18,21 @@
 /****************** Support for the MAP and MAP_LIST structs *****************/
 
 /* internal only */
-int insert_sorted_map();
-int insert_unsorted_map();
-void sort_last();
-void allocate_error_matrix();
+static void allocate_error_matrix(MAP *map);
+static int insert_sorted_map(SAVED_LIST *list);
+static void sort_last(SAVED_LIST *list);
+static int insert_unsorted_map(SAVED_LIST *list);
+
+/******************************* Map Functions *******************************/
+static real apportion(bool rec_flag, real both, real first, real second);
+static real poisson_add(real first, real second);
+static real poisson_r_d(real rec_frac);
+static real poisson_d_r(real dist);
+static real kosa_add(real first, real second);
+static real kosa_r_d(real rec_frac);
+static real kosa_d_r(real dist);
+static real poisson_d_r_deriv(real dist);
+static real kosa_d_r_deriv(real dist);
 
 /* external */
 MAP_FUNCTION *mapfunction;
@@ -436,11 +447,11 @@ insert_unsorted_map (SAVED_LIST *list)
 
 /******************************* Map Functions *******************************/
 
-real apportion();
-real poisson_add(), poisson_d_r();
-real poisson_r_d(), kosa_r_d();
-real kosa_add(), kosa_d_r();
-real poisson_d_r_deriv(), kosa_d_r_deriv();
+//real apportion();
+//real poisson_add(), poisson_d_r();
+//real poisson_r_d(), kosa_r_d();
+//real kosa_add(), kosa_d_r();
+//real poisson_d_r_deriv(), kosa_d_r_deriv();
 
 
 real 

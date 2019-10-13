@@ -453,40 +453,40 @@ get_reals (char *prompt, real *real_list, char *command_str, int *num_reals)
 }
 
 
-#ifdef OBSOLETE_CODE
-char *print_using();
-
-/* The screen header:
-         1         2         3         4         5         6         7
-1234567890123456789012345678901234567890123456789012345678901234567890123456789
--------------------------------------------------------------------------------
-MAPMAKER 3.0b     units: kossambi CM             photo: 123456789012.out
-using %-24s photo: %s"
-sequence #123: blah blah blah
--------------------------------------------------------------------------------
-*/
-
-#define LINE0 "MAPMAKER V3.0b   map function %-17s  data: %-22s"
-#define LINE1 "units: %-9s using: %-24s photo: %-22s"
-#define LINE2 "sequence #%d: %-64s"
-
-void 
-mapm_top (char **line, int lines, int cols)
-{
-    char file[PATH_LENGTH+1];
-
-    if(!data_loaded()) { sprintf(line[0],LINE0,mapfunction->name,"<none>"); }
-    else { nstrcpy(file,raw.filename,cols-55);
-	   sprintf(line[0],LINE0,mapfunction->name,file); }
-    
-    if(!log_open) { strcpy(file,"<off>"); }
-    else { nstrcpy(file,photo_file,cols-36); }
-
-    sprintf(line[1],LINE1,(units == RECFRACS)?"rec-fracs":"cM",print_using(),file);
-    
-    sprintf(line[2],LINE2,context[active_context]->seq_history_num,seq_string);
-}
-#endif
+//#ifdef OBSOLETE_CODE
+//char *print_using();
+//
+///* The screen header:
+//         1         2         3         4         5         6         7
+//1234567890123456789012345678901234567890123456789012345678901234567890123456789
+//-------------------------------------------------------------------------------
+//MAPMAKER 3.0b     units: kossambi CM             photo: 123456789012.out
+//using %-24s photo: %s"
+//sequence #123: blah blah blah
+//-------------------------------------------------------------------------------
+//*/
+//
+//#define LINE0 "MAPMAKER V3.0b   map function %-17s  data: %-22s"
+//#define LINE1 "units: %-9s using: %-24s photo: %-22s"
+//#define LINE2 "sequence #%d: %-64s"
+//
+//void
+//mapm_top (char **line, int lines, int cols)
+//{
+//    char file[PATH_LENGTH+1];
+//
+//    if(!data_loaded()) { sprintf(line[0],LINE0,mapfunction->name,"<none>"); }
+//    else { nstrcpy(file,raw.filename,cols-55);
+//	   sprintf(line[0],LINE0,mapfunction->name,file); }
+//
+//    if(!log_open) { strcpy(file,"<off>"); }
+//    else { nstrcpy(file,photo_file,cols-36); }
+//
+//    sprintf(line[1],LINE1,(units == RECFRACS)?"rec-fracs":"cM",print_using(),file);
+//
+//    sprintf(line[2],LINE2,context[active_context]->seq_history_num,seq_string);
+//}
+//#endif
 
 
 void 

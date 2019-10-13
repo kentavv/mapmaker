@@ -192,13 +192,13 @@ type of a signal handling function used as an argument to signal().
 
 
 
-/************************* Random Numbers **********************************
-There are at least 3 standard random number generators in C-libraries:
-rand() (ANSI, fairly ubiquitous), drand48() (System V), and random() (BSD).
-Rand() is a lousy random number generator: don't use it unless no
-other is available. See the code for these in syscode.c.  The limits sont
-seem to be real portable, so be careful.
-***************************************************************************/
+/// ************************* Random Numbers **********************************
+//There are at least 3 standard random number generators in C-libraries:
+//rand() (ANSI, fairly ubiquitous), drand48() (System V), and random() (BSD).
+//Rand() is a lousy random number generator: don't use it unless no
+//other is available. See the code for these in syscode.c.  The limits sont
+//seem to be real portable, so be careful.
+//***************************************************************************/
 //#ifdef _SYS_AUX
 //#define USE_DRAND48
 //#else
@@ -214,54 +214,54 @@ seem to be real portable, so be careful.
 //#endif
 
 
-/***************************** C-Library **************************************
-Here are some casts to make various incompatible C-library functions
-compatible accross machines. NONE OF THESE FUNCTIONS SHOULD BE CALLED
-DIRECTLY! RATHER, THEY SHOULD BE CALLED ONLY BY THE HELPERS ROUTINES
-WHICH DRIVE THEM!  Define the constants appropriately so that the
-following declarations are correct on the target machine:
-
-      CALLOC_PTR_TO *calloc(num,sizeof(...)) 
-          CALLOC_NUM_TYPE num;
-	  SIZEOF_TYPE size;
-
-      TIME_TYPE time(); 
-      char *ctime(ptr) 
-          TIME_TYPE *ptr;
-
-      qsort(data,array_length,width,compare)  \*** portability hell ***\
-          QSORT_DATA_PTR_TO *data; \* an array \* 
-          QSORT_LENGTH array_length;
-	  SIZEOF_TYPE width;
-          int (*compare)();
-      int compare(a,b)
-          QSORT_COMPARE_PTR_TO(type) *a, *b;
-
-where type is the type of thing that pointers into data (eg a and b) really 
-point to. For example, to compare long integers, the code should read (Note: 
-better interfaces are provided in the library - see misclib.h for them!) 
-
-      int long_compare(a,b)
-      QSORT_COMPARE_PTR_TO(long) *a;
-      QSORT_COMPARE_PTR_TO(long) *b;
-      { 
-          long x,y; 
-	  x= *(long*)a; y= *(long*)b; 
-	  if (x<y) return(-1); else if (x==y) return(0); else return(1); 
-      }
-      ...
-      qsort(QSORT_CAST(data),(QSORT_LENGTH)length,sizeof(long),long_compare)
-
-Qsort()'s return value, if it has one, is ignored. We assume that qsort never
-fails (perhaps this is stupid).
-
-Define (and use!) exit_main as the statement which main() should execute 
-when the program normally terminates. abnormal_exit should be an exit()
-call for abnormal situations (mostly for the HP 800 exit() bus-error bug!)
-
-Define HAVE_CHDIR, HAVE_GETCWD, and/or HAVE_GETENV if those functions exist.
-Check out their usage (arguments, etc) in syscode.c to be safe! 
-***************************************************************************/
+// ***************************** C-Library **************************************
+//Here are some casts to make various incompatible C-library functions
+//compatible accross machines. NONE OF THESE FUNCTIONS SHOULD BE CALLED
+//DIRECTLY! RATHER, THEY SHOULD BE CALLED ONLY BY THE HELPERS ROUTINES
+//WHICH DRIVE THEM!  Define the constants appropriately so that the
+//following declarations are correct on the target machine:
+//
+//      CALLOC_PTR_TO *calloc(num,sizeof(...))
+//          CALLOC_NUM_TYPE num;
+//	  SIZEOF_TYPE size;
+//
+//      TIME_TYPE time();
+//      char *ctime(ptr)
+//          TIME_TYPE *ptr;
+//
+//      qsort(data,array_length,width,compare)  \*** portability hell ***
+//          QSORT_DATA_PTR_TO *data; \* an array \*
+//          QSORT_LENGTH array_length;
+//	  SIZEOF_TYPE width;
+//          int (*compare)();
+//      int compare(a,b)
+//          QSORT_COMPARE_PTR_TO(type) *a, *b;
+//
+//where type is the type of thing that pointers into data (eg a and b) really
+//point to. For example, to compare long integers, the code should read (Note:
+//better interfaces are provided in the library - see misclib.h for them!)
+//
+//      int long_compare(a,b)
+//      QSORT_COMPARE_PTR_TO(long) *a;
+//      QSORT_COMPARE_PTR_TO(long) *b;
+//      {
+//          long x,y;
+//	  x= *(long*)a; y= *(long*)b;
+//	  if (x<y) return(-1); else if (x==y) return(0); else return(1);
+//      }
+//      ...
+//      qsort(QSORT_CAST(data),(QSORT_LENGTH)length,sizeof(long),long_compare)
+//
+//Qsort()'s return value, if it has one, is ignored. We assume that qsort never
+//fails (perhaps this is stupid).
+//
+//Define (and use!) exit_main as the statement which main() should execute
+//when the program normally terminates. abnormal_exit should be an exit()
+//call for abnormal situations (mostly for the HP 800 exit() bus-error bug!)
+//
+//Define HAVE_CHDIR, HAVE_GETCWD, and/or HAVE_GETENV if those functions exist.
+//Check out their usage (arguments, etc) in syscode.c to be safe!
+//***************************************************************************/
 #define HAVE_GETENV   /* Don't all ANSI compilers have these now? */
 #define HAVE_GETCWD
 #define HAVE_CHDIR
@@ -603,7 +603,7 @@ robust and portable) interfaces are provided by the library. */
 
 /* Library declarations only to be used by the helpers library code itself */
 extern char *ps_, *ln_; /* defined in iolib.c */
-void dummy_math_calls();
+//void dummy_math_calls();
 
 #endif /* for #ifdef INC_HELP_DEFS */
 

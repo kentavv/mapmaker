@@ -152,8 +152,8 @@ void do_save_data(char *base_name, bool save_genos_too);
 
 /***************** MAPM Status Variables  ******************/
 /* Variables that the user controls - see reset_state(), state_init() */
-void reset_state();  /* set all vars to sane values */
-void undo_state();   /* free a little stuff */
+void reset_state(void);  /* set all vars to sane values */
+void undo_state(void);   /* free a little stuff */
 
 /* NOTE! Keep the declarations of vars in the same order here, below in 
    reset_state(), in read/write_state, and in mapm.h. */
@@ -374,7 +374,7 @@ command new_append(void);
 command show_seq_history(void); /* previous sequences */
 command set_class(void);
 command make_classes(void);
-void init_class_names(); /* could become an interactive command */
+//void init_class_names(); /* could become an interactive command */
 
 /* map_func.c */
 command cm_func(void);
@@ -390,9 +390,9 @@ command draw_chromosome(void);
 command draw_all_chromosomes(void);
 
 
-void seg_dist();
+//void seg_dist();
 
-bool mapm_save_on_exit(); /* now in main.c */
+bool mapm_save_on_exit(bool do_it_now);
 
 command prepdat(void);    		
 command translate(void);

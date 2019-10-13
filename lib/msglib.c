@@ -65,7 +65,7 @@ int last; 		     /* last msg num assigned */
 char **mname;                /* [msg] => name string */
 void (*(maction[MSGS]))(int);   /* [msg] => function which does whatever */
 void (*(mstrmsg[MSGS]))(char *);   /* [msg] => function which sets its (char*) arg */
-void sighandle(); 
+//void sighandle();
 
 void 
 msg_init (void)

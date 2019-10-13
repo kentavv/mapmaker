@@ -205,7 +205,8 @@ long mkseed(long x)
 
 //#ifdef USE_RANDOM
 void do_seedrand(long x) { srandom((int)mkseed(x)); }
-real randnum() { return(((real)random())/2147483648.0); }
+real 
+randnum (void) { return(((real)random())/2147483648.0); }
 //#else
 //#ifdef USE_DRAND48
 //void do_seedrand(long x) long x; { srand48(mkseed(x)); }

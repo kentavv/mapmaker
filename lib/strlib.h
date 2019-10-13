@@ -167,56 +167,56 @@ side-effect their argument str, and return a pointer to it for yucks.
 //char *pad_to_len();     /* args: char *str; int max_chars; adds spaces */
 //char *append_spaces();  /* args: char *str; int num_spaces; also adds spaces */
 
-/****************************************************************************
-Each of the token-parsing functions work as follows: 
-
-bool itoken(), ltoken(), rtoken();
-args: char **p_str; <value type> default_value, *result; 
-
-bool stoken();
-args: char **p_str; char *default_value, *result; 
-
-bool nstoken(), maxstoken();
-args: char **p_str; char *default_value,*result; int num_chars;
-
-bool stokenof();
-args: char **p_str; char *default_value, *result; char *parsable_chars; 
-
-bool nstokenof(), maxstokenof();
-args: char **p_str; char *default_value, *result; int num_chars; 
-      char *parsable_chars;
-
-If one of these succeeds: *p_str points to the delimiting character which
-follows the token (which may be '\0'), *result is set, and TRUE is returned.
-
-If no token is avail: *p_str points to the '\0' at the end of the
-string. In this case, if a default is given then TRUE is returned and
-*result is set.  Otherwise, FALSE is returned, and *result is
-undefined.
-
-If the token is bad: *p_str points to the beginning of the token (so
-that nullstr(*p_str)==FALSE, see bad_token() below). If a default is
-available, then *result is set to it, otherwise *result is undefined.
-FALSE is always returned.
-
-Note that for itoken(), rtoken(), ltoken(), stoken(), and stokenof(),
-the length of a token is limited to TOKLEN chars. (Thus, stoken() etc.
-should be passed a pointer to a string of at least TOKLEN+1 chars to
-hold the result.) Longer tokens are truncated (which always makes
-numbers 'bad').
-
-For nstoken(), the user may specify the length of the result string to
-use instead of TOKLEN. For maxstoken() the length of the token must be
-<= num_chars characters, otherwise the result string is truncated,
-*p_str is left untouched, and FALSE is returned.
-
-stokenof(), nstokenof(), and maxstokenof() specify the legal
-characters which may comprise the token. Other characters (excluding
-the self_delimiting, described below) cause FALSE to be returned, and
-no token is still parsed from the string. ANYCHAR (really NULL,
-defined below for parse_char()) may be used to indicate that for
-parsable_chars to indicate that any character is OK.
-****************************************************************************/
+///****************************************************************************
+//Each of the token-parsing functions work as follows:
+//
+//bool itoken(), ltoken(), rtoken();
+//args: char **p_str; <value type> default_value, *result;
+//
+//bool stoken();
+//args: char **p_str; char *default_value, *result;
+//
+//bool nstoken(), maxstoken();
+//args: char **p_str; char *default_value,*result; int num_chars;
+//
+//bool stokenof();
+//args: char **p_str; char *default_value, *result; char *parsable_chars;
+//
+//bool nstokenof(), maxstokenof();
+//args: char **p_str; char *default_value, *result; int num_chars;
+//      char *parsable_chars;
+//
+//If one of these succeeds: *p_str points to the delimiting character which
+//follows the token (which may be '\0'), *result is set, and TRUE is returned.
+//
+//If no token is avail: *p_str points to the '\0' at the end of the
+//string. In this case, if a default is given then TRUE is returned and
+//*result is set.  Otherwise, FALSE is returned, and *result is
+//undefined.
+//
+//If the token is bad: *p_str points to the beginning of the token (so
+//that nullstr(*p_str)==FALSE, see bad_token() below). If a default is
+//available, then *result is set to it, otherwise *result is undefined.
+//FALSE is always returned.
+//
+//Note that for itoken(), rtoken(), ltoken(), stoken(), and stokenof(),
+//the length of a token is limited to TOKLEN chars. (Thus, stoken() etc.
+//should be passed a pointer to a string of at least TOKLEN+1 chars to
+//hold the result.) Longer tokens are truncated (which always makes
+//numbers 'bad').
+//
+//For nstoken(), the user may specify the length of the result string to
+//use instead of TOKLEN. For maxstoken() the length of the token must be
+//<= num_chars characters, otherwise the result string is truncated,
+//*p_str is left untouched, and FALSE is returned.
+//
+//stokenof(), nstokenof(), and maxstokenof() specify the legal
+//characters which may comprise the token. Other characters (excluding
+//the self_delimiting, described below) cause FALSE to be returned, and
+//no token is still parsed from the string. ANYCHAR (really NULL,
+//defined below for parse_char()) may be used to indicate that for
+//parsable_chars to indicate that any character is OK.
+//****************************************************************************/
 
 #define TOKLEN 40 
 //int itoken();	 /* int token */
@@ -355,17 +355,17 @@ get_temp_string(). Thus, heed the warnings above.
 /* other output formating stuff... */ 
 //char *binary(); /* args: int num_to_print, num_bits; char *str; */
 
-/* macro char *maynl();  args: int chars; 
-   returns a ptr to a string containing only the \n character if the number of 
-   chars is too many to fit on a screen line, and otherwise returns a null 
-   (e.g. zero length) string. For example:
+///* macro char *maynl();  args: int chars;
+//   returns a ptr to a string containing only the \n character if the number of
+//   chars is too many to fit on a screen line, and otherwise returns a null
+//   (e.g. zero length) string. For example:
+//
+//   sprintf(str,"successfully loaded file: %s%s\n",maynl(len(name)+26),name);
+//
+//   maynls(str,chars) is the same as maynl(len(str)+chars) */
 
-   sprintf(str,"successfully loaded file: %s%s\n",maynl(len(name)+26),name); 
-
-   maynls(str,chars) is the same as maynl(len(str)+chars) */
-
-#define maynl(chars) ((chars)>LINE ? "\n" : "")
-#define maynls(str,chars) ((len(str)+chars)>LINE ? "\n" : "")
+//#define maynl(chars) ((chars)>LINE ? "\n" : "")
+//#define maynls(str,chars) ((len(str)+chars)>LINE ? "\n" : "")
 
 /* macro char *maybe_s(num); returns a string containing "s" if num!=1,
    or a string of "" if num==1. Useful for making words maybe plural. */
