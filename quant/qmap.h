@@ -60,50 +60,58 @@ typedef struct {
 #define RECESSIVE   2
 #define ADDITIVE    3
 #define CONSTRAINED 4
-#define FIXED       5 
+#define FIXED       5
 #define TEST_MODELS 6  /* TEST_MODELS is only allowed inside QTL_SEQUENCEs */
 #define NUM_MODELS  4  /* 0-3 as FIXED and CONSTRAINED models don't count */
 #define F3DOMINANT  7
 #define F3RECESSIVE 8
 
-typedef struct { 
+typedef struct {
     int trait;
     int num_intervals;
     int num_continuous_vars;
-    int max_intervals;			/* max # allocated for */
+    int max_intervals;            /* max # allocated for */
     int max_continuous_vars;
-    int *left, *right;			/* [interval#] => left & right loci */
-    real *interval_len; 		/* [interval#] => a rec frac */
-    real *qtl_pos;			/* [interval#] also is a r.f. */
-    real *fix_pos;	     	        /* [interval#] is DONT_FIX or a r.f. */
-    real *qtl_weight;			/* [interval#] */
+    int *left, *right;            /* [interval#] => left & right loci */
+    real *interval_len;        /* [interval#] => a rec frac */
+    real *qtl_pos;            /* [interval#] also is a r.f. */
+    real *fix_pos;                    /* [interval#] is DONT_FIX or a r.f. */
+    real *qtl_weight;            /* [interval#] */
     real *qtl_dominance;                /* [interval#] only for intercross! */
-    int  *cont_var;			/* [cont_var#] => a valid trait# */
-    real *cont_var_weight; 		/* [cont_var#] */
-    real *fix_cont_var_weight; 		/* [cont_var#] */
+    int *cont_var;            /* [cont_var#] => a valid trait# */
+    real *cont_var_weight;        /* [cont_var#] */
+    real *fix_cont_var_weight;        /* [cont_var#] */
     GENETICS *constraint;               /* an array of #intervals structs */
     real mu, sigma_sq, var_explained, chi_sq;
     real null_mu, null_sigma_sq, null_log_like;
-    real log_like, no_data_like, abs_log_like;   
+    real log_like, no_data_like, abs_log_like;
 } QTL_MAP;
 
 #define DONT_FIX   OBSCURE_REAL         /* use for fix_pos or fix_weight */
-#define EPISTASIS_TERM -1 		/* special cont-var */
+#define EPISTASIS_TERM -1        /* special cont-var */
 
 /*** handy functions in QCTM.C ***/
 
 /*** things in QDATA.C ***/
 void alloc_qctm_globals(void);
+
 void free_qctm_globals(void);
+
 bool qctm_globals_avail(void);
+
 real model_prediction(QTL_MAP *map, int indiv);
 
 /*** things in QTOP.C ***/
 QTL_MAP *alloc_qtl_map(int num_intervals, int num_cont_vars);
+
 void free_qtl_map(QTL_MAP *map);
+
 bool reset_map(QTL_MAP *map);
+
 int add_interval(QTL_MAP *map, int left, int right, real fix_pos, GENETICS *genetics);
+
 void mapcpy(QTL_MAP *to, QTL_MAP *from);
+
 void make_qtl_map(QTL_MAP *map);
 //
 //void free_qtl_map();
@@ -120,14 +128,15 @@ void make_qtl_map(QTL_MAP *map);
 //   is set to it. */
 
 void copy_genetics(GENETICS *to, GENETICS *from);
+
 bool constrained(GENETICS *genetics);
 
 
 /*** random things ***/
-#define INF_LOCUS 	-1
-#define NO_LOCUS 	-2
-#define ANY_LOCUS 	-3
-#define VERY_UNLIKELY	-1e30
+#define INF_LOCUS    -1
+#define NO_LOCUS    -2
+#define ANY_LOCUS    -3
+#define VERY_UNLIKELY    -1e30
 /* #define NO_TRAIT	-1 */
 
 #endif

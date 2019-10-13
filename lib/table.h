@@ -23,11 +23,14 @@
 
 typedef struct named_entry {
     char *string;
-    union { int num; char *name; } id;
+    union {
+        int num;
+        char *name;
+    } id;
     struct named_entry *next; /* make a linked list */
 } TABLE_ENTRY;
-    
-typedef struct { 
+
+typedef struct {
     struct named_entry *list, *unused;
     bool named_entries;
     int string_length, expands_by;
@@ -44,15 +47,25 @@ TABLE *allocate_table(int num_entries, int str_len, int expand_by, bool named);
 
 
 TABLE_ENTRY *allocate_table_entries(int num_entries, int str_len, bool named);
+
 void free_table(TABLE *p);
+
 int count_table_entries(TABLE *p);
+
 TABLE_ENTRY *get_entry_to_bash(TABLE *p);
+
 void put_named_entry(char *name, char *str, TABLE *p);
+
 bool get_named_entry(char *name, char **p_real_name, char **p_str, TABLE *p, flag *fail_reason);
+
 bool delete_named_entry(char *name, TABLE *p, flag *fail_reason);
+
 void put_numbered_entry(char *str, TABLE *p, int *num);
+
 bool get_numbered_entry(int num, char **p_str, TABLE *p);
+
 void save_table(TABLE *p, FILE *fp, int index);
+
 void load_table(TABLE *p, FILE *fp, int index, int num_entries);
 
 

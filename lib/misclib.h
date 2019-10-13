@@ -51,13 +51,13 @@
 //
 ////int icomp(), lcomp(), scomp(), rcomp(), inv_icomp(), inv_rcomp();
 
-#define isort(p,n) qsort(p,n,sizeof(int),icomp);
-#define lsort(p,n) qsort(p,n,sizeof(long),lcomp);
-#define rsort(p,n) qsort(p,n,sizeof(real),rcomp);
-#define ssort(p,n) qsort(p,n,sizeof(char*),scomp);
-#define inv_isort(p,n) qsort(p,n,sizeof(int),inv_icomp);
-#define inv_rsort(p,n) qsort(p,n,sizeof(real),inv_rcomp);
- 
+#define isort(p, n) qsort(p,n,sizeof(int),icomp);
+#define lsort(p, n) qsort(p,n,sizeof(long),lcomp);
+#define rsort(p, n) qsort(p,n,sizeof(real),rcomp);
+#define ssort(p, n) qsort(p,n,sizeof(char*),scomp);
+#define inv_isort(p, n) qsort(p,n,sizeof(int),inv_icomp);
+#define inv_rsort(p, n) qsort(p,n,sizeof(real),inv_rcomp);
+
 ///* For arrays of pointers to things (eg: structs) use:
 //   void psort(); args: <type> *data; int array_len; <type>; int comp_func();
 //
@@ -92,5 +92,5 @@
 
 //#define psort(p,n,t,f) qsort(QSORT_CAST(p),(QSORT_LENGTH)n,sizeof(t*),f)
 //#define PSORT_COMPARE_TYPE(t) QSORT_COMPARE_PTR_TO(t)
- 
+
 #endif

@@ -25,12 +25,12 @@
 #include <time.h>
 #include <unistd.h>
 
-typedef double  real;
-typedef int     flag;
-typedef int     bool;
-#define TRUE 	(1)
-#define FALSE	(0)
-#define MAYBE	(-1)
+typedef double real;
+typedef int flag;
+typedef int bool;
+#define TRUE    (1)
+#define FALSE    (0)
+#define MAYBE    (-1)
 
 #include "eqn.h"
 #include "iolib.h"
@@ -133,15 +133,15 @@ Setup the following for the OS's path types (these are used by the
 make_filename() procedure in iolib.c). Note that the lengths of various 
 elements of a path are not checked, only its total length.
 *************************************************************************/
-#define PATH_LENGTH		200
+#define PATH_LENGTH        200
 
 //#ifndef _SYS_DOS /* e.g. _SYS_UNIX or some POSIX like thing */
 #define HELP_EXT                ".help"
 #define ARG_CHAR                '-' /* Usual char for command line switches */
-#define PATH_REQUIRE_EXTENSION 	FALSE
-#define PATH_SINGLE_EXTENSION  	FALSE
-#define PATH_UPPERCASE 		FALSE
-#define PATH_DIR_SEPARATORS 	"/"    /* rightmost separating char */
+#define PATH_REQUIRE_EXTENSION    FALSE
+#define PATH_SINGLE_EXTENSION    FALSE
+#define PATH_UPPERCASE        FALSE
+#define PATH_DIR_SEPARATORS    "/"    /* rightmost separating char */
 #define PATH_DIR_FILE_INSERT    "/"    /* insert between a dir and filename */
 #define PATH_OK_CHARS \
 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~#/"
@@ -299,7 +299,7 @@ type of a signal handling function used as an argument to signal().
 #define HAVE_GETCWD
 #define HAVE_CHDIR
 #define normal_exit()     exit(0)
-#define abnormal_exit()   exit(1)	
+#define abnormal_exit()   exit(1)
 #define exit_main()       return(0)
 //#define TIME_TYPE 	  time_t /* for ctime - yes even on SunOS! */
 //#define QSORT_CAST(x)      ((QSORT_DATA_PTR_TO*)(x))
@@ -396,15 +396,15 @@ the screen is not cleared. More-mode is now always diabled at first.
 ***************************************************************************/
 #define TRY_GETENV_TERM   /* Might as well always leave these defined? */
 #define TRY_GETENV_LINES  /* see syscode.c */
-#define TRY_ISATTY        
-/* #define DEFAULT_SCROLLBACK TRUE */ /* define ONLY to over-ride */ 
+#define TRY_ISATTY
+/* #define DEFAULT_SCROLLBACK TRUE */ /* define ONLY to over-ride */
 #define DEFAULT_MORE_MODE TRUE /* is over-ridden with -nomore */
 #define TRANSLATE_TABS TRUE
 #define MEMORY_LINES   150
 #define MAX_HOLD_LINES 150
 
 //#ifdef _SYS_UNIX
-#define DEFAULT_TERM_TYPE SCROLLING_ANSI 
+#define DEFAULT_TERM_TYPE SCROLLING_ANSI
 #define TRY_TERMCAP
 #define TRY_WINSIZE
 //
@@ -455,9 +455,9 @@ return value is always (and should always be) discarded, if it exists.
 
 We provide a workaround for fseek(), which seems to have bugs on VMS.
 ***************************************************************************/
-#define xputc(c,fp) (putc(c,fp)!= EOF)
+#define xputc(c, fp) (putc(c,fp)!= EOF)
 #define xclose(fp)  (fclose(fp)!= EOF)
-#define file_seek(fp,char_num) fseek(fp,((long)(char_num)),0)
+#define file_seek(fp, char_num) fseek(fp,((long)(char_num)),0)
 /* #define REPLACE_FSEEK *//* Needed on VMS? */
 
 

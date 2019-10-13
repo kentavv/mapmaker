@@ -26,16 +26,16 @@ possible values, SYMBOL, VARIABLE, or NUMBER, which indicate what the
 union is storing. I will use an array of pointers to these structures
 of MAX_EQN_SIZE 500.  When sending this array to the function 
 make_equation, a ** pointer to the array of pointers is used.*/
-                    
+
 #define MAX_EQN_SIZE 500 /* this setting means the largest equation we
 			    can handle is about 100 characters      */
 
-typedef struct {                  
-    int is_a;  
-    union {         
-       	int variable;
-       	int symbol;
-      	real number;
+typedef struct {
+    int is_a;
+    union {
+        int variable;
+        int symbol;
+        real number;
     } val;
 } EQUATION;
 
@@ -63,11 +63,17 @@ typedef struct {
     internal variables
 */
 EQUATION **make_equation(char *original_equation, int (*variable_lookup)());
+
 void parse_equation(char *original_equation, EQUATION **parsed_eqn, int (*variable_lookup)(), int *new_size, int *the_index);
+
 void add_number(int mark, EQUATION **parsed_eqn, char *parsed_token, int *new_size, int *the_index);
+
 void add_to_parsed_eqn(int mark, EQUATION **parsed_eqn, int parsed_token, int *new_size, int *the_index);
+
 void add_parenthesis(int *i, int par, int mark, EQUATION **parsed_eqn);
+
 void check_sizeof_array(int *size);
+
 void postfix(EQUATION **parsed_eqn, EQUATION **postfixed);
 
 /***
@@ -86,12 +92,15 @@ void postfix(EQUATION **parsed_eqn, EQUATION **postfixed);
    MATHERR, if any other type of error occurs, then it probably a coding
    error that will have to be looked at, so the message CRASH will be sent
 */
-real evaluate_equation (EQUATION **postfixed, real (*value_find)());
+real evaluate_equation(EQUATION **postfixed, real (*value_find)());
 
 real pop_stack(void) /* This function returns the top value from the stack */;
+
 real push_stack(real value_to_push);
+
 void eqn_init(void);   /* Takes no arguments, it mallocs pasred and temp_eqn */
 int variable_lookup(char *item);
+
 real value_lookup(int index);
 
 #define SYMBOL -1           /* these are flags          */

@@ -22,10 +22,8 @@
 #define NO_DATABASE
 
 
-
-command 
-import (void)
-{
+command
+import(void) {
 #ifndef NO_DATABASE
     char *out_name, *str, first_token[TOKLEN+1];
     int length, prev_data, filenum;
@@ -73,17 +71,16 @@ import (void)
 }
 
 
-void 
-get_from_database (void)
-{
-    int num_indivs=0, num_markers=0, cross_type=0;
+void
+get_from_database(void) {
+    int num_indivs = 0, num_markers = 0, cross_type = 0;
 
     /* must allocate MAPMAKER data structures as follows */
 
     /* read in num_markers, num_indivs, cross_type from your database *
        cross type must be one of F2_INTERCROSS, F3_SELF, F2_BACKCROSS, 
        RI_SIB, RI_SELF */
-    
+
     /* allocate and set these portions of the data structure */
 
     allocate_f2_data(num_markers, num_indivs);
@@ -91,7 +88,7 @@ get_from_database (void)
     raw.data.f2.num_indivs = num_indivs;
     raw.data_type = F2;
     raw.data.f2.cross_type = cross_type;
-	
+
     /* now fill in the data structure (raw), obtaining the data from your database and
        filling it in the structure as is done in the procedure new_read_f2_raw() in 
        the file reader.c */
@@ -101,9 +98,8 @@ get_from_database (void)
 }
 
 
-command 
-export (void)
-{
+command
+export(void) {
     /* this command can be designed to send mapping results back to your 
        database if this functionality is required */
 

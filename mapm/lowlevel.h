@@ -18,7 +18,7 @@
 
 
 /********************** Raw Data Struct ************************************/
-  			
+
 /* symbols used for F2 data preparation and storage */
 #define PARENTAL_TYPE_A           'A'
 #define PARENTAL_TYPE_B           'B'
@@ -29,23 +29,23 @@
 
 /* Definition for f2 raw data storage. */
 typedef struct {
-    int         num_indivs;
-    int         cross_type;              /* F2_INTERCROSS or F2_BACKCROSS */
-    real        **allelic_distribution;  /* [loci][4: AA,AB,BA,BB] */
-    char        **allele;                /* [loci][indivs] */
-}       F2_RAW;
+    int num_indivs;
+    int cross_type;              /* F2_INTERCROSS or F2_BACKCROSS */
+    real **allelic_distribution;  /* [loci][4: AA,AB,BA,BB] */
+    char **allele;                /* [loci][indivs] */
+} F2_RAW;
 
 typedef struct {
-    char        filename[PATH_LENGTH+1]; /* raw data file */
-    int         filenumber;       	 /* for concurrency checks */
-    int         data_type;        	 /* defined above */
-    int 	num_markers;
-    char        **locus_name;     	 /* [loci][MAX_NAME_LEN] */
+    char filename[PATH_LENGTH + 1]; /* raw data file */
+    int filenumber;         /* for concurrency checks */
+    int data_type;             /* defined above */
+    int num_markers;
+    char **locus_name;         /* [loci][MAX_NAME_LEN] */
     union {
 #ifdef HAVE_CEPH
-    	CEPH_RAW      	ceph;             /* definition in ceph.h?? */
+        CEPH_RAW      	ceph;             /* definition in ceph.h?? */
 #endif
-    	F2_RAW   	f2;
+        F2_RAW f2;
     } data;
 } RAW_DATA;
 
@@ -57,12 +57,12 @@ extern RAW_DATA raw;
 /* Guts of things used only inside converge_to_map. Much of this is for the
    old_ctm implementation of F2 etc will be obsoleted by HMM... */
 
-#define RIGHT 		1
-#define LEFT		0
+#define RIGHT        1
+#define LEFT        0
 //#define NEGATIVE        1
 //#define POSITIVE        0
 
-typedef real   RECVECTOR[2];
+typedef real RECVECTOR[2];
 //typedef real   RECARRAY[2][2];
 //typedef char   CONV_HIST;
 //typedef int    (*PFI)();   /* pointer to function returning an integer */
@@ -71,8 +71,8 @@ typedef real   RECVECTOR[2];
 /* Locus structure for converge_to_map() down.  Used to store
    the markers that converge_to_map() is being used on. */
 typedef struct {
-    int         size;
-    int         *Entry;
+    int size;
+    int *Entry;
 } LOCUS;
 
 #ifdef HAVE_CEPH
@@ -134,25 +134,25 @@ typedef struct {
 /* Definition for processed backcross data storage. */
 /* As with phase known data, backcross data needs no preprocessing. */
 typedef struct {
-    int         num_markers;
-    int         num_indivs;
-    char        **allele;         /* [loci][indivs], as in F2_RAW */
-}       BACKX_GENERATION;
+    int num_markers;
+    int num_indivs;
+    char **allele;         /* [loci][indivs], as in F2_RAW */
+} BACKX_GENERATION;
 
 /* Processed intercross data storage. */
 typedef struct {
-    int 	index;
-    bool     non_informative;
-    int         event[4];        /* event: AA,AB,BA,BB */
-    real      prob_dist[3][4]; /* [apriori,left,right][event: AA,AB,BA,BB] */
-}		F2_INHER_STR;
-    
+    int index;
+    bool non_informative;
+    int event[4];        /* event: AA,AB,BA,BB */
+    real prob_dist[3][4]; /* [apriori,left,right][event: AA,AB,BA,BB] */
+} F2_INHER_STR;
+
 //typedef real PROB_DIST[3][4];  /* as in F2_INHER_STR */
 
 typedef struct {
-    int             number_indivs;
-    F2_INHER_STR    **data;     
-}                   F2_GENERATION;
+    int number_indivs;
+    F2_INHER_STR **data;
+} F2_GENERATION;
 
 
 /* processed data structure - created in the various init_for_em procedures */
@@ -161,9 +161,9 @@ typedef union {
     KNOWN_COMMUNITY	*known;        /* in ceph.h */
     UNKNOWN_COMMUNITY	*unknown;      /* in ceph.h */
 #endif
-    F2_GENERATION	*f2;           /* in f2.h */
-    BACKX_GENERATION    *backcross;    /* in f2.h */
-}	PROCESSED_DATA;
+    F2_GENERATION *f2;           /* in f2.h */
+    BACKX_GENERATION *backcross;    /* in f2.h */
+} PROCESSED_DATA;
 
 
 /* Functions */
@@ -221,15 +221,15 @@ void converge_to_map(MAP *map);  /* arg: MAP; calls map making functions and ret
 #define NUM_INNER_CONV_RULES 1
 #define NORM_INNER_CONVERGENCE 0
 
-#define UNINFORM	-1             /* Defs for marker types */
-#define INFORM		0              /*   and zygosity.  	*/
+#define UNINFORM    -1             /* Defs for marker types */
+#define INFORM        0              /*   and zygosity.  	*/
 //#define HETERO		INFORM
 //#define HOMO		UNINFORM
 //#define EITHER		4
 //#define FIRSTHETERO	2
 
-#define REC 		1
-#define NOREC 		0
+#define REC        1
+#define NOREC        0
 //#define for_recs(r)	for(r=REC;r>=NOREC;r--)
 
 #define SMALLRECOMBS    0.00001

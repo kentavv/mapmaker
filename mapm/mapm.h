@@ -44,7 +44,7 @@
 #define F2VERSION         3     /* data file format version */
 #define MAX_CHROMOSOMES   50    /* fairly obvious */
 #define MAX_HISTORY_SEQS  100   /* this table is a fixed size */
-#define MAX_NAMED_SEQS	  20    /* actually, this table expands as needed */
+#define MAX_NAMED_SEQS      20    /* actually, this table expands as needed */
 #define MAX_STORED_PLACES 20    /* for placement struct */
 #define PLACEMENT_THRESHOLD (-5.0)  /* like to store placement info at all */
 
@@ -99,18 +99,18 @@
 /****************************** Global Stuff *******************************/
 
 /* Lowlevel constant definitions used in many places throughout mapmaker */
-#define	MALE		0 
-#define FEMALE		1 
-#define NOSEX		2
-#define SEXSPEC		0   /* for two-point lod-score */
-#define for_sexes(s)	for(s=MALE;s<=FEMALE;s++)
+#define    MALE        0
+#define FEMALE        1
+#define NOSEX        2
+#define SEXSPEC        0   /* for two-point lod-score */
+#define for_sexes(s)    for(s=MALE;s<=FEMALE;s++)
 
 /* Signals */
 #define BADSEQ      USER_MESSAGE(2)
 #define PREPERROR   USER_MESSAGE(3)
-#define BADDATA	    USER_MESSAGE(4)
+#define BADDATA        USER_MESSAGE(4)
 
-extern int   BADDATA_line_num;
+extern int BADDATA_line_num;
 extern char *BADDATA_text;
 extern char *BADDATA_reason;
 
@@ -147,8 +147,11 @@ extern char *BADDATA_reason;
 
 /* Things used by the data readers in reader.c */
 void getdataln(FILE *fp);
+
 void baddata(char *reason);
+
 void do_unload_data(void);
+
 void do_save_data(char *base_name, bool save_genos_too);
 
 
@@ -163,11 +166,11 @@ void undo_state(void);   /* free a little stuff */
 /* general */
 extern bool print_names;
 extern real tolerance;
-extern int  units;
+extern int units;
 #define RECFRACS 0
 #define CENTIMORGANS 1
 extern bool auto_save;
-extern int  print_maps;  /* should do something with this */
+extern int print_maps;  /* should do something with this */
 
 /* two-point */
 extern real default_lod;
@@ -178,17 +181,17 @@ extern bool use_haplotypes;
 extern bool use_three_pt;
 extern real triplet_lod;
 extern real triplet_theta;
-extern int  triplet_num_links;
+extern int triplet_num_links;
 extern real three_pt_threshold;
-extern int  three_pt_window;
+extern int three_pt_window;
 extern real triplet_error_rate;
 #define LOCUS_ERROR_RATE OBSCURE_REAL /* for above */
 
 /* Order Maker */
 extern real npt_threshold;
 extern real npt_first_threshold;
-extern int  npt_window;
-extern int  npt_min_indivs; /* infomativeness criteria */
+extern int npt_window;
+extern int npt_min_indivs; /* infomativeness criteria */
 extern bool npt_codominant;
 extern real npt_min_theta;
 extern bool print_all_maps;
@@ -204,29 +207,29 @@ extern real error_single_thresh;
 extern bool print_all_errors;
 
 /* CEPH only */
-extern int  sex_specific; 	
-extern int  compress_DNA;
-extern int  print_problem_size;
+extern int sex_specific;
+extern int compress_DNA;
+extern int print_problem_size;
 extern long max_problem_size;
 
 /* Obsolete (Old CTM?) */
-extern int  time_stamping;
+extern int time_stamping;
 extern real inner_tolerance;
-extern int  inner_loop;
-extern int  convergence_rule;
-extern int  original_markers;
+extern int inner_loop;
+extern int convergence_rule;
+extern int original_markers;
 extern real startrecombs;
-extern int  print_dots;
+extern int print_dots;
 
 /* Status Context */
 typedef struct {
-    int         sex_specific;
-    int         compress_DNA;
-    int         use_number;
-    long        max_problem_size;
-    int         seq_history_num;
-    TABLE       *sequence_history;
-    TABLE       *named_sequences;
+    int sex_specific;
+    int compress_DNA;
+    int use_number;
+    long max_problem_size;
+    int seq_history_num;
+    TABLE *sequence_history;
+    TABLE *named_sequences;
 } STATUS_CONTEXT;
 
 extern STATUS_CONTEXT **context;
@@ -238,14 +241,16 @@ extern int active_context;
 #define the_named_sequences  (context[active_context]->named_sequences)
 
 void free_context(STATUS_CONTEXT *con);
+
 void write_status(FILE *fp);
+
 void read_status(FILE *fp);
 
 /* Other State Vars of note
 MAP_FUNCTION *mapfunction (map_info.c, maps.c)
 raw.data.ceph.use_number
 SEQ_NODE *seq; char *seq_string; set by set_current_seq
-*/ 
+*/
 
 
 /***************** MAPMAKER Commands *****************/
@@ -265,7 +270,7 @@ SEQ_NODE *seq; char *seq_string; set by set_current_seq
 #define B_TOPIC 2
 
 
-/**** in state.c ****/ 
+/**** in state.c ****/
 /* This is a rat's nest. Keep the order here identical to the declarations
    above, which should be identical to the order of declarations in
    state.c, which should be identical to the order of settings in
@@ -276,10 +281,15 @@ SEQ_NODE *seq; char *seq_string; set by set_current_seq
 
 /* general */
 command set_print_names(void);
+
 command set_tolerance(void);
+
 command set_units(void);
+
 command set_cm_func(void);
+
 command set_autosave(void);
+
 command set_more_mode(void);
 
 /* two point */
@@ -287,94 +297,144 @@ command set_default_linkage(void);
 
 /* three point */
 command set_use_3pt(void);
+
 command set_3pt_linkage(void);
+
 command set_3pt_threshold(void);
+
 command set_3pt_errors(void);
 
 /* order maker */
 command set_npt_threshold(void);
+
 command set_inf_threshold(void);
+
 command set_print_all_maps(void);
 
 /* F2 and error checker stuff */
 command set_fake_maps(void); /* wizard */
 command set_use_error_rate(void);
+
 command set_error_lod_thresh(void);
 
 /**** in sys_cmds.c ****/
 command new_load_data(void);
+
 command new_save_data(void);
+
 command new_prepare(void);
+
 command set_error_rate(void);
-command make_note(void);		/* note */
+
+command make_note(void);        /* note */
 command set_age(void);
 
 /* sequence commands now in sys_cmds.c */
 command sequence(void);
+
 command expand_sequence(void);
+
 command history(void);
+
 command let(void);
+
 command let_expanding(void);
+
 command names(void);
-command forget(void);     		/* forget name? */
+
+command forget(void);            /* forget name? */
 
 command download(void);   /* downloads data from map_base for Mapmaker loading */
 command save_to_database(void);/* sends map data (frame/assign/place) back to the database */
 command import(void);
+
 command export(void);
 
 
 /**** in two_cmds.c ****/
 command two_point(void);
+
 command three_point(void);
+
 command forget_three_point(void);
+
 command haplotype(void);
+
 command unhaplotype(void);
+
 command group(void);
+
 command order_maker(void);
+
 command greedy(void);
+
 command list_loci(void);
+
 command list_mapping(void);
+
 command list_haplotypes(void);
 
 command biglods(void);
+
 command lodtable(void);
+
 command near_locus(void);
+
 command near_chrom(void);
+
 command pairwise(void);
+
 command place(void);
+
 command suggest_subset(void);
 
 /* in cmds.c */
-command make_map(void);		/* map */
+command make_map(void);        /* map */
 command draw_map(void);             /* map */
-command genotypes(void);		/* map */
+command genotypes(void);        /* map */
 command compare(void);
+
 command try(void);
-command likely(void); 		/* likelihood */
-command permsex(void);    		/* permute sexes */
-command use(void);        		/* use */
+
+command likely(void);        /* likelihood */
+command permsex(void);            /* permute sexes */
+command use(void);                /* use */
 command ripple(void);
 
 command set_framework(void);  /* makes a map, stores it in chromosome list */
 command set_anchors(void);
+
 command print_chromosomes(void);  /* prints SAVED_LIST of chromosomes */
 command print_short_chroms(void); /* for F2 data, prints chromosomes in raw F2 form */
 command attach(void);
+
 command assign(void);
+
 command unassign(void);
+
 command save(void);
+
 command meiosis_counter(void);
+
 command chrom_pics(void);
+
 command family_cross_count(void);
+
 command delete_locus(void);
+
 command append_locus(void);
+
 command edit_sequence(void);
+
 command new_insert(void);
+
 command new_delete(void);
+
 command new_append(void);
+
 command show_seq_history(void); /* previous sequences */
 command set_class(void);
+
 command make_classes(void);
 //void init_class_names(); /* could become an interactive command */
 
@@ -383,12 +443,19 @@ command cm_func(void);
 
 /* in auto.c */
 command chrom(void), show_chrom(void);
+
 command place_together(), subset(void);
+
 command make_chromosome(void);
+
 command list_chroms(void);
+
 command list_assignments(void);
+
 command batch_place(), iter(void);
+
 command draw_chromosome(void);
+
 command draw_all_chromosomes(void);
 
 
@@ -396,7 +463,8 @@ command draw_all_chromosomes(void);
 
 bool mapm_save_on_exit(bool do_it_now);
 
-command prepdat(void);    		
+command prepdat(void);
+
 command translate(void);
 
 
@@ -407,10 +475,14 @@ bool valid_new_name(char *str);
 
 
 /***************** Init Functions For Specific .c Files ******************/
-void npt_cmds_init (void);
+void npt_cmds_init(void);
+
 void map_init(void);
-void sequence_init (void);
-void state_init (void);
-void data_init (void);
+
+void sequence_init(void);
+
+void state_init(void);
+
+void data_init(void);
 
 #endif

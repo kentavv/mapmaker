@@ -33,7 +33,7 @@
 
 /* Other useful ones... */
 #define exp10(x) pow(10.0,x)
-#define eq(x,y)  (rabs((x)-(y))<VERY_SMALL)
+#define eq(x, y)  (rabs((x)-(y))<VERY_SMALL)
 
 
 /***** SUPPORT FOR SOME GENERALLY USEFUL MATH FUNCTIONS *****/
@@ -60,36 +60,67 @@ typedef struct {
 //  set *prob (if non-NULL) to d's CUMULATIVE probability. */
 
 real sq(real r);
+
 real rmaxf(real r, real s);
+
 real rminf(real r, real s);
+
 long lpow2(int i);
+
 int ipow2(int i);
+
 long lpow(int x, int i);
+
 int ipow(int x, int i);
+
 int ichoose(int n, int k);
+
 int imaxf(int r, int s);
+
 int iminf(int r, int s);
+
 long lmaxf(long r, long s);
+
 long lminf(long r, long s);
+
 int icomp(const void *x, const void *y);
+
 int lcomp(const void *x, const void *y);
+
 int rcomp(const void *x, const void *y);
+
 int scomp(const void *x, const void *y);
+
 int inv_icomp(const void *x, const void *y);
+
 int inv_rcomp(const void *x, const void *y);
+
 int rhistogram(real *data, int length, int min_num_buckets, real scale_quantization, real scale_limit_quantization);
+
 real rmean(real *data, int length);
+
 real rmaxin(real *data, int length);
+
 real rmedian(real *data, int length);
+
 real rmiddle(real *data, int length);
+
 void rcopy(real *to, real *from, int length);
+
 real normal_func(real deviation);
+
 DISTRIBUTION *make_normal_dist(real mu, real sigma, real inc, real limit);
+
 DISTRIBUTION *make_distribution(real sigma, real inc, real limit, real mean, real (*prob_func)(real));
+
 real pick_from_distribution(DISTRIBUTION *dist, real *prob);
+
 void mat_invert(real **m, int size, real **m_inverse);
+
 void eliminate(int row, int col, int row_to_sub, real **m, int n_cols);
+
 void mat_mult(real **m, real **m2, int size, real **result);
+
 void array_times_matrix(real *a, real **b, int rows, int columns, real *c);
 
 
@@ -103,7 +134,7 @@ void array_times_matrix(real *a, real **b, int rows, int columns, real *c);
    Thus, it is always true that x==rint(x)+frac(x). Note that this is not the
    BSD Unix rint() function! */
 
-#define rint(x)	   (x>=0.0 ? floor(x) : ceil(x)) 
+#define rint(x)       (x>=0.0 ? floor(x) : ceil(x))
 #define frac(x)    (x>=0.0 ? (x-floor(x)) : (x-ceil(x)))
 #define sign(x)    (x>=0.0 ? 1.0 : -1.0)
 
@@ -143,8 +174,8 @@ void array_times_matrix(real *a, real **b, int rows, int columns, real *c);
    [for ex: max(10,i++) does the wrong thing], or they may take too long 
    [for ex: max(log(x),log(y)) takes longer that rmaxf(log(x),log(y)); */
 
-#define max(a,b) ((a)>(b) ? (a) : (b))
-#define min(a,b) ((a)<(b) ? (a) : (b))
+#define max(a, b) ((a)>(b) ? (a) : (b))
+#define min(a, b) ((a)<(b) ? (a) : (b))
 
 /* The following functions exist so that rmaxf(f(x),f(y)) works, where f() 
    side-effects something, or where f() takes lots of time. Hard code

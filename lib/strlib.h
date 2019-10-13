@@ -17,49 +17,92 @@
 
 
 void nstrcpy(char *to, char *from, int n);
+
 void maxstrcat(char *to, char *from, int n);
+
 void nstrcat(char *to, char *from, int n);
+
 void strins(char *to, char *from);
+
 void nstrins(char *to, char *from, int max_to_ins);
+
 void maxstrins(char *to, char *from, int max_total_length);
+
 void strdel(char *str, int num_chars);
+
 char *mkstrcpy(char *str);
+
 char *ptr_to(char *str);
+
 int nullstr(char *str);
+
 int strfinder(char *str, int chr);
+
 bool nmatches(char *s1, char *s2, int n);
+
 int xstreq(char *s1, char *s2);
+
 char *truncstr(char *str, int length);
+
 char *pad_to_len(char *str, int length);
+
 char *append_spaces(char *str, int num);
+
 char *despace(char *str);
+
 char *lowercase(char *str);
+
 char *_filter(char *str);
+
 char *filter_nonspaces(char *str);
+
 char *crunch(char *str);
+
 char *uppercase(char *str);
+
 bool get_token(char *str, char *tok, char **p_rest, int length, bool *truncated);
+
 bool split_string(char *str, char **rest, int divider);
+
 int itoken(char **p_str, int default_val, int *p_val);
+
 int ltoken(char **p_str, long default_val, long *p_val);
+
 int rtoken(char **p_str, real default_val, real *p_val);
+
 int stok(char **p_str, char *default_val, char *val, int num_chars, int allow_truncation, char *ok_chars);
+
 int stoken(char **p, char *def, char *val);
+
 int parse_char(char **p_str, char *ok_list, int skip_whitespace, char *p_ch);
+
 void parse_whitespace(char **p_str);
+
 int count_tokens(char *str);
+
 bool is_a_token(char *str);
+
 int field(char **p_str, int length, char *val);
+
 int irange(int *p_var, int min_val, int max_val);
+
 int lrange(long *p_var, long min_val, long max_val);
+
 int rrange(real *p_var, real min_val, real max_val);
+
 char *binary(int num, int bits, char *str);
+
 char *get_temp_string(void);
+
 //PRINT_INFO *lookup_print_info(real format_num);
 void init_print_info(void);
+
 char *rs(real format, real number);
+
 char *rsn(real format, real number);
+
 char *rsd(real format, real number);
+
 void str_init(void);
 
 
@@ -103,8 +146,8 @@ void str_init(void);
 
 /* To avoid the ANSI size_t idiocy... */
 
-#define nstrcmp(s1,s2,max_chars) strncmp(s1,s2,((int)max_chars))
-#define len(str) ((int) strlen(str)) 
+#define nstrcmp(s1, s2, max_chars) strncmp(s1,s2,((int)max_chars))
+#define len(str) ((int) strlen(str))
 
 /* Other useful stuff... */
 
@@ -114,8 +157,8 @@ void str_init(void);
 #define endof(str) ((str)+len(str))
 
 //int strfinder();  /* args: char *str, c; get index of c in str or NOT_FOUND */
-#define NOT_FOUND (-1) 
-#define strin(str,chr) (strfinder(str,chr)!=NOT_FOUND)
+#define NOT_FOUND (-1)
+#define strin(str, chr) (strfinder(str,chr)!=NOT_FOUND)
 
 //void strins();    /* args: char *a, *b; insert string b at a */
 //void nstrins();	  /* args: char *a, *b; int num; insert at most num chars */
@@ -123,8 +166,8 @@ void str_init(void);
 
 //bool nullstr();      /* args: char *s; TRUE if s==NULL or is all whitespace */
 extern char *null_string; /* set to "" */
-#define streq(s1,s2)    (!strcmp(s1,s2)) 
-#define nstreq(s1,s2,n) (!nstrcmp(s1,s2,n)) 
+#define streq(s1, s2)    (!strcmp(s1,s2))
+#define nstreq(s1, s2, n) (!nstrcmp(s1,s2,n))
 
 extern char Cw, Ct;
 #define white(chr) ((Cw=(chr))==' ' || Cw=='\t' || Cw=='\n')
@@ -136,7 +179,7 @@ extern char Cw, Ct;
 //   example: "land" matches the template "lander", but not "lampshade".
 //   NOTE: s and t should be despace()ed and filter()ed, but not necessarily
 //   lowercase()ed (the match is case INSENSITIVE anyway). */
-#define matches(s,t) nmatches(s,t,1)
+#define matches(s, t) nmatches(s,t,1)
 
 //int xstreq(); 	/* currently broken? */
 #define istrlen len /* THIS IS AN OBSOLETE NAME- DON'T USE IT */
@@ -218,27 +261,27 @@ side-effect their argument str, and return a pointer to it for yucks.
 //parsable_chars to indicate that any character is OK.
 //****************************************************************************/
 
-#define TOKLEN 40 
+#define TOKLEN 40
 //int itoken();	 /* int token */
 //int ltoken();	 /* long int token */
 //int rtoken();	 /* real token */
 
 //int stok(); /* INTERNAL USE ONLY! */
 //int stoken(); /* args: p,def,val; does stok(p,def,val,TOKLEN,TRUE,NULL) */
-#define nstoken(p_str,def,val,num) stok(p_str,def,val,num,TRUE,NULL) 
-#define maxstoken(p_str,def,val,num) stok(p_str,def,val,num,FALSE,NULL)
-#define stokenof(p_str,def,val,chrs) stok(p_str,def,val,TOKLEN,TRUE,chrs) 
-#define nstokenof(p_str,def,val,num,chrs)   stok(p_str,def,val,num,TRUE,chrs)
-#define maxstokenof(p_str,def,val,num,chrs) stok(p_str,def,val,num,FALSE,chrs)
+#define nstoken(p_str, def, val, num) stok(p_str,def,val,num,TRUE,NULL)
+#define maxstoken(p_str, def, val, num) stok(p_str,def,val,num,FALSE,NULL)
+#define stokenof(p_str, def, val, chrs) stok(p_str,def,val,TOKLEN,TRUE,chrs)
+#define nstokenof(p_str, def, val, num, chrs)   stok(p_str,def,val,num,TRUE,chrs)
+#define maxstokenof(p_str, def, val, num, chrs) stok(p_str,def,val,num,FALSE,chrs)
 
-/* Possible default values */ 
-#define sREQUIRED NULL 
-#define iREQUIRED (-32768) 
-#define lREQUIRED -1073741823L 
+/* Possible default values */
+#define sREQUIRED NULL
+#define iREQUIRED (-32768)
+#define lREQUIRED -1073741823L
 #define rREQUIRED ((real)-1.2345e31)
 
-/* To decipher FALSE responses of the token parsers */ 
-#define no_token(p_str)  (**p_str=='\0') 
+/* To decipher FALSE responses of the token parsers */
+#define no_token(p_str)  (**p_str=='\0')
 #define bad_token(p_str) (**p_str!='\0')
 
 /*** Usually, tokens are separated by whitespace. Certain characters
@@ -289,14 +332,14 @@ is encountered.
 //bool parse_char();	  /* args shown above */
 //void parse_whitespace();  /* args: char **p_str; *p_str is side-effected */
 
-/* Arguments to parse_char() */ 
-#define ANYCHAR    NULL 
-#define SKIPWHITE  TRUE 
+/* Arguments to parse_char() */
+#define ANYCHAR    NULL
+#define SKIPWHITE  TRUE
 #define NOSKIP     FALSE
 
-/* To decipher FALSE responses of parse_char */ 
-#define no_char(p_str) (**p_str=='\0') 
-#define bad_char(p_str) (**p_str!='\0' && !white(**p_str)) 
+/* To decipher FALSE responses of parse_char */
+#define no_char(p_str) (**p_str=='\0')
+#define bad_char(p_str) (**p_str!='\0' && !white(**p_str))
 #define white_char(p_str) (white(**p_str))
 
 
@@ -314,7 +357,7 @@ get_temp_str() directly.
 
 //char *get_temp_string(); /* returns the next available string for bashing */
 
-#define NUM_TEMP_STRINGS 50 
+#define NUM_TEMP_STRINGS 50
 #define TEMP_STRING_LEN 500
 
 /************************************************************************
@@ -352,7 +395,7 @@ get_temp_string(). Thus, heed the warnings above.
 //char *rsn();  /* args: real format, num_to_print; */
 //char *rsd();  /* args: real format, num_to_print; */
 
-/* other output formating stuff... */ 
+/* other output formating stuff... */
 //char *binary(); /* args: int num_to_print, num_bits; char *str; */
 
 ///* macro char *maynl();  args: int chars;

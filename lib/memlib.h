@@ -30,7 +30,7 @@ typedef real REAL2x2[2][2];
 typedef real REAL4[4];
 
 extern bool verbose_mem;    /* may be set by user code */
-extern int yy, zz;	    /* INTERNAL USE ONLY! */
+extern int yy, zz;        /* INTERNAL USE ONLY! */
 
 /***************************************************************************
    Syntax for allocating and freeing things:	
@@ -79,35 +79,35 @@ to similar specs.
 #define xS(c) sizeof(c)
 #define REALLY_1 ((size_t)(-32768))
 
-#define single(var,cell) \
+#define single(var, cell) \
 { var=NULL; if ((var=(cell*)xalloc(REALLY_1,xS(cell)))==NULL) send(NOMEMORY); }
 
-#define array(var,i,cell) \
+#define array(var, i, cell) \
 { var=NULL; if ((var=(cell*)xalloc(xL(i),xS(cell)))==NULL) send(NOMEMORY); }
 
-#define matrix(var,i,j,cell) \
+#define matrix(var, i, j, cell) \
 { var=NULL; if ((var=(cell**)xalloc(xL(i),xS(cell*)))==NULL) send(NOMEMORY); \
     for (zz=0; zz<i; zz++) { \
         if ((var[zz]=(cell*)xalloc(xL(j),xS(cell)))==NULL) { \
-	    for (yy=0; yy<zz; yy++) unarray(var[yy], cell);  \
-	    unarray(var, (cell*)); send(NOMEMORY); \
-	} \
+        for (yy=0; yy<zz; yy++) unarray(var[yy], cell);  \
+        unarray(var, (cell*)); send(NOMEMORY); \
+    } \
     } \
 }
 
-#define parray(var,num,cell) matrix(var,num,REALLY_1,cell)
+#define parray(var, num, cell) matrix(var,num,REALLY_1,cell)
 
 /***** free *****/
 
-#define unarray(ptr,cell) {if(ptr!=NULL) free(ptr); ptr=NULL;}
+#define unarray(ptr, cell) {if(ptr!=NULL) free(ptr); ptr=NULL;}
 
-#define unsingle(ptr,cell) unarray(ptr,cell)
+#define unsingle(ptr, cell) unarray(ptr,cell)
 
-#define unmatrix(ptr,i,cell) \
+#define unmatrix(ptr, i, cell) \
 { if (ptr!=NULL) for(zz=0; zz<i; zz++) unarray(ptr[zz],cell); \
   unarray(ptr,(cell*)); }
 
-#define unparray(ptr,num,cell) unmatrix(ptr,num,cell)
+#define unparray(ptr, num, cell) unmatrix(ptr,num,cell)
 
 /***************************************************************************
 Other useful allocators go here...
@@ -115,13 +115,21 @@ Other useful allocators go here...
 
 void *xalloc(size_t num, size_t cell_sizeof); /* INTERNAL USE ONLY! */
 real ***alloc_real_3d_matrix(int i, int j, int k);
+
 void free_real_3d_matrix(real ***p, int i, int j);
+
 char ***alloc_char_3d_matrix(int i, int j, int k);
+
 void free_char_3d_matrix(char ***p, int i, int j);
+
 void pmat_r(char *n, real **x, int a, int b);
+
 void pary_r(char *n, real *x, int a);
+
 void pary_r2x2(char *n, REAL2x2 *x, int a);
+
 void pary_r4(char *n, REAL4 *x, int a);
+
 void mem_init(void);
 
 //
