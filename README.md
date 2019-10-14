@@ -1,11 +1,20 @@
 # mapmaker
+
+## Notes on the 2019 update
 This is an update of the MapMaker from Eric Lander's lab. The branches are
 * release-3.1: Updates to compile with a C17 compiler.
 * release-3.2: Removed unused code and reformatted code. 
 * release-3.3: Added flip and 'all lods' commands. Bugs fixes are mostly applied in this and subsequent branches.
 * release-3.4: Added multithreading.
 * master: The most recent release
+It's been a pleasure to bring MapMaker up to date. This a historic piece of software that is very well cited. Compilation should be straightforward using CMake. Speedup of the threaded code is fairly linear with core count. Additional performance appears available through vectorization, but datasets available to me were small and so I didn't implement vectorization. Please contact me if you are willing to provide larger data sets. To verify correctness of changes, I compared results from before each change, but I likely have introduced bugs. If you discover one, please contact me, supply a dataset and instructions on how to reproduce the problem and I'll look at creating a fix. Finally, I mainly focused on MapMaker/EXP, and I don't know about the state of MapMaker/QTL.
 
+Kent A. Vander Velden, PhD
+kent.vandervelden@gmail.com
+
+---
+
+## Original MapMaker abstract
 
 MAPMAKER/EXP 3.0 AND MAPMAKER/QTL 1.1
 
