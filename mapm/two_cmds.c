@@ -577,7 +577,7 @@ command pairwise(void) {
 }
 
 
-static void print_biglod_line(int i, int j, real theta, real lod, real dist) {
+void print_biglod_line(int i, int j, real theta, real lod, real dist) {
     sprintf(ps, " %-10s %-10s %s   %s  %s", loc2str(i), loc2str(j),
             rsd(5.2, theta), rsd(5.2, lod), rsd(6.2, dist));
     pr();
