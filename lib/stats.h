@@ -25,14 +25,18 @@ typedef struct normal_test {
     real within_one;
     real within_two;
     real within_three;
-  } NORMAL_TEST;
+} NORMAL_TEST;
 
 NORMAL_TEST *check_normalcy(real *dist, int dist_size);
+
 void skew(NORMAL_TEST *normal_results, real *dist, int dist_size);
+
 void quartile(NORMAL_TEST *normal_results, real *dist, int dist_size);
+
 void within(NORMAL_TEST *normal_results, real *dist, int dist_size);
+
 void print_normal(NORMAL_TEST *to_be_printed, real lamda);
-void box_cox(real start, real stop, real step, real *dist, int dist_size);
+
 void print_rhisto(real *dist, int dist_size);
 
 /* The function normal_test will do several tests on an array of

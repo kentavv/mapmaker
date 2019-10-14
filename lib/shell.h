@@ -25,57 +25,85 @@ extern bool (*quit_save_hook)(bool);
 
 
 void banner(void);
-char *get_version(char *version_filename);
+
 void photo_banner(void);
+
 char *centering(char *str, bool lineup);
+
 void shell_init(char *program, char *version, char *copyright, char *help_filename);
+
 char *default_prompt(char *s);
+
 void mktopic(int num, char *nam, int code, long description_index);
+
 int mkcommand(char *name, char *abbrev, void (*func)(void), int code);
-void mkhelp(char *cmd_name, char *abbrev, long description_index, int num_args_prefix, int num_args, int code, int topic, char *description, char *arguments, char *defaults);
+
+void mkhelp(char *cmd_name, char *abbrev, long description_index, int num_args_prefix, int num_args, int code, int topic, char *description,
+            char *arguments, char *defaults);
+
 bool valid_name(char *str);
-void null_command(void);
+
 int parser(char *line, char **rest, bool help_ok);
+
 void print_parser_results(char *rest, bool help_ok);
-int try_to_match(char **token, int n_tokens, int n_to_try, int n_word_command, int *com_match, int *n_matched, int *last_match, int allow_help_only_stuff);
+
+int try_to_match(char **token, int n_tokens, int n_to_try, int n_word_command, int *com_match, int *n_matched, int *last_match,
+                 int allow_help_only_stuff);
+
 int com_matches(char **in_tokens, char **com_tokens, int num_to_match, int *exact);
+
 void expand_history_references(char *line);
+
 void command_loop(void);
+
 void abort_command(void);
+
 void error(const char *errmsg);
+
 void maybe_set_bool(bool *var);
+
 void maybe_set_real(real *var, real lbound, real hbound, real fmt);
-void maybe_set_long(long *var, long lbound, long hbound);
-void maybe_set_int(int *var, int lbound, int hbound);
+
 void set_usage_error(char *com_args);
+
 void usage_error(int num);
+
 void nomore_args(int n);
+
 void more_args(int num);
-void input_error(char *val, char *def);
-void expect_nomore_input(char *str, int mode, int num);
-void expect_more_input(char *str, int mode, int num);
+
 bool split_arglist(char **rest, int divider);
-bool split_uncrunched_args(char **rest, int divider);
+
 void maybe_ok(char *str);
+
 void keep_user_amused(char *thing, int iter, int max_iter);
+
 command show_cmd_history(void);
+
 command quit(void);
-command really_quit(void);
+
 command run_from_file(void);
+
 command do_photo(void);
-command set_more(void);
+
 command set_wizard(void);
-command set_verbose_mem(void);
+
 command help(void);
+
 command about(void);
+
 command review_output(void);
+
 command show_time(void);
+
 command cd_command(void);
+
 command system_command(void);
+
 command comment(void);
-void wimp_start(void);
-void mkwimp(char *name, char *menu_entry, int menu_num, void (*wimp_function)(void), void (*status_function)(void), void (*wimp_help_function)(void), int shortcut);
+
 void mkmenu(int num, char *title);
+
 void mkdivider(int menu_num);
 
 
@@ -112,14 +140,14 @@ extern int cmd_history_num;   /* in shell.c -- looks nice in prompt() */
 //void nomore_args();  /* args: int args; is #of args present */
 //void set_usage_error(); /* args: char *msg */
 
-#define ARGS_LEN 	   1900
+#define ARGS_LEN       1900
 
-#define get_arg(parse_func,default,val_ptr)		\
- if (parse_func(&args,default,val_ptr)) num_args++;	\
- else { if (nullstr(args)) usage_error(num_args);	\
+#define get_arg(parse_func, default, val_ptr)        \
+ if (parse_func(&args,default,val_ptr)) num_args++;    \
+ else { if (nullstr(args)) usage_error(num_args);    \
         more_args(++num_args); }
 
-#define get_one_arg(parse_func,default,val_ptr)  	\
+#define get_one_arg(parse_func, default, val_ptr)    \
  { get_arg(parse_func,default,val_ptr); nomore_args(0); }
 
 //bool split_arglist(); /* args: char **rest, divider;
@@ -142,25 +170,8 @@ extern int cmd_history_num;   /* in shell.c -- looks nice in prompt() */
 #define UPTO 1
 #define ATLEAST 2
 
-///* existing system commands */
-//command quit();
-//command really_quit();
-//command run_from_file();
-//command do_photo();
-//command set_more();
-//command set_verbose_memory();
-//command help();
-//command about();
-//command show_cmd_history();
-//command review_output();
-//command show_time();
-//command cd_command();
-//command system_command();
-//command comment();
-//command set_wizard();
-
 extern bool photo_update_top_hook;  /* make photo call update_top() */
-extern void (*photo_banner_hook)(FILE*); /* make photo_banner call this w/arg fp */
+extern void (*photo_banner_hook)(FILE *); /* make photo_banner call this w/arg fp */
 
 //void maybe_ok(); /* args: char *str; prints the str then a '\n',
 //   although only "ok\n" is printed to the screen if update_top() succeeds.
@@ -214,48 +225,52 @@ or to disable the printing of help information for them alone. */
 #define isa_option(code)    (code%10==1)
 #define isa_parameter(code) (code%10==2)
 #define help_only(code)     (code%10==3)
-#define allowed_cmd(num,allow_help)                \
+#define allowed_cmd(num, allow_help)                \
   ((allow_help  || !help_only(cmd[num]->code)) &&  \
    (wizard_mode || !wizard_only(cmd[num]->code)))
 
-#define MAX_COM_TOKENS	 3
+#define MAX_COM_TOKENS     3
 #define MAX_COM_NAME_LEN 25   /* might be more? 26 in help output */
 #define MAX_COM_HELP_LEN 52
 #define MAX_ARG_HELP_LEN 78
 #define MAX_ABBREV_LEN   3
-#define MAX_TOPIC_LEN 	 70
-#define MAX_COMMANDS	 200
-#define MAX_COM_TOPICS	 20
+#define MAX_TOPIC_LEN     70
+#define MAX_COMMANDS     200
+#define MAX_COM_TOPICS     20
 
 /* If you want a custom prompt, set prompt to point to the function... */
 extern char *((*prompt)()); /* ptr to a func which returns a ptr to a string - 
    it gets as an arg char *str; and it should side-effect AND return str. */
 
 typedef struct {
-	int num_tokens;
-	char *name;
-	char abbreviation[MAX_ABBREV_LEN+1];
-	char **tokens;		 /* [token#] -> string */
-	void (*procedure)(void);     /* ptr to a void function of no arguments */
-	char *cmd_help;
-	char *args_help;
-	char *def_help;
-	int  num_args;
-	int  num_args_prefix; /* ATLEAST, EXACTLY, or UPTO */
-	long help_key;   /* index into the help file */
-	int  help_entry; /* entry number in the help file, 1...N */
-	int  code, topic;
-	void (*wimp_procedure)(void);
-	void (*status_function)(void);
-	void (*wimp_help)(void);
-	int wimp_menu_num;	
-	char *menu_entry;
-	char wimp_shortcut;
+    int num_tokens;
+    char *name;
+    char abbreviation[MAX_ABBREV_LEN + 1];
+    char **tokens;         /* [token#] -> string */
+    void (*procedure)(void);     /* ptr to a void function of no arguments */
+    char *cmd_help;
+    char *args_help;
+    char *def_help;
+    int num_args;
+    int num_args_prefix; /* ATLEAST, EXACTLY, or UPTO */
+    long help_key;   /* index into the help file */
+    int help_entry; /* entry number in the help file, 1...N */
+    int code, topic;
+
+    void (*wimp_procedure)(void);
+
+    void (*status_function)(void);
+
+    void (*wimp_help)(void);
+
+    int wimp_menu_num;
+    char *menu_entry;
+    char wimp_shortcut;
 } COMMAND;
 
 typedef struct {
     char *title;
-    int  num_entries;
+    int num_entries;
     COMMAND **entry;  /* [entry#] => ptr to an entry in the cmd struct */
 } MENU;
 

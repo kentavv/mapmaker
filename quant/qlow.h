@@ -30,7 +30,7 @@
 #define B 2
 #define I 3 /* not used */
 
-#define for_locus_genotypes(data_type,geno) \
+#define for_locus_genotypes(data_type, geno) \
  for (geno=0; geno<(data_type==BACKCROSS ? 2:3); geno++)
 
 #define MAX_INTERVAL_GENOTYPES 9
@@ -44,55 +44,63 @@
 #define BB 7
 #define BH 8
 
-#define for_interval_genotypes(data_type,geno) \
+#define for_interval_genotypes(data_type, geno) \
  for (geno=0; geno<(data_type==BACKCROSS ? 4:9); geno++)
 /**** used to be 3 for BACKCROSS - bug fix 6/7/90 ****/
 
 /* these are declared and set in qraw.c */
-extern int *left_genotype, *right_genotype; 
-    /* index with an interval genotype code => locus genotype code */
+extern int *left_genotype, *right_genotype;
+/* index with an interval genotype code => locus genotype code */
 extern int **make_interval_genotype;
-    /* index with [left_genotype_code][right_genotype_code]=> interval code */
+/* index with [left_genotype_code][right_genotype_code]=> interval code */
 
 typedef real INTERVAL_GENOTYPE_PROBS[16], LOCUS_GENOTYPE_PROBS[4];
 typedef real GENO_PROBS[9][4];    /* 16 and 4 for indexing efficiency */
-typedef int  INT_POSS_GENOTYPES[16];
+typedef int INT_POSS_GENOTYPES[16];
 
 #define MAX_RECS        2
-#define MAX_REC_FRAC	0.49995
-#define MIN_REC_FRAC	0.00004
-#define MAX_FRAC_OF_RF	0.99999
-#define MAX_CM		998.5
-#define MIN_CM		0.04
+#define MAX_REC_FRAC    0.49995
+#define MIN_REC_FRAC    0.00004
+#define MAX_FRAC_OF_RF    0.99999
+#define MAX_CM        998.5
+#define MIN_CM        0.04
 #define MAX_FRAC_OF_CM  0.99999
 #define MAX_CHROM_LOC   100
 
 /*** This struct holds the data needed by QCTM ***/
 
 typedef struct {
-    int  num_intervals;        
-    int  num_individuals;	/* < raw.n_indivs if some are missing pheno */
-    int  num_continuous_vars;	
-    int  max_intervals;		/* max # this struct is allocated for */
-    int  max_individuals;	
-    int  max_continuous_vars;   
-    real *interval_len; 	/* [interval#] => length (a rec-frac really) */
+    int num_intervals;
+    int num_individuals;    /* < raw.n_indivs if some are missing pheno */
+    int num_continuous_vars;
+    int max_intervals;        /* max # this struct is allocated for */
+    int max_individuals;
+    int max_continuous_vars;
+    real *interval_len;    /* [interval#] => length (a rec-frac really) */
     INTERVAL_GENOTYPE_PROBS **genotype_prob;    /* [indiv#][int#][geno-code] */
-    real *phenotype; 		/* [individual#] */
-    real **cont_var;		/* [var#][individual#] */
-    int  **num_genotypes;	/* [individual#][interval#]=> #of poss genos */
+    real *phenotype;        /* [individual#] */
+    real **cont_var;        /* [var#][individual#] */
+    int **num_genotypes;    /* [individual#][interval#]=> #of poss genos */
     INT_POSS_GENOTYPES **genotype; /* [individual#][interval#][genotype_num] */
 } DATA;
 
 extern DATA *data; /* a global used by make_qtl_map() */
 
 void qtl_conv_to_map(DATA *data, QTL_MAP *map);
+
 DATA *alloc_data(int num_intervals, int num_cont_vars);
+
 void prepare_data(QTL_MAP *map, DATA *data);
+
 void initial_qctm_values(DATA *data, QTL_MAP *map);
+
 void print_iteration(int iter, QTL_MAP *map, real delta_log_like);
+
 void print_null_iteration(QTL_MAP *map);
-void do_print_E_step(real **expected_genotype, real **S_matrix, GENO_PROBS *expected_recs, int n_individuals, int n_genotype_vars, int n_continuous_vars, int n_intervals);
+
+void
+do_print_E_step(real **expected_genotype, real **S_matrix, GENO_PROBS *expected_recs, int n_individuals, int n_genotype_vars, int n_continuous_vars,
+                int n_intervals);
 
 ///*** Functions in QDATA.C ***/
 //DATA *alloc_data();  /* args: int max_intervals, max_continuous_vars; */
@@ -124,69 +132,75 @@ void do_print_E_step(real **expected_genotype, real **S_matrix, GENO_PROBS *expe
      alloced in qdata.c ***/
 
 //extern int max_intervals; /* this var is used all over the code */
-extern int max_genotype_vars; 
+extern int max_genotype_vars;
 extern int max_interx_genotypes, max_backx_genotypes;
 extern int **lookup_genotype;
 extern real **lookup_coded_genotype;
 
-extern real **expected_genotype;		 
-extern real **S_matrix, **S_inverse;         	 
-extern real **indiv_S_matrix;                	
-extern real *int_like;	                         
-extern real *qctm_qtl_pos;  	               
+extern real **expected_genotype;
+extern real **S_matrix, **S_inverse;
+extern real **indiv_S_matrix;
+extern real *int_like;
+extern real *qctm_qtl_pos;
 extern real *qctm_qtl_weight, *null_qtl_weight, *fix_qtl_weight;
-extern real *temp_row; 	
-extern GENO_PROBS *indiv_rec_like;             
+extern real *temp_row;
+extern GENO_PROBS *indiv_rec_like;
 extern GENO_PROBS *expected_recs, *trans_prob;
-extern INTERVAL_GENOTYPE_PROBS *rec_like;    
-extern char geno_chars[10],default_backcross_chars[10];
+extern INTERVAL_GENOTYPE_PROBS *rec_like;
+extern char geno_chars[10], default_backcross_chars[10];
 extern char default_intercross_chars[10];
 
 
 /***** Stuff one needs to muck around with RAW data *****/
 
 typedef struct {
-        int data_type;  	/* valid data types are defined in qg.h */
-	bool f3;		
-	char file[PATH_LENGTH+1];
-	int filenumber;
-	int n_loci, n_traits, max_traits;
-	int n_indivs, name_len;
-	int n_chroms;
-	int *original_locus;   /* [qtl_locus_number] */
-	int *chrom_start, *chrom_n_loci;
-	char **locus;		/* [indvidual][locus#] => one char genotype */
-	char **locus_name;	/* [locus#] => string */
-	LOCUS_GENOTYPE_PROBS **left_cond_prob, **right_cond_prob; 
-	                        /* [indiv#][locus#][locus-geno-code] */
-	real **trait;		/* [individual#][trait#] */
-	char **trait_name;	/* [trait#] => string */
-	char **trait_eqn;	/* [trait#] => string */
-	real *map_dist;		/* [locus#] for dist to locus[locus#+1] */
+    int data_type;    /* valid data types are defined in qg.h */
+    bool f3;
+    char file[PATH_LENGTH + 1];
+    int filenumber;
+    int n_loci, n_traits, max_traits;
+    int n_indivs, name_len;
+    int n_chroms;
+    int *original_locus;   /* [qtl_locus_number] */
+    int *chrom_start, *chrom_n_loci;
+    char **locus;        /* [indvidual][locus#] => one char genotype */
+    char **locus_name;    /* [locus#] => string */
+    LOCUS_GENOTYPE_PROBS **left_cond_prob, **right_cond_prob;
+    /* [indiv#][locus#][locus-geno-code] */
+    real **trait;        /* [individual#][trait#] */
+    char **trait_name;    /* [trait#] => string */
+    char **trait_eqn;    /* [trait#] => string */
+    real *map_dist;        /* [locus#] for dist to locus[locus#+1] */
 } RAW;
 /* FROB */
 #define MAX_TRAITS(traits_in_file)(traits_in_file>10 ? 6*(traits_in_file) : 20)
-#define MISSING_PHENO	-100000.0
+#define MISSING_PHENO    -100000.0
 
 extern RAW raw;
 
 /*** Functions defined in QRAW.C ***/
 void raw_init(void);             /* no args */
-void read_data (FILE *fpa, FILE *fpb, FILE *fpm, char *temp);            /* args FILE *fp; char *path; */
+void read_data(FILE *fpa, FILE *fpb, FILE *fpm, char *temp);            /* args FILE *fp; char *path; */
 
 void free_raw(void);
+
 bool data_loaded(void);
+
 void save_traitfile(FILE *fp);
+
 void crunch_data(void);
 
 //void read_olddata();         /* same args as read_data     */
 //void crunch_data();          /* no args; makes L&R cond_probs in raw struct */
 //bool data_loaded();          /* no args; return TRUE if data is loaded */
 real map_length(int left, int right);
+
 //real map_length();           /* args: int left_locus, right_locus; */
 real transition_prob(int data_type, int geno_was, int geno_is, real theta);
+
 //real transition_prob();      /* args: int data_type, left, right; real theta;*/
 real apriori_prob(int data_type, int geno);
+
 //real apriori_prob();         /* args: int data_type, geno; */
 void indiv_interval_probs(INTERVAL_GENOTYPE_PROBS *prob, int data_indiv_num, int raw_indiv_num, int left_locus_num, int right_locus_num, real theta);
 //void indiv_interval_probs(); /* args: INTERVAL_GENOTYPE_PROBS *prob;
@@ -198,26 +212,26 @@ void indiv_interval_probs(INTERVAL_GENOTYPE_PROBS *prob, int data_indiv_num, int
 
 /* Definitions from MAPMAKER needs for prep_dat */
 typedef struct {
-    int         max_loci;
-    int         num_loci;
-    int         *locus;         /* [num_loci] (markers in the map) */
-    double      **rec_frac;     /* [intervals][M/F], recombination fractions */
-    int         unlink;         /* indicates interval (if any) held unlinked */
-    int         *fix_interval;  /* [intervals], intervals not converging */ 
-    int         sex_specific;
-    double      log_like;
-}       MAP;
+    int max_loci;
+    int num_loci;
+    int *locus;         /* [num_loci] (markers in the map) */
+    double **rec_frac;     /* [intervals][M/F], recombination fractions */
+    int unlink;         /* indicates interval (if any) held unlinked */
+    int *fix_interval;  /* [intervals], intervals not converging */
+    int sex_specific;
+    double log_like;
+} MAP;
 
 extern MAP *raw_map;
 
 typedef struct {
-    int         max_maps;      /* used in allocation of structure */
-    int         max_loci;      /* used in allocation of structure */
-    MAP         **map_list;    /* list of max_maps pointers to MAPs */
-    MAP         *extra_map;    /* expendable map-for insertion and deletion */
-    int         num_maps;      /* number of maps in map_list (<= max_maps) */
-    double      threshold;     /* highest acceptable likelihood when sorting */
-    bool        sorted;        /* determines whether this is a sorted list */
+    int max_maps;      /* used in allocation of structure */
+    int max_loci;      /* used in allocation of structure */
+    MAP **map_list;    /* list of max_maps pointers to MAPs */
+    MAP *extra_map;    /* expendable map-for insertion and deletion */
+    int num_maps;      /* number of maps in map_list (<= max_maps) */
+    double threshold;     /* highest acceptable likelihood when sorting */
+    bool sorted;        /* determines whether this is a sorted list */
 } SAVED_LIST;
 
 extern SAVED_LIST *list;

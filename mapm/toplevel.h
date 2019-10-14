@@ -80,34 +80,55 @@ bool input_dist(real *dist);
 //void getdataln(FILE *fp);
 //void baddata(char *reason);
 int data_loaded(void);
+
 char *data_info(bool add_nums);
+
 FILE *start_save_to_file(char *name, char *ext, char *type, bool *exists);
+
 void finish_save_to_file(char *name, char *oldext, bool exists);
+
 void do_load_data(FILE *fp, char *filename, bool israw);
+
 //void do_unload_data(void);
 //void do_save_data(char *base_name, bool save_genos_too);
 int read_data_file_header(FILE *fp, char *filename);
+
 int read_raw_file_header(FILE *fp, char *filename, char *symbol);
+
 bool read_magic_number(FILE *fp, char *type);
+
 void write_magic_number(FILE *fp, char *type);
+
 int new_magic_number(void);
+
 void allocate_f2_data(int n_loci, int n_indivs);
+
 void free_f2_data(int n_loci);
+
 void free_traits(void);
+
 void new_read_f2_data(FILE *fp);
+
 void new_read_f2_locus(FILE *fp, int locus_num);
+
 void write_f2_data(FILE *fp);
+
 void new_read_f2_raw(FILE *fp, char *symbols);
+
 void read_raw_f2_locus(FILE *fp, int locus_num, char *symbol);
+
 void read_raw_trait(FILE *fp, int trait_num);
+
 //int symbol_value(int chr, char *symb);
 void write_traits(FILE *fp);
+
 void add_to_seg_dist(char c, int locus);
+
 void scale_seg_dist(int locus);
 
 void mapm_data_info(FILE *fp);
 
-void try_to_load (FILE *fp, char *name, bool prev_data, bool raw);
+void try_to_load(FILE *fp, char *name, bool prev_data, bool raw);
 
 //void read_data();    /* args: FILE *fp; char *file_name; */
 //bool data_loaded();  /* no args */
@@ -130,9 +151,10 @@ void f2_quick_two_pt(int loc1, int loc2, TWO_PT_DATA *two_pt); /* in quick23.c, 
 /* in ctm.c */
 //void converge_to_map(MAP *map);
 void f2_genotype(int locus, bool haplo, int *observation);
+
 bool merge_genotypes(int locus, const int *observation, int *new_observation);
-int f2_count_infs(int *num_dom, int *num_het, /* side-effected */ const int *observation /* array of raw.num_indivs observations [raw.num_indivs] */) /* return #inf */;
-//int f2_count_infs(int *num_dom, int *num_het, int *observation);
+
+int f2_count_infs(int *num_dom, int *num_het, const int *observation);
 
 //void converge_to_map(); /* args: MAP *map */
 //void f2_genotype(); /* args: int locus; bool haplo; int *observation[#indiv] */
@@ -152,8 +174,9 @@ extern int *observations; /* [num_indivs] useful as a temp to the above */
 #define fully_inf(obs) ((obs)==OBS_A || (obs)==OBS_H || (obs)==OBS_B)
 extern int obligate_recs[6][6];
 
-void allocate_hmm_temps (int total_loci, int num_indivs, int cross_type);
-void free_hmm_temps (int total_loci, int num_indivs, int cross_type);
+void allocate_hmm_temps(int total_loci, int num_indivs, int cross_type);
+
+void free_hmm_temps(int total_loci, int num_indivs, int cross_type);
 //void allocate_hmm_temps(), free_hmm_temps();
 /* args: int n_loci, n_indivs, cross_type; */
 
@@ -168,36 +191,36 @@ typedef struct seq_struct {
     flag type;                /* one of the #defines below */
     union {
         struct {
-	    int num;
-	  } locus;
-	struct {
-	    int first, last;
-	  } locus_range;
-	struct {
-	    struct seq_struct *contents;
-	  } megalocus;
-	struct {
-	    struct seq_struct *contents;
-	    bool flip; /* permutation state */
-	  } invertable_set;
-	struct {
-	    struct seq_struct *contents;
-	    struct seq_struct *reordered_contents; /* list using next_item */
-	  } unordered_set;
+            int num;
+        } locus;
+        struct {
+            int first, last;
+        } locus_range;
+        struct {
+            struct seq_struct *contents;
+        } megalocus;
+        struct {
+            struct seq_struct *contents;
+            bool flip; /* permutation state */
+        } invertable_set;
+        struct {
+            struct seq_struct *contents;
+            struct seq_struct *reordered_contents; /* list using next_item */
+        } unordered_set;
     } node;
-    struct seq_struct *next,*prev; /* make a bidirectionally linked list */
+    struct seq_struct *next, *prev; /* make a bidirectionally linked list */
     real fixed_distance;           /* not always valid, usually NOT_FIXED */
     bool unlinked_now;             /* state */
     int insert_pos;                /* state for elements of an unordered_set */
     struct seq_struct *next_item;  /* also state: a differently ordered list */
 } SEQ_NODE;
 
-#define NONE		0
-#define SEQLOCUS 	1
-#define LOCUS_RANGE	2
-#define MEGALOCUS 	3
-#define INVERTABLE_SET 	4
-#define UNORDERED_SET 	5
+#define NONE        0
+#define SEQLOCUS    1
+#define LOCUS_RANGE    2
+#define MEGALOCUS    3
+#define INVERTABLE_SET    4
+#define UNORDERED_SET    5
 
 #define NOT_FIXED OBSCURE_REAL
 #define UNLINK_ME OBSCURE_REAL2
@@ -205,6 +228,7 @@ typedef struct seq_struct {
 void compute_3pt(SEQ_NODE *seq, bool sex, real trip_err_rate, real *like, MAP *map);
 
 void allocate_seq_stuff(int n_loci);
+
 void free_seq_stuff(void);
 //void allocate_seq_stuff(); /* args: int max_loci; call after loading data */
 //void free_seq_stuff();     /* args: int max_loci; */
@@ -213,14 +237,17 @@ void free_seq_stuff(void);
 extern char *BADSEQ_errmsg;
 extern int BADSEQ_errpos;     /* index of the erroneous token in seq string */
 void badseq(char *errmsg);
+
 void print_badseq(void);
 //void badseq();                /* args: char *error_message; sends BADSEQ */
 //void print_badseq();	      /* no args */
 
 /* Fun things you can do to compiled sequences... */
-int count_loci (SEQ_NODE *p);
+int count_loci(SEQ_NODE *p);
+
 //int count_loci();	/* args: SEQ_NODE *seq; count loci in seq */
 bool has_fixed_dists(SEQ_NODE *p);
+
 //bool has_fixed_dists();	/* args: SEQ_NODE *seq; if any fixed_dists in seq */
 bool unpermutable(SEQ_NODE *p);
 //bool unpermutable();	/* args: SEQ_NODE *seq; TRUE if seq is unpermutable */
@@ -247,9 +274,13 @@ extern char *new_seq, *the_seq; /* [MAX_SEQ_LEN] */
    names, locus range settings, etc. */
 
 void set_current_seq(char *str, bool expanded);
+
 void check_current_seq(int *num_loci);
+
 void parse_locus_args(int **loci, int *num_loci);
+
 void make_compare_seq(int *locus, int num_loci, int start_set, int set_size);
+
 //void set_current_seq();   /* args: char *str; bool expanded; str=NULL unsets */
 extern SEQ_NODE *seq;     /* global: the current sequence */
 extern char *seq_string;  /* ditto */
@@ -259,7 +290,9 @@ extern char *seq_string;  /* ditto */
 //void expand_seq_names();  /* char *str */
 
 void get_one_order(SEQ_NODE *p, MAP *map);
+
 void get_list_of_all_loci(SEQ_NODE *p, int *loci, int *num_loci, int max_loci);
+
 bool alloc_list_of_all_loci(SEQ_NODE *p, int **loci, int *num_loci);
 
 //bool alloc_list_of_all_loci(); /* args: SEQ_NODE *seq; int **locus,*num_loci;*/
@@ -275,7 +308,7 @@ bool alloc_list_of_all_loci(SEQ_NODE *p, int **loci, int *num_loci);
    max_loci is the malloced size of the list, we get a CRASH if it
    is exceeded. The array needs to be big enough to hold ALL loci in the seq, 
    not just haplo groups, one of each duplicate, etc */
-#define sort_loci(loci,num_loci) inv_isort(loci,num_loci)
+#define sort_loci(loci, num_loci) inv_isort(loci,num_loci)
 
 //void get_one_order(); /* args: SEQ_NODE *seq; MAP *map; */
 /* Like get_list_of_all_loci. Map->max_loci must be big enough. */
@@ -290,17 +323,19 @@ bool alloc_list_of_all_loci(SEQ_NODE *p, int **loci, int *num_loci);
    nor put a call to unpermutable() or enumerate_loci() inside a 
    for_all_orders() loop! */
 
-#define get_map_order(S,M) \
+#define get_map_order(S, M) \
      get_order(S,(M)->locus,(M)->rec_frac,&(M)->num_loci,(M)->max_loci)
-#define for_all_orders(S,M) \
+#define for_all_orders(S, M) \
 for (Oagain=TRUE, reset_seq(S,TRUE); \
      Oagain && clean_map(M) && get_map_order(S,M); \
      Oagain=perm_seq(S,FALSE,FALSE))
 
 extern bool Oagain;     /* internal use only */
 bool get_order(SEQ_NODE *p, int *locus, real **theta, int *num_loci, int max_loci);
+
 //bool do_get_order(SEQ_NODE *p, int *locus, real **theta, int *i, int max_loci, int direction);
 void reset_seq(SEQ_NODE *p, bool reset_insert_pos);
+
 bool perm_seq(SEQ_NODE *p, bool order_matters, bool in_unordered_set);
 //void reset_seq();	/* internal only! */
 //bool perm_seq();	/* internal only! */
@@ -311,7 +346,7 @@ bool perm_seq(SEQ_NODE *p, bool order_matters, bool in_unordered_set);
    locus1 and locus2 are set to the aprropriate values. Never use a 
    for_all_pairs() loop inside another! */
 
-#define for_all_locus_pairs(L,num,a,b) 	\
+#define for_all_locus_pairs(L, num, a, b)    \
  for (Pi=0; Pi<num-1; Pi++) for(Pj=Pi+1,a=L[Pi],b=L[Pj]; Pj<num; Pj++,b=L[Pj])
 extern int Pi, Pj;  /* internal only! */
 
@@ -321,26 +356,33 @@ extern int Pi, Pj;  /* internal only! */
    in the array of locus numbers. Never layer one of these loops inside 
    another. Calling this with num_loci<3 causes a CRASH. */
 
-#define for_all_3pt_seqs(loci,num,seq) 			\
+#define for_all_3pt_seqs(loci, num, seq)            \
   for (seq=Tinit(&Tagain,&Ti,&Tj,&Tk,loci,num); Tagain; \
        Tagain=Tnext(&Ti,&Tj,&Tk,loci,num,seq))
 extern int Ti, Tj, Tk;  /* internal use only! */
 extern bool Tagain;     /* internal use only! */
 /* internal use only! */
 SEQ_NODE *Tinit(bool *ok, int *i_cnt, int *j_cnt, int *k_cnt, int *locus, int num_loci);
-bool Tnext(int *i_cnt, int *j_cnt, int *k_cnt, int *locus, int num_loci, SEQ_NODE *p);
 
+bool Tnext(int *i_cnt, int *j_cnt, int *k_cnt, int *locus, int num_loci, SEQ_NODE *p);
 
 
 /************************ Names handling routines *************************/
 
 bool is_a_locus(char *str, int *n, char **why_not);
+
 bool is_a_sequence(char *str, char **seq, char **why_not);
+
 bool name_sequence(char *name, char *str, char **why_not, bool expanded);
+
 bool unname_sequence(char *name, char **why_not);
+
 void add_to_seq_history(char *seq, bool is_next_entry);
+
 void print_special_sequences(void);
+
 void print_user_sequences(void);
+
 void print_history_seqs(int num_to_do);
 //bool is_a_locus(); /* args: char *token; int *num; char **errmsg; */
 /* Gets the locus number (0...max-1, inclusive) for the locus
@@ -376,7 +418,9 @@ is_a_locus() handles them. Token must be despace()ed and filter()ed! */
 //void add_to_seq_history(); /* args: char *seq; */
 
 void print_sequence(void);
+
 void tokenize_seq(char *seq, char **token, int *num_tokens);
+
 void untokenize_seq(char *seq, char **token, int num_tokens);
 //void tokenize_seq(); /* args: char *seq, **token; int *num_tokens; */
 //  /* parses seq into into an array of words (using SELF_DELIMITING) */
@@ -390,42 +434,52 @@ void untokenize_seq(char *seq, char **token, int num_tokens);
 /**************************** Stuff in print.c ****************************/
 
 char *loc2str(int locus);
+
 char *locs2str(int locus1, int locus2);
+
 char *rag(char *str);
 
-char *rf2str (real rec_frac);
+char *rf2str(real rec_frac);
+
 //char *rf2str();   /* arg: rec_frac; returns cM if print_cm, else itself */
 //char *loc2str();  /* arg: locus; returns name if print_names, or number */
 //char *locs2str(); /* args: locus1, locus2; */
 //char *rag();      /* args str; wrap around the above to get ragged result */
-char *locname ( /* ragged */int locus,bool haplo_mark);
+char *locname( /* ragged */int locus, bool haplo_mark);
 //char *locname();  /* int locus; bool print_haplo_mark; RAGGED output */
 
 void print_long_map(MAP *map, char *title);
+
 void print_special_map(MAP *map, char *title, int num_old, int *old_locus);
+
 void print_list(SAVED_LIST *list, int how_many);
+
 void print_haplo_summary(int *locus, int num_loci);
 
 void print_tiny_map(MAP *map, char *text  /* make sure its OK to use ps for this */, real like_base);
+
 //void print_tiny_map();  /* arg: map; one liner (loci, log-like) */
 //void print_short_map(); /* arg: map; three liner (loci, rec_fracs, log-like) */
 //void print_long_map();  /* arg: map; expanded map output */
 //void print_special_map();  /* see print.c */
 //void print_list();      /* arg: list; prints list */
-void print_trys (SAVED_LIST **list, MAP *base_map,	   /* The map the tried markers were added to */ bool **excluded,   /* [i][n]=FALSE if we tried try_marker[i] in excluded */ int **new_marker, int num_tried,int first);
+void print_trys(SAVED_LIST **list, MAP *base_map,       /* The map the tried markers were added to */
+                bool **excluded,   /* [i][n]=FALSE if we tried try_marker[i] in excluded */ int **new_marker, int num_tried, int first);
 //void print_trys();
 //void print_permsex();
 
-void print_f2_map_genotypes (MAP *map,bool use_haplos,bool explode_haplos,int num_old,int *old_locus  /* can omit if num_old==0 - should do this with VARARGS */);
+void print_f2_map_genotypes(MAP *map, bool use_haplos, bool explode_haplos, int num_old,
+                            int *old_locus  /* can omit if num_old==0 - should do this with VARARGS */);
 //void print_f2_map_genotypes(); /* prints genotypes w/ X-overs and errors
 //  args: MAP *map; bool explode_haplos; int num_old; int *old_locus;
 //  can omit old_locus if num_old==0 old_locus are printed as is, non-old
 //  get parentheses */
 
 //void print_haplo_summary();   /* int *loci, num_loci; */
-void print_locus_summary (int *locus, int n_loci, bool haplo);
+void print_locus_summary(int *locus, int n_loci, bool haplo);
+
 //void print_locus_summary();   /* int *loci, num_loci; bool haplos_too; */
-void print_mapping_summary (int *locus, int n_loci, bool haplo);
+void print_mapping_summary(int *locus, int n_loci, bool haplo);
 //void print_mapping_summary(); /* int *loci, num_loci; bool haplos_too; */
 
 //void new_print_placements();

@@ -70,7 +70,7 @@
 /* These are the absolute limits for max_intervals and max_individuals. 
    The defaults are set in cmd_init() (in qtop.c) Note that max_intervals is 
    limited because 2^(2*num_intervals) must fit in a GENOTYPE. */
-#define GENOTYPE 	  short
+#define GENOTYPE      short
 #define MAX_INTERVALS     7
 #define MAX_GENOTYPE_VARS 15
 #define MAX_CONTINUOUS_VARS 3
@@ -85,8 +85,11 @@ void top_init(void);   /* no args */
 /*** in QCTM.C ***/
 void qctm_init(void);  /* no args */
 real haldane(real theta);
+
 real unhaldane(real morgans);
+
 real kosambi(real theta);
+
 real unkosambi(real morgans);
 //
 //real haldane();    /* args: real rec_frac; returns centiMorgans (not Morgans)*/
@@ -96,7 +99,7 @@ real unkosambi(real morgans);
 
 /* the functions that the programmers call */
 
-#define haldane_cm(theta) (100.0 * haldane(theta)) 
+#define haldane_cm(theta) (100.0 * haldane(theta))
 #define unhaldane_cm(cm)  (unhaldane(cm/100.0))
 
 /*** in QDATA.C ***/
@@ -107,7 +110,7 @@ void data_init(void);  /* no args */
 
 /*** in QSEQ.C ***/
 void seq_init(void);   /* no args */
-char *expand_named_entries (char *str);
+char *expand_named_entries(char *str);
 //char *expand_named_entries(); /* takes an interval_string and returns a
 //				 newly allocated one with names expanded */
 
@@ -118,37 +121,37 @@ void cmd_init(void);   /* no args */
 /*** in QWIGGLE.C ***/
 void wiggle_init(void);  /* no args */
 
-/*** QTL user state variables  ***/				/* file */
+/*** QTL user state variables  ***/                /* file */
 /* all (most?) of these are initialized by cmd_init() */
-extern int units, print_names, print_mapm_loci, print_scans; 	/* qtop.c */
-extern real pos_tolerance, like_tolerance;			/* qctm.c */
-extern real mat_tolerance;					/* qctm.c */
-extern int print_iter, print_rec_mat, bag_qctm, debug_qctm;	/* qctm.c */
-extern bool print_brute_force, debug_newton, brute_force;		/* qctm.c */
-extern int max_intervals, max_continuous_vars;			/* qdata.c */
+extern int units, print_names, print_mapm_loci, print_scans;    /* qtop.c */
+extern real pos_tolerance, like_tolerance;            /* qctm.c */
+extern real mat_tolerance;                    /* qctm.c */
+extern int print_iter, print_rec_mat, bag_qctm, debug_qctm;    /* qctm.c */
+extern bool print_brute_force, debug_newton, brute_force;        /* qctm.c */
+extern int max_intervals, max_continuous_vars;            /* qdata.c */
 extern int segregation_distortion; /* NOT USED YET! */
 extern bool altered_chroms;                                     /* qraw.c */
 
 /*** Messages and message variables used by the QTL program ***/
 /* All are declared in qtop.c, and set up by top_init(). Some of these will 
    be obsoleted soon! */
-#define SINGMAT 	USER_MESSAGE(0)
-#define MATINV	 	USER_MESSAGE(1)
-#define DOFREE 		USER_MESSAGE(3)
-#define BADDATA		USER_MESSAGE(4)
-#define QUIT_QTL	USER_MESSAGE(6)
-#define NOPARSE		USER_MESSAGE(8)
-#define BAD_MKINT	USER_MESSAGE(9)
-#define BADSEQ		USER_MESSAGE(10)
-#define BADTRAIT	USER_MESSAGE(11)
+#define SINGMAT    USER_MESSAGE(0)
+#define MATINV        USER_MESSAGE(1)
+#define DOFREE        USER_MESSAGE(3)
+#define BADDATA        USER_MESSAGE(4)
+#define QUIT_QTL    USER_MESSAGE(6)
+#define NOPARSE        USER_MESSAGE(8)
+#define BAD_MKINT    USER_MESSAGE(9)
+#define BADSEQ        USER_MESSAGE(10)
+#define BADTRAIT    USER_MESSAGE(11)
 
-extern int   BADDATA_line_num;
+extern int BADDATA_line_num;
 extern char *BADDATA_ln; /* a string (MAXLINE+1 long) which is side-effected */
 extern char *BADDATA_error; /* a char ptr which is set */
-extern real  MATINV_diff;
-extern int   NOPARSE_err;
-extern int   BAD_MKINT_err;
-extern int   BADSEQ_errpos;
+extern real MATINV_diff;
+extern int NOPARSE_err;
+extern int BAD_MKINT_err;
+extern int BADSEQ_errpos;
 extern char *BADSEQ_errmsg; /* a ptr which is set (usually to msgstr) */
 extern char *BADTRAIT_errmsg; /* also a ptr which is set (usually to msgstr) */
 int dum_loc;      /* Used to set proper number of loci in data set */
@@ -158,6 +161,7 @@ int dum_loc;      /* Used to set proper number of loci in data set */
 #define why_(str) nstrcpy(BADDATA_error,str,LINE)
 
 void print_ps_wiggle_order(int wiggle, int order, real threshold);
+
 void print_ps_multi_wiggle(int wiggle, real threshold);
 
 #endif

@@ -96,73 +96,93 @@ exists but does nothing, and it may never...
 ***************************************************************************/
 
 int lookup_fp(FILE *fp, char **name, char *modechar /* side-effected if non-null */);
+
 void ioerror(char *errmsg, FILE *fp, char *ioline);
+
 bool make_filename_in_dir(char *str, /* str is side-effected: it should be PATH_LENGTH+1 chars long */
                           bool force_ext,
                           char *ext, /* may have the preceeding '.' or not */
                           int add_dir_mode, /* values defined in iolib.h */
                           char *dir /* assume no trailing divider, except VMS dirs, which have [..] */);
+
 bool make_filename(char *str, /* str is side-effected: it should be PATH_LENGTH+1 chars long */
                    bool force_ext,
                    char *ext_ /* may have the preceeding '.' or not */);
+
 FILE *open_file(char *name,  /* It's best to use make_filename() on name first */
                 char *mode)  /* use a #define in iolib.h for mode */;
+
 void close_file(FILE *fp)   /* ignore NULL fp */;
+
 void do_fwrite(FILE *fp, char *str_);
+
 void fprint(FILE *fp, char *str_);
+
 void finput(FILE *fp, char *str, int length);
+
 void fgetln(FILE *fp) /* ln is side-effected. */;
+
 void fgetdataln(FILE *fp, int *count) /* ln is side-effected */;
-bool end_of_file(FILE *fp);
+
 bool end_of_text(FILE *fp);
+
 void flush_linebuf(void);
+
 bool dump_held_lines(void);
+
 bool dump_to_screen(char *str);
+
 bool really_do_more(void);
+
 void mem_puts(char *str);
+
 void flush_and_force_nl(bool nl_on_screen_also);
+
 void kill_temp_print(void);
+
 bool lib_clear_screen(void);
+
 int photo_to_file(char *new_log_name, /* best to run through make_filename() first */ char *new_log_mode /* use a #define as for open_file() */);
-void print(const char *str) /* Sends IOERROR if an error occurs */;
+
+void print(const char *str) /* Sends IOERROR if an error occurs; does lots of processing */;
+
 bool temp_print(char *simple_str, char *fancy_str);
+
 bool do_hold(bool start, bool more_on);
+
 void flush(void);
+
 void space(int n);
+
 bool to_column(int num);
+
 int at_column(void);
+
 bool maybe_clear_screen(void);
-bool clear_screen(void);
-bool highlight(bool x);
-void do_more(void);
+
 void review_memory(void);
-//static void dump_memory_lines(int start, int num) /* internal */;
-int redirect_input(char *fname, bool verbose)	/* fname=NULL to interrupt */;
+
+int redirect_input(char *fname, bool verbose)    /* fname=NULL to interrupt */;
+
 void input(char *prompt, char *str, int length);
+
 void edit_line(char *prompt, char *str, int length, char *initial);
+
 void getln(char *prompt /* may signal IOERROR or ENDOINPUT */) /* ln is side-effected, is filtered, despaced, lowercased */;
+
 bool temp_logging(bool new, bool *old);
+
 void prev_logging(int old);
-bool temp_more_mode(int new,int *old);
-void prev_more_mode(int old);
+
 void io_init(void);
 
 
-
-
-
-
-
-
-
 extern char *ps, *ln;  /* these global strings are malloced by io_init() */
-//void iocheck();   /* no args; CURRENTLY A NOP */
 
 
-/************************ Terminal output routines ***********************/ 
-void print(const char *);	 /* args: char *string; does lots of processing */
-#define nl() print("\n") 
-#define pr() print(ps) 
+/************************ Terminal output routines ***********************/
+#define nl() print("\n")
+#define pr() print(ps)
 //void flush();	 /* no args. forces everything print()ed to be output */
 
 //bool temp_print(); /* args: char *str; The string is printed out and flush()ed,
@@ -225,7 +245,7 @@ lowercase()s, and despace()s it! */
 extern bool interactive;        /* TRUE if input is currently a terminal */
 
 
-/********************* Fancy Terminal I/O Modes **************************/ 
+/********************* Fancy Terminal I/O Modes **************************/
 extern bool more, more_mode, ignore_eof;
 /* User code could, but probably shouldn't set these variables.
    Generally, more=FALSE, except in hold() blocks when more_mode=TRUE
@@ -326,16 +346,15 @@ extern bool logging;     /* you may examine this, but don't set it directly */
 //   will be opened in the current working directory. name must be able to hold
 //   PATH_LENGTH+1 chars. The argument mode should be one of... */
 #define DEFAULT_EXTENSION  0  /* if name has no ext, one is added */
-#define FORCE_EXTENSION	   1  /* even if name has an ext, it's changed */
+#define FORCE_EXTENSION       1  /* even if name has an ext, it's changed */
 
 //bool make_filename_in_dir();
 /* args: char *name; int ext_mode; char *ext; int dir_mode; char *dir; 
    Like make_filename, but you can also specify a directory. You may use: */
-#define FORCE_DIR	   0
-#define DEFAULT_DIR  	   1
+#define FORCE_DIR       0
+#define DEFAULT_DIR       1
 #define HOME_DIR           "*h*"
 #define CODE_DIR           "*c*"
-#define CURRENT_DIR        NULL
 
 //FILE *open_file();  /* args: char *name, *mode; on failure sends CANTOPEN */
 #define WRITE  "w"
@@ -363,12 +382,12 @@ extern bool logging;     /* you may examine this, but don't set it directly */
 //   ENDOFILE message is sent. Str must have room for max_input_chars+1 chars,
 //   and only max_input_chars-1 chars can usually be read, as a '\n' may be read
 //   in at the end and then deleted from the string. */
-   
+
 //void fgetdataln(); /* args: FILE *fp; int *count; side-effects global ln;
 //   Like fgetln(), although this skips null (white) and comment lines (those
 //   beginning with a '#' in the leftmost position. Also, each time any line is
 //   read from the file (data, null, or comment), *count is incremented. */
-		     
+
 #define frewind(fp) fseek(fp,0L,0)
 #define fflush(fp)  do_fflush(fp)  /* redeclare the C library function */
 //void do_fflush(); /* never call this directly */
@@ -382,8 +401,7 @@ extern bool logging;     /* you may examine this, but don't set it directly */
 
 /***** Local declarations provided for syscode.c: for internal use only! *****/
 
-extern char *out_file, *in_file, *photo_file;
-extern char out_modechar, in_modechar, photo_modechar; 
+extern char *out_file, *in_file;
 extern FILE *in, *out, *photo;
 
 #define MAX_FILE_ARGS  3
@@ -391,29 +409,27 @@ extern FILE *in, *out, *photo;
 #define RUN_FILE_ARG   1
 #define PHOTO_FILE_ARG 2
 extern char **file_arg;
-extern int dos_output, prep_it, append_it;
+extern int prep_it, append_it;
 
 extern char *ps_, *ln_;     /* input and output strings for the library only */
 extern char *linebuf;       /* tty output buffer */
-extern char *gotln, *lnptr; /* input line for getln(), fgetln() */
+extern char *lnptr; /* input line for getln(), fgetln() */
 
 extern FILE **in_fp;   /* the "stack" of input files for redirecting input */
 extern int redirs;
-#define MAXREDIRECTS 	4
-#define MAXFILES 	10
+#define MAXREDIRECTS    4
+#define MAXFILES    10
 
 /* a list associating fp's with names etc */
-typedef struct { FILE *fp; char modechar; char *name; } FILE_INFO;
+typedef struct {
+    FILE *fp;
+    char modechar;
+    char *name;
+} FILE_INFO;
 extern FILE_INFO **files;
-//int lookup_fp();
-//void ioerror();
-//
-//void tty_init();  /* no args: in syscode.c, called by lib_init() */
-//void io_init();   /* no args: in iolib.c, called by lib_init() */
-//void tty_hello(); /* no args */
 
-extern int cursor, buf, printed_lines, supress_more, lines_written;
-extern int term, tty_lines;
+extern int cursor, buf, printed_lines, lines_written;
+extern int term;
 extern bool screen, scrollback;
 extern int tty_errors, file_errors, puts_errors;
 
@@ -423,23 +439,6 @@ extern int tty_errors, file_errors, puts_errors;
 
 #define TERM_UNKNOWN      0 /* term types */
 #define ANSI              1
-#define HP_TERM           2
-#define CURSES            8
-#define SCROLLING_ANSI    3
-#define NONSCROLLING_ANSI 4
-#define PC_CONSOLE        5
-#define MAC_WINDOW        6
-#define WIMP              7
-
-//bool boing();
-//bool do_clear_screen();
-//bool do_highlight();
-//bool do_delete_previous_line();
-//bool do_cursor_left(); /* args int spaces; char *str_to_then_print; */
-#define FAR_LEFT -1
-//bool check_tty_lines();
-
-//void lib_puts();
 
 /**
    @param str must be num+2 chars long, but use num<<len just in case
@@ -453,45 +452,8 @@ extern int tty_errors, file_errors, puts_errors;
       any post-processing. */
 //bool tty_gets(char *str, int num);
 
-//bool file_gets();
-//void ioerror();
-//void flush_and_force_nl();
-extern bool supress_more, more_break_pending;
-
-extern bool curses, split;
-extern bool tried_curses, tried_split, have_drawn_top;
-/* These functions exist if HAVE_CURSES is defined. */
-//bool curses_init();
-//bool curses_split();
-//void curses_end();
-//void curses_error();
-//void curses_clr_scrn();
-//void curses_del_prev_ln();
-//void curses_del_this_ln();
-//void curses_del_to_eol();
-//void curses_goto_far_left();
-//void curses_cursor_left();
-//void curses_set_highlight();
-//bool curses_gets();
-//void curses_puts();
-//void curses_scrollup();
-//void curses_flush();
-//void curses_boing();
-//void curses_refresh();
-//void curses_update_top();
-//void curses_draw_top();
-
-extern bool wimp, tried_wimp;
-/* These functions exist if HAVE_WIMP is defined. */
-//void do_text_wimp_init();
-//void do_split_wimp_init();
-//void do_custom_wimp_init(); /* Only MAY exist... */
+extern bool more_break_pending;
 
 extern bool use_gnu_readline;
-//bool do_gnu_readline();
-//bool do_gnu_edit();
-//bool gnu_copyright();
-
-//void edit_line(); /* make real decl above */
 
 #endif
