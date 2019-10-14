@@ -80,17 +80,17 @@ to similar specs.
 #define REALLY_1 ((size_t)(-32768))
 
 #define single(var, cell) \
-{ var=NULL; if ((var=(cell*)xalloc(REALLY_1,xS(cell)))==NULL) send(NOMEMORY); }
+{ if (((var)=(cell*)xalloc(REALLY_1,xS(cell)))==NULL) send(NOMEMORY); }
 
 #define array(var, i, cell) \
-{ var=NULL; if ((var=(cell*)xalloc(xL(i),xS(cell)))==NULL) send(NOMEMORY); }
+{ if (((var)=(cell*)xalloc(xL(i),xS(cell)))==NULL) send(NOMEMORY); }
 
 #define matrix(var, i, j, cell) \
-{ var=NULL; if ((var=(cell**)xalloc(xL(i),xS(cell*)))==NULL) send(NOMEMORY); \
+{ if (((var)=(cell**)xalloc(xL(i),xS(cell*)))==NULL) send(NOMEMORY); \
     for (zz=0; zz<i; zz++) { \
-        if ((var[zz]=(cell*)xalloc(xL(j),xS(cell)))==NULL) { \
-        for (yy=0; yy<zz; yy++) unarray(var[yy], cell);  \
-        unarray(var, (cell*)); send(NOMEMORY); \
+        if (((var)[zz]=(cell*)xalloc(xL(j),xS(cell)))==NULL) { \
+        for (yy=0; yy<zz; yy++) unarray((var)[yy], cell);  \
+        unarray((var), (cell*)); send(NOMEMORY); \
     } \
     } \
 }
