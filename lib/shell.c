@@ -435,7 +435,7 @@ int com_matches(char **in_tokens, char **com_tokens, int num_to_match, int *exac
 
     for (i = 0, *exact = TRUE; i < num_to_match; i++)
         if (!matches(in_tokens[i], com_tokens[i])) return FALSE;
-        else if (istrlen(in_tokens[i]) != istrlen(com_tokens[i])) *exact = FALSE;
+        else if (len(in_tokens[i]) != len(com_tokens[i])) *exact = FALSE;
 
     return TRUE;
 }

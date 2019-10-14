@@ -416,23 +416,23 @@ read_raw_file_header(FILE *fp, char *filename, char *symbol) {
     if (streq(ln, "data type f2 intercross")) {
         type = F2;
         raw.data.f2.cross_type = F2_INTERCROSS;
-        dflt = ptr_to("-AHBCD");
+        dflt = "-AHBCD";
     } else if (streq(ln, "data type f3 intercross")) {
         type = F2;
         raw.data.f2.cross_type = F3_SELF;
-        dflt = ptr_to("-AHBCD");
+        dflt = "-AHBCD";
     } else if (streq(ln, "data type f2 backcross")) {
         type = F2;
         raw.data.f2.cross_type = F2_BACKCROSS;
-        dflt = ptr_to("-AH");
+        dflt = "-AH";
     } else if (streq(ln, "data type ri sib")) {
         type = F2;
         raw.data.f2.cross_type = RI_SIB;
-        dflt = ptr_to("-AB");
+        dflt = "-AB";
     } else if (streq(ln, "data type ri self")) {
         type = F2;
         raw.data.f2.cross_type = RI_SELF;
-        dflt = ptr_to("-AB");
+        dflt = "-AB";
 #ifdef HAVE_CEPH
         } else if (streq(ln,"data type ceph")) {
             raw.data_type=CEPH;
@@ -807,12 +807,12 @@ void read_raw_trait(FILE *fp, int trait_num) {
 
     strcpy(trait_name[trait_num], name + 1);
 
-    self_delimiting = ptr_to("=");
+    self_delimiting = "=";
     did_we_do_eqn = 0;
     for (j = 0; j < raw.data.f2.num_indivs; j++) {
         if (nullstr(ln)) getdataln(fp);
         if (!rtoken(&ln, rREQUIRED, &neat)) {
-            if (stoken(&ln, sREQUIRED, tok) && strcmp(tok, "-")) {
+            if (stoken(&ln, sREQUIRED, tok) && strcmp(tok, "-") != 0) {
 
                 if (tok[0] == '*') {
                     sprintf(badstr, "not enough indivs in trait %s\n", name + 1);
@@ -865,7 +865,7 @@ void read_raw_trait(FILE *fp, int trait_num) {
         } else
             trait[trait_num][j] = neat;
     }
-    self_delimiting = ptr_to(SELF_DELIMITING_TOKENS);
+    self_delimiting = SELF_DELIMITING_TOKENS;
 }
 
 

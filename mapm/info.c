@@ -72,16 +72,14 @@ static void return_to_unused(TRIPLE_LIST *p);
 /**************** Stuff to handle global 2pt data ****************/
 
 void allocate_two_pt(int num_loci) {
-    int i, j;
-
     two_pt_data = NULL;
     two_pt_list = NULL;
     two_pt_max = 0;
 
     array(two_pt_data, num_loci, TWO_PT_DATA**);
-    for (i = 0; i < num_loci; i++) {
+    for (int i = 0; i < num_loci; i++) {
         array(two_pt_data[i], (i + 1), TWO_PT_DATA*);
-        for (j = 0; j <= i; j++) two_pt_data[i][j] = NULL;
+        for (int j = 0; j <= i; j++) two_pt_data[i][j] = NULL;
         two_pt_max += i + 1;
     }
     array(two_pt_list, two_pt_max, TWO_PT_DATA*);
@@ -671,11 +669,11 @@ bool make_new_class(char *name, char **why_not) {
 
     if (!valid_name(name)) /* checks non-null */
     {
-        *why_not = ptr_to("illegal name");
+        *why_not = "illegal name";
         return (FALSE);
     } else if (!valid_new_name(name)) /* check class names too */
     {
-        *why_not = ptr_to("name is already in use");
+        *why_not = "name is already in use";
         return (FALSE);
     }
 
@@ -685,7 +683,7 @@ bool make_new_class(char *name, char **why_not) {
             break;
         }
     if (classnum == -1) {
-        *why_not = ptr_to("no more classes can be defined");
+        *why_not = "no more classes can be defined";
         return (FALSE);
     }
     strcpy(class_name[classnum], name);

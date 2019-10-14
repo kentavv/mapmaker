@@ -235,7 +235,6 @@ void probinit(real probdist[6][4]) {
 void calclike(real prob1[4], real prob2[4], real theta, LOCUS locus, real *likelihood, real *numerator) {
     int i, j, diffs;
     real d1[4], d2[4], p;
-    real f2_prob();
 
     *likelihood = 0.0;
     *numerator = 0.0;

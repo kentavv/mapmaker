@@ -143,7 +143,7 @@ void parse_equation(char *original_equation, EQUATION **parsed_eqn, int (*variab
     char *token;
 
     token = get_temp_string();
-    self_delimiting = ptr_to("()*+-/^");
+    self_delimiting = "()*+-/^";
     state = VALUE; /* Sets initial state in state machine to expect a VALUE */
 
     eqnlen = len(original_equation);
@@ -201,7 +201,7 @@ void parse_equation(char *original_equation, EQUATION **parsed_eqn, int (*variab
                 state = OP;
             } else {
                 BADEQN_errpos = eqnlen - len(original_equation) - 1;
-                BADEQN_errmsg = ptr_to("Equation error - VALUE expected");
+                BADEQN_errmsg = "Equation error - VALUE expected";
                 send (BADEQN);
             }
         } else if (state == OP) {
@@ -232,7 +232,7 @@ void parse_equation(char *original_equation, EQUATION **parsed_eqn, int (*variab
                 state = OP;
             } else {
                 BADEQN_errpos = eqnlen - len(original_equation) - 1;
-                BADEQN_errmsg = ptr_to("Equation error-operation expected");
+                BADEQN_errmsg = "Equation error-operation expected";
                 send (BADEQN);
             }
         } else if (state == LEFT_PAREN) {
@@ -242,7 +242,7 @@ void parse_equation(char *original_equation, EQUATION **parsed_eqn, int (*variab
                 state = VALUE;
             } else {
                 BADEQN_errpos = eqnlen - len(original_equation) - 1;
-                BADEQN_errmsg = ptr_to("Error - left parenthesis expected");
+                BADEQN_errmsg = "Error - left parenthesis expected";
                 send (BADEQN);
             }
         }
@@ -342,7 +342,7 @@ void add_parenthesis(const int *i, int par, int mark, EQUATION **parsed_eqn) {
 void check_sizeof_array(const int *size) {
     if (*size > MAX_EQN_SIZE) {
         BADEQN_errpos = -1;
-        BADEQN_errmsg = ptr_to("Error - Equation is too long!");
+        BADEQN_errmsg = "Error - Equation is too long!";
         send (BADEQN);
     }
 }
@@ -448,7 +448,7 @@ real evaluate_equation(EQUATION **postfixed, real (*value_find)(int)) {
                                 push_stack(pop_stack() / divisor);
                             } else {
                                 BADEQN_errpos = -1;
-                                BADEQN_errmsg = ptr_to("Error - division by 0 attempted\n");
+                                BADEQN_errmsg = "Error - division by 0 attempted\n";
                                 send(BADEQN);
                             }
                             break;
@@ -462,7 +462,7 @@ real evaluate_equation(EQUATION **postfixed, real (*value_find)(int)) {
                                 push_stack(log10(number_to_use));
                             } else {
                                 BADEQN_errpos = -1;
-                                BADEQN_errmsg = ptr_to("Error - can't take log of 0 or negative number\n");
+                                BADEQN_errmsg = "Error - can't take log of 0 or negative number\n";
                                 send(BADEQN);
                             }
                             break;
@@ -472,7 +472,7 @@ real evaluate_equation(EQUATION **postfixed, real (*value_find)(int)) {
                                 push_stack(log(number_to_use));
                             else {
                                 BADEQN_errpos = -1;
-                                BADEQN_errmsg = ptr_to("Error - can't take ln of 0 or negative number\n");
+                                BADEQN_errmsg = "Error - can't take ln of 0 or negative number\n";
                                 send(BADEQN);
                             }
                             break;
@@ -485,7 +485,7 @@ real evaluate_equation(EQUATION **postfixed, real (*value_find)(int)) {
                                 push_stack(asin(number_to_use));
                             } else {
                                 BADEQN_errpos = -1;
-                                BADEQN_errmsg = ptr_to("Error - can't take asin of number greater than 1\n");
+                                BADEQN_errmsg = "Error - can't take asin of number greater than 1\n";
                                 send(BADEQN);
                             }
                             break;
@@ -498,7 +498,7 @@ real evaluate_equation(EQUATION **postfixed, real (*value_find)(int)) {
                                 push_stack(acos(number_to_use));
                             } else {
                                 BADEQN_errpos = -1;
-                                BADEQN_errmsg = ptr_to("Error - can't take acos of number greater than 1\n");
+                                BADEQN_errmsg = "Error - can't take acos of number greater than 1\n";
                                 send(BADEQN);
                             }
                             break;
@@ -555,7 +555,7 @@ int variable_lookup(char *item) {
         }
     }
     BADEQN_errpos = -1;
-    BADEQN_errmsg = ptr_to("Error - variable name not known");
+    BADEQN_errmsg = "Error - variable name not known";
     send (BADEQN);
     return 0; /* not reached */
 }
@@ -566,7 +566,7 @@ real value_lookup(int index) {
         return (value_table[index]);
     } else {
         BADEQN_errpos = -1;
-        BADEQN_errmsg = ptr_to("Error - no value for variable");
+        BADEQN_errmsg = "Error - no value for variable";
         send (BADEQN);
     }
     return 0; /* not reached */

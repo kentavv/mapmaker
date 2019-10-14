@@ -719,13 +719,13 @@ int place_this(int locus, int chrom, PLACE **place, /* better be ralative to chr
             }
         }
 
-    sgn = ptr_to("=");
+    sgn = "=";
     if (support == NO_LIKE) {
-        sgn = ptr_to("<");
+        sgn = "<";
         support = -5.0;
     }
-    witherr = ptr_to("");
-    if (error_lod != NO_ERRORS) witherr = ptr_to("*with errors* ");
+    witherr = "";
+    if (error_lod != NO_ERRORS) witherr = "*with errors* ";
 
     if (off_end) {
         placement[locus]->status = (error_lod != NO_ERRORS ? M_ERROR : M_OFFEND);
@@ -749,9 +749,9 @@ int place_this(int locus, int chrom, PLACE **place, /* better be ralative to chr
         }
 
     } else { /* good>1 */
-        sgn2 = ptr_to("=");
+        sgn2 = "=";
         if (second_best == NO_LIKE) {
-            sgn2 = ptr_to("<");
+            sgn2 = "<";
             second_best = -5.0;
         }
         placement[locus]->status = (error_lod != NO_ERRORS ? M_ERROR : M_REGION);

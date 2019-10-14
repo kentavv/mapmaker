@@ -239,7 +239,7 @@ or to disable the printing of help information for them alone. */
 #define MAX_COM_TOPICS     20
 
 /* If you want a custom prompt, set prompt to point to the function... */
-extern char *((*prompt)()); /* ptr to a func which returns a ptr to a string - 
+extern char *((*prompt)(char *)); /* ptr to a func which returns a ptr to a string -
    it gets as an arg char *str; and it should side-effect AND return str. */
 
 typedef struct {
