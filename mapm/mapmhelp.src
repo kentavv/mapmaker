@@ -538,7 +538,7 @@ Commands related to the use of sequences include:
 !'Sequence' Command
 !'Expand Sequence' Command
 !'History' Command (Sequence History Feature)
-!'Insert', 'Delete', and 'Append' Commands
+!'Insert', 'Delete', 'Append', and 'Flip' Commands
 !'Edit' Command
 !'Translate' Command
 
@@ -733,6 +733,19 @@ sequence. For example,
 !7> delete 3 5
 !sequence #2= 1 2 {4 6 7} 8
 
+@cmd flip
+$Flips the Order of Markers in the Sequence
+=0
+
+The "flip" command will reverse the order of the current
+sequence. For example,
+
+!6> sequence 1 2 3 {4 5 6 7} 8
+!sequence #1= 1 2 3 {4 5 6 7} 8
+!
+!7> flip
+!sequence #2= 8 {7 6 5 4} 3 2 1
+
 @cmd edit sequence (e)
 $Edit a Sequence Using the Keyboard
 <1 <sequence name or number to edit>
@@ -893,7 +906,7 @@ The command "two point" instructs MAPMAKER to compute the two-point
 map distances and LOD scores for all pairwise combinations of the
 markers in the current sequence. This information is stored by
 MAPMAKER and may be accessed by any of several commands, including
-"group", "lod table", "big lods", and others. It is NOT necessary to
+"group", "lod table", "big lods", "all lods", and others. It is NOT necessary to
 ever type the "two point" command: MAPMAKER will compute the needed
 values as needed. Pre-computing these numbers is simply a convenience
 for speeding later analyses (note that this is NOT true of three-point
@@ -964,6 +977,24 @@ the "default linkage criteria" setting are used.
 #
 #With CEPH-type data, the
 #"big lods" command examines either sex-specific or sex-non-specific maps,
+#depending on the setting of the "sex specific" option.
+
+@cmd all lods
+$List Linked Pairs of Markers in Sequence
+<1 <sort criteria>
+%default sorted on marker-1
+
+The "all lods" command displays the map distance and LOD score for all
+pairwise combinations of loci in the current sequence including those
+which are unlinked and would not match the criteria used by "big lods".
+Results are displayed, by default, in the order the markers are in the
+sequence. Alternative sort methods include "theta", "lod", and "distance"
+to sort by values within the corresponding column while preserving
+the order of marker-1.
+
+#
+#With CEPH-type data, the
+#"all lods" command examines either sex-specific or sex-non-specific maps,
 #depending on the setting of the "sex specific" option.
 
 @cmd near

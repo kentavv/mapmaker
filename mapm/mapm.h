@@ -349,6 +349,8 @@ command list_haplotypes(void);
 
 command biglods(void);
 
+command all_lods(void);
+
 command lodtable(void);
 
 command near_locus(void);
@@ -391,6 +393,8 @@ command new_insert(void);
 command new_delete(void);
 
 command new_append(void);
+
+command flip(void);
 
 command show_seq_history(void); /* previous sequences */
 command set_class(void);

@@ -357,7 +357,7 @@ void setup_commands(void) {
 
     /*  command-name	             Abbrev	function	   	type  
 	1234567890123456789012345    123	12345678901234...  	123
-	------------------------- sp ---  tab   --------------	  tab   ---*/
+	------------------------- sp ---  tab   --------------	  tab   --- */
 
     /* npt commands */
     mc("map", "m", make_map, CMD);
@@ -396,6 +396,7 @@ void setup_commands(void) {
     mc("delete", "d", new_delete, CMD);
     mc("insert", "i", new_insert, CMD);
     mc("append", "a", new_append, CMD);
+    mc("flip", "", flip, CMD);
     mc("history", "h", show_seq_history, CMD);
 /*  mc("let",                        "l",	let,			CMD);*/
     mc("let", "l", let_expanding, CMD);
@@ -431,6 +432,7 @@ void setup_commands(void) {
     /* 2pt commands in cmds_2.c */
     mc("two point", "", two_point, CMD);
     mc("big lods", "", biglods, CMD);
+    mc("all lods", "", all_lods, CMD);
     mc("lod table", "", lodtable, CMD);
     mc("near", "", near_locus, CMD);
     mc("pairwise", "", pairwise, CMD);
