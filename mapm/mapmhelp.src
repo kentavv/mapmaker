@@ -280,7 +280,7 @@ the up-arrow and down-arrow keys, edit them (e.g., to fix a mistake,
 add a locus to a sequence, etc.), and then hit RETURN to execute the
 command. The set of keys which work includes the standard ones
 (arrows, DELETE, BACKSPACE, etc.). Various control-key combinations also
-do useful thigs, although you will only find these familiar if you
+do useful things, although you will only find these familiar if you
 have used some version of the Emacs text editor. Some control keys include:
 
 !control-a        move to beginning of line
@@ -325,7 +325,7 @@ On a DOS system, the "PRINT" command will usually work:
 !print mychroms.ps
 
 In either case, you can get a Unix or DOS prompt from which to issue
-this command using MAPMAKER's 'system' comand, described below.  Both
+this command using MAPMAKER's 'system' command, described below.  Both
 examples above assume that your software is configured correctly and in
 the default way. Ask your computer support people for details.
 
@@ -337,7 +337,7 @@ Again, see the Installation Instructions for details.
 @topic Basic Commands
 $Basic MAPMAKER Commands
 
-There are a few very basic MAPMAKER comands which you will likely find
+There are a few very basic MAPMAKER commands which you will likely find
 yourself using quite frequently. These include:
 
     'help' command, to read on-line help information
@@ -421,7 +421,7 @@ $Prepares a New Data Set for Analysis
 The "prepare data" command loads a raw data set from a file you create
 into MAPMAKER for analysis. You may use a file name which specifies a
 directory in the manner supported by your operating system. You must
-specify the extension of the file (we sugest that you use ".raw" for
+specify the extension of the file (we suggest that you use ".raw" for
 raw data files). For example:
 
 !1> prepare data newrflps.raw
@@ -483,7 +483,7 @@ prepared using the current version of MAPMAKER.
 The name of the data file should be given as an argument. A directory
 may optionally be specified in the manner supported by your system.
 The data file(s) MUST use the ordinary MAPMAKER extensions, as written
-by 'prepare data' (e.g. the genotype data file must uhave the
+by 'prepare data' (e.g. the genotype data file must have the
 extension ".data" on Unix or ".dat" on DOS, etc). For example,
 
     1> load data example
@@ -574,7 +574,7 @@ likelihood map for the markers numbered 1, 2, 3, and 4 (again, in that
 order).
 
 The "sequence" command recognizes locus numbers (assigned by
-MAPMAKER). locus names (assigned by the user), refereces to prevous
+MAPMAKER). locus names (assigned by the user), references to previous
 sequences (see the "history" command for details), user defined
 sequence names (set with the "let" nd "edit" commands), and a variety
 of special MAPMAKER defined names (see the "names" command for
@@ -678,7 +678,7 @@ $Set the Sequence, Expanding Names
 
 Named sequences are stored in MAPMAKER sequences as are loci. Before
 any command is run, MAPMAKER looks up the value of each name, and
-builds a new "exanded" sequence accordingly. This is convenient,
+builds a new "expanded" sequence accordingly. This is convenient,
 except with names which change frequently (for example: "order1").
 
 The "expand sequence" command sets the current sequence, expanding all
@@ -688,7 +688,7 @@ sequence.
 
 @cmd insert (i)
 $Insert a Marker into the Sequence
-=2 <marker before poisition to add> : <new marker>
+=2 <marker before position to add> : <new marker>
 
 The "insert" command is used to add a marker or set of markers to
 the current sequence.  To use this command, type "insert", followed by
@@ -711,7 +711,7 @@ before the colon, for example:
 $Append Marker(s) to the End of the Sequence
 >1 <marker(s) to append>
 
-The "append" command will apend the specified marker(s) to the current
+The "append" command will append the specified marker(s) to the current
 sequence. For example,
 
 !6> sequence 1 2 3 {4 5 6 7} 8
@@ -737,22 +737,22 @@ sequence. For example,
 $Edit a Sequence Using the Keyboard
 <1 <sequence name or number to edit>
 
-The 'edit' command, when used with no arguents, allows you to edit the
+The 'edit' command, when used with no arguments, allows you to edit the
 current sequence using the arrow keys (and others) on the keyboard.
 The keys used are the same as for editing commands -- type 'help
-keyboard editing' for details.  
+keyboard editing' for details.
 
 If you type 'edit name' where name is a sequence you defined using the
 'let' command, then you will instead edit the definition of that name
-(the current sequence will NOT be affacted). 
+(the current sequence will NOT be affected).
 
 Similarly, if you type 'edit number', where number is a sequence
 history number (type 'help history' for details), then you will edit
-that sequence, althoght it WILL become the current sequence when you
+that sequence, although it WILL become the current sequence when you
 are done.
 
 The 'edit' command currently only works on UNIX systems, and then only
-sometimes. See the instalation instructions for details.
+sometimes. See the installation instructions for details.
 
 @cmd let (l)
 $Name a Sequence
@@ -946,7 +946,7 @@ distance greater than 40% recombination.
 
 @cmd big lods
 $List Linked Pairs of Markers in Sequence
-<1 <minimum LOD> <maximum distance>
+<2 <minimum LOD> <maximum distance>
 %default linkage criteria
 
 The "big lods" command displays the map distance and LOD score for all
@@ -1072,7 +1072,7 @@ that of the "lod table" command. For example:
 
 @cmd group
 $Separate Markers in Sequence into Linkage Groups
-<2 <mimimum LOD> <maximum distance>
+<2 <minimum LOD> <maximum distance>
 %default linkage criteria
 
 The "group" command displays possible linkage group assignments of
@@ -1084,7 +1084,7 @@ linkage is considered fully transitive (e.g.  if A is linked to B, and
 B is linked to C, then A, B, and C will be included in the same linkage 
 group). For example, typing:
 #In the case of CEPH-type data analysis with "sex specific" on, 
-#bothe the male and female distances must be below the threshold.
+#both the male and female distances must be below the threshold.
 
 !9> group 4.0 30
 
@@ -1178,13 +1178,13 @@ $Criteria for Finding Highly-Informative Markers
 Markers will be included in informative subsets (as in the "suggest
 subset" and "order" commands) if they meet the criteria: (i) No
 distance between any pair of markers is less than the specified
-maximum distance; (ii) at least the specified mimimum number of
+maximum distance; (ii) at least the specified minimum number of
 individuals are informative for each marker, and (iii) if the data set
 is for F2 or F3 intercross, and if the word "codominant" is specified
 as the third argument, then the markers must be scored codominantly
 (e.g. no C/D scores in raw data file).
 
-When MAPMAKER perpares a data file, the informativeness criteria are
+When MAPMAKER prepares a data file, the informativeness criteria are
 set to a maximum distance of 1cM, and a minimum of 1 informative
 individual (essentially no test). You need to set these criteria to
 apply a better test.
@@ -1229,7 +1229,7 @@ markers names shown and interval's distances to scale.
 
 @cmd compare (c)
 $Compare Likelihoods of Many Map Orders
-<2 <number of maps to remembr> <log-likelihood threshold>
+<2 <number of maps to remember> <log-likelihood threshold>
 %20 infinite (no thresholding)
 
 The "compare" command calculates the maximum likelihood map for all
@@ -1237,7 +1237,7 @@ orders of markers specified by the current sequence. (Recall
 that one sequence can specify more than one order of loci. For
 example, the sequence "{1 2 3}" specifies the three orders: "1 2 3",
 "1 3 2", and "2 1 3"). Unlike the "map" command however, the orders
-are diplayed sorted by the likelihoods of their maps. For example:
+are displayed sorted by the likelihoods of their maps. For example:
 
 !67> seq {9 6 18 4}
 !sequence #34= {9 4 6 18}
@@ -1276,7 +1276,7 @@ log-likelihood cutoff.
 When 'use three point' is on, some orders may be excluded by
 three-point tests, in which case they are never assigned a multipoint
 log-likelihood at all, and they are not displayed (although the total
-number of orders excluded is). Note tnat the 'compare' command takes
+number of orders excluded is). Note that the 'compare' command takes
 into account "error detection", if it is on, although the computed
 error LODs are never actually printed out. Use the "map" or
 "genotypes" command to do this for the most likely order or orders.
@@ -1327,7 +1327,7 @@ such order separately.
 !BEST   -91.47  -82.55  -90.28  -85.93 
 
 In this example, MAPMAKER has displayed the relative likelihoods of
-the maps containing markerd 16, 5, 10, and 17 inserted into all
+the maps containing markers 16, 5, 10, and 17 inserted into all
 intervals in the order "9 4 6 18".  For marker 16, the best map
 corresponds to the order "9 16 4 6 18", with a log-likelihood of
 -91.47.  The next best order is "16 9 4 6 18", with a log likelihood
@@ -1380,7 +1380,7 @@ were all excluded by three-point analysis.
 Because the "try" command is usually only used to examine a limited
 number of orders, it is most useful only when the linkage group in
 question has been thoroughly analyzed and its map order is well
-trusted. Note tnat the 'try' command takes into account "error
+trusted. Note that the 'try' command takes into account "error
 detection", if it is on, although the computed error LODs are never
 actually printed out. Use the "map" or "genotypes" command to do this
 for the most likely order or orders.
@@ -1390,9 +1390,9 @@ $Test a Map Order by Permuting Local Orders
 <2 <window size> <log-likelihood threshold>
 %3 2.0
 
-The ripple command tests a map order by comparing the liklihoods of
+The ripple command tests a map order by comparing the likelihoods of
 the original map order and those found when the order of neighboring
-loci are permited. Analytically, this is much like using a 'sequence'
+loci are permitted. Analytically, this is much like using a 'sequence'
 with set brackets (to indicate ambiguity) along with the 'compare'
 command, although 'ripple' is convenient because is automates many
 such analyses for you.
@@ -1402,9 +1402,9 @@ Before using the ripple command, you should set the sequence to a
 specify (i) the number of neighboring markers to permute at one time
 (e.g. the number to put within set brackets), and (ii) the
 log-likelihood difference threshold for declaring when an alternative
-order should be displayed. Note that the riple command uses ALL
+order should be displayed. Note that the ripple command uses ALL
 flanking markers in every computation, and that it takes advantage of
-'error detction' and 'use three point', if enabled.
+'error detection' and 'use three point', if enabled.
 
 For example:
 
@@ -1450,7 +1450,7 @@ $Automatically Build Map Orders from Scratch
 
 The "orders" command provides a fast and powerful automated tool for
 mapping markers using full multipoint analysis, including 'error
-detection' and 'three point' analysis, if enabled. (Be forwarned, due
+detection' and 'three point' analysis, if enabled. (Be forewarned, due
 to the number of tests performed, using the 'order' command WITHOUT
 three-point analysis can be very slow).
 
@@ -1469,7 +1469,7 @@ starting map order of highly informative markers supported by a high
 log-likelihood ratio. This analysis is similar to first (a) using the
 'suggest subset' command to select informative well-spaced markers,
 then (b) using the 'compare' command repeatedly until you find a
-subset of the hightly informative markers that has only one plausible
+subset of the highly informative markers that has only one plausible
 map order with high log-likelihood. The <starting size> and
 <threshold> arguments respectively specify the number of markers
 desired in the starting order and the log-likelihood ratio which must
@@ -1521,7 +1521,7 @@ remaining markers.
 
 The algorithm used works essentially as follows: 
 
-(i) The markers which need to be added to the srarting order are
+(i) The markers which need to be added to the starting order are
 sorted by a heuristic measure of informativeness, in order to first
 try to place the markers most likely to fall into single intervals in
 the order. Some degree of randomness is used, meaning that successive
@@ -1532,7 +1532,7 @@ considered indicative of problems in the raw data.
 (ii) If 'use three point' is on, three point analysis is used to
 determine which intervals each marker needs to be tried in. If this
 step places a marker uniquely in one interval, it is added to the
-order and MAPMAKER starts again with step (i) to place the remainig
+order and MAPMAKER starts again with step (i) to place the remaining
 markers.
 
 (iii) Multipoint analysis is used, as with the 'try' command, to
@@ -1555,7 +1555,7 @@ Markers which place at zero distance from a known marker are placed
 longer able to add markers to the data set, MAPMAKER stops. (If the
 'multipoint criteria' specify two placement thresholds, then MAPMAKER
 first starts again from step (i) at the lower threshold). The "order1"
-and "other1" names are set in the same waty as they are for the
+and "other1" names are set in the same way as they are for the
 'orders' command.
 
 For example:
@@ -1609,7 +1609,7 @@ As is described above for the "try" command, a marker is considered
 uniquely placed when the log-likelihood for placement in all intervals
 (besides the best one) is significantly lower than that for the best
 interval -- the minimum such difference is specified by the
-<log-likelihod threshold> argument.
+<log-likelihood threshold> argument.
 
 The <window size> argument indicates the minimum number of flanking
 markers which should be used to place a locus (more may be used if
@@ -1729,8 +1729,8 @@ fully transitive.  MAPMAKER remembers all such chromosome assignments
 and uses them for commands such as 'place'.  Assignments are saved
 between MAPMAKER sessions and may be viewed with the 'list loci' or
 'list.  Note that with large data sets, you will likely need to use
-more stringent criteria thn the defaults, because of the incresed
-cummulative chance of spurious linkage.
+more stringent criteria then the defaults, because of the increased
+cumulative chance of spurious linkage.
 
 @cmd attach
 $Assign Markers to a Chromosome, Regardless
@@ -1752,7 +1752,7 @@ you know what you are doing.
 @cmd anchor
 $Specify the Anchor Loci for a Chromosome 
 <1 <chromosome name>
-%the currently seleted chromosome
+%the currently selected chromosome
 
 Anchor loci are used by the 'assign' command to determine which
 chromosome any particular linkage group belongs to -- if any locus in
@@ -1771,10 +1771,10 @@ $Set the Framework Map Order for a Chromosome
 
 The 'framework' command declares the framework order of the specified
 chromosome to be that specified by the current sequence.  For the
-sequence, a map is computed exactly as if the 'map' commnd had been
+sequence, a map is computed exactly as if the 'map' command had been
 invoked, and this map is remembered.  Changing the framework of a
 chromosome will cause all placement information for that chromosome to
-be cleared.  A sequence of "none" may be used to cler the framework.
+be cleared.  A sequence of "none" may be used to clear the framework.
 All loci in the framework must already be assigned to the specified
 chromosome.
 
@@ -1783,7 +1783,7 @@ $Place Markers Relative to a Chromosome Framework
 <1 <log-likelihood threshold>
 %2.0
 
-The place command maps all markers in the current sequqnce (which have
+The place command maps all markers in the current sequence (which have
 been assigned to a chromosome) relative to the framework order of
 their chromosome.  'Place' is thus similar to 'try', however place
 makes a judgement as to whether the marker mapped to a single interval
@@ -1795,20 +1795,20 @@ MAPMAMER.  Possible outcomes for a marker include:
 !REGION   fits in more than one interval at the specified threshold
 !OFF-END  mapped off one or both ends of the chromosome
 !ERROR    if 'error detection' is on, candidate errors were discovered
-!PROBLEM  three-point analysis exluded the marker from all intervals
+!PROBLEM  three-point analysis excluded the marker from all intervals
 
 The 'list results' and 'show placements' commands will redisplay
 previously computed placement data.  The 'together' command may be
 used to resolve multiple loci which place near each other, and can
 automatically insert placed oci into the framework order.  Placement
-data are saved between invokations of MAPMAKER.
+data are saved between invocations of MAPMAKER.
 
 @cmd together
 $Places Loci Together into the Framework
 
-The 'together' commad takes all loci in the current sequence which
+The 'together' command takes all loci in the current sequence which
 have been mapped relative to a framework, and tries to resolve them
-relative to each other -- when multiple loci are plaaced into the same
+relative to each other -- when multiple loci are placed into the same
 interval, all combinatorially possible orders are tried.  When the
 number of possible orders grows too large, a simple "greedy" heuristic
 is used to incrementally extend the framework. Of course, it is always
@@ -1912,7 +1912,7 @@ others are drawn in italic type (in their most likely position.)
 $Declare Markers as 'Old' or 'New'
 =1 <old or new>
 
-The age command sets the age for loci listed in the currect sequence.
+The age command sets the age for loci listed in the current sequence.
 This value is displayed by the 'list loci' command, and the named
 sequences 'old' and 'new' are set accordingly.
 
@@ -1920,7 +1920,7 @@ sequences 'old' and 'new' are set accordingly.
 $Declare the Class for Markers
 =1 <class name>
 
-The 'class' command sets the class for loci listed in the currect
+The 'class' command sets the class for loci listed in the current
 sequence.  This value is displayed by the 'list loci' command, and
 named sequences with the same name as the class name are set
 accordingly. Classes are exclusive: each marker can be in one and only
@@ -2095,7 +2095,7 @@ threshold of the best, then the entire order is considered "excluded".
 It is well known that three-point analysis can produce incorrect
 results (e.g. excluding correct orders, or accepting NO orders at all)
 particularly with tightly linked markers and more particularly when
-there is a small number of genotyping errors present. We thus recomend
+there is a small number of genotyping errors present. We thus recommend
 that thee three-point analysis features be used with strict
 log-likelihood thresholds (at least 3.0 -- we use 4.0 or higher on our
 own data sets). We also recommend using three-point analysis with the
@@ -2121,7 +2121,7 @@ in the ".3pt" file.
 @opt use three point
 $Whether Three-Point Analysis Will Be Used
 <1 <on or off>
-%with no arguments, deplays the current value
+%with no arguments, displays the current value
 
 When 'use three point' is 'on', three-point analysis will be used by
 many order finding commands to restrict the set of locus orders which
@@ -2142,7 +2142,7 @@ command uses the same criteria for linkage as described for the
 "group" command).  While these likelihoods are printed as they are
 computed, providing some information about map order, there are far
 more efficient ways to analyze these data. Repeated uses of the "three
-point" command add to MAPMAKER's internal databse of three-point data
+point" command add to MAPMAKER's internal database of three-point data
 -- only the "forget three point" command causes three-point
 likelihoods to be forgotten (until a file is again prepared).
 
@@ -2151,7 +2151,7 @@ $Linkage Criteria for 'Three Point' Triples
 <3 <min LOD score> <max distance> <number of links, 2 or 3>
 %5.0 30cM 3
 
-These criteria deterine which sets of three loci (triples) will be
+These criteria determine which sets of three loci (triples) will be
 examined using the 'three point' command.
 
 When pre-computing three-point likelihoods, MAPMAKER first divides the
@@ -2219,7 +2219,7 @@ In data sets with large numbers of loci and relatively few informative
 meioses per marker, MAPMAKER analyses, while automatic, can be time
 consuming. As one possible optimization, MAPMAKER can collect together
 markers which are completely recombinationally unseparated, and treat
-them as a single locus with the concensus genotype data. Moreover,
+them as a single locus with the consensus genotype data. Moreover,
 this allows markers with complementary missing data points or +/-
 scorings (in intercross data) to fill in for each other. This function
 is accomplished using the "join haplotypes" command.
@@ -2228,7 +2228,7 @@ The validity of this method rests on the observation that, under
 almost all conditions (including markers with missing data and +/-
 typings in intercrosses) markers unseparated by pairwise analysis
 always map together by multipoint analysis, as you would expect.
-However, this is not absolutely guarenteed by the standard genetic
+However, this is not absolutely guaranteed by the standard genetic
 model under all circumstances, and it is important that you verify all
 results obtained using "join haplotypes" by considering the markers
 separately. In large simulations, we only observe differences with
@@ -2237,7 +2237,7 @@ particularly messy data.
 When haplotypes are joined, one marker in the unseparated "haplotype
 group" becomes the name of the group, and the fact that it is a group
 is indicated by a '+' after the name). For example, the group
-consiting of unseparated markers M710, B422, and Q166, might be named
+consisting of unseparated markers M710, B422, and Q166, might be named
 B422+. Unfortunately, because MAPMAKER tries to keep many results in
 its working data set, you cannot quickly flip back and forth between
 using haplotyped groups and not: in the above example, the markers
@@ -2271,7 +2271,7 @@ this operation run faster on large data sets). MAPMAKER displays a list of
 the haplotype groups it found, along with their assigned names.
 
 As described above under this topic, when haplotypes are joined the
-original markers essentially become inaccessable by most commands.
+original markers essentially become inaccessible by most commands.
 Only the haplotype group itself may be used (the haplotype group is
 essentially substituted for any reference to any of the loci in the
 group).
@@ -2335,7 +2335,7 @@ $Convergence Tolerance
 %with no argument, displays current setting
 
 Whenever MAPMAKER calculates a map, it uses an iterative technique
-which tests for convergece by measuring the change in log-likelihood
+which tests for convergence by measuring the change in log-likelihood
 between the newly estimated map and the previous iteration's map. If
 this change is less than the value of the "tolerance" parameter,
 MAPMAKER determines that it has converged. When MAPMAKER begins the
@@ -2456,17 +2456,17 @@ $Review Previous MAPMAKER Output
 =0
 
 This command causes the last 125 lines of MAPMAKER output to be
-redisplayed on the screen, with MAPMAKER pausing inbetween each
+redisplayed on the screen, with MAPMAKER pausing in between each
 screenful. This is useful for reviewing the results of analyses which
 have since scrolled off the top of the screen (if you are using a
-terminal or terminal-emulator which does not provide a "scrollback"
+terminal or terminal-emulator which does not provide a "scroll-back"
 feature). Luckily, most do: 'review output' is usually only needed on
 DOS systems.
 
 @cmd change directory (cd)
 $Change Default Directory Used by MAPMAKER
 =1 <directory name>
-%with no arguments, displays the current default directoy
+%with no arguments, displays the current default directory
 
 The 'cd' command works essentially the same way it does under DOS or
 Unix. By default, all files are read or written from this directory
@@ -2621,4 +2621,4 @@ debugging or which have been delibrately disabled. Steer clear.
 
 @end
 
-# I need to dal with positive vs. negative lod thresholds as arguments
+# I need to deal with positive vs. negative lod thresholds as arguments
