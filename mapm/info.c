@@ -72,16 +72,14 @@ static void return_to_unused(TRIPLE_LIST *p);
 /**************** Stuff to handle global 2pt data ****************/
 
 void allocate_two_pt(int num_loci) {
-    int i, j;
-
     two_pt_data = NULL;
     two_pt_list = NULL;
     two_pt_max = 0;
 
     array(two_pt_data, num_loci, TWO_PT_DATA**);
-    for (i = 0; i < num_loci; i++) {
+    for (int i = 0; i < num_loci; i++) {
         array(two_pt_data[i], (i + 1), TWO_PT_DATA*);
-        for (j = 0; j <= i; j++) two_pt_data[i][j] = NULL;
+        for (int j = 0; j <= i; j++) two_pt_data[i][j] = NULL;
         two_pt_max += i + 1;
     }
     array(two_pt_list, two_pt_max, TWO_PT_DATA*);
