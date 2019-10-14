@@ -16,21 +16,19 @@
 
 
 
-void nstrcpy(char *to, char *from, int n);
+void nstrcpy(char *to, const char *from, int n);
 
-void maxstrcat(char *to, char *from, int n);
+void maxstrcat(char *to, const char *from, int n);
 
-void strins(char *to, char *from);
+void strins(char *to, const char *from);
 
-void maxstrins(char *to, char *from, int max_total_length);
+void maxstrins(char *to, const char *from, int max_total_length);
 
 void strdel(char *str, int num_chars);
 
-char *mkstrcpy(char *str);
+char *mkstrcpy(const char *str);
 
-char *ptr_to(char *str);
-
-int nullstr(char *str);
+int nullstr(const char *str);
 
 int strfinder(char *str, int chr);
 
@@ -131,7 +129,7 @@ void str_init(void);
 
 /* To avoid the ANSI size_t idiocy... */
 
-#define nstrcmp(s1, s2, max_chars) strncmp(s1,s2,((int)max_chars))
+#define nstrcmp(s1, s2, max_chars) strncmp(s1,s2,((int)(max_chars)))
 #define len(str) ((int) strlen(str))
 
 /* Other useful stuff... */
@@ -167,7 +165,6 @@ extern char Cw, Ct;
 #define matches(s, t) nmatches(s,t,1)
 
 //int xstreq(); 	/* currently broken? */
-#define istrlen len /* THIS IS AN OBSOLETE NAME- DON'T USE IT */
 
 /****************************************************************************
 Various string crunching routines: despace() changes all globs of
@@ -262,12 +259,8 @@ side-effect their argument str, and return a pointer to it for yucks.
 /* Possible default values */
 #define sREQUIRED NULL
 #define iREQUIRED (-32768)
-#define lREQUIRED -1073741823L
+#define lREQUIRED (-1073741823L)
 #define rREQUIRED ((real)-1.2345e31)
-
-/* To decipher FALSE responses of the token parsers */
-#define no_token(p_str)  (**p_str=='\0')
-#define bad_token(p_str) (**p_str!='\0')
 
 /*** Usually, tokens are separated by whitespace. Certain characters
 however, which are listed in the self_delimiting string, will always
@@ -321,11 +314,6 @@ is encountered.
 #define ANYCHAR    NULL
 #define SKIPWHITE  TRUE
 #define NOSKIP     FALSE
-
-/* To decipher FALSE responses of parse_char */
-#define no_char(p_str) (**p_str=='\0')
-#define bad_char(p_str) (**p_str!='\0' && !white(**p_str))
-#define white_char(p_str) (white(**p_str))
 
 
 /***********************************************************************

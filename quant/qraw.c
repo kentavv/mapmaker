@@ -539,7 +539,7 @@ void read_map_locus(FILE *fp, int indivs, int t_loc, int *order, int n_loci) {
             if (t == order[i]) {
                 t = i;
                 raw.original_locus[t] = order[i] + 1;
-                self_delimiting = ptr_to("");
+                self_delimiting = "";
                 if (!stoken(&ln, sREQUIRED, nam)) { send(BADDATA); }
                 strcpy(raw.locus_name[t], &nam[1]);
                 /* read the locus' data */

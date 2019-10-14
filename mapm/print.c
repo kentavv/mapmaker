@@ -487,10 +487,10 @@ void print_locus_summary(int *locus, int n_loci, bool haplo) {
     nl();
 
     for (i = 0; i < n_loci; i++) {
-        if (!assigned(locus[i]))chrom = ptr_to("-");
+        if (!assigned(locus[i]))chrom = "-";
         else chrom = chrom2str(assignment_chrom(locus[i]));
 
-        if (!haplotyped(locus[i])) hap = ptr_to("-");
+        if (!haplotyped(locus[i])) hap = "-";
         else hap = locname(haplo_first[locus[i]], TRUE);
 
         g = my_group[locus[i]];
@@ -533,80 +533,80 @@ void print_mapping_summary(int *locus, int n_loci, bool haplo) {
     nl();
 
     for (i = 0; i < n_loci; i++) {
-        chrom = ptr_to("-");
-        lod = ptr_to("  -  ");
-//	char *theta=  ptr_to("   - ");  /* theta and linked are not printed */
-//	char *linked= ptr_to("-");
+        chrom = "-";
+        lod = "  -  ";
+//	char *theta=  "   - ";  /* theta and linked are not printed */
+//	char *linked= "-";
         state = assignment_state(locus[i]);
 
         if (state == A_PROBLEM) {
-            assign = ptr_to("conflict!");
+            assign = "conflict!";
         } else if (state == A_CHANGED) {
-            assign = ptr_to("changed");
+            assign = "changed";
         } else if (state == A_UNLINKED) {
-            assign = ptr_to("unlinked");
+            assign = "unlinked";
         } else if (state == A_UNKNOWN) {
-            assign = ptr_to("-");
+            assign = "-";
         } else if (state == A_BORDERLINE) {
-            assign = ptr_to("low-lod");
+            assign = "low-lod";
             chrom = chrom2str(assignment_chrom(locus[i]));
             lod = rsd(5.2, assignment_lod(locus[i]));
 //	    theta=  rsd(5.1,assignment_theta(locus[i]));
 //	    linked= loc2str(assignment_locus(locus[i]));
         } else if (state == A_ASSIGNED) {
-            assign = ptr_to("linked");
+            assign = "linked";
             chrom = chrom2str(assignment_chrom(locus[i]));
             lod = rsd(5.2, assignment_lod(locus[i]));
 //	    theta=  rsd(5.1,assignment_theta(locus[i]));
 //	    linked= loc2str(assignment_locus(locus[i]));
         } else if (state == A_ATTACH) {
-            assign = ptr_to("attached");
+            assign = "attached";
             chrom = chrom2str(assignment_chrom(locus[i]));
         } else if (state == A_FRAMEWORK) {
-            assign = ptr_to("framework");
+            assign = "framework";
             chrom = chrom2str(assignment_chrom(locus[i]));
         } else if (state == A_ANCHOR) {
-            assign = ptr_to("anchor");
+            assign = "anchor";
             chrom = chrom2str(assignment_chrom(locus[i]));
         } else {
-            assign = ptr_to("???");
+            assign = "???";
         }
 
-        like = ptr_to("  -");
-        left = ptr_to("-");
-        errs = ptr_to(" - ");
-        star = ptr_to("");
+        like = "  -";
+        left = "-";
+        errs = " - ";
+        star = "";
         state = placement_state(locus[i]);
 
         if (state == M_PROBLEM) {
-            mapping = ptr_to("problem!");
+            mapping = "problem!";
         } else if (state == M_FRAMEWORK) {
-            mapping = ptr_to("framework");
+            mapping = "framework";
         } else if (state == M_UNKNOWN) {
-            mapping = ptr_to("-");
+            mapping = "-";
         } else if (state == M_ERROR) {
-            mapping = ptr_to("errors?");
+            mapping = "errors?";
         } else if (state == M_OFFEND) {
-            mapping = ptr_to("off-end");
+            mapping = "off-end";
         } else if (state == M_REGION) {
-            mapping = ptr_to("region");
+            mapping = "region";
         } else if (state == M_UNIQUE) {
-            mapping = ptr_to("unique");
+            mapping = "unique";
         } else if (state == M_ZERO) {
-            mapping = ptr_to("zero");
+            mapping = "zero";
         } else {
-            mapping = ptr_to("???");
+            mapping = "???";
         }
 
         if (placed_locus(locus[i])) {
             j = best_placement(locus[i]);
             k = assignment_chrom(locus[i]);
             pos = placement[locus[i]]->interval[j];
-            if (pos == 0) left = ptr_to("leftmost");
+            if (pos == 0) left = "leftmost";
             else left = loc2str(chromosome->map_list[k]->locus[pos - 1]);
             if (placement[locus[i]]->error_lod != NO_ERRORS) {
                 errs = rsd(5.2, placement[locus[i]]->error_lod);
-                if (!placement[locus[i]]->single_error) star = ptr_to("*");
+                if (!placement[locus[i]]->single_error) star = "*";
             }
             if (second_best_placement(locus[i], &val) >= 0) like = rsd(6.2, val);
         }
@@ -884,4 +884,3 @@ void print_f2_map_genotypes(MAP *map, bool use_haplos, bool explode_haplos, int 
     unarray(last_het, int);
     unarray(homo_was, int);
 }
-

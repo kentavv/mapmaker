@@ -880,7 +880,7 @@ static int f3_state(ctm_state_t *ctm_state, const char *name /* for debugging */
         ctm_state->obs_prob[j][OBS_B][i] = (obs == OBS_B ? 1.0 : 0.0);
         ctm_state->obs_prob[j][OBS_H][i] = (obs == OBS_H ? 1.0 : 0.0);
         ctm_state->obs_prob[j][OBS_NOT_A][i] = (obs == OBS_H || obs == OBS_B ? 1.0 : 0.0);
-        ctm_state->obs_prob[j][OBS_NOT_B][i] = (obs == OBS_H || obs == OBS_H ? 1.0 : 0.0);
+        ctm_state->obs_prob[j][OBS_NOT_B][i] = (obs == OBS_H || obs == OBS_A ? 1.0 : 0.0);
         ctm_state->obs_prob[j][OBS_MISSING][i] = 1.0;
     }
 
