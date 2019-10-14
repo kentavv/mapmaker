@@ -571,7 +571,8 @@ bool alloc_list_of_all_loci(SEQ_NODE *p, int **loci, int *num_loci /* side-effec
 
     *loci = NULL;
     total = count_loci(p);
-    if (total == 0) return (FALSE);
+    if (total == 0) return FALSE;
+
     array(retoin, total, int);
 
     *num_loci = 0;
@@ -579,7 +580,8 @@ bool alloc_list_of_all_loci(SEQ_NODE *p, int **loci, int *num_loci /* side-effec
     get_order(p, retoin, NULL, num_loci, total);
 
     *loci = retoin;
-    return (TRUE);
+
+    return TRUE;
 }
 
 

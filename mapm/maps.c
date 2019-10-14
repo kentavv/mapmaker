@@ -11,11 +11,7 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-//#define INC_LIB
-//#define INC_SHELL
 #include "mapm.h"
-//#include "toplevel.h"
-//#include "lowlevel.h"
 
 /****************** Support for the MAP and MAP_LIST structs *****************/
 
@@ -97,6 +93,7 @@ void allocate_error_matrix(MAP *map) {
 
 void free_map(MAP *map) {
     if (map == NULL) return;
+    unarray(map->map_name, char);
     unarray(map->fix_interval, int);
     unmatrix(map->rec_frac, map->max_loci - 1, real);
     unarray(map->locus, int);
@@ -185,7 +182,7 @@ void init_not_fixed(MAP *map) {
 }
 
 
-void mapcpy(MAP *to, MAP *from, bool clean_it) {
+void mapcpy(MAP *to, const MAP *from, bool clean_it) {
     int i, j;
     if (to->max_loci < from->num_loci) send(CRASH);
 

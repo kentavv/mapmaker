@@ -145,16 +145,16 @@ void try_to_load(FILE *fp, char *name, bool prev_data, bool raw);
 
 /***************************** MAPM's Map Makers  ****************************/
 
-void quick_two_pt(int locus0, int locus1, TWO_PT_DATA *two_pt, bool sex /* do both with and without sex spec */); /* ctm.c */
-void f2_quick_two_pt(int loc1, int loc2, TWO_PT_DATA *two_pt, bool sexflag); /* in quick23.c, used by the above */
+int quick_two_pt(int locus0, int locus1, TWO_PT_DATA *two_pt); /* ctm.c */
+void f2_quick_two_pt(int loc1, int loc2, TWO_PT_DATA *two_pt); /* in quick23.c, used by the above */
 
 /* in ctm.c */
 //void converge_to_map(MAP *map);
 void f2_genotype(int locus, bool haplo, int *observation);
 
-bool merge_genotypes(int locus, int *observation, int *new_observation);
+bool merge_genotypes(int locus, const int *observation, int *new_observation);
 
-int f2_count_infs(int *num_dom, int *num_het, int *observation);
+int f2_count_infs(int *num_dom, int *num_het, const int *observation);
 
 //void converge_to_map(); /* args: MAP *map */
 //void f2_genotype(); /* args: int locus; bool haplo; int *observation[#indiv] */

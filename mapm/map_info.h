@@ -49,7 +49,7 @@ void free_map(MAP *map);
 
 bool clean_map(MAP *map);
 
-void mapcpy(MAP *to, MAP *from, bool clean_it);
+void mapcpy(MAP *to, const MAP *from, bool clean_it);
 
 int insert_locus(MAP *map, int position, int locus);
 

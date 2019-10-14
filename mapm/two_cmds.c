@@ -19,6 +19,8 @@ void print_2pt_criteria(char *str, real lod, real theta);
 
 void parse_2pt_criteria(char **argptr, real *lod, real *theta);
 
+static void print_biglod_line(int i, int j, real theta, real lod, real dist);
+
 bool print_biglod(int i, int j, real lodbound, real thetabound, bool sex, int chrom);
 
 void print_lodtable(int *locus1, int *locus2, int num_loci1, int num_loci2, int how);
@@ -346,6 +348,93 @@ command biglods(void) {
 }
 
 
+struct two_pt_result {
+    int i, j;
+    real thetam, thetaf, lod, distm, distf;
+};
+
+command all_lods(void) {
+    int a, b, n, sort = -1, nr, num_loci, *loci = NULL;
+    struct two_pt_result r, *results = NULL;
+    char sort_arg[TOKLEN + 1];
+
+    mapm_ready(ANY_DATA, 2, UNCRUNCHED_LIST, NULL);
+    if (!nullstr(args)) {
+        get_arg(stoken, "", sort_arg);
+        if (strcasecmp(sort_arg, "theta") == 0) sort = 0;
+        else if (strcasecmp(sort_arg, "lod") == 0) sort = 1;
+        else if (strcasecmp(sort_arg, "distance") == 0) sort = 2;
+        else usage_error(1);
+    }
+    nomore_args(1);
+
+    run {
+            alloc_list_of_all_loci(seq, &loci, &num_loci);
+            crunch_locus_list(loci, &num_loci, CRUNCH_WARNINGS, ANY_CHROMS, IN_SEQ);
+            sprintf(ps, "All Marker Pairs\n"
+                        "(Marker pairs with both Theta = %.2f and LOD = %.2f are unlinked)\n",
+                    UNLINKED_THETA, UNLINKED_LOD);
+            pr();
+
+            nr = num_loci * (num_loci - 1) / 2;
+            array(results, nr, struct two_pt_result);
+
+            print(NOSEX_BIGLODS);
+            n = 0;
+
+            for_all_locus_pairs(loci, num_loci, r.i, r.j) if (r.i != r.j) {
+                        get_two_pt(r.i, r.j, &r.lod, &r.thetam);
+                        r.distm = cm_dist(r.thetam);
+                        results[n++] = r;
+                    }
+
+            if (sort != -1) {
+                for (a = 0; a < nr - 1; a++) {
+                    for (b = a + 1; b < nr; b++) {
+                        if ((sort == 0 && ((results[a].i > results[b].i) ||
+                                           (results[a].i == results[b].i &&
+                                            results[a].thetam > results[b].thetam) ||
+                                           (results[a].i == results[b].i &&
+                                            results[a].thetam == results[b].thetam &&
+                                            results[a].i > results[b].j))) ||
+                            (sort == 1 && ((results[a].i > results[b].i) ||
+                                           (results[a].i == results[b].i &&
+                                            results[a].lod < results[b].lod) ||
+                                           (results[a].i == results[b].i &&
+                                            results[a].lod == results[b].lod &&
+                                            results[a].i > results[b].j))) ||
+                            (sort == 2 && ((results[a].i > results[b].i) ||
+                                           (results[a].i == results[b].i &&
+                                            results[a].distm > results[b].distm) ||
+                                           (results[a].i == results[b].i &&
+                                            results[a].distm == results[b].distm &&
+                                            results[a].i > results[b].j)))) {
+                            r = results[a];
+                            results[a] = results[b];
+                            results[b] = r;
+                        }
+                    }
+                }
+            }
+
+            hold(more_mode) for (a = 0; a < nr; a++) {
+                    if (a > 0 && results[a].i != results[a - 1].i) nl();
+                    print_biglod_line(results[a].i, results[a].j,
+                                      results[a].thetam,
+                                      results[a].lod,
+                                      results[a].distm);
+                    nl();
+                }
+
+            if (n == 0) print("no markers in sequence\n");
+        } on_exit {
+        unarray(loci, int);
+        unarray(results, two_pt_result);
+        relay_messages;
+    }
+}
+
+
 command near_locus(void) {
     int a, b, i, j, n, num_loci, *locus = NULL, *trial_locus = NULL, num_trials;
     real lodbound, thetabound;
@@ -487,6 +576,12 @@ command pairwise(void) {
     }
 }
 
+
+static void print_biglod_line(int i, int j, real theta, real lod, real dist) {
+    sprintf(ps, " %-10s %-10s %s   %s  %s", loc2str(i), loc2str(j),
+            rsd(5.2, theta), rsd(5.2, lod), rsd(6.2, dist));
+    pr();
+}
 
 bool print_biglod(int i, int j, real lodbound, real thetabound, bool sex, int chrom) {
     real lod, theta, thetam, thetaf;

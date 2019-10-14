@@ -168,8 +168,10 @@ typedef union {
 
 /* Functions */
 /*in ctm.c */
-void converge_to_map(MAP *map);  /* arg: MAP; calls map making functions and returns
-			    the converged map (alters: rec_frac, log-like) */
+int converge_to_map_mt(MAP *map, int index);  /* arg: MAP; calls map making functions and returns
+                            the converged map (alters: rec_frac, log-like) */
+int converge_to_map(MAP *map);  /* arg: MAP; calls map making functions and returns
+                            the converged map (alters: rec_frac, log-like) */
 /* in multipt.c */
 //void allocate_recs();    /* These procedures are called by converge_to_map */
 //void allocate_temps();   /* and assist in the map making. */

@@ -149,7 +149,8 @@ void assign_probs(DATA *data, /* Needs data->interval_len[interval] */ int raw_i
     indiv_interval_probs(data->genotype_prob[data_i], interval, raw_i,
                          left, right, data->interval_len[interval]);
     num = 0;
-    for_interval_genotypes(raw.data_type, geno)if (data->genotype_prob[data_i][interval][geno] > VERY_SMALL)
+    for_interval_genotypes(raw.data_type, geno)
+        if (data->genotype_prob[data_i][interval][geno] > VERY_SMALL)
             data->genotype[data_i][interval][num++] = geno;
     data->num_genotypes[data_i][interval] = num;
 }

@@ -655,6 +655,41 @@ command new_insert(void) {
         } except_when(BADSEQ) print_badseq();
 }
 
+command flip(void) {
+    int i, num_seq_tokens;
+    char tmp[TOKLEN + 1];
+    int *loci = NULL, num_loci;
+
+    mapm_ready(ANY_DATA, 1, MAYBE_PERM, NULL);
+    nomore_args(0);
+
+    run {
+            tokenize_seq(new_seq, seq_tokens, &num_seq_tokens);
+
+            for (i = 0; i < num_seq_tokens; i++) {
+                if (strcmp(seq_tokens[i], "{") == 0) {
+                    strcpy(seq_tokens[i], "}");
+                } else if (strcmp(seq_tokens[i], "}") == 0) {
+                    strcpy(seq_tokens[i], "{");
+                }
+            }
+
+            for (i = 0; i < num_seq_tokens / 2; i++) {
+                strcpy(tmp, seq_tokens[i]);
+                strcpy(seq_tokens[i], seq_tokens[num_seq_tokens - i - 1]);
+                strcpy(seq_tokens[num_seq_tokens - i - 1], tmp);
+            }
+
+            untokenize_seq(new_seq, seq_tokens, num_seq_tokens);
+            set_current_seq(new_seq, FALSE);
+            print_sequence();
+            if (alloc_list_of_all_loci(seq, &loci, &num_loci)) {
+                crunch_locus_list(loci, &num_loci, CRUNCH_WARNINGS, TRUE, MAYBE);
+                unarray(loci, int);
+            }
+        } except_when(BADSEQ) print_badseq();
+}
+
 
 command translate(void) {
     int i, num_loci, *locus = NULL, source;

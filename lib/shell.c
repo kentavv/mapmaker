@@ -14,6 +14,7 @@
 #include "system.h"
 #include "shell.h"
 #include "table.h"
+#include "threads.h"
 
 char *com, *args;       /* available as globals to the command procedures */
 char *uncrunched_args;

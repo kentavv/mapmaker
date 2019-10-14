@@ -9,6 +9,7 @@ if (NOT CMAKE_BUILD_TYPE)
 endif ()
 
 SET(CMAKE_C_FLAGS "-g -Wall -Wextra -Wno-unused-parameter -Wno-clobbered -Wno-format-overflow -pedantic -std=gnu17")
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DTHREAD")
 SET(CMAKE_C_FLAGS_RELEASE "-O3 -DNDEBUG")
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
@@ -81,6 +82,9 @@ add_executable(
         mapm/sys_cmds.c
         mapm/toplevel.h
         mapm/two_cmds.c
+
+        mapm/threads.c
+        mapm/threads.h
 )
 
 add_executable(
@@ -121,5 +125,5 @@ add_dependencies(mapmaker build_mapmaker_help)
 add_dependencies(qtl build_qtl_help)
 
 target_link_libraries(makehelp mylib m readline termcap)
-target_link_libraries(mapmaker mylib m readline termcap)
+target_link_libraries(mapmaker mylib m readline termcap pthread)
 target_link_libraries(qtl mylib m readline termcap)

@@ -22,13 +22,27 @@ int main(int argc, char *argv[]) {
     char help_filename[PATH_LENGTH + 1];
     FILE *fp;
 
+#ifdef THREAD
+//    quit_if_not_single_invocation(argv[0]);
+    threads_init();
+#endif
+
     custom_lib_init();
     get_cmd_line_args(&argc, argv); /* side-effects file_arg vars */
     tty_hello();
     seedrand(RANDOM);
 
+#ifdef HELP_PATH
+    strcpy(help_filename,HELP_PATH "mapmaker");
+#else
     strcpy(help_filename, "mapmaker");
-    shell_init("MAPMAKER/EXP", "3.0b", "1987-1992", help_filename);
+#endif
+
+#ifdef THREAD
+    shell_init("MAPMAKER/EXP", "3.0b (Parallel, 2019)", "1987-1992", help_filename);
+#else
+    shell_init("MAPMAKER/EXP","3.0b (2019)","1987-1992",help_filename);
+#endif
     banner();
 
     photo_banner_hook = mapm_data_info;
@@ -75,6 +89,9 @@ int main(int argc, char *argv[]) {
 
     command_loop();
     /* screen_end(); */
+#ifdef THREAD
+    threads_shutdown();
+#endif
     exit_main();
 }
 
@@ -357,7 +374,7 @@ void setup_commands(void) {
 
     /*  command-name	             Abbrev	function	   	type  
 	1234567890123456789012345    123	12345678901234...  	123
-	------------------------- sp ---  tab   --------------	  tab   ---*/
+	------------------------- sp ---  tab   --------------	  tab   --- */
 
     /* npt commands */
     mc("map", "m", make_map, CMD);
@@ -396,6 +413,7 @@ void setup_commands(void) {
     mc("delete", "d", new_delete, CMD);
     mc("insert", "i", new_insert, CMD);
     mc("append", "a", new_append, CMD);
+    mc("flip", "", flip, CMD);
     mc("history", "h", show_seq_history, CMD);
 /*  mc("let",                        "l",	let,			CMD);*/
     mc("let", "l", let_expanding, CMD);
@@ -431,6 +449,7 @@ void setup_commands(void) {
     /* 2pt commands in cmds_2.c */
     mc("two point", "", two_point, CMD);
     mc("big lods", "", biglods, CMD);
+    mc("all lods", "", all_lods, CMD);
     mc("lod table", "", lodtable, CMD);
     mc("near", "", near_locus, CMD);
     mc("pairwise", "", pairwise, CMD);

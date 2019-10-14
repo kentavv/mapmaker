@@ -23,6 +23,7 @@ char symbols[] = {
 #define NUM_SYMS    5
 
 /* internal functions */
+void f2_quick_two_pt(int loc1, int loc2, TWO_PT_DATA *two_pt/*, bool sexflag*/);
 
 real quick_back(LOCUS locus, RECVECTOR **rec_frac, real *conv_like, real *unconv_like);
 
@@ -40,7 +41,7 @@ real f2_prob(real theta, int diffs);
 
 real power(real a, int x);
 
-void f2_quick_two_pt(int loc1, int loc2, TWO_PT_DATA *two_pt, bool sexflag) {
+void f2_quick_two_pt(int loc1, int loc2, TWO_PT_DATA *two_pt/*, bool sexflag*/) {
     LOCUS locus;
     real conv_like = 0., unconv_like = 0.;
     RECVECTOR **rec_frac;

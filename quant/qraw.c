@@ -819,8 +819,7 @@ void condition(LOCUS_GENOTYPE_PROBS *prob, int locus, int prev_locus, char obser
     for (i = 0; i < MAX_LOCUS_GENOTYPES; i++) prob[locus][i] = 0.0;
     total = 0.0;
 
-    for_locus_genotypes(raw.data_type, geno_was)
-        for_locus_genotypes(raw.data_type, geno_is) {
+    for_locus_genotypes(raw.data_type, geno_was)for_locus_genotypes(raw.data_type, geno_is) {
             geno1 = (side == LEFT) ? geno_was : geno_is;
             geno2 = (side == LEFT) ? geno_is : geno_was;
             prob[locus][geno_is] +=
