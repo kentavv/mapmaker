@@ -1,4 +1,12 @@
 # mapmaker
+This is an update of the MapMaker from Eric Lander's lab. The branches are
+* release-3.1: Updates to compile with a C17 compiler.
+* release-3.2: Removed unused code and reformatted code. 
+* release-3.3: Added flip and 'all lods' commands.
+* release-3.4: Added multithreading.
+* master: The most recent release
+
+
 MAPMAKER/EXP 3.0 AND MAPMAKER/QTL 1.1
 
 From https://www.ncbi.nlm.nih.gov/pubmed/3692487 :
