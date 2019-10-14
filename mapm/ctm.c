@@ -857,7 +857,7 @@ int f3_state(char *name, /* for debugging */ int f2, int mat, int pat, int obs) 
         obs_prob[j][OBS_B][i] = (obs == OBS_B ? 1.0 : 0.0);
         obs_prob[j][OBS_H][i] = (obs == OBS_H ? 1.0 : 0.0);
         obs_prob[j][OBS_NOT_A][i] = (obs == OBS_H || obs == OBS_B ? 1.0 : 0.0);
-        obs_prob[j][OBS_NOT_B][i] = (obs == OBS_H || obs == OBS_H ? 1.0 : 0.0);
+        obs_prob[j][OBS_NOT_B][i] = (obs == OBS_H || obs == OBS_A ? 1.0 : 0.0);
         obs_prob[j][OBS_MISSING][i] = 1.0;
     }
 
