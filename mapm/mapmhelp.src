@@ -753,11 +753,11 @@ $Edit a Sequence Using the Keyboard
 The 'edit' command, when used with no arguments, allows you to edit the
 current sequence using the arrow keys (and others) on the keyboard.
 The keys used are the same as for editing commands -- type 'help
-keyboard editing' for details.  
+keyboard editing' for details.
 
 If you type 'edit name' where name is a sequence you defined using the
 'let' command, then you will instead edit the definition of that name
-(the current sequence will NOT be affected). 
+(the current sequence will NOT be affected).
 
 Similarly, if you type 'edit number', where number is a sequence
 history number (type 'help history' for details), then you will edit
@@ -989,7 +989,7 @@ pairwise combinations of loci in the current sequence including those
 which are unlinked and would not match the criteria used by "big lods".
 Results are displayed, by default, in the order the markers are in the
 sequence. Alternative sort methods include "theta", "lod", and "distance"
-to sort by values within the corresponding column while preserving 
+to sort by values within the corresponding column while preserving
 the order of marker-1.
 
 #
