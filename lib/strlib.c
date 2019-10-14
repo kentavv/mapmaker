@@ -17,7 +17,7 @@
 
 char Cw, Ct, *self_delimiting, *null_string;
 
-void nstrcpy(char *to, char *from, int n) {
+void nstrcpy(char *to, const char *from, int n) {
     int i;
 
     for (i = 0; from[i] != '\0' && i < n; i++) to[i] = from[i];
@@ -25,7 +25,7 @@ void nstrcpy(char *to, char *from, int n) {
 }
 
 
-void maxstrcat(char *to, char *from, int n) {
+void maxstrcat(char *to, const char *from, int n) {
     int i, j;
 
     if ((i = len(to)) >= n) {
@@ -37,7 +37,7 @@ void maxstrcat(char *to, char *from, int n) {
 }
 
 
-void strins(char *to, char *from) {
+void strins(char *to, const char *from) {
     int i, current_length, num_to_ins;
 
     current_length = len(to);
@@ -48,7 +48,7 @@ void strins(char *to, char *from) {
 }
 
 
-void maxstrins(char *to, char *from, int max_total_length) {
+void maxstrins(char *to, const char *from, int max_total_length) {
     int i, current_length, num_to_ins;
 
     current_length = len(to);
@@ -74,19 +74,21 @@ void strdel(char *str, int num_chars) {
 }
 
 
-char *mkstrcpy(char *str) {
+char *mkstrcpy(const char *str) {
     char *foo;
 
-    array(foo, istrlen(str) + 1, char);
+    array(foo, len(str) + 1, char);
     strcpy(foo, str);
     return (foo);
 }
 
 
-char *ptr_to(char *str) { return (str); } /* A Kludge to be sure, but the only way to do this in C */
+char *ptr_to(char *str) {
+    return (str);
+} /* A Kludge to be sure, but the only way to do this in C */
 
 
-int nullstr(char *str) {
+int nullstr(const char *str) {
     int i;
 
     if (str == NULL) return TRUE;
