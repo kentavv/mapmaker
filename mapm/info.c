@@ -667,11 +667,11 @@ bool make_new_class(char *name, char **why_not) {
 
     if (!valid_name(name)) /* checks non-null */
     {
-        *why_not = ptr_to("illegal name");
+        *why_not = "illegal name";
         return (FALSE);
     } else if (!valid_new_name(name)) /* check class names too */
     {
-        *why_not = ptr_to("name is already in use");
+        *why_not = "name is already in use";
         return (FALSE);
     }
 
@@ -681,7 +681,7 @@ bool make_new_class(char *name, char **why_not) {
             break;
         }
     if (classnum == -1) {
-        *why_not = ptr_to("no more classes can be defined");
+        *why_not = "no more classes can be defined";
         return (FALSE);
     }
     strcpy(class_name[classnum], name);

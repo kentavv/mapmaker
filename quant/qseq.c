@@ -173,7 +173,7 @@ QTL_SEQUENCE *compile_intervals(char *str) {
     first = last = NULL;
     swap_for_dash(ptr);
     old_self_delim = self_delimiting;
-    self_delimiting = ptr_to(SEQ_SELF_DELIMITING);
+    self_delimiting = SEQ_SELF_DELIMITING;
 
     run {
             do {
@@ -202,7 +202,7 @@ QTL_SEQUENCE *compile_intervals(char *str) {
 /*** The function int_compiler() really implements compile_intervals(). ***/
 
 /* Note that no ';' should follows calls to FAIL_ or NEXT_TOKEN_ */
-#define FAIL_(msg)  { BADSEQ_errmsg=ptr_to(msg); send(BADSEQ); }
+#define FAIL_(msg)  { BADSEQ_errmsg=msg; send(BADSEQ); }
 #define LOOKAHEAD(chars)  parse_char(str,chars,TRUE,&dummy)
 #define NEXT_TOKEN_ \
 { seqtoken=seqtoken_ptr; if (!stoken(str,sREQUIRED,seqtoken)) FAIL_(err_EOL) }
@@ -871,7 +871,7 @@ bool test_perm(QTL_SEQUENCE *p, int *perm, /* side-effected to be the interval# 
 bool name_sequence(char *name, char *seq, char **why_not) {
     if (name[0] == '*') name++;
     if (!valid_name(name)) {
-        *why_not = ptr_to("illegal name");
+        *why_not = "illegal name";
         return (FALSE);
     }
     put_named_entry(name, seq, context[active_context]->named_sequences);
@@ -883,20 +883,20 @@ bool unname_sequence(char *name, char **why_not) {
     char *err = get_temp_string();
 
     if (!valid_name(name)) {
-        *why_not = ptr_to("illegal name");
+        *why_not = "illegal name";
         return (FALSE);
     }
     if (name[0] == '*') name++;
     if (valid_locus_str(name, &foo, err)) {
-        *why_not = ptr_to("name is ambiguous");
+        *why_not = "name is ambiguous";
         return (FALSE);
     }
     if (!delete_named_entry(name, context[active_context]->named_sequences,
                             &fail)) {
         if (fail == NAME_DOESNT_MATCH)
-            *why_not = ptr_to("name is not defined");
+            *why_not = "name is not defined";
         else
-            *why_not = ptr_to("name is ambiguous");
+            *why_not = "name is ambiguous";
         return (FALSE);
     }
     return (TRUE);
@@ -922,10 +922,10 @@ char *expand_named_entries(char *str) {
     temp_str = get_temp_string();
     run {
             array(new_str, SEQ_LEN + 1, char);
-            self_delimiting = ptr_to("[]");
+            self_delimiting = "[]";
             while (stoken(&str, sREQUIRED, tok)) {
                 if (print_mapm_loci) {
-                    self_delimiting = ptr_to("[]+:-|");
+                    self_delimiting = "[]+:-|";
                     if (itoken(&tok, iREQUIRED, &num)) {
                         sprintf(ps, "%d", num);
                         strcat(new_str, ps);
@@ -976,7 +976,7 @@ char *expand_named_entries(char *str) {
                     strcat(new_str, " ");
                 }
             }
-            self_delimiting = ptr_to("");
+            self_delimiting = "";
         } when_aborting {
         unarray(new_str, char);
         relay_messages;

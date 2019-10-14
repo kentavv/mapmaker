@@ -83,11 +83,6 @@ char *mkstrcpy(const char *str) {
 }
 
 
-char *ptr_to(char *str) {
-    return (str);
-} /* A Kludge to be sure, but the only way to do this in C */
-
-
 int nullstr(const char *str) {
     int i;
 

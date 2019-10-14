@@ -1296,24 +1296,24 @@ bool is_a_locus(char *str, /* must be a non-null token and a valid_name */ int *
     int num;
 
     if (!data_loaded() || !is_a_token(str)) send(CRASH);
-    *why_not = ptr_to("");
+    *why_not = "";
 
     if (itoken(&str, iREQUIRED, &num)) {
         *n = num - 1;
         if (!irange(n, 0, raw.num_markers - 1)) {
             sprintf(err_temp, "locus number '%d' out of valid range", num);
-            *why_not = ptr_to(err_temp);
+            *why_not = err_temp;
             return (FALSE);
         } else return (TRUE);
 
     } else if (!valid_name(str)) {
         sprintf(err_temp, "invalid name '%s'", str);
-        *why_not = ptr_to(err_temp);
+        *why_not = err_temp;
         return (FALSE);
 
     } else if (!is_a_named_locus(str, n)) {
         sprintf(err_temp, "name '%s' is not defined", str);
-        *why_not = ptr_to(err_temp);
+        *why_not = err_temp;
         return (FALSE);
     }
     return (TRUE);
@@ -1329,7 +1329,7 @@ is_a_sequence(
     char name[TOKLEN + 1];
 
     if (!data_loaded() || !is_a_token(str)) send(CRASH);
-    *why_not = ptr_to("");
+    *why_not = "";
     strcpy(name, str);
     lowercase(name);
 
@@ -1337,14 +1337,14 @@ is_a_sequence(
         return (TRUE);    /* but why_not may be set */
 
     } else if (!valid_name(str)) {
-        *why_not = ptr_to("illegal name");
+        *why_not = "illegal name";
         return (FALSE);
 
     } else if (is_a_special_sequence(name, seq, why_not)) {
         return (TRUE);    /* why_not may be set */
 
     } else if (!is_a_named_sequence(str, seq)) {
-        *why_not = ptr_to("name is not defined");
+        *why_not = "name is not defined";
         return (FALSE);
 
     } else return (TRUE);
@@ -1380,10 +1380,10 @@ bool name_sequence(char *name, char *str, /* assume its MAX_SEQ_LEN long, for ex
     } else strcpy(maybe_seq, str);
 
     if (!valid_name(name) || len(name) > NAME_LEN) {
-        *why_not = ptr_to("illegal name");
+        *why_not = "illegal name";
         return (FALSE);
     } else if (!valid_new_name(name) && !is_a_named_sequence(name, &foo)) {
-        *why_not = ptr_to("can not re-define special named sequences");
+        *why_not = "can not re-define special named sequences";
         return (FALSE);
     }
     put_named_entry(name, maybe_seq, context[active_context]->named_sequences);
@@ -1396,20 +1396,20 @@ bool unname_sequence(char *name, char **why_not) {
     char *seq;
 
     if (!valid_name(name)) {
-        *why_not = ptr_to("illegal name");
+        *why_not = "illegal name";
         return (FALSE);
     }
     /* if (name[0]=='*') name++; */
     if (is_a_named_sequence(name, &seq)) {
-        *why_not = ptr_to("name is not defined");
+        *why_not = "name is not defined";
         return (FALSE);
     }
     if (!delete_named_entry(name,
                             context[active_context]->named_sequences, &fail)) {
         if (fail == NAME_DOESNT_MATCH)
-            *why_not = ptr_to("name is not defined");
+            *why_not = "name is not defined";
         else
-            *why_not = ptr_to("name is ambiguous");
+            *why_not = "name is ambiguous";
         return (FALSE);
     }
     return (TRUE);
@@ -1478,21 +1478,21 @@ bool is_an_old_sequence(char *str, char **seq, /* side-effected iff TRUE returne
     int n;
     char *rest;
 
-    *why_not = ptr_to("");
+    *why_not = "";
     if (str[0] == '#') {
         if (the_seq_history_num == 0) {
-            *why_not = ptr_to("no sequences - can't use '#'");
+            *why_not = "no sequences - can't use '#'";
             return (TRUE);
         }
         rest = str + 1;
         if (!itoken(&rest, iREQUIRED, &n)) {
-            *why_not = ptr_to("invalid sequence number following '#'");
+            *why_not = "invalid sequence number following '#'";
             return (TRUE);
         }
         if (n <= 0) n = the_seq_history_num - n - 1;
         else --n;
         if (!get_numbered_entry(n, seq, the_sequence_history)) {
-            *why_not = ptr_to("sequence number following '#' is out of range");
+            *why_not = "sequence number following '#' is out of range";
             return (TRUE);
         } else
             return (TRUE);
@@ -1514,7 +1514,7 @@ bool is_a_special_sequence(char *str, char **seq, /* side-effected iff TRUE retu
     }
     n = 0;
     ordered_seq = FALSE;
-    *seq = *why_not = ptr_to("");
+    *seq = *why_not = "";
 
     if (streq(str, "new")) {
         for (i = 0; i < raw.num_markers; i++) {
@@ -1589,10 +1589,10 @@ bool is_a_special_sequence(char *str, char **seq, /* side-effected iff TRUE retu
 
     } else if (nstreq(str, "group", 5)) { /* insane */
         if (num_groups == 0) {
-            *why_not = ptr_to("no grouped markers in the data set");
+            *why_not = "no grouped markers in the data set";
             return (TRUE);
         } else if (sscanf(str + 5, "%d", &num) != 1 || num < 1 || num > num_groups - 1) {
-            *why_not = ptr_to("that group is not defined"); /* fix this */
+            *why_not = "that group is not defined"; /* fix this */
             return (TRUE);
         }
         num--;
@@ -1603,7 +1603,7 @@ bool is_a_special_sequence(char *str, char **seq, /* side-effected iff TRUE retu
 
     } else if (streq(str, "unlinked") || streq(str, "unlink")) { /* insane */
         if (num_groups == 0) {
-            *why_not = ptr_to("no grouped markers in the data set");
+            *why_not = "no grouped markers in the data set";
             return (TRUE);
         }
         num--;
@@ -1615,10 +1615,10 @@ bool is_a_special_sequence(char *str, char **seq, /* side-effected iff TRUE retu
     } else if (nstreq(str, "order", 5)) { /* insane */
         ordered_seq = TRUE;
         if (num_orders == 0) {
-            *why_not = ptr_to("no ordered markers in the data set");
+            *why_not = "no ordered markers in the data set";
             return (TRUE);
         } else if (sscanf(str + 5, "%d", &num) != 1 || !irange(&num, 1, num_orders)) {
-            *why_not = ptr_to("that order is not defined"); /* fix this */
+            *why_not = "that order is not defined"; /* fix this */
             return (TRUE);
         }
         num--;
@@ -1628,10 +1628,10 @@ bool is_a_special_sequence(char *str, char **seq, /* side-effected iff TRUE retu
     } else if (nstreq(str, "other", 5)) { /* insane */
         ordered_seq = TRUE;
         if (num_orders == 0) {
-            *why_not = ptr_to("no ordered markers in the data set");
+            *why_not = "no ordered markers in the data set";
             return (TRUE);
         } else if (sscanf(str + 5, "%d", &num) != 1 || !irange(&num, 1, num_orders)) {
-            *why_not = ptr_to("that order is not defined"); /* fix this */
+            *why_not = "that order is not defined"; /* fix this */
             return (TRUE);
         }
         num--;

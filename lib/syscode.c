@@ -48,10 +48,10 @@ char *time_string(void) {
 
     the_time = time(NULL);
     str = ctime(&the_time);
-    if (str == NULL) return (ptr_to(""));
+    if (str == NULL) return "";
     end = len(str) - 1;
     if (str[end] == '\n') str[end] = '\0';
-    return (str);
+    return str;
 }
 
 
@@ -420,7 +420,7 @@ bool check_tty_lines(void) /* return TRUE and set tty_lines if changed */
 /* These have been tested on a Xterm and vt220 */
 #define ansi_tty_init()      lib_puts(out,"\033[0m\n")
 #define ansi_clr_scrn()      lib_puts(out,"\033[1;1H\033[2J")
-#define ansi_highlight(on)   lib_puts(out,on ? "\033[7m":"\033[0m")
+#define ansi_highlight(on)   lib_puts(out,(on) ? "\033[7m":"\033[0m")
 #define ansi_del_prev_ln()   lib_puts(out,"\033[99D\033[K\033[1A\033[K")
 
 void tty_hello(void) {

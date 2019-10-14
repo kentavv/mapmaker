@@ -28,8 +28,6 @@ void strdel(char *str, int num_chars);
 
 char *mkstrcpy(const char *str);
 
-char *ptr_to(char *str);
-
 int nullstr(const char *str);
 
 int strfinder(char *str, int chr);
