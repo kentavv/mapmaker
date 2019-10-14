@@ -11,47 +11,31 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-//#define INC_IO
-//#define INC_MSG
-//#define INC_MEM
-//#define INC_STR
-//#define INC_MATH
-//#define INC_HELP_DEFS
 #include "system.h"
-#include "shell.h" /* just to get the decl of error()? */
+#include "shell.h"
 #include "iolib.h"
 
 static void dump_memory_lines(int start, int num) /* internal */;
-
-//bool get_home_directory(char *buf);
-//bool get_code_directory(char *buf);
-//bool get_directory(char *buf);
 
 /***** globals- see descriptions in iolib.h *****/
 char *ps, *ps_, *ln, *ln_;
 bool logging, more_mode, more, ignore_eof, scrollback;
 int tty_lines, term;
-bool screen, curses, split, interactive;
+bool screen, interactive;
 
 /* Local declarations - externed in iolib.h only for syscode.c  */
-char *out_file, out_modechar, *in_file, in_modechar;
-char *photo_file, photo_modechar;
+char *out_file, *in_file;
+char *photo_file;
 FILE *in, *out, *photo;
 
 char *linebuf;  /* stdout buffer: one screen line max */
 int cursor, buf, printed_lines;
-bool supress_more, more_break_pending, memorize;
+bool more_break_pending, memorize;
 int lines_written;
 char *lnptr;
 
 int temp_print_spaces;
 #define temp_print_up (temp_print_spaces>0)
-
-//void flush_linebuf();
-//bool dump_held_lines();
-//void kill_temp_print();
-//bool lib_clear_screen();
-//bool really_do_more();
 
 char **memory, **held;
 int memory_end, memory_wrapped, holding, hold_count;
@@ -62,8 +46,6 @@ int redirs;
 /* a list associating fp's with names, etc */
 FILE_INFO **files;
 
-#define ALLOW_SUPRESS_MORE FALSE
-
 
 /***** ERROR HANDLING *****/
 
@@ -72,12 +54,11 @@ FILE_INFO **files;
     if (modechar!=NULL) *modechar=files[i]->modechar; \
     return(i); }
 
-int lookup_fp(FILE *fp,
-              char **name, char *modechar /* side-effected if non-null */) {
+int lookup_fp(FILE *fp, char **name, char *modechar /* side-effected if non-null */) {
     if (fp == NULL) {
         if (name != NULL) *name = null_string;
         if (modechar != NULL) *modechar = '?';
-        return (-1);
+        return -1;
     }
 
     try_filenum(3); /* MUST HAVE 0...MAXFILES-1 OF THESE! */
@@ -93,16 +74,17 @@ int lookup_fp(FILE *fp,
 
     if (name != NULL) *name = null_string;
     if (modechar != NULL) *modechar = '?';
-    return (-1);
+    return -1;
 }
 
 
-void ioerror(char *errmsg,
-             FILE *fp,
-             char *ioline) {
+void ioerror(char *errmsg, FILE *fp, char *ioline) {
     IOERROR_errmsg = errmsg;
-    if (ioline != NULL) nstrcpy(IOERROR_linecopy, ioline, 64);
-    else ioline[0] = '\0';
+    if (ioline != NULL) {
+        nstrcpy(IOERROR_linecopy, ioline, 64);
+    } else {
+        ioline[0] = '\0';
+    }
     lookup_fp(fp, &IOERROR_filename, &IOERROR_modechar);
     send(IOERROR);
 }
@@ -118,50 +100,65 @@ bool make_filename_in_dir(char *str, /* str is side-effected: it should be PATH_
     int end, dir_chars, has_dir, i, j;
     char cwd[PATH_LENGTH + 1];
 
-    if (!make_filename(str, force_ext, ext)) return (FALSE);
+    if (!make_filename(str, force_ext, ext)) {
+        return FALSE;
+    }
 
     end = len(str) - 1;
 
-    for (i = end; i >= 0; i--)
+    for (i = end; i >= 0; i--) {
         if (strin(PATH_DIR_SEPARATORS, str[i])) break;
+    }
 
     /* has_dir= (i<0); --> this is opposite of what it should be MJD 1-21-93 */
 
     has_dir = (i >= 0);
     dir_chars = i + 1;
 
-    if (has_dir && add_dir_mode == DEFAULT_DIR) return (TRUE);
+    if (has_dir && add_dir_mode == DEFAULT_DIR) return TRUE;
     if (dir == NULL) { /* eg dir==CURRENT_DIR */
         dir = cwd;
         if (!get_directory(dir)) {
             dir[0] = '\0';
-            if (!has_dir) return (TRUE); /* Nothing we can do, but we're OK */
+            if (!has_dir) {
+                return TRUE; /* Nothing we can do, but we're OK */
+            }
         }
     } else if (streq(dir, HOME_DIR)) {
         dir = cwd;
         if (!get_home_directory(dir)) {
             dir[0] = '\0';
-            if (!has_dir) return (TRUE);
+            if (!has_dir) {
+                return TRUE;
+            }
         }
     } else if (streq(dir, CODE_DIR)) {
         dir = cwd;
         if (!get_code_directory(dir)) {
             dir[0] = '\0';
-            if (!has_dir) return (TRUE);
+            if (!has_dir) {
+                return TRUE;
+            }
         }
     }
 
     /* DO WE REALLY WANT count_tokens() HERE? */
     despace(dir);
-    if (count_tokens(dir) != 1) return (FALSE);
-    if (PATH_UPPERCASE) uppercase(dir);
+    if (count_tokens(dir) != 1) {
+        return FALSE;
+    }
+    if (PATH_UPPERCASE) {
+        uppercase(dir);
+    }
     for (i = 0, j = 0; i <= len(dir); i++)
-        if (strin(PATH_DIR_CHARS, dir[i])) dir[j++] = dir[i];
+        if (strin(PATH_DIR_CHARS, dir[i])) {
+            dir[j++] = dir[i];
+        }
 
     if (has_dir) strdel(str, dir_chars);
     maxstrcat(dir, PATH_DIR_FILE_INSERT, PATH_LENGTH);
     maxstrins(str, dir, PATH_LENGTH);
-    return (TRUE);
+    return TRUE;
 }
 
 #define NO_DOT (-1)
@@ -174,29 +171,39 @@ bool make_filename(char *str, /* str is side-effected: it should be PATH_LENGTH+
     char *ext_buf = strdup(ext_);
     char *ext = ext_buf;
 
-    if (nullstr(str) || ext == NULL) send(CRASH);
+    if (nullstr(str) || ext == NULL) {
+        send(CRASH);
+    }
 
     /* Elimiate extra whitespace, despace, truncate, filter, etc. */
     despace(str);
     truncstr(str, PATH_LENGTH);
-    if (PATH_UPPERCASE) uppercase(str);
+    if (PATH_UPPERCASE) {
+        uppercase(str);
+    }
     if (count_tokens(str) != 1) {
         free(ext_buf);
-        return (FALSE);
+        return FALSE;
     }
-    for (i = 0, j = 0; i <= len(str); i++)
+    for (i = 0, j = 0; i <= len(str); i++) {
         if (strin(PATH_OK_CHARS, str[i])) str[j++] = str[i];
+    }
 
     /* Also for the extension... */
     despace(ext);
-    if (ext[0] == '.') ext++;
-    if (PATH_UPPERCASE) uppercase(ext);
+    if (ext[0] == '.') {
+        ext++;
+    }
+    if (PATH_UPPERCASE) {
+        uppercase(ext);
+    }
     if (count_tokens(ext) != 1) {
         free(ext_buf);
-        return (FALSE);
+        return FALSE;
     }
-    for (i = 0, j = 0; i <= len(ext); i++)
+    for (i = 0, j = 0; i <= len(ext); i++) {
         if (strin(PATH_OK_CHARS, ext[i])) ext[j++] = ext[i];
+    }
 
     /* Find the dot for the extension. If PATH_SINGLE_EXTENSION, find 
        the leftmost dot to the right of a PATH_DIR_SEPARATOR, otherwise 
@@ -207,31 +214,36 @@ bool make_filename(char *str, /* str is side-effected: it should be PATH_LENGTH+
     for (i = end; i >= 0; i--)
         if (strin(PATH_DIR_SEPARATORS, str[i])) break;
     root_start = i + 1;
-    if (root_start == end + 1) return (FALSE);
+    if (root_start == end + 1) {
+        return FALSE;
+    }
 
-    for (i = root_start, first_dot = NO_DOT; i <= end; i++)
+    for (i = root_start, first_dot = NO_DOT; i <= end; i++) {
         if (str[i] == '.') {
             first_dot = i;
             break;
         }
+    }
 
-    for (i = first_dot + 1, next_dot = NO_DOT; i <= end; i++)
+    for (i = first_dot + 1, next_dot = NO_DOT; i <= end; i++) {
         if (str[i] == '.') {
             next_dot = i;
             break;
         }
+    }
 
-    for (i = end, last_dot = NO_DOT; i >= root_start; i--)
+    for (i = end, last_dot = NO_DOT; i >= root_start; i--) {
         if (str[i] == '.') {
             last_dot = i;
             break;
         }
+    }
 
     has_ext = first_dot != NO_DOT;
     two_ext = has_ext && next_dot != NO_DOT;
 
-    if (PATH_SINGLE_EXTENSION && two_ext)  /* truncate */
-    {
+    if (PATH_SINGLE_EXTENSION && two_ext) {
+        /* truncate */
         str[next_dot] = '\0';
         last_dot = first_dot;
         next_dot = NO_DOT;
@@ -246,23 +258,27 @@ bool make_filename(char *str, /* str is side-effected: it should be PATH_LENGTH+
     if (force_ext && has_ext) {
         str[last_dot] = '\0';
         truncstr(str, PATH_LENGTH - 2);
-        if (!nullstr(ext)) strcat(str, ".");
+        if (!nullstr(ext)) {
+            strcat(str, ".");
+        }
         maxstrcat(str + len(str), ext, PATH_LENGTH);
     }
 
     free(ext_buf);
-    return (TRUE);
+    return TRUE;
 }
 
 
-FILE *open_file(char *name,  /* It's best to use make_filename() on name first */
-                char *mode)  /* use a #define in iolib.h for mode */
-{
+FILE *open_file(char *name,  /* It's best to use make_filename() on name first */ char *mode)  /* use a #define in iolib.h for mode */ {
     FILE *fp;
     int i, n;
 
-    for (i = 3, n = -1; i < MAXFILES; i++) if (files[i]->fp == NULL) n = i;
-    if (n == -1) ioerror("can't open: too many files", (FILE *) NULL, name);
+    for (i = 3, n = -1; i < MAXFILES; i++) {
+        if (files[i]->fp == NULL) n = i;
+    }
+    if (n == -1) {
+        ioerror("can't open: too many files", (FILE *) NULL, name);
+    }
 
     if ((fp = fopen(name, mode)) == NULL) { /* Can't open */
         nstrcpy(CANTOPEN_path, name, PATH_LENGTH);
@@ -273,35 +289,33 @@ FILE *open_file(char *name,  /* It's best to use make_filename() on name first *
     files[n]->fp = fp;
     nstrcpy(files[n]->name, name, PATH_LENGTH);
     files[n]->modechar = mode[0];
-    return (fp);
+    return fp;
 }
 
 
-void close_file(FILE *fp)   /* ignore NULL fp */
-{
+void close_file(FILE *fp) {
+    /* ignore NULL fp */
     int n, i;
 
     if (fp == NULL) return;
 
     for (i = 3, n = -1; i < MAXFILES; i++) if (files[i]->fp == fp) n = i;
     if (n == -1) send(CANTCLOSE);
-    if (dos_output) lib_puts(fp, "\015"); /* ctrl-Z at end of DOS files */
     if (!xclose(fp)) send(CANTCLOSE);
     files[n]->fp = NULL;
     strcpy(files[n]->name, "");
 }
 
 
-void do_fwrite(FILE *fp,
-               char *str_) {
+void do_fwrite(FILE *fp, char *str_) {
     char *str = strdup(str_);
     _filter(str);
     lib_puts(fp, str);
     free(str);
 } /* DO NOTHING FANCY */
 
-void fprint(FILE *fp,
-            char *str_) {
+
+void fprint(FILE *fp, char *str_) {
     char *str = strdup(str_);
     _filter(str);
     lib_puts(fp, str);
@@ -309,20 +323,20 @@ void fprint(FILE *fp,
 } /* JUST FOR NOW - GET FANCIER LATER */
 
 
-void finput(FILE *fp,
-            char *str,
-            int length) {
+void finput(FILE *fp, char *str, int length) {
     if (fp == stdin) {
         input("? ", str, length);
         return;
     }
-    if (!file_gets(fp, str, length)) send(ENDOFILE);
+    if (!file_gets(fp, str, length)) {
+        send(ENDOFILE);
+    }
     _filter(str);
 }
 
 
-void fgetln(FILE *fp) /* ln is side-effected. */
-{
+void fgetln(FILE *fp) {
+    /* ln is side-effected. */
     if (fp == stdin) {
         getln("? ");
         return;
@@ -333,8 +347,8 @@ void fgetln(FILE *fp) /* ln is side-effected. */
 }
 
 
-void fgetdataln(FILE *fp, int *count) /* ln is side-effected */
-{
+void fgetdataln(FILE *fp, int *count) {
+    /* ln is side-effected */
     char *p;
 
     if (fp == stdin) {
@@ -344,34 +358,30 @@ void fgetdataln(FILE *fp, int *count) /* ln is side-effected */
     }
     ln = lnptr;
     do {
-        if (!file_gets(fp, ln, MAXLINE)) send(ENDOFILE);
-        if (count != NULL) ++*count;
-        for (p = ln; white(*p) || trash(*p); ++p) {}
+        if (!file_gets(fp, ln, MAXLINE)) {
+            send(ENDOFILE);
+        }
+        if (count != NULL) {
+            ++*count;
+        }
+        for (p = ln; white(*p) || trash(*p); ++p) {
+        }
     } while (*p == '\0' || *p == '#');
     _filter(ln);
 }
 
 
-bool end_of_file(FILE *fp) {
-    int c;
-
-    while ((c = getc(fp)) != EOF)
-        if (!trash(c)) {
-            ungetc(c, fp);
-            return (FALSE);
-        }
-    return (TRUE);
-}
-
 bool end_of_text(FILE *fp) {
     int c;
 
-    while ((c = getc(fp)) != EOF)
+    while ((c = getc(fp)) != EOF) {
         if (!white(c) && !trash(c)) {
             ungetc(c, fp);
-            return (FALSE);
+            return FALSE;
         }
-    return (TRUE);
+    }
+
+    return TRUE;
 }
 
 
@@ -379,18 +389,23 @@ bool end_of_text(FILE *fp) {
 
 void flush_linebuf(void) {
     bool endoline;
-    if (buf == 0) return;
+    if (buf == 0) {
+        return;
+    }
     endoline = (linebuf[buf - 1] == '\n');
     linebuf[buf] = '\0';
     buf = 0;
 
-    if (holding) maxstrcat(held[hold_count], linebuf, LINE + 1);
-    else {
+    if (holding) {
+        maxstrcat(held[hold_count], linebuf, LINE + 1);
+    } else {
         kill_temp_print();
         dump_to_screen(linebuf);
     }
 
-    if (logging) lib_puts(photo, linebuf);
+    if (logging) {
+        lib_puts(photo, linebuf);
+    }
     mem_puts(linebuf);
 
     if (endoline) {
@@ -413,57 +428,49 @@ void flush_linebuf(void) {
 }
 
 
-bool dump_held_lines(void)
+bool dump_held_lines(void) {
 /* When one does hold {}, we flush_and_force_nl(TRUE). THUS, held lines will
    always start dumping into the left column. Thus clear_screen works right. */
-{
     int i;
 
     if (held[hold_count][0] != '\0') {
         hold_count++;
         held[hold_count][len(held[hold_count]) - 1] = '\n';
     }
-    if (hold_count == 0) return (TRUE);
+    if (hold_count == 0) {
+        return TRUE;
+    }
 
     kill_temp_print();
     if (more_break_pending) {
         if (!really_do_more()) {
             hold_count = 0;
-            return (FALSE);
+            return FALSE;
         }
     } else if (more) {
         if (printed_lines > tty_lines / 2 &&
             printed_lines + hold_count >= tty_lines - 2) {
             if (!really_do_more()) {
                 hold_count = 0;
-                return (FALSE);
+                return FALSE;
             }
         }
     }
 
-    if ((!scrollback || curses || wimp) &&
-        (hold_count >= tty_lines - 4 || hold_count > (3 * tty_lines) / 4))
-        lib_clear_screen();
-
-    /* NEEDS WIMP HOOK */
-#ifdef HAVE_CURSES
-    else if (curses) curses_scrollup(hold_count+2);
-#endif
-
     /* dump_to_screen may add new 'more' breaks if needed */
     for (i = 0; i <= hold_count; i++) {
-        if (!dump_to_screen(held[i])) return (FALSE);
+        if (!dump_to_screen(held[i])) return FALSE;
     }
     hold_count = 0;
     held[0][0] = '\0';
-    return (TRUE);
+    return TRUE;
 }
 
 
 bool dump_to_screen(char *str) {
     if (more_break_pending) {
         if (!really_do_more()) {
-            return (FALSE);
+            return FALSE;
         }
     }
     lib_puts(out, str);
@@ -475,20 +482,20 @@ bool dump_to_screen(char *str) {
             else printed_lines++;
         } else printed_lines = 0;
     }
-    return (TRUE);
+    return TRUE;
 }
 
 
 bool really_do_more(void) {
     bool continue_flag = TRUE;
     int i;
-    if (!interactive || redirecting_input) return (TRUE);
+
+    if (!interactive || redirecting_input) return TRUE;
 
     run {
             do_highlight(TRUE);
             check_tty_lines();
             lib_puts(out, "Hit RETURN for more or Q to quit...");
-            if (curses) lib_puts(out, "\n");
             fflush(out);
             do_highlight(FALSE);
             if (!tty_gets(ln_, MAXLINE - 10) && !ignore_eof) {
@@ -496,15 +503,16 @@ bool really_do_more(void) {
                 send(ENDOINPUT);
             }
             do_delete_previous_line();
-            for (i = 0; ln_[i] != '\0'; i++)
+            for (i = 0; ln_[i] != '\0'; i++) {
                 if (ln_[i] == 'q' || ln_[i] == 'Q') send(INTERRUPT);
+            }
             printed_lines = 0;
             more_break_pending = FALSE;
         } except_when(INTERRUPT) {
         do_delete_previous_line();
         continue_flag = FALSE;
     }
-    return (continue_flag);
+    return continue_flag;
 }
 
 
@@ -518,8 +526,9 @@ void mem_puts(char *str) {
         if (memory_end == MEMORY_LINES - 1) {
             memory_end = 0;
             memory_wrapped = TRUE;
+        } else {
+            memory_end++;
         }
-        else memory_end++;
         memory[memory_end][0] = '\0';
     }
 }
@@ -532,15 +541,21 @@ void flush_and_force_nl(bool nl_on_screen_also) {
         if (nl_on_screen_also) {
             nl();
             flush();
-        }
-        else {
-            if (logging) lib_puts(photo, "\n");
+        } else {
+            if (logging) {
+                lib_puts(photo, "\n");
+            }
             mem_puts("\n");
             cursor = 0;
             if (more) {
-                if (printed_lines >= tty_lines - 3) more_break_pending = TRUE;
-                else printed_lines++;
-            } else printed_lines = 0;
+                if (printed_lines >= tty_lines - 3) {
+                    more_break_pending = TRUE;
+                } else {
+                    printed_lines++;
+                }
+            } else {
+                printed_lines = 0;
+            }
         }
     }
 }
@@ -548,8 +563,7 @@ void flush_and_force_nl(bool nl_on_screen_also) {
 
 void kill_temp_print(void) {
     if (temp_print_up) {
-        if (term == TERM_UNKNOWN) lib_puts(out, "\n");
-        else do_cursor_left(FAR_LEFT, "");
+        lib_puts(out, "\n");
         temp_print_spaces = 0;
     }
 }
@@ -557,23 +571,26 @@ void kill_temp_print(void) {
 
 bool lib_clear_screen(void) {
     check_tty_lines();
-    if (more_break_pending) if (!really_do_more()) { send(INTERRUPT); }
+    if (more_break_pending) {
+        if (!really_do_more()) {
+            send(INTERRUPT);
+        }
+    }
     if (do_clear_screen()) {
         printed_lines = -1;
         cursor = 0;
-        return (TRUE);
+        return TRUE;
+    } else {
+        return FALSE;
     }
-    else return (FALSE);
 }
 
 
 /**************** application level output routines ****************/
 
-int photo_to_file(char *new_log_name, /* best to run through make_filename() first */
-                  char *new_log_mode /* use a #define as for open_file() */)
+int photo_to_file(char *new_log_name, /* best to run through make_filename() first */ char *new_log_mode /* use a #define as for open_file() */) {
 /* Returns FALSE if it fails, in which case nothing is changed. If 
    nullstr(new_log_name) then photoing is stopped. */
-{
     FILE *fp;
     flush_and_force_nl(TRUE);
 
@@ -581,33 +598,38 @@ int photo_to_file(char *new_log_name, /* best to run through make_filename() fir
         if (log_open) fclose(photo);
         logging = FALSE;
         photo_file[0] = '\0';
-        return (TRUE);
-
+        return TRUE;
     } else {
         if ((fp = fopen(new_log_name, new_log_mode)) == NULL) {
-            return (FALSE);
+            return FALSE;
         } else {
-            if (log_open) fclose(photo);
+            if (log_open) {
+                fclose(photo);
+            }
             logging = TRUE;
             photo = fp;
             strcpy(photo_file, new_log_name);
-            return (TRUE);
+            return TRUE;
         }
     }
 }
 
 
-void print(const char *str) /* Sends IOERROR if an error occurs */
+void print(const char *str) {
+/* Sends IOERROR if an error occurs */
 /* Linebuf should never have an embedded '\n' (only one at the end, maybe) 
    and should only have as many chars as can fit on the rest of the line. 
    Print interprets tabs and newlines, and punts any other control chars. */
-{
+
     int i, j, k, found;
     char c, save[21];
 
     kill_temp_print();
 
-    if (str == NULL) send(CRASH);
+    if (str == NULL) {
+        send(CRASH);
+    }
+
     for (i = 0; str[i] != '\0'; i++) {
         c = str[i];
 
@@ -615,7 +637,6 @@ void print(const char *str) /* Sends IOERROR if an error occurs */
             (c == '\t' && cursor > LASTTAB)) {
             linebuf[buf++] = '\n';
             flush_linebuf();
-
         } else if (cursor > LINE) {
             linebuf[buf] = '\0';
             /* Line would wrap, so we find a nice place to break it */
@@ -647,8 +668,7 @@ void print(const char *str) /* Sends IOERROR if an error occurs */
             do {
                 linebuf[buf++] = ' ';
                 cursor++;
-            }
-            while (cursor % 8 != 0);
+            } while (cursor % 8 != 0);
 
         } else if (!trash(c)) { /* KLUDGE: WHAT CTRL CHARS TO HANDLE?*/
             linebuf[buf++] = c;
@@ -656,53 +676,6 @@ void print(const char *str) /* Sends IOERROR if an error occurs */
         }
     }
 }
-
-
-//#ifdef NEEDS_WORK
-//void fprint(fp,str)
-//FILE *fp;
-//char *str;
-//{
-//    int i, j, k, found, fbuf;
-//    char c, save[21], fline[LINE+10];
-//
-//    if (str==NULL) send(CRASH);
-//    fbuf=0;
-//
-//    for(i=0; str[i] != '\0'; i++) {
-//	c= str[i];
-//
-//	if (c=='\n' || (c==' ' && cursor>LINE) ||
-//	    (c=='\t' && cursor>LASTTAB)) {
-//	    fline[fbuf++]='\n';
-//	    flush_linebuf();
-//
-//	} else if (cursor>LINE) {
-//	    linebuf[buf]='\0';
-//	    /* Line would wrap, so we find a nice place to break it */
-//	    for (found=FALSE, j=buf-1, k=(buf>20 ? buf-20:0); j>=k; j--)
-//	      if (white(linebuf[j])) { found=TRUE; break; }
-//	    if (found) {
-//		strcpy(save,&linebuf[j+1]);
-//		linebuf[j++]='\n'; buf=j;
-//		flush_linebuf(); /* now buf==0, cursor==0 */
-//		for (k=0; save[k]!='\0'; k++) linebuf[buf++]=save[k];
-//	    } else { /* didn't find a whitespace */
-//		linebuf[buf++]='\n';
-//		flush_linebuf();
-//	    }
-//	    if (!trash(c)) { linebuf[buf++]= c; cursor++; }
-//
-//
-//	} else if (c=='\t' && TRANSLATE_TABS) {
-//	    do { linebuf[buf++]=' '; cursor++; } while (cursor%8 != 0);
-//
-//	} else if (!trash(c)) { /* KLUDGE: WHAT CTRL CHARS TO HANDLE?*/
-//	    linebuf[buf++]= c; cursor++;
-//	}
-//    }
-//}
-//#endif
 
 
 bool temp_print(char *simple_str, char *fancy_str) {
@@ -719,70 +692,37 @@ bool temp_print(char *simple_str, char *fancy_str) {
 
     if (nullstr(str)) { /* kill old temp print thing */
         if (temp_print_up) {
-            if (term == TERM_UNKNOWN) {
-                lib_puts(out, "\n");
-                fflush(out);
-            }
-            else do_cursor_left(FAR_LEFT, "");
+            lib_puts(out, "\n");
+            fflush(out);
             temp_print_spaces = 0;
         } /* else do nothing */
-        return (TRUE);
+        return TRUE;
 
     } else if (!temp_print_up) { /* new temp print thing */
         /* do_highlight does nothing if TERM_UNKNOWN */
         if (term == TERM_UNKNOWN) {
             lib_puts(out, str);
             fflush(out);
-        }
-        else {
+        } else {
             do_highlight(TRUE);
             lib_puts(out, " ");
             lib_puts(out, str);
             do_highlight(FALSE);
         }
         temp_print_spaces = len(str);
-        return (TRUE);
+        return TRUE;
 
     } else { /* there is an existing temp print str, which we must deal with */
-        if (term == TERM_UNKNOWN) {
-            if (temp_print_spaces == 79) {
-                lib_puts(out, "\n");
-                temp_print_spaces = 0;
-            }
-            lib_puts(out, ".");
-            fflush(out);
-            temp_print_spaces++;
-        } else {
-            do_highlight(TRUE);
-            do_cursor_left(FAR_LEFT, "");
-            lib_puts(out, " ");
-            lib_puts(out, str);
-            do_highlight(FALSE);
+        if (temp_print_spaces == 79) {
+            lib_puts(out, "\n");
+            temp_print_spaces = 0;
         }
-        return (TRUE);
+        lib_puts(out, ".");
+        fflush(out);
+        temp_print_spaces++;
+        return TRUE;
     }
 }
-
-
-//#ifdef JUST_TOO_HAIRY
-//	/* Optimization in here to allow reprinting only the changed part */
-//	/* just print a dot if TERM_UNKNOWN */
-//	_filter(str);
-//	for (i=0; str[i]!='\0'; i++) /* get rid of tabs and newlines */
-//	  if (str[i]=='\t'||str[i]=='\n') str[i]=' ';
-//	chrs= imaxf(len(str),LINE-cursor);
-//	str[chrs]='\0'; /* truncate str if it would wrap */
-//
-//	for (pos= -1, i=0; temp_print_str[i]!='\0' && str[i]!='\0'; i++)
-//	  if (temp_print_str[i]!=str[i]) { pos=i; break; } /* 1st difference */
-//	if (pos<0) return(TRUE); /* new and old things are identical */
-//	if (term==TERM_UNKNOWN) {
-//	    if (temp_print_spaces==79)
-//	      { lib_puts(out,"\n"); temp_print_spaces=0; }
-//	    lib_puts(out,"."); temp_print_spaces++; /* ignore temp_print_str */
-//	} else
-//	    if (temp_print_on_left && pos<chrs/2) do_cursor_left(FAR_LEFT,str);
-//#endif
 
 
 bool do_hold(bool start, bool more_on) {
@@ -800,66 +740,58 @@ bool do_hold(bool start, bool more_on) {
         holding = 0;
         more = FALSE;
     } /* else start==MAYBE */
-    return (FALSE);
+    return FALSE;
 }
 
 
 void flush(void) {
     dump_held_lines();
     flush_linebuf();
-#ifdef HAVE_CURSES
-    if (curses) curses_flush();
-#endif
 }
 
 
-void space(int n) { while (n-- > 0) print(" "); }
+void space(int n) {
+    while (n-- > 0) print(" ");
+}
 
 
 bool to_column(int num) {
     if (num > LINE - 1) {
         nl();
-        return (TRUE);
+        return TRUE;
     }
-    if (num < cursor) return (FALSE);
+    if (num < cursor) return FALSE;
     while (cursor < num) {
         linebuf[buf++] = ' ';
         cursor++;
     }
-    return (TRUE);
+    return TRUE;
 }
 
 
-int at_column(void) { return (cursor); }
+int at_column(void) {
+    return cursor;
+}
 
 
 bool maybe_clear_screen(void) {
     flush_and_force_nl(FALSE);
-    if ((!scrollback || curses) && lib_clear_screen()) return (TRUE);
-    else return (FALSE);
-}
-
-bool clear_screen(void) {
-    flush_and_force_nl(FALSE);
-    return (lib_clear_screen());
-}
-
-bool highlight(bool x) {
-    flush();
-    return (do_highlight(x));
-}
-
-void do_more(void) {
-    flush_and_force_nl(TRUE);
-    more_break_pending = TRUE;
+    if ((!scrollback) && lib_clear_screen()) return TRUE;
+    else return FALSE;
 }
 
 
 void review_memory(void) {
     int i, old_photo, start, num, old_memory;
 
-    if (memory_end == 0 && !memory_wrapped) return;
-    if (more_break_pending) if (!really_do_more()) send(INTERRUPT);
+    if (memory_end == 0 && !memory_wrapped) {
+        return;
+    }
+    if (more_break_pending) {
+        if (!really_do_more()) {
+            send(INTERRUPT);
+        }
+    }
     flush_and_force_nl(TRUE);
 
     temp_logging(FALSE, &old_photo);
@@ -870,8 +802,14 @@ void review_memory(void) {
     start = i = (memory_wrapped ? memory_end + 1 : 0); /* start */
     num = 0;
     while (TRUE) { /* find next group of lines */
-        if (i == memory_end) break; /* end - was m_e-1 */
-        if (i == MEMORY_LINES - 1) i = 0; else i++;
+        if (i == memory_end) {
+            break; /* end - was m_e-1 */
+        }
+        if (i == MEMORY_LINES - 1) {
+            i = 0;
+        } else {
+            i++;
+        }
         num++;
         if (num == tty_lines - 1) {
             dump_memory_lines(start, num);
@@ -887,33 +825,42 @@ void review_memory(void) {
 }
 
 
-static void dump_memory_lines(int start, int num) /* internal */
-{
+static void dump_memory_lines(int start, int num) {
+    /* internal */
     int j;
 
     for (j = start; num > 0; num--) {
         print(memory[j]);
-        if (j == MEMORY_LINES - 1) j = 0; else j++;
+        if (j == MEMORY_LINES - 1) {
+            j = 0;
+        } else {
+            j++;
+        }
     }
 }
 
 
 /*** INPUT ROUTINES ***/
 
-int redirect_input(char *fname, bool verbose)    /* fname=NULL to interrupt */
-{
-    bool retoin;
+int redirect_input(char *fname, bool verbose) {
+    /* fname=NULL to interrupt */
+    bool retoin = FALSE;
     FILE *fp;
 
     if (fname == NULL) {
-        if (redirs != 0 && verbose)
+        if (redirs != 0 && verbose) {
             print("\n\n\t...Input file interrupted...\n");
-        while (redirs > 0) close_file(in_fp[redirs--]);
-        return (TRUE);
+        }
+        while (redirs > 0) {
+            close_file(in_fp[redirs--]);
+        }
+        return TRUE;
     }
     if (redirs >= MAXREDIRECTS) {
-        if (verbose) print("error: Too many open input files\n");
-        return (FALSE);
+        if (verbose) {
+            print("error: Too many open input files\n");
+        }
+        return FALSE;
     }
     run {
             fp = open_file(fname, READ);
@@ -922,11 +869,14 @@ int redirect_input(char *fname, bool verbose)    /* fname=NULL to interrupt */
         } except_when(CANTOPEN) retoin = FALSE;
 
     if (verbose) {
-        if (!retoin) sprintf(ps, "error: Unable to open input file '%s'\n", fname);
-        else sprintf(ps, "\n\t...Running commands from input file '%s'...\n", fname);
+        if (!retoin) {
+            sprintf(ps, "error: Unable to open input file '%s'\n", fname);
+        } else {
+            sprintf(ps, "\n\t...Running commands from input file '%s'...\n", fname);
+        }
         pr();
     }
-    return (retoin);
+    return retoin;
 }
 
 
@@ -936,30 +886,27 @@ int redirect_input(char *fname, bool verbose)    /* fname=NULL to interrupt */
    string, which is also despace()ed and filter()ed. */
 
 void input(char *prompt, char *str, int length) {
-    bool eof;
+    bool eof = FALSE;
     more_break_pending = FALSE;
-    eof = FALSE;
 
     if (redirs == 0) { /* it's not redirected via redirect_input() */
-        if (use_gnu_readline) {
-            flush();
-            eof = !do_gnu_readline(prompt, str, length);  /* see syscode.c */
-        } else {
-            print(prompt);
-            flush();
-            eof = !tty_gets(str, length);
-        }
+        flush();
+        eof = !do_gnu_readline(prompt, str, length);  /* see syscode.c */
         if (eof) {
             str[0] = '\0';
-            if (interactive && ignore_eof) send(INTERRUPT);
-            else
+            if (interactive && ignore_eof) {
+                send(INTERRUPT);
+            } else {
                 send(ENDOINPUT);
+            }
         } else {
             _filter(str);
             despace(str);
             if (use_gnu_readline) {
                 mem_puts(prompt);
-                if (logging) lib_puts(photo, prompt);
+                if (logging) {
+                    lib_puts(photo, prompt);
+                }
             }
             mem_puts(str);
             mem_puts("\n");
@@ -968,7 +915,6 @@ void input(char *prompt, char *str, int length) {
                 lib_puts(photo, "\n");
             }
         }
-
     } else { /* we have redirected input */
         print(prompt);
         if (!file_gets(in_fp[redirs], str, length)) {
@@ -997,7 +943,11 @@ void edit_line(char *prompt, char *str, int length, char *initial) {
         eof = !do_gnu_edit(prompt, str, length, initial);
         if (eof) {
             str[0] = '\0';
-            if (ignore_eof) send(INTERRUPT); else send(ENDOINPUT);
+            if (ignore_eof) {
+                send(INTERRUPT);
+            } else {
+                send(ENDOINPUT);
+            }
         } else {
             _filter(str);
             despace(str);
@@ -1010,15 +960,13 @@ void edit_line(char *prompt, char *str, int length, char *initial) {
                 lib_puts(photo, "\n");
             }
         }
-
     } else { /* we have redirected input */
         error("Unable to edit sequence from file input");
     }
 }
 
 
-void getln(char *prompt /* may signal IOERROR or ENDOINPUT */) /* ln is side-effected, is filtered, despaced, lowercased */
-{
+void getln(char *prompt /* may signal IOERROR or ENDOINPUT */) /* ln is side-effected, is filtered, despaced, lowercased */ {
     ln = lnptr;
     input(prompt, ln, MAXLINE - 2);
     lowercase(ln);
@@ -1028,59 +976,30 @@ void getln(char *prompt /* may signal IOERROR or ENDOINPUT */) /* ln is side-eff
 /*** TEMPORARILY CHANGE TERMINAL I/O MODES ***/
 
 bool temp_logging(bool new, bool *old) {
-    if (new && !log_open) return (FALSE);
+    if (new && !log_open) return FALSE;
     flush();
-    if (cursor != 0) nl();
+    if (cursor != 0) {
+        nl();
+    }
     *old = logging;
     logging = new;
-    return (TRUE);
+    return TRUE;
 }
 
+
 void prev_logging(int old) {
-    if (old && !log_open) send(CRASH);
+    if (old && !log_open) {
+        send(CRASH);
+    }
     flush();
-    if (cursor != 0) nl();
+    if (cursor != 0) {
+        nl();
+    }
     logging = old;
 }
 
-bool temp_more_mode(int new, int *old) {
-    flush();
-    if (cursor != 0) nl();
-    *old = more;
-    more = new;
-    return (TRUE);
-}
 
-void prev_more_mode(int old) {
-    flush();
-    if (cursor != 0) nl();
-    more = old;
-}
-
-//#ifdef OBSOLETE
-//
-///* We did away with the redirecting_input flag, so what to do about this? */
-//bool temp_redirect_input(new,old)
-//bool new, *old;
-//{ *old= redirecting_input;
-//  if (new && redirs==0) return(FALSE);
-//  redirecting_input=new; return(TRUE); }
-//
-//void prev_redirect_input(old)
-//int old;
-//{ if (old && redirs==0) send(CRASH); else redirecting_input=old; }
-//
-//bool temp_redirect_input(); /* args redirect, *save_state; turn ALL input
-//   redirection on/off. To turn on, redirection must already be enabled at
-//   least once with redirect_input() (remember, redirects may happen "inside"
-//   each other). Behavior is like temp_logging(). */
-//void prev_redirect_input();     /* args state; */
-//
-//#endif
-
-
-void io_init(void)  /* this is run from lib_init() */
-{
+void io_init(void)  /* this is run from lib_init() */ {
     int i;
 
     array(ps, MAXLINE + 3, char);
@@ -1099,31 +1018,33 @@ void io_init(void)  /* this is run from lib_init() */
 
     in_file = files[0]->name;
     strcpy(in_file, "stdin");
-    in_modechar = files[0]->modechar = 'r';
     array(in_fp, MAXREDIRECTS + 1, FILE*);
     redirs = 0;
-    for (i = 1; i <= MAXREDIRECTS; i++) { in_fp[i] = NULL; }
+    for (i = 1; i <= MAXREDIRECTS; i++) {
+        in_fp[i] = NULL;
+    }
     in_fp[0] = in = files[0]->fp = stdin;
 
     out_file = files[1]->name;
     strcpy(out_file, "stdout");
-    out_modechar = files[1]->modechar = 'w';
     out = files[1]->fp = stdout;
 
     photo_file = files[2]->name;
-    photo_modechar = files[2]->modechar = '?';
 
     matrix(held, MAX_HOLD_LINES + 1, LINE + 3, char);
     holding = FALSE;
     hold_count = 0;
-    for (i = 0; i < MAX_HOLD_LINES + 1; i++) held[i][0] = '\0';
+    for (i = 0; i < MAX_HOLD_LINES + 1; i++) {
+        held[i][0] = '\0';
+    }
 
     matrix(memory, MEMORY_LINES, LINE + 3, char);
     memory_end = 0;
     memory_wrapped = FALSE;
-    for (i = 0; i < MEMORY_LINES; i++) memory[i][0] = '\0';
+    for (i = 0; i < MEMORY_LINES; i++) {
+        memory[i][0] = '\0';
+    }
 
-    supress_more = FALSE;
     more_break_pending = FALSE;
     memorize = TRUE;
     cursor = 0;
@@ -1142,16 +1063,10 @@ void io_init(void)  /* this is run from lib_init() */
     interactive = TRUE;
     use_gnu_readline = FALSE;
     scrollback = FALSE;
-    curses = FALSE;
     screen = TRUE;
-    have_drawn_top = FALSE;
-    tried_curses = FALSE;
-    tried_wimp = FALSE;
-    tried_split = FALSE;
     tty_errors = 0;
     file_errors = 0;
     puts_errors = 0;
     tty_lines = 24;
     term = TERM_UNKNOWN;
-    wimp = FALSE;
 }

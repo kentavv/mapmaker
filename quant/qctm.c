@@ -11,10 +11,6 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-//#define INC_LIB
-//#define INC_MISC
-//#define INC_CALLQCTM
-//#define INC_QLOWLEVEL
 #include "qtl.h"
 
 void set_qctm_globals(DATA *data, QTL_MAP *map);
@@ -49,26 +45,16 @@ real pos_like(real left_theta, real interval_theta, GENO_PROBS *expected_recs, i
 //int if(int unimodal);
 //real do_brute_force(real start, real inc, real theta, GENO_PROBS *expected_recs, int interval, int do_print, int *unimodal);
 //void pos_likes(real lambda, GENO_PROBS *expected_recs, int i, real theta, real *deriv, real *deriv2, real *f);
-real guess_pos(GENO_PROBS *expected_recs, int i, real theta_interval);
-
-void qtl_noconv_to_map(DATA *data, QTL_MAP *map);
 
 /* Globals available to the outside world: */
 real like_tolerance, pos_tolerance, mat_tolerance;
 bool print_iter, print_rec_mat, bag_qctm, brute_force, print_brute_force;
-bool debug_newton;
 int max_intervals, max_genotype_vars, max_continuous_vars;
-/* functions alloc_qctm_globals(), free_qctm_globals(), 
+
+/* functions alloc_qctm_globals(), free_qctm_globals(),
    qctm_globals_avail(), qctm_init(), qtl_conv_to_map(); */
 
-/* Local to this file: */
-//void qctm();
-//void set_qctm_globals();
-//void fill_in_qtl_map();
-
-//real E_step();
-void
-likelihood(
+void likelihood(
         int *qtl_genotype,
         real *contribution,
         GENO_PROBS *trans_prob,
@@ -81,17 +67,6 @@ likelihood(
         real *total_int_like,      /* side-effected - is also a  ptr to a single num */
         INTERVAL_GENOTYPE_PROBS *rec_like /* [interval][int-geno] - side-effected */
 );
-//void make_rec_probs();
-
-//void ML_qtl_weight();
-//void kill_entry();
-
-//void ML_qtl_pos();
-//real do_brute_force();
-//real pos_like();
-
-//real variance();
-//real normal_density();
 
 bool debug_qctm;
 int n_individuals, n_intervals, n_qtl_genotypes;
@@ -130,8 +105,7 @@ bool epistasis_kludge;
 
 /****************************** PRELIMINARIES ******************************/
 
-void
-qctm_init(void) {
+void qctm_init(void) {
     max_interx_genotypes = max_backx_genotypes = 0;
     max_intervals = max_genotype_vars = max_continuous_vars = 0;
     pos_tolerance = like_tolerance = mat_tolerance = -1.0;
@@ -150,11 +124,8 @@ qctm_init(void) {
 }
 
 
-void
-set_qctm_globals(    /* called only by qctm itself */
-        DATA *data,
-        QTL_MAP *map
-) {
+void set_qctm_globals(DATA *data, QTL_MAP *map) {
+    /* called only by qctm itself */
     int i, j, n, k, last;
     int n1, n2, g1, g2;
     real het_additive_coeff, a, b, c;
@@ -264,8 +235,7 @@ set_qctm_globals(    /* called only by qctm itself */
 }
 
 
-void
-fill_in_qtl_map(QTL_MAP *map, real new_like, real *qtl_weight) {
+void fill_in_qtl_map(QTL_MAP *map, real new_like, real *qtl_weight) {
     int j, k, n, num, last;
     real a, b, c;
 
@@ -309,11 +279,7 @@ fill_in_qtl_map(QTL_MAP *map, real new_like, real *qtl_weight) {
 
 /************************** QTL_CONV_TO_MAP (QCTM) **************************/
 
-void
-qtl_conv_to_map(
-        DATA *data,
-        QTL_MAP *map    /* many parts of this are side-effected */
-) {
+void qtl_conv_to_map(DATA *data, QTL_MAP *map /* many parts of this are side-effected */) {
     real old_like, new_like;
     int i;
     bool done;
@@ -379,17 +345,9 @@ qtl_conv_to_map(
 
 /********************************** E-STEP **********************************/
 
-real
-E_step( /* return the log-likelihood */
-        real *qtl_pos,
-        real *qtl_weight,
-        real *mu,
-        real *sigma_sq, /* just ptrs to single reals */
-        DATA *data,
-        real **expected_genotype,
-        real **S_matrix,  /* both side-effected */
-        GENO_PROBS *expected_recs             /* side-effected */
-) {
+real E_step(real *qtl_pos, real *qtl_weight, real *mu, real *sigma_sq, /* just ptrs to single reals */ DATA *data, real **expected_genotype,
+            real **S_matrix, /* both side-effected */ GENO_PROBS *expected_recs /* side-effected */) {
+    /* return the log-likelihood */
     int *poss_genotype;
     real *genotype_contribution;
     real sum_exp_genotype, prediction;
@@ -590,20 +548,12 @@ E_step( /* return the log-likelihood */
 }
 
 
-void
-likelihood(
-        int *qtl_genotype,
-        real *contribution,
-        GENO_PROBS *trans_prob,
-        real *qtl_weight,
-        real *mu,
-        real *sigma_sq,      /* mu and sigma_sq are pointers to single numbers */
-        DATA *data,
-        int indiv,
-        real *total_like,      /* side-effected - is a  ptr to a single num */
-        real *total_int_like,      /* side-effected - is also a  ptr to a single num */
-        INTERVAL_GENOTYPE_PROBS *rec_like /* [interval][int-geno] - side-effected */
-) {
+void likelihood(int *qtl_genotype, real *contribution, GENO_PROBS *trans_prob, real *qtl_weight, real *mu,
+                real *sigma_sq, /* mu and sigma_sq are pointers to single numbers */
+                DATA *data, int indiv,
+                real *total_like, /* side-effected - is a  ptr to a single num */
+                real *total_int_like, /* side-effected - is also a  ptr to a single num */
+                INTERVAL_GENOTYPE_PROBS *rec_like /* [interval][int-geno] - side-effected */) {
     real normal_like, prediction, ratio;
     int j, y, n, c, geno;
 
@@ -658,8 +608,7 @@ likelihood(
 }
 
 
-void
-make_rec_probs(real *qtl_pos, real *interval_rf, GENO_PROBS *trans_prob) {
+void make_rec_probs(real *qtl_pos, real *interval_rf, GENO_PROBS *trans_prob) {
     int j, geno, qtl, left, right;
     real left_rf, right_rf, sum;
 
@@ -701,8 +650,7 @@ make_rec_probs(real *qtl_pos, real *interval_rf, GENO_PROBS *trans_prob) {
 }
 
 
-real
-normal_density(real x, real *sigma_sq) {
+real normal_density(real x, real *sigma_sq) {
     real exponent;
 
     if (*sigma_sq < TINY_VARIANCE) {
@@ -719,16 +667,8 @@ normal_density(real x, real *sigma_sq) {
 
 /******************** ML_QTL_WEIGHT ********************/
 
-void
-ML_qtl_weight(
-        real **S_matrix,
-        real **expected_genotype,
-        real *phenotype,
-        real *fix_weight,
-        real *mu,
-        real *qtl_weight,
-        real *sigma_sq  /* side effect these three */
-) {
+void ML_qtl_weight(real **S_matrix, real **expected_genotype, real *phenotype, real *fix_weight, real *mu, real *qtl_weight,
+                   real *sigma_sq  /* side effect these three */) {
     int n, size, i;
     real total, prediction;
     /* S_inverse and row are side-effected */
@@ -764,12 +704,7 @@ ML_qtl_weight(
 }
 
 
-void
-kill_entry(
-        real **S_matrix,
-        int size,
-        int i /* index of entry to kill */
-) {
+void kill_entry(real **S_matrix, int size, int i /* index of entry to kill */) {
     int n;
 
     for (n = 0; n < size; n++) S_matrix[i][n] = S_matrix[n][i] = 0.0;
@@ -805,13 +740,8 @@ variance(real *phenotype, real *qtl_weight, real **expected_genotype, real **S_m
 #define DIVS 100
 #define STEP 0.02
 
-void
-ML_qtl_pos(
-        GENO_PROBS *expected_recs,
-        real *interval_rf,
-        real *fix_pos, /* []==DONT_FIX if we don't want to fix it */
-        real *qtl_pos /* side-effected */
-) {
+void ML_qtl_pos(GENO_PROBS *expected_recs, real *interval_rf, real *fix_pos, /* []==DONT_FIX if we don't want to fix it */
+                real *qtl_pos /* side-effected */) {
     int i;
     real start, end, interval_cm, pos, max_cm, min_cm;
 
@@ -839,16 +769,9 @@ ML_qtl_pos(
 }
 
 
-real
-do_brute_force(
-        /* return the best pos in cM */
-        GENO_PROBS *expected_recs,
-        int i, /* interval# */
-        real interval_rf,
-        real start,
-        real end, /* start and end are positions in cM */
-        int steps
-) {
+real do_brute_force(GENO_PROBS *expected_recs, int i, /* interval# */ real interval_rf, real start,
+                    real end, /* start and end are positions in cM */ int steps) {
+    /* return the best pos in cM */
     real inc, pos, like, max_like, best_pos = 0.;
     int j;
 
@@ -865,13 +788,7 @@ do_brute_force(
 }
 
 
-real
-pos_like(
-        real left_theta,
-        real interval_theta,
-        GENO_PROBS *expected_recs,
-        int i /* the interval# */
-) {
+real pos_like(real left_theta, real interval_theta, GENO_PROBS *expected_recs, int i /* the interval# */) {
     real event_like, pos_like, right_theta;
     int interval_geno, left_geno, right_geno, qtl_geno;
 
@@ -891,186 +808,3 @@ pos_like(
     }
     return (pos_like);
 }
-
-
-/*    real left_recs, right_recs, left_norecs, right_norecs;
-    left_recs= left_norecs= right_recs= right_norecs= 0.0;
-    if (raw.data_type!=BACKCROSS) send(CRASH);
-	    if (left_geno==qtl_geno) 
-	       left_norecs+= expected_recs[i][interval_geno][qtl_geno];
-	    else left_recs+= expected_recs[i][interval_geno][qtl_geno];
-	    if (right_geno==qtl_geno) 
-	       right_norecs+= expected_recs[i][interval_geno][qtl_geno];
-	    else right_recs+= expected_recs[i][interval_geno][qtl_geno];
-    like= left_recs*log(left_theta)   + left_norecs*log(1.0-left_theta) + 
-        + right_recs*log(right_theta) + right_norecs*log(1.0-right_theta); */
-
-#ifdef VERY_OLD_CODE
-
-start= 0.0;
-inc= (haldane_cm(interval_rf[i])/(DIVS-1));
-int
-if (int print_brute_force) {
-sprintf(ps,PrBF1,i,interval_rf[i],qtl_pos[i]);
-print(ps);
-}
-max_pos=do_brute_force(start,inc,interval_rf[i],
-           expected_recs,i,print_brute_force,&unimodal);
-
-int
-if (int unimodal) {
-print("*** warning: pos_likes is not unimodal...\n");
-qtl_pos[i]= max_pos;
-} else { /* unimodal */
-/* Do it again, with interval= max_pos+/-inc */
-start= haldane_cm(max_pos)-inc;  /* rrange takes care */
-inc= (2*inc)/(DIVS-1);        /* of fencepost error */
-/* if (print_brute_force) { print("second pass:\n"); } */
-qtl_pos[i]=do_brute_force(start,inc,interval_rf[i],
-              expected_recs,i,FALSE,&unimodal);
-}
-
-if (print_iter && !print_brute_force) {
-sprintf(ps,PrI,i,interval_rf[i],
-   guess_pos(expected_recs,i,interval_rf[i]),
-   qtl_pos[i]); print(ps);
-}
-
-real
-do_brute_force (real start, real inc, real theta, GENO_PROBS *expected_recs, int interval, int do_print, int *unimodal)
-{
-real pos, cm, max_pos, max_like, d, d2, f, prev_f;
-int j, max_j, dip, got_f;
-
-max_like= VERY_UNLIKELY; dip= FALSE; *unimodal=TRUE;
-for (j=0, cm=start; j<DIVS; j++,cm+=inc) {
-pos=unhaldane_cm(cm);
-if (!rrange(&pos, MIN_REC_FRAC, MAX_FRAC_OF_RF*theta)) continue;
-pos_likes(pos,expected_recs,interval,theta,&d,&d2,&f);
-if (do_print) {
-sprintf(ps,PrBF2,pos,f,dip);print(ps);
-}
-if (f>max_like) {
-max_like=f; max_pos=pos; max_j=j;
-if (dip) *unimodal= FALSE;
-} else if (f<max_like) dip= TRUE;
-}
-if (do_print) {
-sprintf(ps,PrBF3,max_pos,max_like);
-print(ps);
-}
-if (max_like==VERY_UNLIKELY) { send(CRASH); }
-return(max_pos);
-}
-
-
-void
-pos_likes (real lambda, GENO_PROBS *expected_recs, int i, real theta, real *deriv, real *deriv2, real *f)
-{
-real w1,x1,y1,z1,w2,x2,y2,z2;
-real lambda_star, one_minus_lambda, one_minus_2_lambda;
-real sq_one_minus_2_lambda, theta_minus_lambda;
-real one_minus_theta_lambda;
-real nr1, nr2, r_1, r_2;
-
-rrange(&lambda,0.001,0.499);
-
-r_1= expected_recs[i][REC][REC]   + expected_recs[i][REC][NOREC];
-r_2= expected_recs[i][REC][REC]   + expected_recs[i][NOREC][REC];
-nr1= expected_recs[i][NOREC][REC] + expected_recs[i][NOREC][NOREC];
-nr2= expected_recs[i][REC][NOREC] + expected_recs[i][NOREC][NOREC];
-
-lambda_star= (theta-lambda)/(1.0-2.0*lambda);
-*f= r_1*log(lambda) + r_2*log(lambda_star) +
-nr2*log(1.0-lambda_star) + nr1*log(1.0-lambda);
-/*
-one_minus_lambda=	1.0 - lambda;
-one_minus_2_lambda= 	1.0 - (2.0*lambda);
-sq_one_minus_2_lambda= 	sq(one_minus_2_lambda);
-theta_minus_lambda= 	theta - lambda;
-one_minus_theta_lambda= 1.0 - theta - lambda;
-
-w1= r_1 / lambda;
-x1= r_2 * (2.0/one_minus_2_lambda - 1.0/theta_minus_lambda);
-y1= nr2 * (-(2.0*lambda_star-1.0) / one_minus_theta_lambda);
-z1= nr1 * (-1.0 / one_minus_lambda);
-
-w2= -r_1 / sq(lambda);
-x2=  r_2 * (4.0/sq_one_minus_2_lambda - 1.0/sq(theta_minus_lambda));
-y2= -nr2 * ((-2.0/sq_one_minus_2_lambda) +
-    (4.0*theta - 2.0)/
-    (sq(one_minus_theta_lambda) * one_minus_2_lambda));
-z2=  nr1 * (-1.0/sq(one_minus_lambda));
-
-*deriv= w1 + x1 + y1 + z1;
-*deriv2= w2 + x2 + y2 + z2;
-*/
-}
-
-real
-guess_pos (GENO_PROBS *expected_recs, int i, real theta_interval)
-{
-real total_recs, left_recs, right_recs, L, R, X;
-real left_cm, right_cm, cm_pos, pos;
-int left, right;
-
-total_recs= left_recs= right_recs= 0.0;
-{
-L= ((real)left); R= ((real)right);
-X= expected_recs[i][left][right];
-left_recs+=  L * X;
-right_recs+= R * X;
-total_recs+= (L+R) * X;
-}
-
-left_cm=  haldane_cm(rminf(left_recs/total_recs, 0.49));
-right_cm= haldane_cm(rminf(right_recs/total_recs,0.49));
-cm_pos =  haldane_cm(theta_interval) * (left_cm /(left_cm +right_cm));
-pos = unhaldane_cm(cm_pos);
-return(pos);
-}
-
-#endif
-
-void
-qtl_noconv_to_map( /* OBSOLETE, I THINK */
-        DATA *data,
-        QTL_MAP *map    /* many parts of this are side-effected */
-) {
-    real new_like;
-    /* use externs null_qtl_weight, qctm_qtl_weight, qctm_qtl_pos */
-
-    set_qctm_globals(data, map);
-    map->chi_sq = map->var_explained = map->log_like = 0.0;
-
-    /*** COMPUTE THE NULL QTL MAPS ***/
-    map->null_log_like =
-            E_step(map->qtl_pos, null_qtl_weight, &map->null_mu, &map->null_sigma_sq,
-                   data, expected_genotype, S_matrix, expected_recs);
-    map->no_data_like = 0.0;
-
-    /*** COMPUTE THE ACTUAL QTL MAP ***/
-    /* qctm_qtl_weight[] was initialized from the map->qtl_weight[] and
-       map->qtl_dominance[] entries by set_qctm_globals() */
-    new_like =
-            E_step(map->qtl_pos, qctm_qtl_weight, &map->mu, &map->sigma_sq, data,
-                   expected_genotype, S_matrix, expected_recs);
-    fill_in_qtl_map(map, new_like, qctm_qtl_weight);
-}
-
-
-#ifdef DEBUGGING_CODE
-printf("Expected Genotype:\n");
-for (i=0; i<n_individuals; i++) {
-printf("%d: ",i);
-for (j=0; j<size; j++) printf("%8.5lf ",expected_genotype[i][j]);
-printf("\n");
-}
-printf("\nS Matrix:\n");
-for (i=0; i<size; i++) {
-printf("%d: ",i);
-for (j=0; j<size; j++) printf("%8.5lf ",S_matrix[i][j]);
-printf("\n");
-}
-#endif
-      

@@ -11,11 +11,6 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-//#define INC_LIB
-//#define INC_SHELL
-//#define INC_CALLQCTM
-//#define INC_QTOPLEVEL
-//#define INC_QLOWLEVEL
 #include "qtl.h"
 
 //void print_ps_wiggle_order(int wiggle, int order, real threshold);
@@ -32,8 +27,6 @@ void ps_file_end(FILE *fp);
 void ps_page_start(FILE *fp, int pagenum);
 
 void ps_page_end(FILE *fp);
-//void print_ps_multi_wiggle(int wiggle, real threshold);
-//char *line_choice(int order);
 
 #define XZERO 0.0
 #define YZERO 0.0
@@ -166,8 +159,7 @@ void print_ps_wiggle_order(int wiggle, int order, real threshold) {
 }
 
 
-void
-draw_axes(FILE *fp, double *xnotch, int num_notches, char **label, char *y_name, double dotted_val) {
+void draw_axes(FILE *fp, double *xnotch, int num_notches, char **label, char *y_name, double dotted_val) {
     int i;
     double prev, next, current;
 
@@ -209,8 +201,7 @@ draw_axes(FILE *fp, double *xnotch, int num_notches, char **label, char *y_name,
 }
 
 
-void
-do_bezier(FILE *fp, double *xval, double *yval, int num_points, double s0, double sn, char *line_type) {
+void do_bezier(FILE *fp, double *xval, double *yval, int num_points, double s0, double sn, char *line_type) {
     int i;
     double *x0, *x1, *x2, *x3, *y0, *y1, *y2, *y3, *slope, s1, s2;
 
@@ -298,8 +289,7 @@ do_bezier(FILE *fp, double *xval, double *yval, int num_points, double s0, doubl
 }
 
 
-void
-draw_x(void) {
+void draw_x(void) {
 #ifdef DRAWX
     fprintf(fp,"GS -3 -3 rlineto stroke GR\n");
     fprintf(fp,"GS 3 3 rlineto stroke GR\n");
@@ -309,8 +299,7 @@ draw_x(void) {
 }
 
 
-void
-ps_file_start(FILE *fp) {
+void ps_file_start(FILE *fp) {
     fprintf(fp, "%%!PS-Adobe-3.0\n");
     fprintf(fp, "%%%%Creator: MAPMAKER\n");
     fprintf(fp, "%%%%LanguageLevel: 1\n");
@@ -376,30 +365,26 @@ ps_file_start(FILE *fp) {
     fprintf(fp, "%%%%EndSetup\n");
 }
 
-void
-ps_file_end(FILE *fp) {
+void ps_file_end(FILE *fp) {
     fprintf(fp, "%%%%Trailer\n");
     fprintf(fp, "grestore\n");
     fprintf(fp, "end %% Map_Painter_prolog\n");
     fprintf(fp, "%%%%EOF\n");
 }
 
-void
-ps_page_start(FILE *fp, int pagenum) {
+void ps_page_start(FILE *fp, int pagenum) {
     fprintf(fp, "%%%%Page: ? %d\n", pagenum);
     fprintf(fp, "%%%%BeginPageSetup\n");
     fprintf(fp, "LM\n");
     fprintf(fp, "%%%%EndPageSetup\n");
 }
 
-void
-ps_page_end(FILE *fp) {
+void ps_page_end(FILE *fp) {
     fprintf(fp, "GM showpage\n");
 }
 
 
-void
-print_ps_multi_wiggle(int wiggle, real threshold) {
+void print_ps_multi_wiggle(int wiggle, real threshold) {
     int i, j, count = 0, num_notches = 0, pagenum = 1, order;
     double **xval, **yval, *notch, highest, longest, current_len;
     WIGGLE_OPERATION *op;
@@ -534,8 +519,7 @@ print_ps_multi_wiggle(int wiggle, real threshold) {
     unmatrix(label, MAX_CHROM_LOC, char);
 }
 
-char *
-line_choice(int order) {
+char *line_choice(int order) {
     switch (order) {
         case 0:
             return (THICK_LINE);

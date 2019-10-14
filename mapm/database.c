@@ -11,19 +11,14 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-//#define INC_LIB
-//#define INC_SHELL
 #include "mapm.h"
-//#include "lowlevel.h"
-//#include "toplevel.h"
 
 /* undefine the following if you want to enable a database hookup */
 
 #define NO_DATABASE
 
 
-command
-import(void) {
+command import(void) {
 #ifndef NO_DATABASE
     char *out_name, *str, first_token[TOKLEN+1];
     int length, prev_data, filenum;
@@ -71,8 +66,7 @@ import(void) {
 }
 
 
-void
-get_from_database(void) {
+void get_from_database(void) {
     int num_indivs = 0, num_markers = 0, cross_type = 0;
 
     /* must allocate MAPMAKER data structures as follows */
@@ -98,8 +92,7 @@ get_from_database(void) {
 }
 
 
-command
-export(void) {
+command export(void) {
     /* this command can be designed to send mapping results back to your 
        database if this functionality is required */
 

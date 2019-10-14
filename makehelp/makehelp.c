@@ -293,8 +293,7 @@ void parse_entry(int kind, char *name, char *abbrev) {
             else if (str[0] == '^') {
                 strcpy(line, str + 1);
                 uppercase(line);
-            }
-            else strcpy(line, str);
+            } else strcpy(line, str);
             nextstr();
             if (!(nullstr(line) && str[0] == '@')) { /* punt last line if blank */
                 do_fwrite(hlp, line);

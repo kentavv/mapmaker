@@ -33,7 +33,7 @@
 #define CANTCLOSE    16
 
 /* The first message number accessible to the user code is 20. */
-#define USER_MESSAGE(n) (20+n)
+#define USER_MESSAGE(n) (20+(n))
 
 /* Message variables for the above */
 extern char *MATHERROR_type;    /* allocated LINE long */
@@ -78,10 +78,6 @@ int lvl_plus_plus(void);
 
 void sender(int num);
 
-void punter(void);
-
-void trapper(int num);
-
 void default_action(int num);
 
 void handle_interrupt(int n);
@@ -95,10 +91,6 @@ void handle_buserror(int n);
 void handle_weird_signal(int n);
 
 //int matherr(struct exception *ex);
-bool stack_check(int *var);
-
-
-
 
 
 //void setmsg();	/* sets up a message */
@@ -184,7 +176,7 @@ extern void (*(mstrmsg[]))(char *);
 */
 
 #define except_when(num) \
-  while(--lvl>10000); } else if (msg!=num) { sender(msg); } else
+  while(--lvl>10000); } else if (msg!=(num)) { sender(msg); } else
 
 /* Trapping() provides nicer syntax for the trivial do-nothing traps.
    Syntax:

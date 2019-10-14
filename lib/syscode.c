@@ -15,16 +15,13 @@
 /* Most of this file is doccumented in system.h - it contains most of the 
    system dependent code for the helpers library. */
 
-//#define INC_LIB
-//#define INC_EQN
-//#define INC_HELP_DEFS
+#include <stdio.h>
+#include <readline/readline.h>
+#include <readline/history.h>
+
 #include "system.h"
 #include "syscode.h"
 
-#ifdef _GNU_READLINE
-#include "readline/readline.h"
-#include "readline/history.h"
-#endif
 
 /*********************** C-Library Extensions ********************************/
 
@@ -34,8 +31,8 @@
 
 static time_t old_stamp, new_stamp;   /* For local use only! */
 
-real usertime(bool do_reset) /* return time in seconds, or -1.0 if fail */
-{
+real usertime(bool do_reset) {
+    /* return time in seconds, or -1.0 if fail */
     real rtime;
     new_stamp = time(NULL);
     rtime = (real) (new_stamp - old_stamp);
@@ -43,8 +40,8 @@ real usertime(bool do_reset) /* return time in seconds, or -1.0 if fail */
     return (rtime);
 }
 
-char *time_string(void)    /* return ptr to "" if fail */
-{
+char *time_string(void) {
+    /* return ptr to "" if fail */
     time_t the_time;  /* note that asctime() does not always exist */
     char *str;
     int end;
@@ -62,28 +59,7 @@ char *time_string(void)    /* return ptr to "" if fail */
 
 
 bool shell_command(char *cmd) {
-    bool success;
-    success = FALSE;
-
-#ifdef NO_SYSTEM_FUNC
-    return(FALSE);
-#else
-/* NEED WIMP HOOK */
-#ifdef HAVE_CURSES
-    bool had_curses= curses;
-    if (curses) curses_end();  /* DO SOMETHING */
-#endif
-#ifndef VMS
-    if (system(cmd) == 0) success = TRUE;
-#endif
-#ifdef VMS
-    if (system(cmd)!=0) success=TRUE;
-#endif
-#ifdef HAVE_CURSES
-    if (success && had_curses) curses_refresh();
-#endif
-    return (success);
-#endif
+    return system(cmd) == 0;
 }
 
 
@@ -94,11 +70,6 @@ bool subshell(void) {
 #ifdef NO_SYSTEM_FUNC
     return(FALSE);
 #else
-/* NEED WIMP HOOK */
-#ifdef HAVE_CURSES
-    bool had_curses= curses;
-    if (curses) curses_end();  /* DO SOMETHING */
-#endif
 #ifdef TRY_SHELL_VAR
     if ((shell_name = getenv("SHELL")) != NULL && !nullstr(shell_name)) {
         nstrcpy(cmd, shell_name, 100); /* maxstrcat(cmd," -i",110); why? */
@@ -116,9 +87,6 @@ bool subshell(void) {
         if (system(TRY_SHELL_CMD) == 0) success = TRUE;
     }
 #endif
-#ifdef HAVE_CURSES
-    if (success && had_curses) curses_refresh();
-#endif
     return (success);
 #endif
 }
@@ -128,97 +96,70 @@ bool subshell(void) {
 
 bool change_directory(char *dir) {
     if (dir == NULL) send(CRASH);
-#ifdef HAVE_CHDIR
-    if (chdir(dir) == 0) return (TRUE);
-#endif
-    return (FALSE);
+    if (chdir(dir) == 0) return TRUE;
+    return FALSE;
 }
 
 bool get_directory(char *buf) {
     if (buf == NULL) send(CRASH);
-#ifdef HAVE_GETCWD
-    if (getcwd(buf, PATH_LENGTH - 2) != NULL) return (TRUE);
-#endif
-    return (FALSE);
+    if (getcwd(buf, PATH_LENGTH - 2) != NULL) return TRUE;
+    return FALSE;
 }
 
 bool get_home_directory(char *buf) {
     char *dir;
     if (buf == NULL) send(CRASH);
-#ifdef HAVE_GETENV
     if ((dir = getenv("HOME")) != NULL) {
         nstrcpy(buf, dir, PATH_LENGTH);
-        return (TRUE);
+        return TRUE;
     }
-#endif
-    return (FALSE);
+    return FALSE;
 }
 
 bool get_code_directory(char *buf) {
     char *dir;
     if (buf == NULL) send(CRASH);
-#ifdef HAVE_GETENV
     if ((dir = getenv("MAPM_LIB")) != NULL) {
         nstrcpy(buf, dir, PATH_LENGTH);
-        return (TRUE);
+        return TRUE;
+    }
+#ifdef _CODE_DIR /* compiled in default */
+    if (!nullstr(_CODE_DIR)) {
+        nstrcpy(buf,_CODE_DIR,PATH_LENGTH); return(TRUE);
     }
 #endif
-#ifdef _CODE_DIR /* compiled in default */
-    if (!nullstr(_CODE_DIR))
-      { nstrcpy(buf,_CODE_DIR,PATH_LENGTH); return(TRUE); }
-#endif
-    return (FALSE);
+    return FALSE;
 }
 
 bool rename_file(char *original_name, char *new_name) {
-#ifdef _SYS_DOS
-    sprintf(ps,"copy %s %s",original_name,new_name);
-    if (system(ps)==0) return(TRUE);
-    else return(FALSE);
-#else
-    if (rename(original_name, new_name) == -1) return (FALSE);
-    else return (TRUE);
-#endif
+    if (rename(original_name, new_name) == -1) return FALSE;
+    else return TRUE;
 }
 
 
 bool fgoto_line(FILE *fp, long index) {
-#ifdef REPLACE_FSEEK
-    long fseekvalue= 0L;
-    frewind(fp);
-    run while (fseekvalue < index-1) {
-    fgetln(help_file);
-    fseekvalue+=len(ln)+1;
-    } except_when(ENDOFILE) return(FALSE);
-    return(TRUE);
-#endif
-    return (fseek(fp, index, 0) != -1);
+    return fseek(fp, index, 0) != -1;
 }
 
 /***** random number functions *****/
 
-long mkseed(long x) { if (x == RANDOM) return ((long) time(NULL)); else return (x); }
+long mkseed(long x) {
+    if (x == RANDOM) return ((long) time(NULL)); else return (x);
+}
 
-//#ifdef USE_RANDOM
-void do_seedrand(long x) { srandom((int) mkseed(x)); }
+void do_seedrand(long x) {
+    srandom((int) mkseed(x));
+}
 
-real
-randnum(void) { return (((real) random()) / 2147483648.0); }
-//#else
-//#ifdef USE_DRAND48
-//void do_seedrand(long x) long x; { srand48(mkseed(x)); }
-//real randnum(void) { return(drand48()); }
-//#else /* USE_SRAND */
-//void do_seedrand(x) long x; { srand((int)mkseed(x)); }
-//real randnum() { return(((real)rand())/((real)(RAND_MAX+1))); }
-//#endif
-//#endif
+real randnum(void) {
+    return (real) random() / (real) RAND_MAX;
+}
 
 
 /***** message and signal handling *****/
 
-void untrapped_msg(void) /* DO NOT ASSUME THAT MSGNAME IS SET! */
-{
+void untrapped_msg(void) {
+    /* DO NOT ASSUME THAT MSGNAME IS SET! */
     /* if (msg!=IOERROR) flush(); most are disk errors */
     if (msg < 1 || msg > MSGS) {
         fprintf(stderr, "Untrapped error %d (?)\n", msg);
@@ -230,8 +171,8 @@ void untrapped_msg(void) /* DO NOT ASSUME THAT MSGNAME IS SET! */
     fprintf(stderr, "\n");
 }
 
-void trapped_msg(void) /* DO NOT ASSUME THAT MSGNAME IS SET! */
-{
+void trapped_msg(void) {
+    /* DO NOT ASSUME THAT MSGNAME IS SET! */
     /* if (msg!=IOERROR) flush(); most are disk errors */
     if (msg < 1 || msg > MSGS) {
         fprintf(stderr, "Error %d (?)\n", msg);
@@ -247,14 +188,13 @@ void trapped_msg(void) /* DO NOT ASSUME THAT MSGNAME IS SET! */
 #define SHUTDOWN2 "restart the\nprogram in order to resume proper operation. "
 #define SHUTDOWN3 "Hit <return> to continue..."
 
-void verbose_untrapped_msg(void) /* DO NOT ASSUME THAT MSGNAME IS SET! */
-{
+void verbose_untrapped_msg(void) {
+    /* DO NOT ASSUME THAT MSGNAME IS SET! */
     fprintf(stderr, "*** Drats! An unhandled internal error occured. ***\n");
     if (msg < 1 || msg > MSGS) {
         fprintf(stderr, "error #%d (?)\n", msg);
         exit(1);
-    }
-    else fprintf(stderr, "Error message #%d (%s) was sent.\n", msg, mname[msg]);
+    } else fprintf(stderr, "Error message #%d (%s) was sent.\n", msg, mname[msg]);
     (*(mstrmsg[msg]))(ps_);
     fprintf(stderr, ps_);
     if (!nullstr(ps_)) fprintf(stderr, "\n");
@@ -297,38 +237,29 @@ void signal_trap_init(void) {
 
 /********************************** I/O *************************************/
 
-int old_term, old_lines, old_scrollback, old_more, dos_output;
-bool tried_curses, tried_wimp, tried_split, have_drawn_top;
 int tty_errors, file_errors, puts_errors;
-int curses, split, wimp, use_gnu_readline; /* externed global bools */
+int use_gnu_readline; /* externed global bools */
 char **file_arg;
 int prep_it, append_it;
 
 
 bool do_gnu_readline(char *prompt, char *str, int num) {
-#ifndef _GNU_READLINE
-    send(CRASH);
-    return (FALSE);
-#else
-    char *result=NULL;
+    char *result = NULL;
 
-    result= readline(prompt);
-    if (result==NULL) return(FALSE); /* EOF */
+    result = readline(prompt);
+    if (result == NULL) return FALSE; /* EOF */
 
-    nstrcpy(str,result,num-2);
+    nstrcpy(str, result, num - 2);
     add_history(str);
-    free((char*)result);
-    return(TRUE);
-#endif
+    free(result);
+    return TRUE;
 }
 
 
-#ifdef _GNU_READLINE
 static char *default_text = NULL;
 
-int set_rl_default(void)
-{
-    if(default_text)  {
+int set_rl_default(void) {
+    if (default_text) {
         int n = strlen(default_text);
         rl_extend_line_buffer(n + 1);
         strcpy(rl_line_buffer, default_text);
@@ -336,16 +267,11 @@ int set_rl_default(void)
     }
     return 0;
 }
-#endif
 
 
-bool do_gnu_edit(char *prompt, char *str, int num, char *initial /* initial may be = str */) {
-#ifndef _GNU_READLINE
-    send(CRASH);
-    return (FALSE);
-#else
-    char *result=NULL, *hist_entry=NULL;
-    Function *old_handler;
+bool do_gnu_edit(const char *prompt, char *str, int num, char *initial /* initial may be = str */) {
+    char *result = NULL; //, *hist_entry = NULL;
+    rl_hook_func_t *old_handler;
 
     old_handler = rl_startup_hook;
     rl_startup_hook = set_rl_default;
@@ -353,24 +279,19 @@ bool do_gnu_edit(char *prompt, char *str, int num, char *initial /* initial may 
     result = readline(prompt);
     rl_startup_hook = old_handler;
 
-    if (result==NULL) return(FALSE); /* EOF */
+    if (result == NULL) return FALSE; /* EOF */
 
-    nstrcpy(str,result,num-2);
+    nstrcpy(str, result, num - 2);
     add_history(str);
-    free((char*)result);
-    return(TRUE);
-#endif
+    free(result);
+    return TRUE;
 }
 
 
 bool gnu_copyright(char *str /* side-effected, so it must be big enough */) {
-#ifndef _GNU_READLINE
-    return (FALSE);
-#else
-    if (!use_gnu_readline) return(FALSE);
-    sprintf(str,"GNU Readline Copyright 1988-1989, Free Software Foundation");
-    return(TRUE);
-#endif
+    if (!use_gnu_readline) return FALSE;
+    sprintf(str, "GNU Readline Copyright 1988-2014, Free Software Foundation");
+    return TRUE;
 }
 
 
@@ -387,7 +308,7 @@ bool tty_gets(char *str, int num) {
         str[num] = '\0';                       /* in case fgets() is weird */
         if (++tty_errors > MAX_IO_FAILURES) send(CRASH);
         if ((n = ferror(in)) != 0) ioerror(strerror(n), in, str); /* error */
-        if (feof(in)) return (FALSE);         /* else must be EOF */
+        if (feof(in)) return FALSE;         /* else must be EOF */
         ioerror("fgets() failed", in, str);    /* I dunno? */
     }
 
@@ -404,7 +325,7 @@ bool tty_gets(char *str, int num) {
         else ioerror("input line too long", in, str);
     }
     tty_errors = 0;
-    return (TRUE);
+    return TRUE;
 }
 
 
@@ -416,7 +337,7 @@ bool file_gets(FILE *fp /* must be opened with file_open() */, char *str  /* mus
         if (c == EOF) { /* error or EOF */
             str[i] = '\0';
             if (++file_errors > MAX_IO_FAILURES) send(CRASH);
-            else if (feof(fp)) { if (i == 0) return (FALSE); else return (TRUE); }
+            else if (feof(fp)) { if (i == 0) return FALSE; else return TRUE; }
             else if ((n = ferror(fp)) != 0) { ioerror(strerror(n), fp, str); }
             else ioerror("fgetc() failed", fp, str);
         } else if (i == num - 1) {
@@ -430,7 +351,7 @@ bool file_gets(FILE *fp /* must be opened with file_open() */, char *str  /* mus
         }
     str[i] = '\0';
     file_errors = 0;
-    return (TRUE);
+    return TRUE;
 }
 
 
@@ -439,16 +360,8 @@ void lib_puts(FILE *fp, char *str) {
     char c;
 
     if (fp == NULL || str == NULL) send(CRASH);
-#ifdef HAVE_CURSES
-    if (curses && fp==out) { curses_puts(str); } else
-#endif
     {
         for (i = 0; (c = str[i]) != '\0'; i++) {
-            if (c == '\n' && dos_output && fp != out && !xputc('\015', fp)) {
-                if (++puts_errors >= MAX_IO_FAILURES) send(CRASH);
-                if ((n = ferror(fp)) != 0) ioerror(strerror(n), fp, str);
-                else ioerror("xputc() failed", fp, str);
-            }
             if (!xputc(c, fp)) {
                 if (++puts_errors >= MAX_IO_FAILURES) send(CRASH);
                 if ((n = ferror(fp)) != 0) ioerror(strerror(n), fp, str);
@@ -461,23 +374,19 @@ void lib_puts(FILE *fp, char *str) {
 }
 
 
-//void iocheck(void) { return; }
-
-
 void tty_init(void) {
-    char *tty_type, *num_lines, copy[10], bp[1025];
-    int x;
-
-/* THIS HAS NO WIMP HOOK - IT SHOULD NEVER BE CALLED IF WIMP I/O IS USED! */
-
-#ifdef TRY_ISATTY
     if (!isatty(fileno(stdin))) {
         interactive = FALSE;
         ignore_eof = FALSE;
     }
-    if (!isatty(fileno(stdout))) { screen = FALSE; }
-#endif
-    if (!screen) return; /* term=TERM_UNKNOWN, more_mode=scrollback=FALSE */
+
+    if (!isatty(fileno(stdout))) {
+        screen = FALSE;
+    }
+
+    if (!screen) {
+        return;
+    }
 
 /* If we DO assume that a tty type has scrollback, we should NOT clear
 its screen, NOR should more_mode be on by default. If it does NOT have
@@ -485,104 +394,11 @@ scrollback, we MAY clear its screen and might turn on more_mode (more
 mode will be way ugly w/o cursor motion however). In some sense,
 scrollback=TRUE is the conservative option.*/
 
-#ifdef TRY_GETENV_TERM
-    if ((tty_type = getenv("TERM")) != NULL) {
-        nstrcpy(copy, tty_type, 9);
-        crunch(copy);
-        if (nstreq(copy, "hp", 2)) {
-            term = HP_TERM;
-            scrollback = TRUE;
-            tty_lines = 24;
-        }
-        else if (nstreq(copy, "300h", 4)) /* hp series 300 console */
-        {
-            term = HP_TERM;
-            scrollback = TRUE;
-            tty_lines = 46;
-        }
-        else if (nstreq(copy, "ansi", 4) || nstreq(copy, "vt", 2) ||
-                 nstreq(copy, "dec", 3) || nstreq(copy, "mac", 3)) {
-            term = ANSI;
-            scrollback = TRUE;
-            tty_lines = 24;
-        }
-        else if (nstreq(copy, "xterm", 5)) /* X-Windows terminal emulator */
-        {
-            term = ANSI;
-            scrollback = TRUE;
-            tty_lines = 24;
-        }
-        else if (nstreq(copy, "sun", 3)) /* sun console/cmdtool/shelltool */
-        {
-            term = ANSI;
-            scrollback = TRUE;
-            tty_lines = 34;
-        }
-        else if (nstreq(copy, "pc", 2)) /* pc console */
-        {
-            term = ANSI;
-            scrollback = FALSE;
-            tty_lines = 25;
-        }
-#ifdef _GNU_READLINE
-        /* the cmd-line override '-simple' sets this back to FALSE */
-        if (interactive) use_gnu_readline=TRUE; /* else was set to FALSE */
-#endif
-#ifdef TRY_TERMCAP
-        if (!nullstr(tty_type)) {
-            tgetent(bp, tty_type);
-            if ((x = tgetnum("li")) > 0) tty_lines = x;
-        }
-#endif
-    } else /* can't getenv("TERM") */
-#endif /* TRY_GETENV_TERM */
+    term = ANSI;
+    scrollback = TRUE;
+    tty_lines = 24;
 
-    if (term == TERM_UNKNOWN) {
-        /* either no TERM environment variable or its value is unknown */
-        use_gnu_readline = FALSE; /* it will fail anyway w/o TERM var */
-        if (DEFAULT_TERM_TYPE == HP_TERM) /* all HP_TERMs scrollback? */
-        {
-            scrollback = TRUE;
-            term = HP_TERM;
-            tty_lines = 24;
-        }
-        else if (DEFAULT_TERM_TYPE == SCROLLING_ANSI) {
-            scrollback = TRUE;
-            term = ANSI;
-            tty_lines = 24;
-        }
-        else if (DEFAULT_TERM_TYPE == NONSCROLLING_ANSI) {
-            scrollback = FALSE;
-            term = ANSI;
-            tty_lines = 24;
-        }
-        else if (DEFAULT_TERM_TYPE == PC_CONSOLE) {
-            scrollback = FALSE;
-            term = ANSI;
-            tty_lines = 25;
-        }
-        else if (DEFAULT_TERM_TYPE == MAC_WINDOW) {
-            scrollback = FALSE;
-            term = MAC_WINDOW;
-            tty_lines = 24;
-        }
-        else /* default is TERM_UNKNOWN terminal type */
-        {
-            scrollback = TRUE;
-            term = TERM_UNKNOWN;
-            tty_lines = 24;
-        }
-    }
-
-#ifdef TRY_GETENV_LINES
-    if ((num_lines = getenv("LINES")) != NULL && sscanf(num_lines, "%d", &x) == 1)
-        tty_lines = x;
-#endif
     check_tty_lines(); /* ioctl will always over-ride */
-#ifdef DEFAULT_SCROLLBACK
-    scrollback=DEFAULT_SCROLLBACK;  /* override the settings above */
-#endif
-    /* if (term!=TERM_UNKNOWN) screen=TRUE; else screen=FALSE; */
 }
 
 
@@ -601,146 +417,60 @@ bool check_tty_lines(void) /* return TRUE and set tty_lines if changed */
 /* Use lib_puts(out,...) (not print()) for these screen handling routines! 
    flush() will be executed immediately beforehand.... */
 
-int save_cursor;
-char Tcmd[100];
-
 /* These have been tested on a Xterm and vt220 */
 #define ansi_tty_init()      lib_puts(out,"\033[0m\n")
 #define ansi_clr_scrn()      lib_puts(out,"\033[1;1H\033[2J")
 #define ansi_highlight(on)   lib_puts(out,on ? "\033[7m":"\033[0m")
 #define ansi_del_prev_ln()   lib_puts(out,"\033[99D\033[K\033[1A\033[K")
-#define ansi_boing()         lib_puts(out,"\007")
-
-void ansi_cursor_left(int i, char *s) {
-    if (i < 0) sprintf(Tcmd, "\033[99D\033[K%s", s); else sprintf(Tcmd, "\033[%dD\033[K%s", i, s);
-    lib_puts(out, Tcmd);
-}
-
-#define hp_tty_init()        lib_puts(out,"\n\033&d@\n")
-#define hp_clr_scrn()        lib_puts(out,"\033H\033J")
-#define hp_highlight(on)     lib_puts(out,on ? "\033&dB":"\033&d@")
-#define hp_del_prev_ln()     lib_puts(out,"\033&a0C\033K\033A\033K")
-#define hp_boing()           lib_puts(out,"\007")
-
-void hp_cursor_left(int i, char *s) {
-    if (i < 0) sprintf(Tcmd, "\033&a0C\033K%s", s); else sprintf(Tcmd, "\033&a-%dC\033K%s", i, s);
-    lib_puts(out, Tcmd);
-}
-
-/* These should be filled in for the Mac's ThinkC "console package" */
-#define mac_tty_init()    printf("\n") /* printf() opens window */
-#define mac_clr_scrn()        {}
-#define mac_highlight(on)    {}
-#define mac_del_prev_ln()    {}
-#define mac_boing()        {}
-//void mac_cursor_left(void)		{}
 
 void tty_hello(void) {
-    if (term == HP_TERM) hp_tty_init();
-    else if (term == ANSI) ansi_tty_init();
+    if (term == ANSI) ansi_tty_init();
     else lib_puts(out, "\n");
     if (!scrollback) {
         do_clear_screen();
         lib_puts(out, "\n");
     }
 
-#ifdef _GNU_READLINE
     if (use_gnu_readline) rl_bind_key('\t', rl_insert); /* completion off */
-#endif
 }
 
 
 bool do_clear_screen(void) {
-/* NEEDS WIMP AND MAC CONSOLE HOOK */
-    if (term == HP_TERM) {
-        hp_clr_scrn();
-        fflush(out);
-        return (TRUE);
-    }
-    else if (term == ANSI) {
+    if (term == ANSI) {
         ansi_clr_scrn();
         fflush(out);
-        return (TRUE);
-    }
-#ifdef HAVE_CURSES
-        else if (term==CURSES) { curses_clr_scrn(); return(TRUE); }
-#endif
-    else return (FALSE);
+        return TRUE;
+    } else return FALSE;
 }
 
 
 bool do_delete_previous_line(void) /* Needed for the "Hit RETURN for more" thing */
 {
-/* NEEDS WIMP AND MAC CONSOLE HOOK */
-    if (term == HP_TERM) {
-        hp_del_prev_ln();
-        fflush(out);
-        return (TRUE);
-    }
-    else if (term == ANSI) {
+    if (term == ANSI) {
         ansi_del_prev_ln();
         fflush(out);
-        return (TRUE);
-    }
-#ifdef HAVE_CURSES
-        else if (term==CURSES) { curses_del_prev_ln(); return(TRUE); }
-#endif
-    else return (FALSE);
+        return TRUE;
+    } else return FALSE;
 }
 
 
 bool do_highlight(bool reverse) {
-/* NEEDS WIMP AND MAC CONSOLE HOOK */
-#ifdef HAVE_CURSES
-    if (term==CURSES)    { curses_set_highlight(reverse); return(TRUE); }
-#endif
-    if (term == HP_TERM) {
-        hp_highlight(reverse);
-        fflush(out);
-        return (TRUE);
-    }
-    else if (term == ANSI) {
+    if (term == ANSI) {
         ansi_highlight(reverse);
         fflush(out);
-        return (TRUE);
-    }
-    else return (FALSE);
+        return TRUE;
+    } else return FALSE;
 }
-
-
-bool do_cursor_left(int num_spaces /* might be FAR_LEFT */, char *str_to_print) {
-/* NEEDS WIMP AND MAC CONSOLE HOOK */
-    if (term == HP_TERM) { hp_cursor_left(num_spaces, str_to_print); }
-    else if (term == ANSI) { ansi_cursor_left(num_spaces, str_to_print); }
-#ifdef HAVE_CURSES
-        else if (term==CURSES) { curses_cursor_left(num_spaces,str_to_print); }
-#endif
-    else return (FALSE);
-    return (TRUE);
-}
-
-
-//bool boing(void)
-//{
-///* NEEDS WIMP AND MAC CONSOLE HOOK */
-//    if (term==HP_TERM)     { hp_boing(); return(TRUE); }
-//    else if (term==ANSI)   { ansi_boing(); return(TRUE); }
-//#ifdef HAVE_CURSES
-//    else if (term==CURSES) { curses_boing(); return(TRUE); }
-//#endif
-//    else return(FALSE);
-//}
 
 
 /****************************** TOPLEVEL STUFF ******************************/
 
-void misc_init(void) /* init this file */
-{
+void misc_init(void) {
+    /* init this file */
     int i;
     matrix(file_arg, MAX_FILE_ARGS, PATH_LENGTH + 1, char);
     for (i = 0; i < MAX_FILE_ARGS; i++) file_arg[i][0] = '\0';
     old_stamp = new_stamp = time(NULL);
-    dos_output = FALSE;
 }
 
 
@@ -764,14 +494,6 @@ void lib_init(void) {
     tty_hello();
 }
 
-//void lib_inits(int *argc_ptr, char *argv[])
-//{
-//    custom_lib_init();
-//    /* if (!screen_init(argc_ptr,argv)) */
-//    get_cmd_line_args(argc_ptr,argv);
-//    tty_hello();
-//}
-
 
 /* This is a little specialized for MAPMAKER right now. Generalize soon... */
 #define ERROR_BADARG \
@@ -789,7 +511,7 @@ run %s and type 'help' for help with commands and other information \n"
 #define NOTSCREEN_ \
 { fprintf(stderr,ERROR_NOTSCREEN,argv[0],argv[i]); abnormal_exit(); }
 
-void get_cmd_line_args(int *argc_ptr, char *argv[]) {
+void get_cmd_line_args(const int *argc_ptr, char *argv[]) {
     int i;
 
     for (i = 1; i < *argc_ptr; i++) {
@@ -808,7 +530,7 @@ void get_cmd_line_args(int *argc_ptr, char *argv[]) {
             argv[i][0] = '\0';
         } else if (matches(argv[i] + 1, "clear")) {
             if (!screen) NOTSCREEN_
-            if (term == PC_CONSOLE) scrollback = TRUE; else scrollback = FALSE;
+            scrollback = FALSE;
             argv[i][0] = '\0';
 
         } else if (matches(argv[i] + 1, "load")) {
@@ -887,146 +609,6 @@ bool check_file_arg(int num, char *arg, char *name, char *type, char *def_ext, c
 }
 
 
-bool update_top(void) { return (FALSE); }
-
-
-
-
-//#ifdef PUNT_FOR_NOW /*******************************************************/
-//
-//bool screen_init(int *argc_ptr, char *argv[]) /* side-effect wimp, curses, and split */
-//{
-//    bool try_curses, try_wimp;
-//    get_screen_preferences(argc_ptr,argv,&try_curses,&try_wimp);
-//#ifdef HAVE_WIMP
-//    if (!tried_wimp && try_wimp)
-//      if (do_wimp_init(argc_ptr,argv)) term=WIMP; /* wimp=TRUE */
-//    tried_wimp= TRUE;
-//#endif
-//    tty_init();
-//#ifdef HAVE_CURSES
-//    if(!wimp && !tried_curses && try_curses)
-//	if (curses_init(&tty_lines)) term=CURSES; /* sets curses=TRUE */
-//    tried_curses= TRUE;
-//#endif
-//    maybe_clear_screen(); nl(); boing();
-//    return(wimp || curses);
-//}
-//
-//
-//bool split_screen_init(int *argc_ptr, char *argv[], int top_lines, void (*top_update_function)())
-//{
-//    bool try_curses, try_wimp;
-//    get_screen_preferences(argc_ptr,argv,&try_curses,&try_wimp);
-//#ifdef HAVE_WIMP
-//    if (!tried_wimp && try_wimp)
-//      if (do_split_wimp_init(top_lines,top_update_function,argc_ptr,argv))
-//	term=WIMP; /* sets wimp=TRUE */
-//    tried_wimp= TRUE;
-//#endif
-//    tty_init();
-//#ifdef HAVE_CURSES
-//    if (!wimp && !tried_curses && try_curses)
-//      if (curses_init(&tty_lines)) {
-//	  if (curses_split(top_lines,CURSES_REVERSE_TOP,top_update_function,
-//			   &tty_lines)) term=CURSES; /* sets curses=TRUE */
-//	  else curses_end();
-//      }
-//    tried_curses= TRUE;
-//#endif
-//    maybe_clear_screen(); update_top(); nl(); boing();
-//    return(wimp || curses);
-//}
-//
-//
-//void get_screen_preferences(int *argc_ptr, char *argv[], int *try_curses, int *try_wimp)
-//{
-//    int i, j;
-//
-//    *try_curses= *try_wimp= MAYBE;
-//    for (i=0; i<*argc_ptr; i++) {
-//	if (nmatches(argv[i],"-window",2)) *try_wimp=TRUE;
-//	else if (nmatches(argv[i],"+window",2)) *try_wimp=FALSE;
-//	else if (nmatches(argv[i],"-nowindow",4)) *try_wimp=FALSE;
-//	else if (nmatches(argv[i],"-screen",2)) *try_curses=TRUE;
-//	else if (nmatches(argv[i],"+screen",2)) *try_curses=FALSE;
-//	else if (nmatches(argv[i],"-noscreen",4)) *try_curses=FALSE;
-//	else if (nmatches(argv[i],"-line",2)) *try_curses= *try_wimp= FALSE;
-//	else continue;
-//	/* matched argument, so delete it from the list */
-//	for (j=i+1; j<*argc_ptr; j++) argv[j-1]= argv[j];
-//	--*argc_ptr;
-//    }
-//    if (*try_curses==MAYBE) *try_curses=DEFAULT_TRY_CURSES;
-//    if (*try_wimp==MAYBE) *try_wimp=DEFAULT_TRY_WIMP;
-//}
-//
-//
-///* Custom windows can work similarly to the canned types (text &
-//split), except that the widow code is very application specific: it
-//may respond to mouse clicks and so forth in special ways and have
-//other special stuff, which will probably have to interect with the
-//application code via global variables. Such interfaces could be
-//implemented using a customized do_wimp_init() routine. To make life
-//easy and so that things work similarly, we require (1) that the window
-//have a scrolling text region, (2) that it uses the menu struct (see
-//shell.c), (3) that it only need to know about state variable changes
-//that already call update_top() (or maybe_ok()), and (4) that it
-//effects state changes only when inhibit_menus is FALSE (see shell.c).
-//Like all init routines, do_custom_wimp_init() should do very little -
-//do_wimp_start() in shell.c should do this. */
-//
-//
-//bool update_top(void)
-//{
-///* NEEDS WIMP HOOK */
-//#ifdef HAVE_CURSES
-//    if (curses && split) {
-//	if (!have_drawn_top) curses_draw_top(); else curses_update_top();
-//	have_drawn_top=TRUE; return(TRUE);
-//    }
-//#endif
-//    return(FALSE);
-//}
-//
-//
-//void screen_end(void) {
-///* NEEDS WIMP HOOK */
-///* ALSO NEEDS a "Hit return" hook for quiting under a window system */
-//#ifdef HAVE_CURSES
-//    if (curses) curses_end(FALSE);
-//#endif
-//}
-//
-//
-//bool string_editor(char *prompt, char *str, int num /* max #chars in str */)
-//{
-//    bool successful;
-//
-///* NEEDS WIMP HOOK */
-//    successful = FALSE;
-//#ifdef HAVE_CURSES
-//    if(curses)
-//      successful = curses_string_editor(str,num);
-//#endif
-//    return(successful);
-//}
-//
-//
-//#ifdef HAVE_CURSES
-//void curses_error(char *where)
-//{
-//    curses_end(TRUE);
-//    printed_lines=4; more_break_pending=FALSE;
-//    term= old_term;  tty_lines=old_lines;
-//    more= old_more;  scrollback= old_scrollback;
-//    clear_screen();
-//
-//    if (where==NULL) where=ptr_to("?");
-//    fprintf(stderr,"\nwarning: curses failed in %-50s\n",where);
-//    fprintf(stderr,"attempting to continue in line mode...\n\n");
-//    flush();
-//}
-//#endif
-//
-//#endif /* PUNT_FOR_NOW */
+bool update_top(void) {
+    return FALSE;
+}

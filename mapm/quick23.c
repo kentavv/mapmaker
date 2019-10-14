@@ -11,9 +11,7 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-//#define INC_LIB
 #include "mapm.h"
-//#include "lowlevel.h"
 
 char symbols[] = {
         HYBRID_TYPE_H,
@@ -25,7 +23,6 @@ char symbols[] = {
 #define NUM_SYMS    5
 
 /* internal functions */
-void f2_quick_two_pt(int loc1, int loc2, TWO_PT_DATA *two_pt, bool sexflag);
 
 real quick_back(LOCUS locus, RECVECTOR **rec_frac, real *conv_like, real *unconv_like);
 
@@ -70,8 +67,7 @@ void f2_quick_two_pt(int loc1, int loc2, TWO_PT_DATA *two_pt, bool sexflag) {
 }
 
 
-real
-quick_back(LOCUS locus, RECVECTOR **rec_frac, real *conv_like, real *unconv_like) {
+real quick_back(LOCUS locus, RECVECTOR **rec_frac, real *conv_like, real *unconv_like) {
     int i;
     int indiv;
     int x, y;
@@ -121,8 +117,7 @@ quick_back(LOCUS locus, RECVECTOR **rec_frac, real *conv_like, real *unconv_like
 }
 
 
-real
-quick_f2(LOCUS locus, RECVECTOR **rec_frac, real *conv_like, real *unconv_like) {
+real quick_f2(LOCUS locus, RECVECTOR **rec_frac, real *conv_like, real *unconv_like) {
     int i, j;
     long meioses;
     int indiv, histogram[NUM_SYMS + 1][NUM_SYMS + 1];
@@ -202,8 +197,7 @@ quick_f2(LOCUS locus, RECVECTOR **rec_frac, real *conv_like, real *unconv_like) 
 }
 
 
-void
-probinit(real probdist[6][4]) {
+void probinit(real probdist[6][4]) {
 /* A */
     probdist[1][0] = 1.0;
     probdist[1][1] = 0.0;
@@ -237,8 +231,7 @@ probinit(real probdist[6][4]) {
 }
 
 
-void
-calclike(real prob1[4], real prob2[4], real theta, LOCUS locus, real *likelihood, real *numerator) {
+void calclike(real prob1[4], real prob2[4], real theta, LOCUS locus, real *likelihood, real *numerator) {
     int i, j, diffs;
     real d1[4], d2[4], p;
     real f2_prob();
@@ -271,14 +264,12 @@ calclike(real prob1[4], real prob2[4], real theta, LOCUS locus, real *likelihood
 }
 
 
-int
-lookup(int c)
-/*************************************************************\
-* 		Convert a character to it's index in the      *
-* 	symbol[] array.  If it doesn't appear in symbol[],    *
-* 	return NUM_SYMS.				      *
-\*************************************************************/
-{
+int lookup(int c) {
+    /*************************************************************\
+    * 		Convert a character to it's index in the      *
+    * 	symbol[] array.  If it doesn't appear in symbol[],    *
+    * 	return NUM_SYMS.				      *
+    \*************************************************************/
     int i;
 
     for (i = 0; i < NUM_SYMS; i++) {
@@ -290,8 +281,7 @@ lookup(int c)
 }
 
 
-int
-changes(int i, int j) {
+int changes(int i, int j) {
     static int ch[4][4], first;
 
     if (first == 0) {
@@ -317,16 +307,14 @@ changes(int i, int j) {
 }
 
 
-real
-f2_prob(real theta, int diffs) {
+real f2_prob(real theta, int diffs) {
     real answer;
     answer = power(theta, diffs) * power(1.0 - theta, 2 - diffs);
     return (answer);
 }
 
 
-real
-power(real a, int x) {
+real power(real a, int x) {
     real b, result;
     int x1;
 

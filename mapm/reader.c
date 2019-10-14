@@ -11,19 +11,12 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-//#define INC_LIB
-//#define INC_SHELL
-//#define INC_EQN
 #include "mapm.h"
-//#include "toplevel.h"
-//#include "lowlevel.h"
 
 int symbol_value(int chr, char *symb);
 
 RAW_DATA raw;
-int original_markers;
 
-#define end_of_text(fp) feof(fp)
 int data_line; /* Remember to reset when you open the data file! */
 
 /* for the BADDATA message */
@@ -31,29 +24,6 @@ int BADDATA_line_num;
 char *BADDATA_text;
 char *BADDATA_reason;
 char *badstr;
-
-//int read_data_file_header();
-//int read_raw_file_header();
-//FILE *start_save_to_file();
-//void finish_save_to_file();
-//bool read_magic_number();
-//void write_magic_number();
-//int  new_magic_number();
-//
-//void new_read_f2_data();
-//void allocate_f2_data();
-//void free_f2_data();
-//void free_traits();
-//void new_read_f2_locus();
-//void write_f2_data();
-//
-//void new_read_f2_raw();
-//void read_raw_f2_locus();
-//void read_raw_trait();
-//void write_traits();
-//
-//void add_to_seg_dist(char c, int locus);
-//void scale_seg_dist(int locus);
 
 bool uppercase_genotypes; /* set by read_raw_header() for read_raw_f2_locus()*/
 
@@ -76,8 +46,7 @@ This file was prepared using an older version of MAPMAKER.\n\
 You will need to re-prepare it using the 'prepare data' command."
 
 
-void
-data_init(void) {
+void data_init(void) {
     strcpy(raw.filename, "");
     raw.data_type = NO_DATA;
     setmsg(BADDATA, "error in data file", sender, strmsg_default);
@@ -87,22 +56,17 @@ data_init(void) {
 }
 
 
-void
-getdataln( /* get next nonblank,noncomment data file line */
-        FILE *fp
-) {
+void getdataln(FILE *fp) {
+    /* get next nonblank,noncomment data file line */
     do {
         fgetln(fp);
         data_line++;
-    }
-    while (nullstr(ln) || ln[0] == '#');
+    } while (nullstr(ln) || ln[0] == '#');
 }
 
 
-void
-baddata( /* send data reading error message */
-        char *reason /* NOTE: should be a constant or a global */
-) {
+void baddata(char *reason /* NOTE: should be a constant or a global */) {
+    /* send data reading error message */
     nstrcpy(BADDATA_reason, reason, MAXLINE);
     BADDATA_line_num = data_line;
     nstrcpy(BADDATA_text, ln, MAXLINE);
@@ -110,12 +74,12 @@ baddata( /* send data reading error message */
 }
 
 
-bool
-data_loaded(void) { return (raw.data_type != NO_DATA); }
+bool data_loaded(void) {
+    return (raw.data_type != NO_DATA);
+}
 
 
-char *
-data_info(bool add_nums) {
+char *data_info(bool add_nums) {
     char *str1 = get_temp_string(), *str2 = get_temp_string();
 
 #ifdef HAVE_CEPH
@@ -158,8 +122,7 @@ data_info(bool add_nums) {
 }
 
 
-FILE *
-start_save_to_file(char *name, char *ext, char *type, bool *exists) {
+FILE *start_save_to_file(char *name, char *ext, char *type, bool *exists) {
     FILE *fp;
     char tmpname[PATH_LENGTH + 1];
 
@@ -192,8 +155,7 @@ start_save_to_file(char *name, char *ext, char *type, bool *exists) {
 }
 
 
-void
-finish_save_to_file(char *name, char *oldext, bool exists) {
+void finish_save_to_file(char *name, char *oldext, bool exists) {
     char tmpname[PATH_LENGTH + 1], oldname[PATH_LENGTH + 1];
     strcpy(tmpname, name);
     make_filename(tmpname, FORCE_EXTENSION, TEMP_EXT);
@@ -208,8 +170,7 @@ finish_save_to_file(char *name, char *oldext, bool exists) {
 
 /**** Do Real Work Now ****/
 
-void
-do_load_data(FILE *fp, char *filename, bool israw) {
+void do_load_data(FILE *fp, char *filename, bool israw) {
     char name[PATH_LENGTH + 1], symbols[7], type[TOKLEN + 1];
     FILE *fp2;
     int ntype;
@@ -315,8 +276,7 @@ do_load_data(FILE *fp, char *filename, bool israw) {
 }
 
 
-void
-do_unload_data(void) {
+void do_unload_data(void) {
     if (raw.data_type == F2)
         free_f2_data(raw.num_markers/*,raw.data.f2.num_indivs*/);
 #ifdef HAVE_CEPH
@@ -336,8 +296,7 @@ do_unload_data(void) {
 }
 
 
-void
-do_save_data(char *base_name, bool save_genos_too) {
+void do_save_data(char *base_name, bool save_genos_too) {
     FILE *fp = NULL;
     char name[PATH_LENGTH + 1];
     bool exists;
@@ -397,8 +356,7 @@ do_save_data(char *base_name, bool save_genos_too) {
 
 /**** Lower level stuff ****/
 
-int
-read_data_file_header(FILE *fp, char *filename) {
+int read_data_file_header(FILE *fp, char *filename) {
     int type = NO_DATA;
     if (data_loaded() || fp == NULL) send(CRASH);
 
@@ -564,11 +522,7 @@ read_raw_file_header(FILE *fp, char *filename, char *symbol) {
 }
 
 
-bool
-read_magic_number(
-        FILE *fp,
-        char *type /* no spaces allowed, must parse with %s */
-) {
+bool read_magic_number(FILE *fp, char *type /* no spaces allowed, must parse with %s */) {
     int magic_number;
     char id[TOKLEN + 1];
 
@@ -580,18 +534,19 @@ read_magic_number(
 }
 
 
-void
-write_magic_number(FILE *fp, char *type) { fprintf(fp, "%d mapmaker %s data\n", raw.filenumber, type); }
+void write_magic_number(FILE *fp, char *type) {
+    fprintf(fp, "%d mapmaker %s data\n", raw.filenumber, type);
+}
 
 
-int
-new_magic_number(void) { return (((int) (randnum() * 3275.0)) * 10 + F2VERSION); }
+int new_magic_number(void) {
+    return (((int) (randnum() * 3275.0)) * 10 + F2VERSION);
+}
 
 
 /**** Actually Get the Genotypes ****/
 
-void
-allocate_f2_data(int n_loci, int n_indivs) {
+void allocate_f2_data(int n_loci, int n_indivs) {
     matrix(raw.locus_name, n_loci, NAME_LEN + 1, char);
     matrix(raw.data.f2.allele, n_loci, n_indivs, char);
     matrix(raw.data.f2.allelic_distribution, n_loci, 4, real);
@@ -614,8 +569,7 @@ void free_f2_data(int n_loci/*,int n_indivs*/) {
 }
 
 
-void
-free_traits(void) {
+void free_traits(void) {
     if (num_traits > 0) {
         unmatrix(trait, num_traits, real);
         unmatrix(trait_name, num_traits, char);
@@ -623,10 +577,7 @@ free_traits(void) {
     }
 }
 
-void
-new_read_f2_data(
-        FILE *fp /* sends BADDATA, or MALLOC, INTERRUPT etc. if an error */
-) {
+void new_read_f2_data(FILE *fp /* sends BADDATA, or MALLOC, INTERRUPT etc. if an error */) {
     int j;
     run {
             allocate_f2_data(raw.num_markers, raw.data.f2.num_indivs);
@@ -639,8 +590,7 @@ new_read_f2_data(
 }
 
 
-void
-new_read_f2_locus(FILE *fp, int locus_num) {
+void new_read_f2_locus(FILE *fp, int locus_num) {
     int i;
     char c, name[NAME_LEN + 2];
 
@@ -667,8 +617,7 @@ new_read_f2_locus(FILE *fp, int locus_num) {
 }
 
 
-void
-write_f2_data(FILE *fp) {
+void write_f2_data(FILE *fp) {
     int i, j;
     char header[MAXLINE + 1];
 
@@ -700,11 +649,7 @@ write_f2_data(FILE *fp) {
 }
 
 
-void
-new_read_f2_raw(
-        FILE *fp, /* sends BADDATA, or MALLOC, INTERRUPT etc. if an error */
-        char *symbols
-) {
+void new_read_f2_raw(FILE *fp, /* sends BADDATA, or MALLOC, INTERRUPT etc. if an error */ char *symbols) {
     int i;
 
     run {
@@ -719,8 +664,7 @@ new_read_f2_raw(
 }
 
 
-void
-read_raw_f2_locus(FILE *fp, int locus_num, char *symbol) {
+void read_raw_f2_locus(FILE *fp, int locus_num, char *symbol) {
     int i, j;
     char c, *name, converted;
 
@@ -783,8 +727,7 @@ read_raw_f2_locus(FILE *fp, int locus_num, char *symbol) {
             if (c == '#') {
                 strcpy(ln, "");
                 continue;
-            }
-            else if (c == '*')
+            } else if (c == '*')
                 sprintf(badstr, "not enough data points for locus %s",
                         raw.locus_name[locus_num]);
             else
@@ -807,8 +750,7 @@ read_raw_f2_locus(FILE *fp, int locus_num, char *symbol) {
 
 #define ACTIVATE_EQUATION
 
-void
-read_raw_trait(FILE *fp, int trait_num) {
+void read_raw_trait(FILE *fp, int trait_num) {
     int i, j, k, l, did_we_do_eqn, templen;
     char *tempstr, *temp2, *name, *tok;
     real neat, coc;
@@ -914,8 +856,7 @@ read_raw_trait(FILE *fp, int trait_num) {
                 if (did_we_do_eqn == 1) {
                     strcpy(ln, "");
                     break;
-                }
-                else {
+                } else {
                     sprintf(badstr, "error in reading trait information for trait %s",
                             name);
                     baddata(badstr);
@@ -928,8 +869,7 @@ read_raw_trait(FILE *fp, int trait_num) {
 }
 
 
-int
-symbol_value(int chr, char *symb) {
+int symbol_value(int chr, char *symb) {
     /* CHANGED FOR THIS VERION - NOW READS "-AHBCD" */
 
     if (chr == symb[0]) return (MISSING_DATA);
@@ -943,8 +883,7 @@ symbol_value(int chr, char *symb) {
 }
 
 
-void
-write_traits(FILE *fp) {
+void write_traits(FILE *fp) {
     int i, j;
 
     fprintf(fp, "%d\n", num_traits);
@@ -1025,8 +964,7 @@ void add_to_seg_dist(char c, int locus) {
     }
 }
 
-void
-scale_seg_dist(int locus) {
+void scale_seg_dist(int locus) {
     real total;
     int i;
 

@@ -11,13 +11,7 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-//#define INC_LIB
-//#define INC_SHELL
-//#define INC_MISC
-//#define INC_TABLE
 #include "mapm.h"
-//#include "toplevel.h"
-//#include "lowlevel.h"
 
 #define SEQ_EXPAND_MAX        10
 #define NO_TERM_CHAR        '\0'
@@ -221,8 +215,7 @@ int Pi, Pj;      /* used in for_all_locus_pairs macro in sequence.h */
 bool Tagain;     /* ... as is this */
 
 
-void
-sequence_init(void) {
+void sequence_init(void) {
     self_delimiting = mkstrcpy(SELF_DELIMITING_TOKENS);
     setmsg(BADSEQ, "attempt to parse bad sequence", sender, NULL);
     array(seq_string, MAX_SEQ_LEN + 1, char);
@@ -231,8 +224,7 @@ sequence_init(void) {
 }
 
 
-void
-allocate_seq_stuff(int n_loci) {
+void allocate_seq_stuff(int n_loci) {
     array(seq_temp, MAX_SEQ_LEN + 99, char);
     seq_temp[0] = '\0';
     array(err_temp, MAXLINE, char);
@@ -250,8 +242,7 @@ allocate_seq_stuff(int n_loci) {
 }
 
 
-void
-free_seq_stuff(void) {
+void free_seq_stuff(void) {
     unarray(seq_temp, char);
     unarray(err_temp, char);
     unparray(seq_nodes, MAX_SEQ_TOKENS, SEQ_NODE);
@@ -265,14 +256,12 @@ free_seq_stuff(void) {
 }
 
 
-void
-badseq(char *errmsg) {
+void badseq(char *errmsg) {
     BADSEQ_errmsg = errmsg;
     send(BADSEQ);
 }
 
-void
-print_badseq(void) {
+void print_badseq(void) {
     print("error in sequence: ");
     /* print("Error in sequence '"); print(new_seq); print("'\n");
        print("                   "); space(BADSEQ_errpos); print("^\n"); */
@@ -280,8 +269,7 @@ print_badseq(void) {
     nl();
 }
 
-void
-print_sequence(void) {
+void print_sequence(void) {
     if (the_seq_history_num == 0) {
         print("sequence not set\n");
         return;
@@ -299,25 +287,12 @@ print_sequence(void) {
 
 /******************** TO MAKE SEQ_NODE TREES ********************/
 
-SEQ_NODE *
-get_seq_node(void) {
+SEQ_NODE *get_seq_node(void) {
     if (used_nodes >= MAX_SEQ_TOKENS) badseq("sequence too long");
     return (seq_nodes[used_nodes++]);
 }
 
-SEQ_NODE *
-mk_blank_node(void) {
-    SEQ_NODE *node = get_seq_node();
-    node->type = NONE;
-    node->next = NULL;
-    node->prev = NULL;
-    node->fixed_distance = NOT_FIXED;
-    return (node);
-}
-
-
-SEQ_NODE *
-mk_locus(int num) {
+SEQ_NODE *mk_locus(int num) {
     SEQ_NODE *node = get_seq_node();
     node->type = SEQLOCUS;
     node->next = NULL;
@@ -328,8 +303,7 @@ mk_locus(int num) {
 }
 
 
-SEQ_NODE *
-mk_locus_range(int first, int last) {
+SEQ_NODE *mk_locus_range(int first, int last) {
     SEQ_NODE *node = get_seq_node();
 
     node = mk_locus(first);
@@ -347,8 +321,7 @@ mk_locus_range(int first, int last) {
 }
 
 
-SEQ_NODE *
-mk_megalocus(SEQ_NODE *contents) {
+SEQ_NODE *mk_megalocus(SEQ_NODE *contents) {
     SEQ_NODE *node = get_seq_node();
     node->type = MEGALOCUS;
     node->next = NULL;
@@ -359,8 +332,7 @@ mk_megalocus(SEQ_NODE *contents) {
 }
 
 
-SEQ_NODE *
-mk_invertable_set(SEQ_NODE *contents) {
+SEQ_NODE *mk_invertable_set(SEQ_NODE *contents) {
     SEQ_NODE *node = get_seq_node();
     node->type = INVERTABLE_SET;
     node->next = NULL;
@@ -371,8 +343,7 @@ mk_invertable_set(SEQ_NODE *contents) {
 }
 
 
-SEQ_NODE *
-mk_unordered_set(SEQ_NODE *contents) {
+SEQ_NODE *mk_unordered_set(SEQ_NODE *contents) {
     SEQ_NODE *node = get_seq_node();
     node->type = UNORDERED_SET;
     node->next = NULL;
@@ -383,8 +354,7 @@ mk_unordered_set(SEQ_NODE *contents) {
 }
 
 
-SEQ_NODE *
-alloc_three_pt_seq(void) {
+SEQ_NODE *alloc_three_pt_seq(void) {
     int i;
     SEQ_NODE **node = NULL;
     parray(node, 4, SEQ_NODE);
@@ -409,10 +379,7 @@ alloc_three_pt_seq(void) {
 
 /* compile_sequence() makes the big SEQ_NODE trees, sets global seq */
 
-void
-compile_sequence(
-        char *str /* may side-effect str? a little */
-) {
+void compile_sequence(char *str /* may side-effect str? a little */) {
     SEQ_NODE *result;
     char *copy; /* copy of pointer, not the string itself */
 
@@ -438,27 +405,19 @@ compile_sequence(
     }
 
     seq = result;
-    return;
 }
 
 
-void
-next_token( /* side-effects global variable token - internal use */
+void next_token(char **p_str) {
+    /* side-effects global variable token - internal use */
 /* IMPORTANT: Keep in mind that token is static: therefore recursive calls to 
    seqcomp() will bash the contents of token before they return! */
-        char **p_str
-) {
     if (!nstoken(p_str, sREQUIRED, token, TOKLEN))
         badseq("unexpected end of sequence");
 }
 
 
-void
-seqcomp(
-        char **p_str, /* str may not be empty */
-        SEQ_NODE **first_node,
-        int term_char
-) {
+void seqcomp(char **p_str, /* str may not be empty */ SEQ_NODE **first_node, int term_char) {
     char c, *not_a_locus_errmsg;
     int n, m;
     SEQ_NODE **p, *q;
@@ -527,13 +486,10 @@ seqcomp(
             } else badseq(not_a_locus_errmsg); /* assumed it was... */
 
         } while (!nullstr(*p_str));
-
-    return;
 }
 
 
-void
-parse_fixed_distance(char **str, bool inside, SEQ_NODE *p) {
+void parse_fixed_distance(char **str, bool inside, SEQ_NODE *p) {
     char c;
 
     /* would like to make these self delimiting, but... */
@@ -551,8 +507,7 @@ parse_fixed_distance(char **str, bool inside, SEQ_NODE *p) {
 }
 
 
-void
-add_back_pointers(SEQ_NODE *this, SEQ_NODE *prev) {
+void add_back_pointers(SEQ_NODE *this, SEQ_NODE *prev) {
     this->prev = prev;
     switch (this->type) {
         case MEGALOCUS:
@@ -569,21 +524,6 @@ add_back_pointers(SEQ_NODE *this, SEQ_NODE *prev) {
 }
 
 
-#ifdef OBSOLETE
-void
-free_seq_nodes (SEQ_NODE *p)
-{
-  if (p==NULL) return;
-  switch (p->type) {
-    case MEGALOCUS:      free_seq_nodes(p->node.megalocus.contents); break;
-    case INVERTABLE_SET: free_seq_nodes(p->node.invertable_set.contents);break;
-    case UNORDERED_SET:  free_seq_nodes(p->node.unordered_set.contents); break;
-  }
-}
-#endif
-
-
-
 /********************* THINGS ONE CAN TO TO SEQUENCES *********************/
 
 /* get_order() gets the current order of loci into an array, and perm_seq()
@@ -591,17 +531,10 @@ free_seq_nodes (SEQ_NODE *p)
    been wrapped up into one routine (eg. one decent of the seq tree), however
    this is easier to deal with. */
 
-bool
-get_order( /* TRUE or sends msg */
-        SEQ_NODE *p,
-        int *locus,
-        real **theta,
-        int *num_loci,
-        int max_loci
-)
-/* locus is an array of locus nums, i is a ptr to its index, and max_loci is 
+bool get_order(SEQ_NODE *p, int *locus, real **theta, int *num_loci, int max_loci) {
+/* locus is an array of locus nums, i is a ptr to its index, and max_loci is
    the maximum number of loci the array holds (CRASH if it's exceeded) */
-{
+    /* TRUE or sends msg */
     int i, val;
 
     if (p == NULL) send(CRASH);
@@ -615,37 +548,25 @@ get_order( /* TRUE or sends msg */
 }
 
 
-void
-get_one_order(SEQ_NODE *p, MAP *map) {
+void get_one_order(SEQ_NODE *p, MAP *map) {
     reset_seq(p, TRUE);
     clean_map(map); /* resets map->num_loci, among other things */
     get_order(p, map->locus, map->rec_frac, &map->num_loci, map->max_loci);
 }
 
 
-void
-get_list_of_all_loci(
-        SEQ_NODE *p,
-        int *loci,
-        int *num_loci, /* side-effect *num and set loci[i] for 0<=i<*num */
-        int max_loci         /* the max the array holds */
-)
-/* BUGS: get CRASH if array is exceeded, needs to be big enough to hold all 
+void get_list_of_all_loci(SEQ_NODE *p, int *loci, int *num_loci, /* side-effect *num and set loci[i] for 0<=i<*num */
+                          int max_loci /* the max the array holds */) {
+/* BUGS: get CRASH if array is exceeded, needs to be big enough to hold all
    loci, not just haplo groups, even if use_haplotypes==TRUE. The size 
    returned by mapm_ready should be right for this. */
-{
     *num_loci = 0;
     reset_seq(p, TRUE);
     get_order(p, loci, NULL, num_loci, max_loci);
 }
 
 
-bool
-alloc_list_of_all_loci(
-        SEQ_NODE *p,
-        int **loci,
-        int *num_loci /* side-effect *loci and *num_loci setting (*loci)[i] */
-) {
+bool alloc_list_of_all_loci(SEQ_NODE *p, int **loci, int *num_loci /* side-effect *loci and *num_loci setting (*loci)[i] */) {
     int total, *retoin = NULL;
 
     *loci = NULL;
@@ -662,18 +583,10 @@ alloc_list_of_all_loci(
 }
 
 
-bool
-do_get_order( /* TRUE or sends msg */
-        SEQ_NODE *p,
-        int *locus,
-        real **theta,
-        int *i,
-        int max_loci,
-        int direction
-)
+bool do_get_order(SEQ_NODE *p, int *locus, real **theta, int *i, int max_loci, int direction) {
+/* TRUE or sends msg */
 /* locus is an array of locus nums, i is a ptr to its index, and max_loci is 
    the maximum number of loci the array holds (CRASH if it's exceeded) */
-{
     int j;
 
     if (p == NULL) return (TRUE); /* should never happen? */
@@ -750,11 +663,8 @@ do_get_order( /* TRUE or sends msg */
 }
 
 
-void
-make_reordered_list( /* intenal use only */
-        SEQ_NODE *p,
-        SEQ_NODE **list
-) {
+void make_reordered_list(SEQ_NODE *p, SEQ_NODE **list) {
+    /* intenal use only */
     int j;
     SEQ_NODE *ins_here, *q;
 
@@ -774,8 +684,7 @@ make_reordered_list( /* intenal use only */
         q = *list;
         *list = p;
         (*list)->next_item = q;
-    }
-    else {
+    } else {
         for (j = 0, ins_here = *list; j < p->insert_pos - 1; j++)
             ins_here = ins_here->next_item;
         q = ins_here->next_item;
@@ -786,8 +695,7 @@ make_reordered_list( /* intenal use only */
 }
 
 
-void
-reset_seq(SEQ_NODE *p, bool reset_insert_pos) {
+void reset_seq(SEQ_NODE *p, bool reset_insert_pos) {
     if (p == NULL) return;
     if (reset_insert_pos) p->insert_pos = 0;
     switch (p->type) {
@@ -807,13 +715,8 @@ reset_seq(SEQ_NODE *p, bool reset_insert_pos) {
 }
 
 
-bool
-perm_seq(
+bool perm_seq(SEQ_NODE *p, bool order_matters, bool in_unordered_set) {
 /* return TRUE if there is another order, side-effecting the SEQ_NODE tree */
-        SEQ_NODE *p,
-        bool order_matters,
-        bool in_unordered_set
-) {
     int max_position;
     SEQ_NODE *q;
 
@@ -884,8 +787,7 @@ perm_seq(
 }
 
 
-int
-count_loci(SEQ_NODE *p) {
+int count_loci(SEQ_NODE *p) {
     if (p == NULL) return (0);
     else
         switch (p->type) {
@@ -908,8 +810,7 @@ count_loci(SEQ_NODE *p) {
 }
 
 
-bool
-has_fixed_dists(SEQ_NODE *p) {
+bool has_fixed_dists(SEQ_NODE *p) {
     if (p == NULL) return (FALSE);
     else
         switch (p->type) {
@@ -933,8 +834,7 @@ has_fixed_dists(SEQ_NODE *p) {
 }
 
 
-bool
-unpermutable(SEQ_NODE *p) {
+bool unpermutable(SEQ_NODE *p) {
     reset_seq(p, TRUE);
     return (!perm_seq(p, FALSE, FALSE));
 }
@@ -942,8 +842,7 @@ unpermutable(SEQ_NODE *p) {
 
 /***************** rather crufty stuff for 3pt *****************/
 
-SEQ_NODE *
-Tinit(bool *ok, int *i_cnt, int *j_cnt, int *k_cnt, int *locus, int num_loci) {
+SEQ_NODE *Tinit(bool *ok, int *i_cnt, int *j_cnt, int *k_cnt, int *locus, int num_loci) {
     if (num_loci < 3) send(CRASH);
     *ok = TRUE;
     *i_cnt = 0;
@@ -977,13 +876,9 @@ Tnext(int *i_cnt, int *j_cnt, int *k_cnt, int *locus, int num_loci, SEQ_NODE *p)
 
 /***************** MAPMAKER's Current Sequence *****************/
 
-void
-set_current_seq( /* use nullstr to unset current sequence */
-        char *str, /* side-effected: assumed to be MAX_SEQ_LEN long (use new_seq) */
-        bool expanded /* if seq_str is set to the name-expanded seq or not */
-)
+void set_current_seq( /* use nullstr to unset current sequence */        char *str, /* side-effected: assumed to be MAX_SEQ_LEN long (use new_seq) */
+                                                                         bool expanded /* if seq_str is set to the name-expanded seq or not */) {
 /* if error relay BADSEQ message without changing anything */
-{
     int save_chrom, num_loci;
     char *rest, chrom_name[99];
 
@@ -1024,8 +919,7 @@ set_current_seq( /* use nullstr to unset current sequence */
 }
 
 
-void
-check_current_seq(int *num_loci) {
+void check_current_seq(int *num_loci) {
     int foo;
     char *rest, chrom_name[99];
 
@@ -1051,11 +945,8 @@ check_current_seq(int *num_loci) {
 #define NO_ORDERED_ARGS \
   "can't use ordered/special sequences ([..], {..}, <..>, etc) as argument"
 
-void
-parse_locus_args( /* send error if fail */
-        int **loci,
-        int *num_loci /* both side-effected */
-) {
+void parse_locus_args(int **loci, int *num_loci /* both side-effected */) {
+    /* send error if fail */
     char *copy, *errmsg, *rest, name[TOKLEN + 1];
     int locus = 0, *result, n, next, i, save_chrom;
     bool was_range;
@@ -1129,12 +1020,8 @@ parse_locus_args( /* send error if fail */
 #define SHORTHAND \
   "can't list other loci with chromosome-name, 'any', 'all', or 'none'"
 
-bool
-parse_seq_chrom( /* sets current_chrom */
-        char *str, /* bashed */
-        int *chrom,
-        char **rest
-) {
+bool parse_seq_chrom(char *str, /* bashed */        int *chrom, char **rest) {
+    /* sets current_chrom */
     char *copy, name[TOKLEN + 1];
 
     copy = str;
@@ -1181,8 +1068,7 @@ parse_seq_chrom( /* sets current_chrom */
 }
 
 
-void
-make_compare_seq(int *locus, int num_loci, int start_set, int set_size) {
+void make_compare_seq(int *locus, int num_loci, int start_set, int set_size) {
     int i;
     char *last;
 
@@ -1210,16 +1096,12 @@ make_compare_seq(int *locus, int num_loci, int start_set, int set_size) {
 #define mismatch_(pos, ch) \
  { BADSEQ_errpos=pos; sprintf(err_temp,"mismatched '%c'",ch); badseq(err_temp); }
 
-int
-delete_comments(
-/* Delete all parenthesized comments, dealing with levels of delimiters 
-   correctly. Side-effect both str and the pointer to it (to indicate where 
-   an error occured). The origonal pointer to str should be saved by the 
-   caller, as it will point to the edited sequence: *p_str may not. 
+int delete_comments(int match_chr, char *str) {
+/* Delete all parenthesized comments, dealing with levels of delimiters
+   correctly. Side-effect both str and the pointer to it (to indicate where
+   an error occured). The origonal pointer to str should be saved by the
+   caller, as it will point to the edited sequence: *p_str may not.
    Also now checks for all balanced punctuation. Signal BADSEQ if fails. */
-        int match_chr,
-        char *str
-) {
     int i, j;
 
     for (i = 0; str[i] != '\0'; i++)
@@ -1242,12 +1124,9 @@ delete_comments(
 }
 
 
-int
-matching( /* internal use only */
+int matching(int match_chr, char *str) {
+    /* internal use only */
 /* return index (or -1 if none) of char matching the match_chr */
-        int match_chr,
-        char *str
-) {
     int i;
 
     for (i = 0; str[i] != match_chr; i++)
@@ -1269,19 +1148,15 @@ matching( /* internal use only */
    numbers parse wrong. So, we swap '-' for SURROGATE_DASH which should be
    SELF_DELIMITING */
 
-void
-swap_for_dash( /* internal use only */
-        char *str
-) {
+void swap_for_dash(char *str) {
+    /* internal use only */
     int i;
     for (i = 0; str[i] != '\0'; i++) if (str[i] == '-') str[i] = SURROGATE_DASH_char;
 }
 
 
-void
-unswap_for_dash( /* internal use only */
-        char *str
-) {
+void unswap_for_dash(char *str) {
+    /* internal use only */
     int i;
     for (i = 0; str[i] != '\0'; i++) if (str[i] == SURROGATE_DASH_char) str[i] = '-';
 }
@@ -1296,13 +1171,10 @@ unswap_for_dash( /* internal use only */
 #define BADSEQ_NOTCHROM \
 "chromosome name in history or name expansion is different than sequence's"
 
-void
-expand_seq_names( /* names, and any hist refs they contain BUT... */
-        char *str /* side-effected! */
-)
+void expand_seq_names(char *str /* side-effected! */) {
+/* names, and any hist refs they contain BUT... */
 /* send BADSEQ if expansion >MAX_SEQ_LEN chars or if it contains circularly 
    defined names- this should never happen */
-{
     char *token_start, *expansion = NULL, *errmsg = NULL, *all, *rest;
     int loop_count, chrom;
 
@@ -1333,13 +1205,9 @@ expand_seq_names( /* names, and any hist refs they contain BUT... */
 }
 
 
-void
-expand_seq_hist(
-        char *str /* side-effected! */
-)
+void expand_seq_hist(char *str /* side-effected! */) {
 /* send BADSEQ if expansion >MAX_SEQ_LEN chars or if it contains circularly 
    defined names- this should never happen */
-{
     char *token_start, *rest, *value, *errmsg = NULL, *all;
     int loop_count, chrom;
 
@@ -1368,8 +1236,7 @@ expand_seq_hist(
 }
 
 
-void
-tokenize_seq(char *seq, char **token, int *num_tokens) {
+void tokenize_seq(char *seq, char **token, int *num_tokens) {
     swap_for_dash(seq);  /* makes '-' a delimiter ('~') */
     expand_seq_names(seq);
 
@@ -1381,8 +1248,7 @@ tokenize_seq(char *seq, char **token, int *num_tokens) {
 }
 
 
-void
-untokenize_seq(char *seq, char **token, int num_tokens) {
+void untokenize_seq(char *seq, char **token, int num_tokens) {
     int i, n, length;
     char *s;
 
@@ -1425,12 +1291,8 @@ they may return TRUE *EVEN IF THERE IS AN ERROR*, in which case
 !nullstr(*why_not).  This is to say when a name *should* be ok but it
 isn't (e.g. "sequence new" with no new markers) */
 
-bool
-is_a_locus(
-        char *str,      /* must be a non-null token and a valid_name */
-        int *n,         /* side-effected with locus# iff TRUE is returned */
-        char **why_not /* side-effected iff FALSE is returned */
-) {
+bool is_a_locus(char *str, /* must be a non-null token and a valid_name */ int *n, /* side-effected with locus# iff TRUE is returned */
+                char **why_not /* side-effected iff FALSE is returned */) {
     int num;
 
     if (!data_loaded() || !is_a_token(str)) send(CRASH);
@@ -1489,13 +1351,7 @@ is_a_sequence(
 }
 
 
-bool
-name_sequence(
-        char *name,
-        char *str, /* assume its MAX_SEQ_LEN long, for expansions */
-        char **why_not,
-        bool expanded
-) {
+bool name_sequence(char *name, char *str, /* assume its MAX_SEQ_LEN long, for expansions */ char **why_not, bool expanded) {
     char *foo, *rest;
     int save_chrom;
     /* if (name[0]=='*') name++; */
@@ -1535,8 +1391,7 @@ name_sequence(
 }
 
 
-bool
-unname_sequence(char *name, char **why_not) {
+bool unname_sequence(char *name, char **why_not) {
     int fail;
     char *seq;
 
@@ -1561,8 +1416,7 @@ unname_sequence(char *name, char **why_not) {
 }
 
 
-void
-add_to_seq_history(char *seq, bool is_next_entry) {
+void add_to_seq_history(char *seq, bool is_next_entry) {
     int num;
     char *the_sequence;
 
@@ -1584,8 +1438,8 @@ add_to_seq_history(char *seq, bool is_next_entry) {
 }
 
 
-bool valid_new_name(char *str) /* now does not check valid_name() */
-{
+bool valid_new_name(char *str) {
+    /* now does not check valid_name() */
     int foo;
     char *x, *y;
     return (!is_a_named_locus(str, &foo) &&
@@ -1597,8 +1451,8 @@ bool valid_new_name(char *str) /* now does not check valid_name() */
 
 /********** Internal procedures to implement these... **********/
 
-bool is_a_named_locus(char *str /* must be a single token, downcased */, int *n)  /* internal use only */
-{
+bool is_a_named_locus(char *str /* must be a single token, downcased */, int *n) {
+    /* internal use only */
     int i;
 
     for (i = 0; i < raw.num_markers; i++)
@@ -1610,20 +1464,17 @@ bool is_a_named_locus(char *str /* must be a single token, downcased */, int *n)
 }
 
 
-bool is_a_named_sequence(char *str, char **seq)  /* internal use only */
-{
+bool is_a_named_sequence(char *str, char **seq) {
+    /* internal use only */
     char *foo;
     int fail;
     return (get_named_entry(str, &foo, seq, the_context->named_sequences, &fail));
 }
 
 
-bool
-is_an_old_sequence(  /* internal use only */
-        char *str,
-        char **seq,      /* side-effected iff TRUE returned */
-        char **why_not  /* side-effected iff TRUE returned and *str=="" */
-) {
+bool is_an_old_sequence(char *str, char **seq, /* side-effected iff TRUE returned */
+                        char **why_not /* side-effected iff TRUE returned and *str=="" */) {
+    /* internal use only */
     int n;
     char *rest;
 
@@ -1649,12 +1500,9 @@ is_an_old_sequence(  /* internal use only */
 }
 
 
-bool
-is_a_special_sequence( /* internal use only? */
-        char *str,
-        char **seq,      /* side-effected iff TRUE returned */
-        char **why_not  /* side-effected iff TRUE returned and *str=="" */
-) {
+bool is_a_special_sequence(char *str, char **seq, /* side-effected iff TRUE returned */
+                           char **why_not /* side-effected iff TRUE returned and *str=="" */) {
+    /* internal use only? */
     int chrom, one_chrom, i, j, k, n, contig, num, ordered_seq;
     char *last;
 
@@ -1799,22 +1647,6 @@ is_a_special_sequence( /* internal use only? */
 
     /***** delete haplos, find contigs, and make a string from it *****/
 
-#ifdef OBSOLETE
-    for (i=0; i<n; i++) use_locus[i]=TRUE;
-    /* ordered_seq means seq loci must be in ascending order, eg for haplo */
-    if (use_haplotypes && !ordered_seq) {
-    for (i=0; i<raw.num_markers; i++) use_locus[i]=FALSE;
-    for (i=0; i<n; i++) {
-        locus= seq_locus[i];
-        if (!haplotyped(locus)) use_locus[locus]=TRUE;
-        else if (locus==haplo_first[locus]) use_locus[locus]=TRUE;
-        else use_locus[haplo_first[locus]]=TRUE;
-    }
-    n=0;
-    for (i=0; i<raw.num_markers; i++) if (use_locus[i]) seq_locus[n++]=i;
-    }
-#endif
-
     last = seq_temp;
     last[0] = '\0';
     ordered_seq = TRUE; /* KLUDGE */
@@ -1852,8 +1684,7 @@ is_a_special_sequence( /* internal use only? */
 }
 
 
-void
-print_special_sequences(void) {
+void print_special_sequences(void) {
     int i;
     char name[10];
 
@@ -1887,8 +1718,7 @@ print_special_sequences(void) {
 }
 
 
-void
-print_user_sequences(void) {
+void print_user_sequences(void) {
     bool i, locus, any = FALSE, in_class = FALSE;
     char *seq, line[MAX_SEQ_LEN + 99];
 
@@ -1930,8 +1760,7 @@ print_user_sequences(void) {
 }
 
 
-void
-print_special_sequence(char *name, bool print_if_none) {
+void print_special_sequence(char *name, bool print_if_none) {
     char *seq, *errmsg, line[MAX_SEQ_LEN + 99];
 
     if (!is_a_special_sequence(name, &seq, &errmsg)) send(CRASH);
@@ -1952,8 +1781,7 @@ print_special_sequence(char *name, bool print_if_none) {
 }
 
 
-void
-print_history_seqs(int num_to_do) {
+void print_history_seqs(int num_to_do) {
     int i, start, any = FALSE;
     char *str, line[MAX_SEQ_LEN + 99];
 

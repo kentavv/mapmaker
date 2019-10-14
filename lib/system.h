@@ -111,23 +111,6 @@ following and then #including "system.h":
    INC_TABLE   A useful data struct, used by the shell and other things. 
 *************************************************************************/
 
-//#ifdef  _SYS_SUNOS
-//#define _SYS_UNIX
-//#else
-//#ifdef  _SYS_ULTRIX
-//#define _SYS_UNIX
-//#else
-//#ifdef  _SYS_AUX
-//#define _SYS_UNIX  /* Note: NOT _SYS_MAC */
-//#endif
-//#endif
-//#endif
-//#ifdef _SYS_WATCOM
-//#define _SYS_DOS
-//#endif
-
-
-
 /************************ File name syntax ****************************
 Setup the following for the OS's path types (these are used by the 
 make_filename() procedure in iolib.c). Note that the lengths of various 
@@ -135,7 +118,6 @@ elements of a path are not checked, only its total length.
 *************************************************************************/
 #define PATH_LENGTH        200
 
-//#ifndef _SYS_DOS /* e.g. _SYS_UNIX or some POSIX like thing */
 #define HELP_EXT                ".help"
 #define ARG_CHAR                '-' /* Usual char for command line switches */
 #define PATH_REQUIRE_EXTENSION    FALSE
@@ -148,17 +130,6 @@ elements of a path are not checked, only its total length.
 #define PATH_DIR_CHARS \
 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~#/"
 
-//#else /* is _SYS_DOS */
-//#define HELP_EXT                ".hlp"
-//#define ARG_CHAR                '/' /* Usual char for command line switches */
-//#define PATH_REQUIRE_EXTENSION 	TRUE
-//#define PATH_SINGLE_EXTENSION  	TRUE
-//#define PATH_UPPERCASE 		TRUE
-//#define PATH_DIR_SEPARATORS 	"\\"    /* rightmost separating char */
-//#define PATH_DIR_FILE_INSERT    "\\"    /* insert between a dir and filename */
-//#define PATH_OK_CHARS "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.$#/\\"
-//#define PATH_DIR_CHARS "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.$#/\\"
-//#endif
 
 
 /**************************** Subshells *********************************
@@ -394,23 +365,15 @@ If DEFAULT_SCROLLBACK is defined (to either TRUE or FALSE) the default
 assumptions about scrollback are ignored. If scrollback is assumed, then
 the screen is not cleared. More-mode is now always diabled at first.
 ***************************************************************************/
-#define TRY_GETENV_TERM   /* Might as well always leave these defined? */
-#define TRY_GETENV_LINES  /* see syscode.c */
-#define TRY_ISATTY
 /* #define DEFAULT_SCROLLBACK TRUE */ /* define ONLY to over-ride */
 #define DEFAULT_MORE_MODE TRUE /* is over-ridden with -nomore */
 #define TRANSLATE_TABS TRUE
 #define MEMORY_LINES   150
 #define MAX_HOLD_LINES 150
 
-//#ifdef _SYS_UNIX
 #define DEFAULT_TERM_TYPE SCROLLING_ANSI
 #define TRY_TERMCAP
 #define TRY_WINSIZE
-//
-//#else /* _SYS_DOS */
-//#define DEFAULT_TERM_TYPE PC_CONSOLE
-//#endif
 
 
 
@@ -498,85 +461,6 @@ changed! They exist only to clarify code, not to allow any sort of
 data-type abstraction!
 ******************************************************************************/
 
-//#ifndef NO_INCLUDE_HELPERS
-
-/* One of the lib_init() routines must be called before ANYTHING else
-is done, or the program will crash in wierd ways! In general, user's
-_init routines should come right after the lib_init() call and should
-just initialize variables, malloc things, etc. They should not do
-anything important, and particularly should not generate any I/O. */
-
-//void lib_init(); /* no args - assumes line type tty I/O */
-//
-//void lib_inits(); /* args: int *argc_pointer; char *argv[]; both are
-//   side-effected. This is more or less the same as lib_init() except that it
-//   checks the environment and may start up either curses or wimp I/O via
-//   screen_init(); */
-//
-//void custom_lib_init(); /* no args: This is like lib_init() except
-//   that tty_init() is not called. A screen_init() routine must be invoked
-//   before ANY I/O is attempted, or else... (see iolib.h) */
-//
-//void get_cmd_line_args();  /* args: int *argc_ptr; char **argv;
-//   side-effects file_arg[] and nulls the args it parses, so another
-//   arg sucker can go at it afterwards */
-
-//#endif
-
-
-/*************************** Library Include files **************************/
-//#ifdef  INC_LIB
-//#define INC_MATH
-//#define INC_MSG
-//#define INC_IO
-//#define INC_STR
-//#define INC_MEM
-//#endif
-
-//#ifndef _SYS_WATCOM
-//#endif
-
-//#ifdef INC_IO
-//#endif
-
-//#ifdef INC_MATH
-//#ifdef _SYS_WATCOM
-//#undef real
-//#endif
-//#ifdef _SYS_WATCOM
-//#define real double
-//#endif
-//#endif
-
-//#ifdef INC_MSG
-//#endif
-
-//#ifdef INC_MEM
-//#endif
-
-//#ifdef INC_STR
-//#endif
-
-/* The following are NOT included by INC_LIB */
-
-//#ifdef INC_MISC
-//#endif
-
-//#ifdef INC_SHELL
-//#endif
-
-//#ifdef INC_TABLE
-//#endif
-
-//#ifdef INC_EQN
-//#endif
-
-//#ifdef INC_HISTO
-//void make_histo(); /* that's all? */
-//#endif
-
-//#ifdef INC_STATS
-//#endif
 
 /********************* Defs internal to the library *********************
 Here are definitions needed ONLY to compile the helpers files themselves.
@@ -584,25 +468,8 @@ None of this stuff should be used by the user code: much better (that is,
 robust and portable) interfaces are provided by the library. */
 /*************************************************************************/
 
-//#ifdef INC_HELP_DEFS
-
-//#ifdef TRY_WINSIZE
-//#endif
-
-///* The BSD random number functions... seemingly not declared anywhere */
-//#ifdef USE_RANDOM
-//long random();
-////int srandom();
-//#endif
-
-///* The HPUX (and System V?) random number functions... ditto */
-//#ifdef USE_DRAND48
-//double drand48();
-//void srand48();
-//#endif
-
 /* Library declarations only to be used by the helpers library code itself */
-extern char *ps_, *ln_; /* defined in iolib.c */
+//extern char *ps_, *ln_; /* defined in iolib.c */
 //void dummy_math_calls();
 
 //#endif /* for #ifdef INC_HELP_DEFS */

@@ -114,36 +114,11 @@ Other useful allocators go here...
 ***************************************************************************/
 
 void *xalloc(size_t num, size_t cell_sizeof); /* INTERNAL USE ONLY! */
-real ***alloc_real_3d_matrix(int i, int j, int k);
-
-void free_real_3d_matrix(real ***p, int i, int j);
 
 char ***alloc_char_3d_matrix(int i, int j, int k);
 
 void free_char_3d_matrix(char ***p, int i, int j);
 
-void pmat_r(char *n, real **x, int a, int b);
-
-void pary_r(char *n, real *x, int a);
-
-void pary_r2x2(char *n, REAL2x2 *x, int a);
-
-void pary_r4(char *n, REAL4 *x, int a);
-
 void mem_init(void);
-
-//
-//real ***alloc_real_3d_matrix(); /* args: int i,j,k; */
-//void free_real_3d_matrix();     /* args: real ***ptr; int i,j; */
-//char ***alloc_char_3d_matrix();
-//void free_char_3d_matrix();
-//void mem_init();
-//
-///* debugging helpers */
-//void pmat_r();
-//void pary_r();
-//void pary_r2x2();
-//void pary_r4();
-//
 
 #endif

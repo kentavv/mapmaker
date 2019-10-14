@@ -11,18 +11,10 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-/* QTL raw data */
-
-//#define INC_LIB
-//#define INC_SHELL
-//#define INC_QLOWLEVEL
-//#define INC_CALLQCTM
-//#define INC_QTOPLEVEL
 #include <stdlib.h>
-//#undef CRASH
 #include "qtl.h"
 
-int field(char **p_str, int length, char *val);   /* OBSOLETE */
+/* QTL raw data */
 
 /* External statics */
 RAW raw;
@@ -35,47 +27,25 @@ bool altered_chroms;
 bool already_printed;
 
 /* Internal interfaces */
-char name_chars[70];
-int nam_len;
 #define LEFT 0
 #define RIGHT 1
 #define F2VERSION 3
 
-void make_count_recs_etc(void);
-
 void read_map_locus(FILE *fp, int indivs, int t_loc, int *order, int n_loci);
 
-real read_map_distance(FILE *fp);
+void initial_prob(LOCUS_GENOTYPE_PROBS *prob, int locus, char this_genotype);
+
+real pheno_given_geno(char observation /* eg the 'phenotype' */, int genotype);
 
 void read_quant_trait(FILE *fp, int num, int indivs);
 
-void read_olddata(FILE *fp, char *path);
-
-void read_oldmap_locus(FILE *fp, int num, int indivs);
-
-void read_oldquant_trait(FILE *fp, int num, int indivs);
-
-void read_oldmap_distance(FILE *fp, int num);
-
-void initial_prob(LOCUS_GENOTYPE_PROBS *prob, int locus, int this_genotype);
-
-real pheno_given_geno(int observation, int genotype);
-
-void condition(LOCUS_GENOTYPE_PROBS *prob, int locus, int prev_locus, int observation, real rec_frac, int side);
+real read_map_distance(FILE *fp/*int num*/);
 
 void altered_chroms_message(void);
-//void getdataln();
-//void read_map_locus();
-//void read_quant_trait();
-//real interval_likelihood();
-//real pheno_given_geno();
-//
-//void make_count_recs_etc();
-//
-//bool missing_data(); /* OBSOLETE, NOT USED */
-//void initial_prob();
-//void condition();
-//void altered_chroms_message();
+
+void condition(LOCUS_GENOTYPE_PROBS *prob, int locus, int prev_locus, char observation, real rec_frac, int side);
+
+void make_count_recs_etc(void);
 
 #define MAXEXCEED "max # indiv or inter exceeded"
 
@@ -89,8 +59,7 @@ need to re-prepare it using the 'prepare data' command in MAPMAKER."
 
 /********** PRELIMINARIES **********/
 
-void
-raw_init(void) {
+void raw_init(void) {
     raw.n_loci = 0;
     raw.n_traits = 0;
     raw.trait = NULL;
@@ -111,8 +80,7 @@ raw_init(void) {
     make_count_recs_etc();
 }
 
-void
-make_count_recs_etc(void) {
+void make_count_recs_etc(void) {
     int **x, *y;
 
     matrix(make_interval_genotype, MAX_LOCUS_GENOTYPES, MAX_LOCUS_GENOTYPES, int);
@@ -142,9 +110,8 @@ make_count_recs_etc(void) {
 }
 
 
-void
-free_raw(void)  /* alloced by read_data - NEVER BEEN TESTED!! */
-{
+void free_raw(void) {
+    /* alloced by read_data - NEVER BEEN TESTED!! */
     unmatrix(raw.locus, raw.n_indivs, char);
     unmatrix(raw.locus_name, raw.n_loci, char);
     unmatrix(raw.trait, raw.n_indivs, real);
@@ -157,29 +124,24 @@ free_raw(void)  /* alloced by read_data - NEVER BEEN TESTED!! */
     raw.file[0] = '\0';
 }
 
-int
-data_loaded(void) { return (raw.file[0] != '\0'); }
+int data_loaded(void) {
+    return (raw.file[0] != '\0');
+}
 
 
 /********** THE DATA READER **********/
 
-void
-getdataln( /* get next nonblank/noncomment data file line */
-        FILE *fp
-) {
+void getdataln(/* get next nonblank/noncomment data file line */ FILE *fp) {
     do {
         fgetln(fp);
         BADDATA_line_num++;
-    }
-    while (nullstr(ln) || ln[0] == '#');
+    } while (nullstr(ln) || ln[0] == '#');
     BADDATA_ln = ln;
 }
 
 #define DUMMY_LOCI 1
 
-void
-read_data(FILE *fpa, FILE *fpb, FILE *fpm, char *temp) {
-
+void read_data(FILE *fpa, FILE *fpb, FILE *fpm, char *temp) {
     int k = 0, v, l, i, num_chrom, num_loc = 0, t_loc = 0, j = 0, loc;
     int name_len = 80, checker, mapm_loci;
     int n_indivs, n_loci, n_traits, random_check1, random_check2, num_entries;
@@ -451,12 +413,10 @@ read_data(FILE *fpa, FILE *fpb, FILE *fpm, char *temp) {
         unarray(name, char);
         relay_messages;
     }
-    return;
 }
 
 
-void
-save_traitfile(FILE *fp) {
+void save_traitfile(FILE *fp) {
     int i, j, loci_tot, map_tot;
 
     run {
@@ -557,11 +517,8 @@ save_traitfile(FILE *fp) {
 }
 
 
-void
-read_map_locus(FILE *fp, int indivs, int t_loc, int *order, int n_loci)
+void read_map_locus(FILE *fp, int indivs, int t_loc, int *order, int n_loci) {
 /* could send BADDATA or IOERROR */
-{
-
     char **temp_set, c, nam[TOKLEN + 1];
     int j, k, i, t, num_of_terms = 0;
     matrix(temp_set, n_loci, 80, char);
@@ -621,11 +578,8 @@ real read_map_distance(FILE *fp/*int num*/) {
 }
 
 
-void
-read_quant_trait(FILE *fp, int num, int indivs)
+void read_quant_trait(FILE *fp, int num, int indivs) {
 /* could send IOERROR or BADDATA */
-{
-
     char tok[TOKLEN + 1], c;
     int i;
 
@@ -650,163 +604,6 @@ read_quant_trait(FILE *fp, int num, int indivs)
     if (!nullstr(ln)) { send(BADDATA); }
 }
 
-
-void
-read_olddata(FILE *fp, char *path) {
-    int i, j, n_indivs, n_loci, n_traits;
-    char tok[TOKLEN + 1];
-    extern int nam_len;
-
-    BADDATA_line_num = 0;
-    if (!nullstr(raw.file)) free_raw();
-
-    run {
-            getdataln(fp);
-            if (!(itoken(&ln, iREQUIRED, &n_indivs) && n_indivs > 0 &&
-                  itoken(&ln, iREQUIRED, &n_loci) && n_loci > 0 &&
-                  itoken(&ln, iREQUIRED, &n_traits) && n_traits > 0 &&
-                  itoken(&ln, iREQUIRED, &nam_len) &&
-                  nam_len > 0 && nam_len <= TOKLEN)) {
-                why_("bad header or header entries");
-                send(BADDATA);
-            }
-
-
-            raw.n_loci = n_loci;
-            raw.n_traits = n_traits;
-            raw.n_indivs = n_indivs;
-            raw.name_len = nam_len;
-            raw.left_cond_prob = NULL;
-            raw.right_cond_prob = NULL;
-
-            matrix(raw.locus, n_indivs, n_loci, char);
-            matrix(raw.locus_name, n_loci, nam_len, char);
-            array(raw.map_dist, n_loci, real);
-            raw.max_traits = MAX_TRAITS(raw.n_traits);
-            matrix(raw.trait, n_indivs, raw.max_traits, real);
-            matrix(raw.trait_name, raw.max_traits, nam_len, char);
-            matrix(raw.left_cond_prob, n_indivs, n_loci, LOCUS_GENOTYPE_PROBS);
-            matrix(raw.right_cond_prob, n_indivs, n_loci, LOCUS_GENOTYPE_PROBS);
-
-            for (j = 0; j < n_loci; j++)
-                read_oldmap_locus(fp, j, n_indivs);
-            for (j = 0; j < n_traits; j++)
-                read_oldquant_trait(fp, j, n_indivs);
-
-            getdataln(fp);
-            stoken(&ln, sREQUIRED, tok);
-            if (!streq(tok, "map:")) {
-                why_("expected 'MAP:'");
-                send(BADDATA);
-            }
-
-            for (i = 0; i < n_loci - 1; i++) read_oldmap_distance(fp, i);
-
-            if (!nullstr(ln) || !end_of_text(fp)) {
-                why_("data after logical end of file");
-                send(BADDATA);
-            }
-
-            close_file(fp);
-            nstrcpy(raw.file, path, PATH_LENGTH);
-
-        } when_aborting {
-        free_raw();
-        raw.file[0] = '\0';
-        relay;
-    }
-}
-
-
-void
-read_oldmap_locus(FILE *fp, int num, int indivs)
-/* could send BADDATA or IOERROR */
-{
-    char c;
-    int i;
-
-    /* read the locus name */
-    getdataln(fp);
-    if (!field(&ln, nam_len, raw.locus_name[num])) {
-        why_("missing locus name");
-        send(BADDATA);
-    }
-
-    /* read the locus' data */
-    for (i = 0; i < indivs; i++) {
-        if (nullstr(ln)) getdataln(fp);
-        if (!parse_char(&ln, geno_chars, TRUE, &c)) {
-            why_("expected a genotype character");
-            send(BADDATA);
-        }
-        else raw.locus[i][num] = c;
-    }
-    if (!nullstr(ln)) {
-        why_("extra data");
-        send(BADDATA);
-    }
-}
-
-
-void
-read_oldquant_trait(FILE *fp, int num, int indivs)
-/* could send IOERROR or BADDATA */
-{
-    char tok[TOKLEN + 1];
-    int i;
-
-    getdataln(fp);
-    /* read the locus name */
-    if (!field(&ln, nam_len, raw.trait_name[num])) {
-        why_("bad locus name field");
-        send(BADDATA);
-    }
-
-    /* read its data */
-    for (i = 0; i < indivs; i++) {
-        if (nullstr(ln)) getdataln(fp);
-        if (!rtoken(&ln, rREQUIRED, &raw.trait[i][num])) {
-            if (!stoken(&ln, sREQUIRED, tok) || strcmp(tok, "-")) {
-                why_("bad trait data");
-                send(BADDATA);
-            }
-            else raw.trait[i][num] = MISSING_PHENO;
-        }
-    }
-    if (!nullstr(ln)) {
-        why_("extra data");
-        send(BADDATA);
-    }
-}
-
-void
-read_oldmap_distance(FILE *fp, int num) {
-    int bar;
-
-    if (nullstr(ln)) getdataln(fp);
-    if (!rtoken(&ln, rREQUIRED, &raw.map_dist[num]))
-/* REMOVED	    !rrange(&raw.map_dist[num],0.0,0.5))	*/
-    {
-        why_("bad map distance");
-        send(BADDATA);
-    }
-
-/* THIS WAS A MAJOR KLUDGE - BUT IT IS TEMPORARY! */
-    if (raw.map_dist[num] > 0.5) {
-        bar = (int) (raw.map_dist[num] + 0.499);
-        raw.map_dist[num] = unkosambi((real) bar);
-    }
-/*	sprintf(ps,"%-3d %lf\n",num,raw.map_dist[num]); print(ps);   */
-    rrange(&raw.map_dist[num], MIN_REC_FRAC, MAX_REC_FRAC);
-}
-
-
-
-
-
-
-
-
 /*** THE NEW AND IMPROVED RAW DATA CRUNCHER - USED AFTER LOADING DATA ****/
 
 #define PROBS_NOT_EQ \
@@ -814,9 +611,8 @@ read_oldmap_distance(FILE *fp, int num) {
 #define PROBS_NOT_1 \
 "*** WARNING: interval genotype probs not 1: indiv %d interval %d\n"
 
-void
-crunch_data(void) /* side effects the raw data struct */
-{
+void crunch_data(void) {
+    /* side effects the raw data struct */
     int i, k, first, last;
 
     real r[3], l[3], right, left;
@@ -887,11 +683,7 @@ crunch_data(void) /* side effects the raw data struct */
 }
 
 
-void initial_prob(prob, locus, this_genotype)
-        LOCUS_GENOTYPE_PROBS *prob;
-        int locus;
-        char this_genotype;
-{
+void initial_prob(LOCUS_GENOTYPE_PROBS *prob, int locus, char this_genotype) {
     prob[locus][A] = prob[locus][B] = prob[locus][H] = 0.0;
 
     if (raw.data_type == BACKCROSS)
@@ -968,10 +760,7 @@ void initial_prob(prob, locus, this_genotype)
         send(CRASH);
 }
 
-real pheno_given_geno(observation, genotype)
-        char observation; /* eg the 'phenotype' */
-        int genotype;
-{
+real pheno_given_geno(char observation /* eg the 'phenotype' */, int genotype) {
     if (raw.data_type == BACKCROSS)
         switch (observation) {
             case 'A':
@@ -1023,20 +812,15 @@ real pheno_given_geno(observation, genotype)
 }
 
 
-void condition(prob, locus, prev_locus, observation, rec_frac, side)
-        LOCUS_GENOTYPE_PROBS *prob;
-        int locus, prev_locus;
-        char observation;
-        real rec_frac;
-        int side;
-{
+void condition(LOCUS_GENOTYPE_PROBS *prob, int locus, int prev_locus, char observation, real rec_frac, int side) {
     int i, geno_was, geno_is, geno1, geno2;
     real total;
 
     for (i = 0; i < MAX_LOCUS_GENOTYPES; i++) prob[locus][i] = 0.0;
     total = 0.0;
 
-    for_locus_genotypes(raw.data_type, geno_was)for_locus_genotypes(raw.data_type, geno_is) {
+    for_locus_genotypes(raw.data_type, geno_was)
+        for_locus_genotypes(raw.data_type, geno_is) {
             geno1 = (side == LEFT) ? geno_was : geno_is;
             geno2 = (side == LEFT) ? geno_is : geno_was;
             prob[locus][geno_is] +=
@@ -1048,10 +832,7 @@ void condition(prob, locus, prev_locus, observation, rec_frac, side)
 }
 
 
-real transition_prob(data_type, geno_was, geno_is, theta)
-        int data_type, geno_was, geno_is;
-        real theta;
-{
+real transition_prob(int data_type, int geno_was, int geno_is, real theta) {
     real sum;
     real C2, D2, E2, F2, G2, C3, D3, E3, F3, G3;
 
@@ -1282,9 +1063,7 @@ void indiv_interval_probs(prob, data_indiv_num, raw_indiv_num, left_locus_num,
 }
 
 
-real apriori_prob(data_type, geno)
-        int data_type, geno;
-{
+real apriori_prob(int data_type, int geno) {
     if (data_type == BACKCROSS) return (0.5);
 
     else
@@ -1301,8 +1080,7 @@ real apriori_prob(data_type, geno)
 }
 
 
-void
-altered_chroms_message(void) {
+void altered_chroms_message(void) {
     if (!already_printed) {
         print("The linkage map data in the '.data' file has been altered since its\n");
         print("last usage. The saved scan results and saved names are obsolete and\n");

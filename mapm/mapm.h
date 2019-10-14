@@ -16,12 +16,6 @@
 
 /***************** Get the common #includes first...  *****************/
 
-//#include <stdio.h>
-
-//#define INC_TABLE /* need TABLE to compile toplevel.h and STATUS_CONTEXT */
-
-//#define command void /* needed if INC_SHELL was not defined */
-
 /***************** MAPM Constants *****************/
 /* you should be able to change these and recompile */
 
@@ -63,7 +57,6 @@
 #define MAX_NOTE_LEN      80   /* in chars */
 
 /* Extensions for MAPMAKER files... */
-#ifndef _SYS_DOS
 #define PS_EXT    ".ps"
 #define RAW_EXT   ".raw"
 #define PREP_EXT  ".prep"
@@ -78,23 +71,6 @@
 #define THREE_OLD ".x3pt"
 #define TRAIT_EXT ".traits"
 #define TRAIT_OLD ".xtraits"
-#else
-#define PS_EXT    ".ps"
-#define RAW_EXT   ".raw"
-#define PREP_EXT  ".pre"
-#define TEMP_EXT  ".tmp"
-#define DATA_EXT  ".dat"
-#define DATA_OLD  ".xda"
-#define MAPS_EXT  ".map"
-#define MAPS_OLD  ".xma"
-#define TWO_EXT   ".2pt"
-#define TWO_OLD   ".x2p"
-#define THREE_EXT ".3pt"
-#define THREE_OLD ".x3p"
-#define TRAIT_EXT ".tra"
-#define TRAIT_OLD ".xtr"
-#endif
-
 
 /****************************** Global Stuff *******************************/
 
@@ -312,7 +288,6 @@ command set_inf_threshold(void);
 command set_print_all_maps(void);
 
 /* F2 and error checker stuff */
-command set_fake_maps(void); /* wizard */
 command set_use_error_rate(void);
 
 command set_error_lod_thresh(void);
@@ -344,8 +319,6 @@ command names(void);
 
 command forget(void);            /* forget name? */
 
-command download(void);   /* downloads data from map_base for Mapmaker loading */
-command save_to_database(void);/* sends map data (frame/assign/place) back to the database */
 command import(void);
 
 command export(void);
@@ -397,15 +370,12 @@ command compare(void);
 command try(void);
 
 command likely(void);        /* likelihood */
-command permsex(void);            /* permute sexes */
 command use(void);                /* use */
 command ripple(void);
 
 command set_framework(void);  /* makes a map, stores it in chromosome list */
 command set_anchors(void);
 
-command print_chromosomes(void);  /* prints SAVED_LIST of chromosomes */
-command print_short_chroms(void); /* for F2 data, prints chromosomes in raw F2 form */
 command attach(void);
 
 command assign(void);
@@ -413,16 +383,6 @@ command assign(void);
 command unassign(void);
 
 command save(void);
-
-command meiosis_counter(void);
-
-command chrom_pics(void);
-
-command family_cross_count(void);
-
-command delete_locus(void);
-
-command append_locus(void);
 
 command edit_sequence(void);
 
@@ -442,17 +402,15 @@ command make_classes(void);
 command cm_func(void);
 
 /* in auto.c */
-command chrom(void), show_chrom(void);
+command chrom(void);
 
-command place_together(), subset(void);
+command place_together();
 
 command make_chromosome(void);
 
 command list_chroms(void);
 
 command list_assignments(void);
-
-command batch_place(), iter(void);
 
 command draw_chromosome(void);
 
@@ -463,8 +421,6 @@ command draw_all_chromosomes(void);
 
 bool mapm_save_on_exit(bool do_it_now);
 
-command prepdat(void);
-
 command translate(void);
 
 
@@ -472,7 +428,6 @@ command translate(void);
 bool valid_new_name(char *str);
 
 /* moved set_age and make_note */
-
 
 /***************** Init Functions For Specific .c Files ******************/
 void npt_cmds_init(void);

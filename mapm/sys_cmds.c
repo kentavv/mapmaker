@@ -11,18 +11,13 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-//#define INC_LIB
-//#define INC_SHELL
 #include "mapm.h"
-//#include "lowlevel.h"
-//#include "toplevel.h"
 
 /* Auxilliary stuff for load/save/prep */
 FILE *try_to_open(char *name, int mode, char *ext, bool prev_data) /* return fp or send error */;
 
 void
 try_to_unload(FILE *fp, /* file to READ just so we can close it if an error occurs */ bool ask_first, bool do_save, bool do_unload, bool genos_too);
-//void try_to_load (FILE *fp, char *name, bool prev_data, bool raw);
 
 bool is_an_old_sequence(char *str, char **seq, char **why_not);
 
@@ -45,8 +40,8 @@ bool is_a_named_sequence(char *str, char **seq);  /* internal use only */
 
 bool just_prepared = FALSE;
 
-FILE *try_to_open(char *name, int mode, char *ext, bool prev_data) /* return fp or send error */
-{
+FILE *try_to_open(char *name, int mode, char *ext, bool prev_data) {
+    /* return fp or send error */
     FILE *fp;
     run {
             if (!make_filename(name, mode, ext)) {
@@ -62,14 +57,8 @@ FILE *try_to_open(char *name, int mode, char *ext, bool prev_data) /* return fp 
 }
 
 
-void
-try_to_unload(
-        FILE *fp, /* file to READ just so we can close it if an error occurs */
-        bool ask_first,
-        bool do_save,
-        bool do_unload,
-        bool genos_too
-) {
+void try_to_unload(FILE *fp, /* file to READ just so we can close it if an error occurs */ bool ask_first, bool do_save, bool do_unload,
+                   bool genos_too) {
     bool doit;
     char token[TOKLEN + 1];
 
@@ -103,8 +92,7 @@ try_to_unload(
 }
 
 
-void
-try_to_load(FILE *fp, char *name, bool prev_data, bool raw) {
+void try_to_load(FILE *fp, char *name, bool prev_data, bool raw) {
     char run_file[PATH_LENGTH + 1];
 
     run {
@@ -132,16 +120,14 @@ try_to_load(FILE *fp, char *name, bool prev_data, bool raw) {
         if (msg == BADDATA) {
             print(BADDATA_reason);
             nl();
-        }
-        else trapped_msg();
+        } else trapped_msg();
         if (data_loaded()) print(LOAD_MAYBE);
         abort_command();
     }
 }
 
 
-void
-mapm_data_info(FILE *fp) {
+void mapm_data_info(FILE *fp) {
     if (!data_loaded()) return;
     sprintf(ps, DATA_LOADED, raw.filename, data_info(TRUE));
     fpr(fp);
@@ -150,8 +136,7 @@ mapm_data_info(FILE *fp) {
 
 /* Now the real stuff */
 
-command
-new_load_data(void) {
+command new_load_data(void) {
     FILE *fp = NULL;
     char name[PATH_LENGTH + 1];
     bool prev_data;
@@ -176,8 +161,7 @@ new_load_data(void) {
 }
 
 
-command
-new_prepare(void) {
+command new_prepare(void) {
     char name[PATH_LENGTH + 1];
     FILE *fp = NULL;
     bool prev_data;
@@ -198,8 +182,7 @@ new_prepare(void) {
 }
 
 
-command
-new_save_data(void) {
+command new_save_data(void) {
     char name[PATH_LENGTH + 1], old[PATH_LENGTH + 1];
     bool new_name;
 
@@ -233,8 +216,7 @@ new_save_data(void) {
 #define NOT_A_CLASS "'%s' is not a defined class\nEither use 'make class' first or select a defined class name."
 #define CANT_MAKE_CLASS "warning: unable to make class named '%s'\n%s\n"
 
-command
-set_class(void) {
+command set_class(void) {
     int classnum, i, n_loci, *locus = NULL;
     char name[TOKLEN + 1];
 
@@ -258,8 +240,7 @@ set_class(void) {
 }
 
 
-command
-make_classes(void) {
+command make_classes(void) {
     char name[TOKLEN + 1], *errmsg;
 
     mapm_ready(ANY_DATA, 0, 0, NULL);
@@ -276,8 +257,7 @@ make_classes(void) {
 }
 
 
-command
-set_age(void) {
+command set_age(void) {
     int mod, i, n_loci, *locus = NULL;
     char token[TOKLEN + 1];
 
@@ -305,8 +285,7 @@ set_age(void) {
 #define ERROR_PROB_IS \
 "markers in sequence now have apriori error probability %.2lf percent\n"
 
-command
-set_error_rate(void) {
+command set_error_rate(void) {
     int i, n_loci, *locus = NULL;
     real rate, prob;
 
@@ -331,8 +310,7 @@ set_error_rate(void) {
 
 #define NOTE_FORM "%10s: %s\n"
 
-command
-make_note(void) {
+command make_note(void) {
     int n, n_loci, i, *locus = NULL;
     char *name = get_temp_string(), *rest, *errmsg;
 
@@ -384,8 +362,7 @@ make_note(void) {
 
 /***************************** Sequence Commands *****************************/
 
-command
-sequence(void) {
+command sequence(void) {
     int *locus = NULL, num_loci;
     use_uncrunched_args();
     mapm_ready(ANY_DATA, 0, 0, NULL);
@@ -406,8 +383,7 @@ sequence(void) {
 }
 
 
-command
-expand_sequence(void) {
+command expand_sequence(void) {
     int *locus = NULL, num_loci;
     use_uncrunched_args();
     mapm_ready(ANY_DATA, 0, 0, NULL);
@@ -429,8 +405,7 @@ expand_sequence(void) {
 
 #define BADEDITEDSEQ "An illegal sequence was specified.\nsequence= %s\n"
 
-command
-edit_sequence(void) {
+command edit_sequence(void) {
     char name[TOKLEN + 1], prompt[TOKLEN + 1], *value, *err;
     int *locus = NULL, num_loci;
     bool set_seq = FALSE;
@@ -474,8 +449,7 @@ edit_sequence(void) {
 }
 
 
-command
-show_seq_history(void) {
+command show_seq_history(void) {
     int num_to_do;
 
     mapm_ready(ANY_DATA, 0, 0, NULL);
@@ -486,8 +460,7 @@ show_seq_history(void) {
 }
 
 
-command
-let(void) {
+command let(void) {
     char name[TOKLEN + 1], *seq, *err;
     use_uncrunched_args();
     mapm_ready(ANY_DATA, 0, 0, NULL);
@@ -502,8 +475,7 @@ let(void) {
 }
 
 
-command
-let_expanding(void) {
+command let_expanding(void) {
     char name[TOKLEN + 1], *seq, *err;
     bool set_me = FALSE;
 
@@ -529,8 +501,7 @@ let_expanding(void) {
 }
 
 
-command
-names(void) {
+command names(void) {
     mapm_ready(ANY_DATA, 0, 0, NULL);
     nomore_args(0);
 
@@ -539,8 +510,7 @@ names(void) {
 }
 
 
-command
-forget(void) {
+command forget(void) {
     char *errmsg, *name = get_temp_string();
 
     mapm_ready(ANY_DATA, 0, 0, NULL);
@@ -553,8 +523,7 @@ forget(void) {
 }
 
 
-command
-new_delete(void) {
+command new_delete(void) {
     int i, j, found, num_seq_tokens, k, *locus = NULL, num_loci;
     int *seq_locus = NULL, seq_loci;
     char locus_name[TOKLEN + 1], locus_num[TOKLEN + 1], locus_plus[TOKLEN + 1];
@@ -605,8 +574,7 @@ new_delete(void) {
 }
 
 
-command
-new_append(void) {
+command new_append(void) {
     int *locus = NULL, num_loci;
 
     mapm_ready(ANY_DATA, 1, MAYBE_PERM, NULL);
@@ -627,8 +595,7 @@ new_append(void) {
 }
 
 
-command
-new_insert(void) {
+command new_insert(void) {
     int i, j, locus, found, num_seq_tokens, append_at_top;
     char locus_name[TOKLEN + 1], locus_num[TOKLEN + 1], locus_plus[TOKLEN + 1];
     char *appendage, name[TOKLEN + 1], *errmsg;
@@ -664,8 +631,7 @@ new_insert(void) {
                         xstreq(locus_name, seq_tokens[i])) {
                         found = TRUE;
                         break;
-                    }
-                    else i++;
+                    } else i++;
                 }
             if (!found) {
                 sprintf(ps, "locus %s (%s) not found in the sequence",
@@ -690,8 +656,7 @@ new_insert(void) {
 }
 
 
-command
-translate(void) {
+command translate(void) {
     int i, num_loci, *locus = NULL, source;
     char c;
 

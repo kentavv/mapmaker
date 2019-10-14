@@ -69,9 +69,6 @@ void save_table(TABLE *p, FILE *fp, int index);
 void load_table(TABLE *p, FILE *fp, int index, int num_entries);
 
 
-//
-//void free_table();       /* args: TABLE *list; */
-//
 //void put_named_entry();    /* args: char *name, *string; TABLE *p; */
 //void put_numbered_entry(); /* args: char *string; TABLE *p; int *num; */
 ///* string is saved in table under the index name or num. Names must be
@@ -94,16 +91,9 @@ void load_table(TABLE *p, FILE *fp, int index, int num_entries);
 #define NAME_DOESNT_MATCH 1
 #define NAME_IS_AMBIGUOUS 2
 
-//bool get_numbered_entry();    /* args: int num; char **string; TABLE *p; */
-//
-//int  count_table_entries(); /* args: TABLE *p; */
 #define next_entry_number(table) ((table)->next_entry_num)
 
-//bool valid_name(); /* args: char *name; */
-
 extern TABLE_ENTRY *Te;
-
-//void save_table(), load_table();
 
 extern TABLE *cmd_history;
 

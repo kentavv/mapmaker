@@ -11,14 +11,7 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-//#define INC_MEM
-//#define INC_IO
-//#define INC_MATH
-//#define INC_STR
-//#define INC_MSG
 #include "mapm.h"
-//#include "toplevel.h"
-//#include "lowlevel.h"
 
 #define empty_loc_str loc2str(-1)
 #define empty_locs_str locs2str(-1,-1)
@@ -69,8 +62,7 @@ void print_tiny_map(MAP *map, char *text  /* make sure its OK to use ps for this
 }
 
 
-void
-print_err(int indiv, int locus, MAP *map) {
+void print_err(int indiv, int locus, MAP *map) {
     sprintf(ps, "[#%d %c-%c-%c %.2lf]", indiv + 1,
             raw.data.f2.allele[map->locus[locus - 1]][indiv],
             raw.data.f2.allele[map->locus[locus]][indiv],
@@ -81,17 +73,13 @@ print_err(int indiv, int locus, MAP *map) {
 }
 
 
-void
-print_long_map(MAP *map, char *title) { print_special_map(map, title, 0, NULL); }
+void print_long_map(MAP *map, char *title) {
+    print_special_map(map, title, 0, NULL);
+}
 
 
-void
-print_special_map(
-        MAP *map,
-        char *title,  /* ps MAY be used for this! */
-        int num_old,
-        int *old_locus  /* can omit if num_args==0 - should do this with VARARGS */
-) {
+void print_special_map(MAP *map, char *title,  /* ps MAY be used for this! */ int num_old,
+                       int *old_locus  /* can omit if num_args==0 - should do this with VARARGS */) {
     int i, j, n, m;
     real length, male_cm, female_cm, male_length, female_length;
     real best, next, lod;
@@ -150,8 +138,7 @@ print_special_map(
                                 nextj = bestj;
                                 best = lod;
                                 bestj = j;
-                            }
-                            else if (lod > next) {
+                            } else if (lod > next) {
                                 next = lod;
                                 nextj = j;
                             }
@@ -227,59 +214,7 @@ print_special_map(
 }
 
 
-void
-print_short_map(MAP *map, char *text) {
-    int i, col;
-
-    if (len(text) < 5) col = 6; else col = len(text) + 1;
-    print(text);
-    print(" ");
-    to_column(col + 2);
-    for (i = 0; i < map->num_loci; i++) {
-        print(loc2str(map->locus[i]));
-        if (map->unlink == i + 1) print(" * ");
-        else if (!print_names) print("   "); else print(" ");
-    }
-    if (map->unlink == NONE_UNLINKED && print_names) print("  ");
-    sprintf(ps, " log-likelihood: %s\n", rsn(7.2, map->log_like));
-    pr();
-
-    if (!map->sex_specific) {
-        print("map:");
-        to_column(col + 3);
-        if (print_names) space((len(empty_loc_str) / 2) + 2); else print(" ");
-        for (i = 0; i < map->num_loci - 1; i++) {
-            print(rf2str(map->rec_frac[i][MALE]));
-            if (map->unlink == i + 1 && print_names) print("  ");
-            if (print_names) space(len(empty_loc_str) - 5 + 1); else print(" ");
-        }
-        nl();
-
-    } else { /* sex_spec */
-        print("male:");
-        to_column(col + 3);
-        if (print_names) space(len(empty_loc_str) / 2); else print(" ");
-        for (i = 0; i < map->num_loci - 1; i++) {
-            print(rf2str(map->rec_frac[i][MALE]));
-            if (map->unlink == i + 1 && print_names) print("  ");
-            if (print_names) space(len(empty_loc_str) - 5 + 1); else print(" ");
-        }
-        nl();
-        print("female:");
-        to_column(col + 3);
-        if (print_names) space(len(empty_loc_str) / 2); else print(" ");
-        for (i = 0; i < map->num_loci - 1; i++) {
-            print(rf2str(map->rec_frac[i][FEMALE]));
-            if (map->unlink == i + 1 && print_names) print("  ");
-            if (print_names) space(len(empty_loc_str) - 5 + 1); else print(" ");
-        }
-        nl();
-    }
-}
-
-
-void
-print_list(SAVED_LIST *list, int how_many) {
+void print_list(SAVED_LIST *list, int how_many) {
     int i, num_to_print;
     char str[TOKLEN + 1];
     real best;
@@ -301,8 +236,7 @@ print_list(SAVED_LIST *list, int how_many) {
 }
 
 
-char *
-rf2str(real rec_frac) {
+char *rf2str(real rec_frac) {
     real d;
 
     rrange(&rec_frac, 0.0, 0.499999);
@@ -314,8 +248,7 @@ rf2str(real rec_frac) {
 }
 
 
-char *
-loc2str(int locus) {
+char *loc2str(int locus) {
     char *str = get_temp_string(), haplo = ' ';
 
     if (locus < 0) {
@@ -327,8 +260,7 @@ loc2str(int locus) {
         if (print_names) {
             sprintf(str, "%s%c", raw.locus_name[locus], haplo);
             pad_to_len(str, 9);
-        }
-        else {
+        } else {
             sprintf(str, "%d%c", locus + 1, haplo);
             pad_to_len(str, 5);
         }
@@ -337,11 +269,7 @@ loc2str(int locus) {
 }
 
 
-char *
-locname( /* ragged */
-        int locus,
-        bool haplo_mark
-) {
+char *locname(/* ragged */ int locus, bool haplo_mark) {
     char *str = get_temp_string();
     bool haplo = FALSE;
 
@@ -351,8 +279,7 @@ locname( /* ragged */
 }
 
 
-char *
-locs2str(int locus1, int locus2) {
+char *locs2str(int locus1, int locus2) {
     char *str, *haplo1 = get_temp_string(), *haplo2 = get_temp_string();
     int i;
 
@@ -373,8 +300,7 @@ locs2str(int locus1, int locus2) {
 }
 
 
-char *
-rag(char *str) {
+char *rag(char *str) {
     int i = 0;
     while (*str == ' ') str++;
     while (str[i] != '\0') i++;
@@ -385,15 +311,9 @@ rag(char *str) {
 }
 
 
-void
-print_trys(
-        SAVED_LIST **list,
-        MAP *base_map,       /* The map the tried markers were added to */
-        bool **excluded,   /* [i][n]=FALSE if we tried try_marker[i] in excluded */
-        int **new_marker,
-        int num_tried,
-        int first
-) {
+void print_trys(SAVED_LIST **list, MAP *base_map, /* The map the tried markers were added to */
+                bool **excluded, /* [i][n]=FALSE if we tried try_marker[i] in excluded */
+                int **new_marker, int num_tried, int first) {
     int i, j, k, q, width_ea, last;
     bool any_paired = FALSE;
     real best[8];
@@ -493,8 +413,7 @@ print_trys(
 }
 
 
-void
-print_haplo_summary(int *locus, int num_loci) {
+void print_haplo_summary(int *locus, int num_loci) {
     int i, j, any = FALSE;
 
     for (i = 0; i < num_loci; i++) {
@@ -519,15 +438,7 @@ print_haplo_summary(int *locus, int num_loci) {
 }
 
 
-char *
-region2str(int locus, char **errs) {
-    *errs = ptr_to("0.0");
-    return ("abc1-xyz999");
-}
-
-
-char *
-genetics2str(int locus, bool haplo) {
+char *genetics2str(int locus, bool haplo) {
     int type, n_infs, n_dom_obs, n_het_obs;
     char *retoin = get_temp_string();
 
@@ -563,8 +474,7 @@ genetics2str(int locus, bool haplo) {
 /*  num  name typ  err       chr  lg    hap */
 
 
-void
-print_locus_summary(int *locus, int n_loci, bool haplo) {
+void print_locus_summary(int *locus, int n_loci, bool haplo) {
     int i, g;
     char *chrom, *hap, lg[TOKLEN + 1];
 
@@ -611,8 +521,7 @@ print_locus_summary(int *locus, int n_loci, bool haplo) {
 /*  num  name ass   chr  lod   map  like loc  err */
 
 
-void
-print_mapping_summary(int *locus, int n_loci, bool haplo) {
+void print_mapping_summary(int *locus, int n_loci, bool haplo) {
     int i, j, k, pos, state;
     real val;
     char *chrom, *lod, *assign;
@@ -709,48 +618,6 @@ print_mapping_summary(int *locus, int n_loci, bool haplo) {
 }
 
 
-#ifdef OBSOLETE
-void
-print_placements (
-    int *order,
-    int num_order,
-    int *locus,
-    int num_loci,  /* unplaced, maybe NO_LOCUS */
-    bool **excluded       /* first index is that into locus[] */
-)
-{
-    int num_left, num_across, num_done, i, j;
-
-    num_left= num_order+1;
-    num_done=0;
-    do {
-    num_across=(num_left > 17) ? 18 : num_left;
-    print("    ");
-    for (j=num_done; j<num_across+num_done-1; j++) {
-        sprintf(ps," %3d",order[j]+1);  pr();
-    }
-    nl();
-
-    for (i=0; i<num_loci; i++) if (locus[i]!=NO_LOCUS) {
-        sprintf(ps,"%3d ",locus[i]+1);  pr();
-        for (j=num_done; j<num_across+num_done; j++) {
-        switch(excluded[i][j]) {
-            case TRUE:  print("."); break; /* kind of rely on TRUE=1 */
-            case FALSE: print("*"); break;
-            case MAYBE: print("^"); break;
-        }
-        if (j!=num_across+num_done-1) print("...");
-        }
-        nl();
-    }
-    nl();
-    num_left-= 18;
-    num_done+= 18;
-    } while(num_left > 0);
-}
-#endif
-
-
 /*345678901234567890123456789012345678901234567890123456789012345678901234567*/
 /* 15 intervals, or 14 middle intervals + both ends =16
 
@@ -767,8 +634,7 @@ print_placements (
 1234 12:....:.**.:....:....:....:....:....:....:....:....:....:....:....:....:
 */
 
-void
-pr_placement(bool *excluded, int interval, int best, int num_intervals, int rightmost) {
+void pr_placement(bool *excluded, int interval, int best, int num_intervals, int rightmost) {
     if (interval == best) print("**.");
     else if (excluded[interval]) print("..."); else print(".*.");
     if (interval < num_intervals - 1) print(":");
@@ -776,16 +642,14 @@ pr_placement(bool *excluded, int interval, int best, int num_intervals, int righ
 }
 
 
-void
-pr_locus(int n) {
+void pr_locus(int n) {
     if (n < 99) sprintf(ps, " %2d  ", n + 1);
     else sprintf(ps, "%4d ", n + 1);
     pr();
 }
 
 
-void
-pr_dist(real rf) {
+void pr_dist(real rf) {
     sprintf(ps, "%3.0lf-:", cm_dist(rf));
     if (ps[0] == ' ') ps[0] = '-';
     if (ps[1] == ' ') ps[1] = '-';
@@ -793,12 +657,7 @@ pr_dist(real rf) {
 }
 
 
-void
-new_print_placements(
-        MAP *map,        /* framework */
-        PLACEME **placed,
-        int num_loci        /* placed loci, maybe NO_LOCUS */
-) {
+void new_print_placements(MAP *map, /* framework */ PLACEME **placed, int num_loci /* placed loci, maybe NO_LOCUS */) {
     int num_remaining, num_across, num_done, num_intervals;
     int i, j, num_places, rightmost;
 
@@ -852,8 +711,7 @@ new_print_placements(
 
 #define NOER OBSCURE_REAL
 
-void
-print_geno_line(int locus, real error_rate, int firsti, int lasti, int *obs, bool is_old, bool isa_haplo) {
+void print_geno_line(int locus, real error_rate, int firsti, int lasti, int *obs, bool is_old, bool isa_haplo) {
     char p1, p2, name[TOKLEN + 1];
     int indiv;
 
@@ -897,16 +755,8 @@ print_geno_line(int locus, real error_rate, int firsti, int lasti, int *obs, boo
 }
 
 
-#define OBLIG_REC "%5.1lf cM %3d loci in indiv %-3d  %s(%c) - %s(H) - %s(%c)\n"
-
-void
-print_f2_map_genotypes(
-        MAP *map,
-        bool use_haplos,
-        bool explode_haplos,
-        int num_old,
-        int *old_locus  /* can omit if num_old==0 - should do this with VARARGS */
-) {
+void print_f2_map_genotypes(MAP *map, bool use_haplos, bool explode_haplos, int num_old,
+                            int *old_locus /* can omit if num_old==0 - should do this with VARARGS */) {
     int indiv, n_indivs, firsti, lasti;
     int locus, i, j, *obs = NULL, *prev_obs = NULL, *num_recs = NULL, old = 0;
     int *last_homo = NULL, *last_het = NULL, *homo_was = NULL;
@@ -980,12 +830,10 @@ print_f2_map_genotypes(
                     } else if (obligate_recs[obs[indiv]][prev_obs[indiv]] == 2) {
                         print("O");
                         num_recs[indiv] += 2;
-                    }
-                    else if (obligate_recs[obs[indiv]][prev_obs[indiv]] == 1) {
+                    } else if (obligate_recs[obs[indiv]][prev_obs[indiv]] == 1) {
                         print("X");
                         num_recs[indiv] += 1;
-                    }
-                    else print(" ");
+                    } else print(" ");
                 }
                 nl();
             }
@@ -1029,45 +877,6 @@ print_f2_map_genotypes(
         firsti = lasti + 1;
     } while (firsti < n_indivs);
 
-#ifdef FIX_THIS_SOMEDAY
-    nl();
-    for (indiv=0; indiv<n_indivs; indiv++) {
-    last_homo[indiv]= last_het[indiv]= NO_LOCUS;
-    }
-    got_one=FALSE;
-    for (indiv=0; indiv<n_indivs; indiv++) {
-    for (i=0; i<map->num_loci; i++) {
-        f2_genotype(map->locus[i],use_haplos,obs);
-
-        /* find obligate doubles - ignoring all C's D's for now */
-        if (obs[indiv]==OBS_A || obs[indiv]==OBS_B) {
-        if (last_het[indiv]==NO_LOCUS || obs[indiv]!=homo_was[indiv]) {
-            last_homo[indiv]=i; last_het[indiv]=NO_LOCUS;
-            homo_was[indiv]=obs[indiv];
-        } else {
-            /* got one a-h-a, or b-h-b */
-            for (cm=0.0, j=last_homo[indiv]; j<i; j++)
-              cm+=(*mapfunction->rec_to_dist)(map->rec_frac[j][0]);
-            cm*=100.0;
-            ch= (obs[indiv]==OBS_A ? 'A':'B');
-            if (!got_one)
-              { print("Obligate Doubles:\n"); got_one=TRUE; }
-            num= i-last_homo[indiv]+1;
-             sprintf(ps,OBLIG_REC,cm,num,indiv+1,
-               rag(loc2str(map->locus[last_homo[indiv]])),ch,
-               rag(loc2str(map->locus[last_het[indiv]])),
-               rag(loc2str(map->locus[i])),ch);
-            pr();
-        }
-        }
-        if (obs[indiv]==OBS_H && last_homo[indiv]!=NO_LOCUS &&
-        last_het[indiv]==NO_LOCUS) {
-          last_het[indiv]=i;
-        }
-    }
-    }
-    if (!got_one) print("No obligate doubles anywhere.\n");
-#endif
     unarray(obs, int);
     unarray(prev_obs, int);
     unarray(num_recs, int);

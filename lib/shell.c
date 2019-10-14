@@ -11,9 +11,6 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-//#define INC_LIB
-//#define INC_MISC
-//#define INC_HELP_DEFS
 #include "system.h"
 #include "shell.h"
 #include "table.h"
@@ -24,7 +21,6 @@ int com_num, num_args;
 
 char *((*prompt)(char *));
 
-//char *default_prompt();
 bool (*quit_save_hook)(bool);
 
 bool more_mode;
@@ -40,7 +36,6 @@ bool more_mode;
 
 COMMAND **cmd;        /* [command#] => ptr to a COMMAND struct */
 MENU **menu;            /* [menu#] => ptr to a menu struct */
-int num_menus;
 int command_num;    /* num commands in cmd */
 int help_entries;    /* number of entries in help_file */
 char **topic_name;    /* [topic_num] set by mktopic() */
@@ -54,16 +49,7 @@ bool wizard_mode;
 char *save_args_ptr;    /* the arg list, saved so the ptr can be bashed */
 char *save_uncrunched_args;
 TABLE *cmd_history;
-int autosave;           /* saves state on exit if TRUE */
 FILE *help_file;        /* file that contains all the help summaries */
-bool user_is_amused;    /* two state vars for keep_user_amused */
-
-bool shell_uses_wimp_cmds, help_uses_wimp_help;
-bool inhibit_menus;
-/* If shell_uses_wimp_cmds==TRUE, a command entered to the prompt will
-invoke its WIMP version, if one is available, otherwise its normal
-text version will be run. help_uses_wimp_help is similar. The WIMP 
-code should only try to run a command when inhibit_menus==FALSE. */
 
 int cmd_history_num;
 bool photo_update_top_hook;
@@ -72,14 +58,6 @@ void (*photo_banner_hook)(FILE *);
 
 char *the_program, *the_version, *the_copyright;
 
-//int alias_match();
-//int abbrev_match();
-//int com_matches();
-//int abbrev_matches();
-//int try_to_match();
-//
-//void expand_history_references();
-//char *centering();
 
 #define NO_HELP_FILE "\
 Can't find help file - detailed help information is not available.\n\
@@ -99,10 +77,8 @@ Type 'about' for license, non-warranty, and support information.\n"
 void banner(void) {
     char line[81];
 
-    print(
-            "************************************************************************\n");
-    print(
-            "* Welcome to:                                                          *\n");
+    print("************************************************************************\n");
+    print("* Welcome to:                                                          *\n");
 
     print(centering("", FALSE));
     print(centering(the_program, FALSE));
@@ -116,8 +92,7 @@ void banner(void) {
     print(centering(line, FALSE));
     if (gnu_copyright(line)) print(centering(line, TRUE));
 
-    print(
-            "************************************************************************\n");
+    print("************************************************************************\n");
 
     nl();
     print(TYPE_HELP_PLEASE);
@@ -125,34 +100,7 @@ void banner(void) {
 }
 
 
-char *
-get_version(char *version_filename) {
-    FILE *fp;
-    char str[TOKLEN + 1], *p, *version, name[PATH_LENGTH + 1];
-
-    if (nullstr(version_filename)) return (NULL);
-    fp = NULL;
-    version = NULL;
-
-    run {
-            strcpy(name, version_filename);
-            if (!make_filename_in_dir(name, FORCE_EXTENSION, ".v",
-                                      FORCE_DIR, CODE_DIR))
-                send(CANTOPEN);
-            fp = open_file(name, READ);
-            finput(fp, ln_, MAXLINE);
-            p = ln_; /* don't hack &ln_ */
-            close_file(fp);
-            if (stoken(&p, sREQUIRED, str)) version = mkstrcpy(str);
-        } when_aborting {
-        close_file(fp); /* Don't bother relaying messages */
-    }
-    return (version);
-}
-
-
-void
-photo_banner(void) {
+void photo_banner(void) {
     char ver[81];
 /*                                         Thu Apr 13 05:31:11 EDT 1989
  123456789012345678901234567890123456789012345678901234567890123456789012 */
@@ -175,11 +123,8 @@ photo_banner(void) {
 
 int prev_spaces = 2;
 
-char *
-centering(  /* into global ps */
-        char *str,
-        bool lineup
-) {
+char *centering(char *str, bool lineup) {
+    /* into global ps */
     int spaces, i;
     if (!lineup) spaces = 36 - (len(str) / 2); else spaces = prev_spaces;
     prev_spaces = spaces;
@@ -190,10 +135,8 @@ centering(  /* into global ps */
 }
 
 
-void
-shell_init(char *program, char *version, char *copyright, char *help_filename)
-/* help_filename must be side-effectable */
-{
+void shell_init(char *program, char *version, char *copyright, char *help_filename) {
+    /* help_filename must be side-effectable */
     int i;
 
     array(cmd, MAX_COMMANDS, COMMAND*);
@@ -230,14 +173,10 @@ shell_init(char *program, char *version, char *copyright, char *help_filename)
     photo_update_top_hook = TRUE;
     photo_banner_hook = NULL;
     prompt = default_prompt;
-    inhibit_menus = TRUE;
     quit_save_hook = NULL;
-    user_is_amused = FALSE;
 
     parray(menu, MAX_NUM_MENUS, MENU);
     for (i = 0; i < MAX_NUM_MENUS; i++) array(menu[i]->title, MENU_ENTRY_LEN + 1, char);
-    shell_uses_wimp_cmds = FALSE;
-    help_uses_wimp_help = FALSE;
 
     help_file = NULL;
     if (make_filename_in_dir(help_filename, FORCE_EXTENSION, HELP_EXT,
@@ -248,15 +187,13 @@ shell_init(char *program, char *version, char *copyright, char *help_filename)
 }
 
 
-char *
-default_prompt(char *s) {
+char *default_prompt(char *s) {
     sprintf(s, "\n%d> ", cmd_history_num + 1);
     return (s);
 }
 
 
-void
-mktopic(int num, char *nam, int code, long description_index) {
+void mktopic(int num, char *nam, int code, long description_index) {
     if (num <= 0 || num > MAX_COM_TOPICS || len(nam) > MAX_TOPIC_LEN) send(CRASH);
     topic_name[num] = mkstrcpy(nam);
     topic_code[num] = code;
@@ -264,8 +201,7 @@ mktopic(int num, char *nam, int code, long description_index) {
 }
 
 
-int
-mkcommand(char *name, char *abbrev, void (*func)(void), int code) {
+int mkcommand(char *name, char *abbrev, void (*func)(void), int code) {
     char *str, **toks, c;
     int i, n_tokens;
 
@@ -305,20 +241,15 @@ mkcommand(char *name, char *abbrev, void (*func)(void), int code) {
     cmd[command_num]->num_args = -1;
     cmd[command_num]->num_args_prefix = 0;
 
-    cmd[command_num]->wimp_procedure = NULL;
     cmd[command_num]->status_function = NULL;
-    cmd[command_num]->wimp_help = NULL;
-    cmd[command_num]->wimp_menu_num = -1;
     cmd[command_num]->menu_entry = NULL;
-    cmd[command_num]->wimp_shortcut = '\0';
 
     return (command_num++);
 }
 
 
-void
-mkhelp(char *cmd_name, char *abbrev, long description_index, int num_args_prefix, int num_args, int code, int topic, char *description,
-       char *arguments, char *defaults) {
+void mkhelp(char *cmd_name, char *abbrev, long description_index, int num_args_prefix, int num_args, int code, int topic, char *description,
+            char *arguments, char *defaults) {
     int i, old_wiz;
     char *rest;
 
@@ -368,36 +299,23 @@ mkhelp(char *cmd_name, char *abbrev, long description_index, int num_args_prefix
 }
 
 
-bool
-valid_name( /* checks the syntax of names */
-        char *str
-) {
+bool valid_name(char *str) {
+    /* checks the syntax of names */
     int i;
 
-    if (!is_a_token(str)) return (FALSE);
+    if (!is_a_token(str)) return FALSE;
     if (strin(NAME_TAG_CHARS, str[0])) str++;
-    if (!strin(NAME_FIRST_CHARS, str[0])) return (FALSE);
-    for (i = 1; str[i] != '\0'; i++) if (!strin(NAME_CHARS, str[i])) return (FALSE);
-    return (TRUE);
+    if (!strin(NAME_FIRST_CHARS, str[0])) return FALSE;
+    for (i = 1; str[i] != '\0'; i++) if (!strin(NAME_CHARS, str[i])) return FALSE;
+    return TRUE;
 }
-
-
-void
-null_command(void) { send(CRASH); }
 
 
 /**************************** The Command Parser ****************************/
 
-int
-parser(
-        char *line,
-        char **rest, /* side-effected */
-        bool help_ok
-) {
+int parser(char *line, char **rest, bool help_ok /* side-effected */) {
     int i, n_tokens, last_match;
     char *foo;
-    extern char **tokens, **remaining; /* temps */
-    extern int *matched, num_matched;
 
     for (i = 0; i < command_num; i++) matched[i] = FALSE;
     num_matched = 0;
@@ -457,11 +375,8 @@ parser(
 }
 
 
-void
-print_parser_results( /* uses the global state */
-        char *rest,
-        bool help_ok
-) {
+void print_parser_results(char *rest, bool help_ok) {
+    /* uses the global state */
     int j;
 
     if (num_matched == 1) {
@@ -494,12 +409,11 @@ print_parser_results( /* uses the global state */
    set com_match, n_matched and last_match accordingly. Return TRUE only if a
    unique match was found. */
 
-int
-try_to_match(char **token, int n_tokens, int n_to_try, int n_word_command, int *com_match, int *n_matched, int *last_match,
-             int allow_help_only_stuff) {
+int try_to_match(char **token, int n_tokens, int n_to_try, int n_word_command, int *com_match, int *n_matched, int *last_match,
+                 int allow_help_only_stuff) {
     int exact, i;
 
-    if (n_tokens < n_to_try) return (FALSE);
+    if (n_tokens < n_to_try) return FALSE;
     for (i = 0; i < command_num; i++)
         if (allowed_cmd(i, allow_help_only_stuff) &&
             cmd[i]->num_tokens == n_word_command &&
@@ -509,21 +423,20 @@ try_to_match(char **token, int n_tokens, int n_to_try, int n_word_command, int *
                 com_match[i] = TRUE;
                 ++*n_matched;
             }
-            if (exact && n_to_try == n_word_command) return (TRUE);
+            if (exact && n_to_try == n_word_command) return TRUE;
         }
-    if (*n_matched == 1) return (TRUE); else return (FALSE);
+    if (*n_matched == 1) return TRUE; else return FALSE;
 }
 
 
-int
-com_matches(char **in_tokens, char **com_tokens, int num_to_match, int *exact) {
+int com_matches(char **in_tokens, char **com_tokens, int num_to_match, int *exact) {
     int i;
 
     for (i = 0, *exact = TRUE; i < num_to_match; i++)
-        if (!matches(in_tokens[i], com_tokens[i])) return (FALSE);
+        if (!matches(in_tokens[i], com_tokens[i])) return FALSE;
         else if (istrlen(in_tokens[i]) != istrlen(com_tokens[i])) *exact = FALSE;
 
-    return (TRUE);
+    return TRUE;
 }
 
 
@@ -532,10 +445,8 @@ com_matches(char **in_tokens, char **com_tokens, int num_to_match, int *exact) {
 
 #define HIST_RANGE "command history number is out of range"
 
-void
-expand_history_references( /* sends an error if need be */
-        char *line /* line IS side-effected */
-) {
+void expand_history_references(char *line /* line IS side-effected */) {
+    /* sends an error if need be */
     char *str, *save;
     int num, first = 0, i;
 
@@ -581,8 +492,7 @@ expand_history_references( /* sends an error if need be */
 #define punt    done=TRUE;  break;
 #define toleft  if (cursor!=0) nl();
 
-void
-command_loop(void) {
+void command_loop(void) {
     char *rest;
     int done, failures, foo, prev_lvl = -1;
     void (*func)();
@@ -600,7 +510,6 @@ command_loop(void) {
                 }
                 if (log_open) fflush(photo);
 
-                inhibit_menus = FALSE;
                 cmd_history_num = next_entry_number(cmd_history);
                 uncrunched_args = save_uncrunched_args;
                 input((*prompt)(ps), uncrunched_args, ARGS_LEN - 1);
@@ -615,14 +524,10 @@ command_loop(void) {
                         args = save_args_ptr;
                         strcpy(args, uncrunched_args);
                         lowercase(args);
-                        if (wimp && shell_uses_wimp_cmds &&
-                            cmd[com_num]->wimp_procedure != NULL)
-                            func = cmd[com_num]->wimp_procedure;
-                        else func = cmd[com_num]->procedure;
+                        func = cmd[com_num]->procedure;
                         if (func == NULL) send(CRASH);
                         com = cmd[com_num]->name;
                         num_args = 0;
-                        inhibit_menus = TRUE;
                         (*func)(); /* Run the command */
                         failures = 0;
                     } else print_parser_results(rest, FALSE); /* error msg */
@@ -678,12 +583,11 @@ command_loop(void) {
 /************************ Useful things for commands ************************/
 
 
-void
-abort_command(void) { send(SOFTABORT); }
+void abort_command(void) { send(SOFTABORT); }
 
 
-void error(const char *errmsg) /* guaranteed not to use ps */
-{
+void error(const char *errmsg) {
+    /* guaranteed not to use ps */
     print("error: ");
     print(errmsg);
     nl();
@@ -691,8 +595,7 @@ void error(const char *errmsg) /* guaranteed not to use ps */
 }
 
 
-void
-maybe_set_bool(bool *var) {
+void maybe_set_bool(bool *var) {
     char temp[TOKLEN + 1];
 
     if (stoken(&args, sREQUIRED, temp)) {
@@ -705,8 +608,7 @@ maybe_set_bool(bool *var) {
 }
 
 
-void
-maybe_set_real(real *var, real lbound, real hbound, real fmt) {
+void maybe_set_real(real *var, real lbound, real hbound, real fmt) {
     real temp;
 
     if (!nullstr(args)) {
@@ -720,8 +622,7 @@ maybe_set_real(real *var, real lbound, real hbound, real fmt) {
 }
 
 
-void
-maybe_set_long(long *var, long lbound, long hbound) {
+void maybe_set_long(long *var, long lbound, long hbound) {
     long temp;
 
     if (!nullstr(args)) {
@@ -736,8 +637,7 @@ maybe_set_long(long *var, long lbound, long hbound) {
 }
 
 
-void
-maybe_set_int(int *var, int lbound, int hbound) {
+void maybe_set_int(int *var, int lbound, int hbound) {
     int temp;
 
     if (!nullstr(args)) {
@@ -752,10 +652,7 @@ maybe_set_int(int *var, int lbound, int hbound) {
 }
 
 
-void
-set_usage_error( /* guaranteed not to use ps */
-        char *com_args
-) {
+void set_usage_error(char *com_args /* guaranteed not to use ps */) {
     print("error: illegal value for '");
     print(com);
     print("'\n");
@@ -774,10 +671,7 @@ set_usage_error( /* guaranteed not to use ps */
 }
 
 
-void
-usage_error(
-        int num /* num args given, maybe <0 */
-) {
+void usage_error(int num /* num args given, maybe <0 */) {
     if (cmd[com_num]->num_args == 0)
         sprintf(ps, "error: The '%s' command takes no arguments.\n", com);
     else
@@ -809,10 +703,7 @@ usage_error(
 #define TOOMANY \
 "error: Too many arguments for the '%s' command\n(%s%d argument%s expected).\n"
 
-void
-nomore_args(
-        int n /* for now, a dummy arg */
-) {
+void nomore_args(int n /* for now, a dummy arg */) {
     int mode, num;
     num = cmd[com_num]->num_args;
     mode = cmd[com_num]->num_args_prefix;
@@ -845,10 +736,7 @@ nomore_args(
 }
 
 
-void
-more_args(
-        int num /* num args given, maybe <0 */
-) {
+void more_args(int num /* num args given, maybe <0 */) {
     int mode, want;
     want = cmd[com_num]->num_args;
     mode = cmd[com_num]->num_args_prefix;
@@ -881,67 +769,7 @@ more_args(
 }
 
 
-void
-input_error(char *val, char *def) {
-    print("error: you have given an invalid response\n");
-    if (!nullstr(val)) {
-        print("expected: ");
-        print(val);
-        nl();
-    }
-    if (!nullstr(def)) {
-        print("default:  ");
-        print(def);
-        nl();
-    }
-
-    if (cmd[com_num]->help_key != HELPLESS) {
-        sprintf(ps, "try typing 'help %s' for details\n", com);
-        pr();
-    }
-
-    abort_command();
-}
-
-
-#define EXTRA_INPUT   "too many values given in input line"
-
-void
-expect_nomore_input(char *str, int mode, int num) {
-    if (nullstr(str)) return;
-    else if (num > 0)
-        sprintf(ps, "error: %s\n %s %d value%s were expected\n", EXTRA_INPUT,
-                (mode == EXACTLY ? "only" : "up to"),
-                num, maybe_s(num));
-    else sprintf(ps, "%s\n", EXTRA_INPUT);
-    pr();
-    print("try 'help ");
-    print(com);
-    print("' for details\n");
-    abort_command();
-}
-
-
-void
-expect_more_input(char *str, int mode, int num) {
-    if (!nullstr(str)) return;
-    else if (num > 0)
-        sprintf(ps, "error: missing input\n%s %d value%s expected\n",
-                (mode == EXACTLY ? "" : "at least"), num, (num > 1 ? "s were" : " was"));
-    else sprintf(ps, "error: missing input\n");
-    pr();
-    print("try 'help ");
-    print(com);
-    print("' for details\n");
-    abort_command();
-}
-
-
-bool
-split_arglist(
-        char **rest,
-        int divider /* character that arglist should be split on */
-) {
+bool split_arglist(char **rest, int divider /* character that arglist should be split on */) {
     int i, j;
 
     *rest = NULL;
@@ -954,37 +782,13 @@ split_arglist(
             i--;
             while (white(args[i]) && i > 0) i--;
             args[i + 1] = '\0';
-            return (TRUE);
+            return TRUE;
         }
-    return (FALSE);
+    return FALSE;
 }
 
 
-bool
-split_uncrunched_args(
-        char **rest,
-        int divider /* character that arglist should be split on */
-) {
-    int i, j;
-
-    *rest = NULL;
-    i = 0;
-    for (i = 0; uncrunched_args[i] != '\0'; i++)
-        if (uncrunched_args[i] == divider) {
-            j = i + 1;
-            while (white(uncrunched_args[j])) j++;
-            *rest = uncrunched_args + j;
-            i--;
-            while (white(uncrunched_args[i]) && i > 0) i--;
-            uncrunched_args[i + 1] = '\0';
-            return (TRUE);
-        }
-    return (FALSE);
-}
-
-
-void
-maybe_ok(char *str) {
+void maybe_ok(char *str) {
     if (update_top()) {
         if (photo != NULL) lib_puts(photo, str);
         lib_puts(out, "ok");
@@ -993,12 +797,8 @@ maybe_ok(char *str) {
 }
 
 
-void
-keep_user_amused(
-        char *thing, /* nullstr(str) means we are done, len<<TOKLEN, like one word */
-        int iter,
-        int max_iter
-) {
+void keep_user_amused(char *thing, int iter, int max_iter) {
+    /* nullstr(str) means we are done, len<<TOKLEN, like one word */
     char simple[TOKLEN + 1], fancy[TOKLEN + 1];
 
     if (iter == 0) {
@@ -1020,8 +820,7 @@ keep_user_amused(
 
 /**************************** Some Basic Commands ****************************/
 
-command
-show_cmd_history(void) {
+command show_cmd_history(void) {
     int i, num_to_print, first_to_print, printed_any;
     char *cmd_str;
 
@@ -1048,8 +847,7 @@ show_cmd_history(void) {
 }
 
 
-command
-quit(void) {
+command quit(void) {
     char token[TOKLEN + 1];
 
     if (interactive && !redirecting_input) {
@@ -1080,12 +878,7 @@ quit(void) {
 }
 
 
-command
-really_quit(void) { send(QUIT); }
-
-
-command
-run_from_file(void) {
+command run_from_file(void) {
     char file_name[PATH_LENGTH + 1];
 
     use_uncrunched_args();
@@ -1097,8 +890,7 @@ run_from_file(void) {
 }
 
 
-command
-do_photo(void) {
+command do_photo(void) {
     char file_name[TOKLEN + 1];
 
     use_uncrunched_args();
@@ -1137,14 +929,9 @@ do_photo(void) {
 }
 
 
-command
-set_more(void) { maybe_set_bool(&more); }
-
-command
-set_wizard(void) { maybe_set_bool(&wizard_mode); }
-
-command
-set_verbose_mem(void) { maybe_set_bool(&verbose_mem); }
+command set_wizard(void) {
+    maybe_set_bool(&wizard_mode);
+}
 
 
 #define s_or_space_colon (cmd[i]->num_args==1 ? ": ":"s:")
@@ -1161,8 +948,7 @@ set_verbose_mem(void) { maybe_set_bool(&verbose_mem); }
 "=============================================================================\
 \n"
 
-command
-help(void) {
+command help(void) {
     int j, i, k, n;
     char *name = get_temp_string(), *rest = NULL, *str = get_temp_string();
     bool got_any, got_it;
@@ -1326,8 +1112,7 @@ help(void) {
 }
 
 
-command
-about(void) {
+command about(void) {
     int n;
 
     print(HELP_DIVIDER);
@@ -1367,14 +1152,12 @@ about(void) {
 }
 
 
-command
-review_output(void) {
+command review_output(void) {
     review_memory();
     print("ok\n");
 }
 
-command
-show_time(void) {
+command show_time(void) {
     char *str;
 
     if (!nullstr(str = time_string())) {
@@ -1384,8 +1167,7 @@ show_time(void) {
 }
 
 
-command
-cd_command(void) {
+command cd_command(void) {
     char dir_name[PATH_LENGTH + 1];
 
     use_uncrunched_args();
@@ -1395,8 +1177,7 @@ cd_command(void) {
         if (get_directory(dir_name)) {
             sprintf(ps, "The current directory is '%s'\n", dir_name);
             pr();
-        }
-        else error("Can't get current directory name");
+        } else error("Can't get current directory name");
 
     } else { /* !nullstr(dir_name) */
         if (change_directory(dir_name)) {
@@ -1412,14 +1193,10 @@ cd_command(void) {
 }
 
 
-command
-system_command(void) {
+command system_command(void) {
     if (!nullstr(args)) { /* run shell command */
         if (shell_command(args)) {
-            if (curses)
-                print("\n        ...System Output Omitted...\n");
-            else if (logging)
-                lib_puts(photo, "\n        ...System Output Omitted...\n");
+            lib_puts(photo, "\n        ...System Output Omitted...\n");
             print("\nOK\n");
         } else {
             sprintf(ps, "Unable to run command '%s'", truncstr(args, 40));
@@ -1431,10 +1208,7 @@ system_command(void) {
         nl();
         flush(); /* for curses */
         if (subshell()) {
-            if (curses)
-                print("        ...System Interaction Omitted...\n");
-            else if (logging)
-                lib_puts(photo, "        ...System Interaction Omitted...\n");
+            lib_puts(photo, "        ...System Interaction Omitted...\n");
             lib_puts(out, "\n");  /* C shell does not print one on ctrl-D */
             print("\nBack in ");
             print(the_program);
@@ -1447,68 +1221,12 @@ system_command(void) {
 #define GIMME_A_COMMENT \
 "Enter your comment. End it with a period ('.') on a line by itself.\n"
 
-command
-comment(void) {
+command comment(void) {
     if (nullstr(args)) {
         print(GIMME_A_COMMENT);
         do {
             getln("");
             despace(ln);
-        }
-        while (!streq(ln, "."));
+        } while (!streq(ln, "."));
     } else print("ok\n");
 }
-
-
-
-
-/********** WIMP (Windows, Icons, Mouse, and Pointers) Support **********/
-
-#ifdef NOT_PUBLIC
-void
-wimp_start (void) /* Call from main() */
-{
-#ifdef HAVE_WIMP
-    if (wimp) do_wimp_start(menus,num_menus);
-#endif
-}
-
-
-void 
-mkwimp (char *name, char *menu_entry, int menu_num, void (*wimp_function)(void), void (*status_function)(void), void (*wimp_help_function)(void), int shortcut)
-{
-    int i;
-
-    if ((i=parser(name,(char**)NULL,TRUE))<0) send(CRASH);
-
-    cmd[i]->menu_entry= mkstrcpy(menu_entry);
-    cmd[i]->wimp_menu_num= menu_num;
-    cmd[i]->wimp_procedure= wimp_function;
-    cmd[i]->status_function= status_function;
-    cmd[i]->wimp_help= wimp_help_function;
-    cmd[i]->wimp_shortcut= shortcut;
-
-    if (menu_num>=MAX_NUM_MENUS || nullstr(menu[menu_num]->title) ||
-    menu[menu_num]->num_entries>=MAX_MENU_ENTRIES) send(CRASH);
-    menu[menu_num]->entry[(menu[menu_num]->num_entries)++]= cmd[i];
-}
-
-
-void
-mkmenu (int num, char *title)
-{
-    if (num>=MAX_NUM_MENUS) send(CRASH);
-    menu[num]->title=mkstrcpy(title);
-}
-
-
-COMMAND the_divider;
-
-void
-mkdivider (int menu_num)
-{
-    if (menu_num>=MAX_NUM_MENUS || nullstr(menu[menu_num]->title) ||
-    menu[menu_num]->num_entries>=MAX_MENU_ENTRIES) send(CRASH);
-    menu[menu_num]->entry[(menu[menu_num]->num_entries)++]= &the_divider;
-}
-#endif

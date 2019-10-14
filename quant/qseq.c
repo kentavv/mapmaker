@@ -13,15 +13,7 @@
 
 /********** QSEQ.C - QTL INTERVAL SEQUENCE HANDLERS **********/
 
-//#define INC_LIB
-//#define INC_TABLE
-//#define INC_SHELL     /* for now need wizard_mode definition, otherwise punt */
-//#define INC_CALLQCTM
-//#define INC_QTOPLEVEL
-//#define INC_QLOWLEVEL
 #include "qtl.h"
-
-//void free_qtl_sequence (QTL_SEQUENCE *p);
 
 /***** Global *****/
 QTL_SEQUENCE *ints;
@@ -32,14 +24,9 @@ TABLE *named_sequences, *sequence_history;
 bool Omore; /* used in for_all_orders iterator macro */
 
 /***** Local *****/
-//void seq_init(void);
-bool set_qtl_sequence(char *str, char *errmsg, int *errpos);
-
 void free_qtl_sequence(QTL_SEQUENCE *p);
 
 void free_seq_options(QTL_SEQ_OPTION *q);
-
-QTL_SEQUENCE *compile_intervals(char *str);
 
 QTL_SEQUENCE *int_compiler(char **str);
 
@@ -57,15 +44,6 @@ void get_genetics_spec(char **str, GENETICS *g);
 
 void enumerate_possibilities(QTL_SEQUENCE *p);
 
-bool reset_state(QTL_SEQUENCE *p, bool wiggle, int *pnum_intervals, int *pcont_vars, int *pnum_orders, int *pwiggle_ints);
-
-//void get_seq_free_genetics(QTL_SEQUENCE *p, bool *free);
-bool get_order(QTL_SEQUENCE *p, bool wiggle, QTL_MAP *map);
-
-bool next_order(QTL_SEQUENCE *p, int *perm);
-
-bool next_wiggle(QTL_SEQUENCE *p, int *perm, real cm_step);
-
 bool contig_perm(QTL_SEQUENCE *p, int *perm, bool wiggle);
 
 bool discont_perm(QTL_SEQUENCE *p, int *perm, bool wiggle);
@@ -74,41 +52,10 @@ bool wiggle_perm(QTL_SEQUENCE *p, bool *contig, bool *wiggled, real cm_step);
 
 bool test_perm(QTL_SEQUENCE *p, int *perm, bool wiggle, bool perm_rightmost);
 
-bool name_sequence(char *name, char *seq, char **why_not);
-
-bool unname_sequence(char *name, char **why_not);
-
-void add_to_seq_history(char *seq);
-
-char *expand_named_entries(char *str);
-
 void swap_for_dash(char *str);
 
 void unswap_for_dash(char *str);
 
-void name_peaks(WIGGLE_PEAK *peak, char *prefix, bool forget);
-
-//QTL_SEQUENCE *compile_intervals();
-//QTL_SEQUENCE *int_compiler();
-//QTL_SEQ_OPTION *mkinterval();
-//QTL_SEQ_OPTION *mkcontinuous();
-//void free_seq_options();
-//bool try_fix_pos();
-//bool try_range();
-//void get_genetics_spec();
-//void enumerate_possibilities();
-//bool contig_perm();
-//bool discont_perm();
-//bool wiggle_perm();
-//bool test_perm();
-//void swap_for_dash();
-//void unswap_for_dash();
-//
-bool try_right(char **str /* may be side-effected */, QTL_SEQ_OPTION *opt /* may be side-effected */);
-
-bool get_order(QTL_SEQUENCE *p, bool wiggle, QTL_MAP *map);
-
-int ichoose(int n, int k); /* Best algorithm for small k */
 int add_continuous_var(QTL_MAP *map, int trait, real fix_weight);
 
 char *seqtoken, *seqerr, *seqtoken_ptr;
@@ -128,8 +75,7 @@ char *seqtoken, *seqerr, *seqtoken_ptr;
 #define SEQ_SELF_DELIMITING    "{}[]+:-|~"
 
 
-void
-seq_init(void) {
+void seq_init(void) {
     ints = NULL;
     array(ints_string, SEQ_LEN + 1, char);
     array(seqtoken, TOKLEN + 1, char);
@@ -144,12 +90,7 @@ seq_init(void) {
 }
 
 
-bool
-set_qtl_sequence(
-        char *str, /* str may be uncrunched */
-        char *errmsg,
-        int *errpos
-) {
+bool set_qtl_sequence(char *str, /* str may be uncrunched */ char *errmsg, int *errpos) {
     QTL_SEQUENCE *new_ints;
     char new_seq[MAXLINE + 1];
 
@@ -169,8 +110,7 @@ set_qtl_sequence(
 }
 
 
-void
-free_qtl_sequence(QTL_SEQUENCE *p) {
+void free_qtl_sequence(QTL_SEQUENCE *p) {
     if (p == NULL || p->dont_free) return;
     free_qtl_sequence(p->next);
     free_seq_options(p->option);
@@ -182,8 +122,7 @@ free_qtl_sequence(QTL_SEQUENCE *p) {
     unsingle(p, QTL_SEQUENCE);
 }
 
-void
-free_seq_options(QTL_SEQ_OPTION *q) {
+void free_seq_options(QTL_SEQ_OPTION *q) {
     if (q == NULL) return;
     if (q->next != NULL) free_seq_options(q->next);
     unsingle(q, QTL_SEQ_OPTION);
@@ -222,8 +161,7 @@ the ints string. ***/
 #define err_NOTRAIT     "Expected trait name(s) and/or number(s) inside {...}"
 #define err_TRAITISCV    "Illegal sequence and trait combination.\nThe current trait is used as a continuous variable also."
 
-QTL_SEQUENCE *
-compile_intervals(char *str) {
+QTL_SEQUENCE *compile_intervals(char *str) {
     QTL_SEQUENCE *first, *last, *p;
     char *ptr, *old_self_delim;
 
@@ -271,8 +209,7 @@ compile_intervals(char *str) {
 
 char dummy;
 
-QTL_SEQUENCE *
-int_compiler(char **str) {
+QTL_SEQUENCE *int_compiler(char **str) {
     int left, right, repeat, trait;
     QTL_SEQUENCE *me;
     QTL_SEQ_OPTION *p, *first, *last;
@@ -427,8 +364,7 @@ int_compiler(char **str) {
 }
 
 
-QTL_SEQ_OPTION *
-mkcontinuous(int trait, real fix_weight) {
+QTL_SEQ_OPTION *mkcontinuous(int trait, real fix_weight) {
     QTL_SEQ_OPTION *p;
 
     single(p, QTL_SEQ_OPTION);
@@ -439,8 +375,7 @@ mkcontinuous(int trait, real fix_weight) {
 }
 
 
-QTL_SEQ_OPTION *
-mkinterval(int left, int right) {
+QTL_SEQ_OPTION *mkinterval(int left, int right) {
     QTL_SEQ_OPTION *p;
 
     single(p, QTL_SEQ_OPTION);
@@ -466,11 +401,7 @@ bool try_right(char **str /* may be side-effected */, QTL_SEQ_OPTION *opt /* may
 }
 
 
-bool
-try_fix_pos(
-        char **str, /* may be side-effected */
-        QTL_SEQ_OPTION *opt /* may be side-effected */
-) {
+bool try_fix_pos(char **str, /* may be side-effected */ QTL_SEQ_OPTION *opt /* may be side-effected */) {
     real pos, rf;
 
     if (LOOKAHEAD(PLUS_SIGN)) {
@@ -485,11 +416,7 @@ try_fix_pos(
 }
 
 
-bool
-try_range(
-        char **str,  /* may be side-effected */
-        QTL_SEQ_OPTION *opt /* may be side-effected (turned into a RANGE) */
-) {
+bool try_range(char **str,  /* may be side-effected */ QTL_SEQ_OPTION *opt /* may be side-effected (turned into a RANGE) */) {
     int num;
     char right[TOKLEN + 1];
 
@@ -508,9 +435,7 @@ try_range(
 #define INTERX_TYPE_(t) \
 if (raw.data_type==INTERCROSS) g->interx_type=t; else FAIL_(err_INTERX)
 
-void
-get_genetics_spec(char **str, GENETICS *g) {
-
+void get_genetics_spec(char **str, GENETICS *g) {
     real a, d;
     char c;
 
@@ -542,8 +467,7 @@ get_genetics_spec(char **str, GENETICS *g) {
 
 /********** THINGS FOR BUILDING INTERVALS TREES **********/
 
-void
-enumerate_possibilities(QTL_SEQUENCE *p) {
+void enumerate_possibilities(QTL_SEQUENCE *p) {
     int i, left, prev_right, contig;
     QTL_SEQ_OPTION *q;
     if (p == NULL) send(CRASH);
@@ -636,11 +560,7 @@ get_order(), and reset_map() return bools so that they may be used in
 the for_all_orders() macro.
 #endif
 
-bool reset_state(p, wiggle, pnum_intervals, pcont_vars, pnum_orders, pwiggle_ints)
-        QTL_SEQUENCE *p;
-        bool wiggle;
-        int *pnum_intervals, *pcont_vars, *pnum_orders, *pwiggle_ints;
-{
+bool reset_state(QTL_SEQUENCE *p, bool wiggle, int *pnum_intervals, int *pcont_vars, int *pnum_orders, int *pwiggle_ints) {
     int num_orders, num_intervals, num_models, wiggle_ints, i, cont_vars;
     if (p == NULL) send(CRASH);
 
@@ -683,11 +603,7 @@ bool reset_state(p, wiggle, pnum_intervals, pcont_vars, pnum_orders, pwiggle_int
 }
 
 
-void
-get_seq_free_genetics(
-        QTL_SEQUENCE *p,
-        bool *free /* [#intervals] should be alloced - elts are side-effected */
-) {
+void get_seq_free_genetics(QTL_SEQUENCE *p, bool *free /* [#intervals] should be alloced - elts are side-effected */) {
     int i, j;
 
     i = 0;
@@ -735,11 +651,7 @@ bool get_order(QTL_SEQUENCE *p, bool wiggle, QTL_MAP *map) {
 /* The permutation routines treat cont_var's as a discontiguous permutation,
    simply by the fact that the contig[i] flags are FALSE for i!=0. */
 
-bool
-next_order(
-        QTL_SEQUENCE *p,
-        int *perm /* side-effected to be the interval# permed */
-) {
+bool next_order(QTL_SEQUENCE *p, int *perm /* side-effected to be the interval# permed */) {
     int permed_int, type;
 
     permed_int = 0;
@@ -788,12 +700,7 @@ next_wiggle(
 }
 
 
-bool
-contig_perm(
-        QTL_SEQUENCE *p,
-        int *perm, /* side-effected to be the interval# permed */
-        bool wiggle
-) {
+bool contig_perm(QTL_SEQUENCE *p, int *perm, /* side-effected to be the interval# permed */ bool wiggle) {
     int the_perm, i, j, *k, min_k, max_k, contig_end;
 
     if (wiggle && p->next == NULL) return (FALSE);
@@ -840,12 +747,7 @@ contig_perm(
 }
 
 
-bool
-discont_perm(
-        QTL_SEQUENCE *p,
-        int *perm, /* side-effected to be the interval# permed */
-        bool wiggle
-) {
+bool discont_perm(QTL_SEQUENCE *p, int *perm, /* side-effected to be the interval# permed */ bool wiggle) {
     int the_perm, i, j, *k, min_k, max_k;
 
     if (p->next == NULL && wiggle) return (FALSE);
@@ -898,13 +800,7 @@ discont_perm(
 }
 
 
-bool
-wiggle_perm(
-        QTL_SEQUENCE *p,
-        bool *contig,
-        bool *wiggled, /* side-effected */
-        real cm_step
-) {
+bool wiggle_perm(QTL_SEQUENCE *p, bool *contig, bool *wiggled, /* side-effected */ real cm_step) {
     int i;
 
     if (p->repeat > 1 || p->next != NULL || p->isa_continuous_var) send(CRASH);
@@ -912,9 +808,7 @@ wiggle_perm(
     if (p->pos_cm < p->interval_cm) {
         *contig = *wiggled = TRUE;
         return (TRUE);
-    }
-
-    else if (p->count[0] < p->num_options - 1) {
+    } else if (p->count[0] < p->num_options - 1) {
         /* don't change this without changing the code in store_wiggle! */
         i = (p->count[0] += 1);
         p->pos_cm = 0.0;
@@ -926,13 +820,7 @@ wiggle_perm(
 }
 
 
-bool
-test_perm(
-        QTL_SEQUENCE *p,
-        int *perm, /* side-effected to be the interval# permed */
-        bool wiggle,
-        bool perm_rightmost
-) {
+bool test_perm(QTL_SEQUENCE *p, int *perm, /* side-effected to be the interval# permed */ bool wiggle, bool perm_rightmost) {
     int the_perm, j, *k, min_k;
 
     if (raw.data_type == BACKCROSS) return (FALSE);
@@ -980,8 +868,7 @@ test_perm(
 /********** SEQUENCE NAMES **********/
 
 
-bool
-name_sequence(char *name, char *seq, char **why_not) {
+bool name_sequence(char *name, char *seq, char **why_not) {
     if (name[0] == '*') name++;
     if (!valid_name(name)) {
         *why_not = ptr_to("illegal name");
@@ -991,8 +878,7 @@ name_sequence(char *name, char *seq, char **why_not) {
     return (TRUE);
 }
 
-bool
-unname_sequence(char *name, char **why_not) {
+bool unname_sequence(char *name, char **why_not) {
     int foo, fail;
     char *err = get_temp_string();
 
@@ -1016,8 +902,7 @@ unname_sequence(char *name, char **why_not) {
     return (TRUE);
 }
 
-void
-add_to_seq_history(char *seq) {
+void add_to_seq_history(char *seq) {
     int seqnum;
 
     seqnum = context[active_context]->seq_history_num;
@@ -1026,8 +911,7 @@ add_to_seq_history(char *seq) {
     context[active_context]->seq_history_num = seqnum;
 }
 
-char *
-expand_named_entries(char *str) {
+char *expand_named_entries(char *str) {
     char *every, *super_exp, *new_str, *tok, *expansion, *dummy;
     char *temp_str;
     int err, num;
@@ -1105,89 +989,21 @@ expand_named_entries(char *str) {
    numbers parse wrong. So, we swap '-' for SURROGATE_DASH which should be
    self-delimiting, and swap back again when compile_sequence() is done. */
 
-void
-swap_for_dash( /* internal use only */
-        char *str
-) {
+void swap_for_dash(char *str) {
+    /* internal use only */
     int i;
     for (i = 0; str[i] != '\0'; i++) if (str[i] == '-') str[i] = SURROGATE_DASH_char;
 }
 
 
-void
-unswap_for_dash( /* internal use only */
-        char *str
-) {
+void unswap_for_dash(char *str) {
+    /* internal use only */
     int i;
     for (i = 0; str[i] != '\0'; i++) if (str[i] == SURROGATE_DASH_char) str[i] = '-';
 }
 
 
-#ifdef OBSOLETE
-int
-check_interval (/* make sure all is OK - return T or F */
-    int *left,
-    int *right,	              /* swap them if ordered wrong */
-    real *fix_pos
-)
-{
-    int temp; /* KLUDGED: NEEDS WORK */
-    /* check int len? */
-    if (!valid_locus_num(left)) return(FALSE);
-    if (!valid_locus_num(right)) return(FALSE);
-    if (*fix_pos!=DONT_FIX && zero_interval(*left,*right)) return(FALSE);
-
-    if (special_locus(*left)) {
-        if (special_locus(*right)) return(FALSE);
-        else { temp= *left; *left= *right; *right=temp; } /* swap */
-        } else if (zero_interval(*left,*right)) { /* a point */
-        if (!valid_interval_num(*left)) return(FALSE);
-        ++*right; *fix_pos=0.0;
-    } else if (*left>*right && !special_locus(*right)) {
-        temp= *left; *left= *right; *right=temp; /* swap */
-    }
-    if (*fix_pos!=DONT_FIX) {
-        if (*fix_pos > map_length(*left,*right))
-          *fix_pos=map_length(*left,*right);
-    }
-    return(TRUE);
-}
-
-int
-check_range (int *from, int *to, int zero_pos)
-{
-    int temp;
-
-        if (!valid_locus_num(from) || !valid_locus_num(to) ||
-        *from==INF_LOCUS || *from==NO_LOCUS || *from==ANY_LOCUS ||
-        *to==INF_LOCUS   || *to==NO_LOCUS   || *to==ANY_LOCUS)
-            return(FALSE);
-    if (*from>*to) { temp= *from; *from= *to; *to=temp; }
-    if (*to==raw.n_loci-1 && !zero_pos) return(FALSE);
-       else return(TRUE);
-}
-
-
-void 
-sticky_minus (
-    char *str /* str must be despaced, and is side-effected */
-)
-{
-    int i, j;
-    
-    for (i=0, j=0; str[i]!='\0'; i++) 
-      if (str[i]=='-' && j>0 && str[j]==' ') j--;
-      else if (str[i]==' ' && j>0 && str[j]=='-') continue;
-      else str[j++]=str[i];		
-    str[j++]='\0'; 
-}
-
-
-#endif
-
-
-void
-name_peaks(WIGGLE_PEAK *peak, char *prefix, bool forget) {
+void name_peaks(WIGGLE_PEAK *peak, char *prefix, bool forget) {
     char *name, *real_name, *seq_str, *seq_to_name, *err;
     int i, fail, count, peaks;
 

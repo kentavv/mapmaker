@@ -85,31 +85,27 @@ ps_file_start(FILE *fp) {
     fprintf(fp, "%%%%EndSetup\n");
 }
 
-void
-ps_file_end(FILE *fp) {
+void ps_file_end(FILE *fp) {
     fprintf(fp, "%%%%Trailer\n");
     fprintf(fp, "grestore\n");
     fprintf(fp, "end %% Map_Painter_prolog\n");
     fprintf(fp, "%%%%EOF\n");
 }
 
-void
-ps_page_start(FILE *fp, int pagenum) {
+void ps_page_start(FILE *fp, int pagenum) {
     fprintf(fp, "%%%%Page: ? %d\n", pagenum);
     fprintf(fp, "%%%%BeginPageSetup\n");
     fprintf(fp, "LM\n");
     fprintf(fp, "%%%%EndPageSetup\n");
 }
 
-void
-ps_page_end(FILE *fp) {
+void ps_page_end(FILE *fp) {
     fprintf(fp, "GM showpage\n");
 }
 
 #define LAST_INTERVAL (-999.0)
 
-void
-print_ps_map(FILE *fp, MAP *map) {
+void print_ps_map(FILE *fp, MAP *map) {
     int i;
     double map_length = 0.0, interval_length, ps_length, scale;
     char *loc_str;
@@ -162,8 +158,7 @@ print_ps_map(FILE *fp, MAP *map) {
     ps_file_end(fp);
 }
 
-void
-print_ps_chrom(FILE *fp, int chrom) {
+void print_ps_chrom(FILE *fp, int chrom) {
     int i;
     real map_length, scale;
 
@@ -187,8 +182,7 @@ print_ps_chrom(FILE *fp, int chrom) {
     ps_file_end(fp);
 }
 
-void
-print_all_ps_chroms(FILE *fp) {
+void print_all_ps_chroms(FILE *fp) {
     int i, j;
     real map_length, best, scale;
 
@@ -212,8 +206,7 @@ print_all_ps_chroms(FILE *fp) {
     ps_file_end(fp);
 }
 
-real
-ps_scale(real map_length) {
+real ps_scale(real map_length) {
     real scale;
 
     if (map_length > LONGEST_MAP) error("map too long for output");
@@ -225,8 +218,7 @@ ps_scale(real map_length) {
 
 #define PLACE_STRING 200
 
-void
-ps_dump_chrom(FILE *fp, int chrom, real scale) {
+void ps_dump_chrom(FILE *fp, int chrom, real scale) {
     int i, j, k, l, num_crunched, interval = 0, marker;
     double interval_length, ps_length, dist = 0.;
     char *loc_str, **placed_markers = NULL;
@@ -371,8 +363,7 @@ ps_dump_chrom(FILE *fp, int chrom, real scale) {
 }
 
 
-char *
-ps_loc_str(int i) {
+char *ps_loc_str(int i) {
     char *tempstr;
 
     if (print_names) return (raw.locus_name[i]);
@@ -383,8 +374,7 @@ ps_loc_str(int i) {
     }
 }
 
-char *
-ps_frame_str(int i) {
+char *ps_frame_str(int i) {
     int mark;
     char *tempstr;
 
@@ -398,8 +388,3 @@ ps_frame_str(int i) {
         return (tempstr);
     }
 }
-
-
-
-
-

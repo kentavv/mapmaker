@@ -11,8 +11,6 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-//#define INC_LIB
-//#define INC_SHELL
 #include "system.h"
 #include "table.h"
 
@@ -29,9 +27,6 @@ up names is done using matches(), so that it is case-insensitive and
 allows abbreviations.
 ***************************************************************************/
 
-/* Internal declarations */
-//TABLE_ENTRY *allocate_table_entries();
-//TABLE_ENTRY *get_entry_to_bash();
 TABLE_ENTRY *Te; /* used in the for_all...() macros */
 
 TABLE *allocate_table(int num_entries, int str_len, int expand_by, bool named) {
@@ -54,8 +49,7 @@ TABLE *allocate_table(int num_entries, int str_len, int expand_by, bool named) {
 }
 
 
-TABLE_ENTRY *
-allocate_table_entries(int num_entries, int str_len, bool named) {
+TABLE_ENTRY *allocate_table_entries(int num_entries, int str_len, bool named) {
     TABLE_ENTRY *q;
 
     if (num_entries == 0) return (NULL);
@@ -70,8 +64,7 @@ allocate_table_entries(int num_entries, int str_len, bool named) {
 }
 
 
-void
-free_table(TABLE *p) {
+void free_table(TABLE *p) {
     TABLE_ENTRY *q;
 
     if (p == NULL) return;
@@ -82,8 +75,7 @@ free_table(TABLE *p) {
 }
 
 
-int
-count_table_entries(TABLE *p) {
+int count_table_entries(TABLE *p) {
     int i;
     TABLE_ENTRY *q;
     for (i = 0, q = p->list; q != NULL; q = q->next) i++;
@@ -91,8 +83,7 @@ count_table_entries(TABLE *p) {
 }
 
 
-TABLE_ENTRY *
-get_entry_to_bash(TABLE *p) {
+TABLE_ENTRY *get_entry_to_bash(TABLE *p) {
     TABLE_ENTRY *q;
 
     /* Make q the entry to bash, and hack p->list and p->unused accordingly */
@@ -116,12 +107,7 @@ get_entry_to_bash(TABLE *p) {
 }
 
 
-void
-put_named_entry(
-        char *name,
-        char *str,
-        TABLE *p /* side-effected */
-) {
+void put_named_entry(char *name, char *str, TABLE *p /* side-effected */) {
     TABLE_ENTRY *last, *q;
 
     if (!p->named_entries || !valid_name(name)) send(CRASH);
@@ -148,14 +134,8 @@ put_named_entry(
 }
 
 
-bool
-get_named_entry(
-        char *name,
-        char **p_real_name,
-        char **p_str,  /* side-effected */
-        TABLE *p, /* side-effected */
-        flag *fail_reason /* side-effected */
-) {
+bool get_named_entry(char *name, char **p_real_name, char **p_str,  /* side-effected */        TABLE *p, /* side-effected */
+                     flag *fail_reason /* side-effected */) {
     TABLE_ENTRY *q;
 
     /* Changed to allow only exact matches */
@@ -164,16 +144,15 @@ get_named_entry(
         if (xstreq(name, q->id.name)) {
             *p_str = q->string;
             *p_real_name = q->id.name;
-            return (TRUE);
+            return TRUE;
         }
     }
     *fail_reason = NAME_DOESNT_MATCH;
-    return (FALSE);
+    return FALSE;
 }
 
 
-bool
-delete_named_entry(char *name, TABLE *p, flag *fail_reason) {
+bool delete_named_entry(char *name, TABLE *p, flag *fail_reason) {
     TABLE_ENTRY *match, *match_prev, *q;
 
     if (!p->named_entries || !is_a_token(name)) send(CRASH);
@@ -185,16 +164,11 @@ delete_named_entry(char *name, TABLE *p, flag *fail_reason) {
         } else match_prev = match;
     }
     *fail_reason = NAME_DOESNT_MATCH;
-    return (FALSE);
+    return FALSE;
 }
 
 
-void
-put_numbered_entry(
-        char *str,
-        TABLE *p,
-        int *num /* side-effected */
-) {
+void put_numbered_entry(char *str, TABLE *p, int *num /* side-effected */) {
     TABLE_ENTRY *q, *last;
     if (p->named_entries) send(CRASH);
 
@@ -211,20 +185,18 @@ put_numbered_entry(
 }
 
 
-bool
-get_numbered_entry(int num, char **p_str, TABLE *p) {
+bool get_numbered_entry(int num, char **p_str, TABLE *p) {
     TABLE_ENTRY *q;
     if (p->named_entries) send(CRASH);
 
     for (q = p->list; q != NULL; q = q->next) if (q->id.num == num) break;
-    if (q == NULL) return (FALSE);
+    if (q == NULL) return FALSE;
     *p_str = q->string;
-    return (TRUE);
+    return TRUE;
 }
 
 
-void
-save_table(TABLE *p, FILE *fp, int index) {
+void save_table(TABLE *p, FILE *fp, int index) {
     if (index == INDEX_BY_NAME) {
         for (Te = p->list; Te != NULL; Te = Te->next) {
             sprintf(ps, "%s %s\n", Te->id.name, Te->string);
@@ -238,8 +210,7 @@ save_table(TABLE *p, FILE *fp, int index) {
     }
 }
 
-void
-load_table(TABLE *p, FILE *fp, int index, int num_entries) {
+void load_table(TABLE *p, FILE *fp, int index, int num_entries) {
     char *str = NULL, *ptr, name[TOKLEN + 1];
     int num, i;
 

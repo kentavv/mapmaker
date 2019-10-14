@@ -19,7 +19,6 @@ inputted equation and converts it to an array of structures in reverse
 polish notation, and evaluate_equation evlautes the equation over a set
 of points ***/
 
-
 /* This is the data structure that I propose to use.  It is basically 
 made up of two parts - is_a which is a flag that can have three 
 possible values, SYMBOL, VARIABLE, or NUMBER, which indicate what the 
@@ -62,19 +61,7 @@ typedef struct {
     arrays and pointers that have been malloced, and reinitialize all
     internal variables
 */
-EQUATION **make_equation(char *original_equation, int (*variable_lookup)());
-
-void parse_equation(char *original_equation, EQUATION **parsed_eqn, int (*variable_lookup)(), int *new_size, int *the_index);
-
-void add_number(int mark, EQUATION **parsed_eqn, char *parsed_token, int *new_size, int *the_index);
-
-void add_to_parsed_eqn(int mark, EQUATION **parsed_eqn, int parsed_token, int *new_size, int *the_index);
-
-void add_parenthesis(int *i, int par, int mark, EQUATION **parsed_eqn);
-
-void check_sizeof_array(int *size);
-
-void postfix(EQUATION **parsed_eqn, EQUATION **postfixed);
+EQUATION **make_equation(char *original_equation, int (*variable_lookup)(char *));
 
 /***
  *
@@ -92,38 +79,12 @@ void postfix(EQUATION **parsed_eqn, EQUATION **postfixed);
    MATHERR, if any other type of error occurs, then it probably a coding
    error that will have to be looked at, so the message CRASH will be sent
 */
-real evaluate_equation(EQUATION **postfixed, real (*value_find)());
+real evaluate_equation(EQUATION **postfixed, real (*value_find)(int));
 
-real pop_stack(void) /* This function returns the top value from the stack */;
-
-real push_stack(real value_to_push);
-
-void eqn_init(void);   /* Takes no arguments, it mallocs pasred and temp_eqn */
+void eqn_init(void);   /* Takes no arguments, it mallocs parsed and temp_eqn */
 int variable_lookup(char *item);
 
 real value_lookup(int index);
-
-#define SYMBOL -1           /* these are flags          */
-#define VARIABLE 2          /* to be used in the        */
-#define NUMBER 1            /* data structures EQUATION */
-
-#define PLUS 1
-#define MINUS 2
-#define MULTIPLY 3
-#define DIVIDE 4
-#define EXP 5
-#define LOG 6
-#define LN 7
-#define SIN 8
-#define ASIN 9
-#define COS 10
-#define ACOS 11
-#define TAN 12
-#define ATAN 13
-#define LEFT_P 14
-#define RIGHT_P 15
-
-/* Various important global variables */
 
 extern real val[];
 extern int table_size;

@@ -11,11 +11,6 @@
 
 /* qwiggle.c - code for global wiggle/compare data storage, save & load */
 
-//#define INC_LIB
-//#define INC_SHELL
-//#define INC_CALLQCTM
-//#define INC_QTOPLEVEL
-//#define INC_QLOWLEVEL
 #include "qtl.h"
 
 /* globals */
@@ -43,8 +38,7 @@ void load_interval(FILE *fp, WIGGLE_INTERVAL *interval);
 
 /* functions */
 
-void
-wiggle_init(void) {
+void wiggle_init(void) {
     /* qtls=NULL; */
     wiggles = NULL;
     compares = NULL;
@@ -54,13 +48,9 @@ wiggle_init(void) {
 }
 
 
-void
-allocate_qtl_struct( /* allocate globals */
-        int n_wiggles,
-        int n_compares
-)
+void allocate_qtl_struct(int n_wiggles, int n_compares) {
+    /* allocate globals */
 /* use globals raw.max_traits, raw.data_type, and raw.n_loci as params */
-{
     int i;
 
     if (raw.data_type == NO_DATA) send(CRASH);
@@ -105,10 +95,8 @@ allocate_qtl_struct( /* allocate globals */
 
 /***** Stuff for the wiggle struct to save wiggle output... *****/
 
-int
-allocate_wiggle_struct(int trait, QTL_SEQUENCE *seq, char *seq_str, int n_intervals, int n_orders, int n_wiggled)
+int allocate_wiggle_struct(int trait, QTL_SEQUENCE *seq, char *seq_str, int n_intervals, int n_orders, int n_wiggled) {
 /* return wiggles struct entry#, or -1 if error */
-{
     int n, i, j;
 
     /* KLUDGE - How to recycle these things? */
@@ -160,11 +148,8 @@ allocate_wiggle_struct(int trait, QTL_SEQUENCE *seq, char *seq_str, int n_interv
 }
 
 
-void
-bash_wiggle_struct(
+void bash_wiggle_struct(int n) {
 /* this is a KLUDGE for now - we need to recycle these better */
-        int n
-) {
     unmatrix(wiggles[n]->data, wiggles[n]->num_orders, WIGGLE_INTERVAL);
     unarray(wiggles[n]->seq_string, char);
 
@@ -247,42 +232,11 @@ void store_wiggle_interval(int wiggle_num, QTL_MAP *map, bool new_left_order, bo
             if (map->constraint[0].backx_weight != DONT_FIX) break;
         }
         if ((j = map->left[0]) != map->right[0] - 1) break;
-#ifdef DELETED
-        bool new;
-        /* It does want to go in... */
-        /* if (qtls[t][i][j]!=NULL) {  but these wiggle data already exist! */
-            /* prev= qtls[t][i][j]; new=FALSE; */
-            /* If the old one has points, we keep the higher resolution one */
-            if (prev->point==NULL || data->cm_increment<=prev->cm_increment) {
-            prev->in_qtls_struct=FALSE;
-            qtls[t][i][j]=data;
-            data->in_qtls_struct=TRUE;
-            new=TRUE;
-            }
-            /* If the max_like map, but not the points, was filled in
-               in the old struct we merge the ML map into the new struct. */
-            if (new && prev->max_like_map) {
-            mapcpy(data->map,prev->map);
-            data->max_like_map= TRUE;
-            }
-            /* If ONLY the max_like_map exists in the old wiggle_interval
-               struct then it should be freed. */
-           if (new   && prev->point==NULL) {
-            free_qtl_map(prev->map); prev->map=NULL;
-            unsingle(prev,WIGGLE_INTERVAL);
-            }
-
-            else { /* No previous data exist. */
-            qtls[t][i][j]=data;
-            data->in_qtls_struct=TRUE;
-        }
-#endif
     } while (FALSE); /* not really a loop, just used do {} for convenience */
 }
 
 
-void
-store_wiggle_point(int wiggle_num, QTL_MAP *map) {
+void store_wiggle_point(int wiggle_num, QTL_MAP *map) {
     WIGGLE_OPERATION *op = NULL;
     WIGGLE_INTERVAL *data;
     int i, j;
@@ -318,10 +272,8 @@ store_wiggle_point(int wiggle_num, QTL_MAP *map) {
 
 /***** Stuff for the COMPARE struct to save compare output... *****/
 
-int
-allocate_compare_struct(int trait, QTL_SEQUENCE *seq, char *seq_str, int n_intervals, int n_orders)
+int allocate_compare_struct(int trait, QTL_SEQUENCE *seq, char *seq_str, int n_intervals, int n_orders) {
 /* return compare struct entry#, or -1 if error */
-{
     int n;
 
     /* KLUDGE - How to recycle these things? */
@@ -359,11 +311,8 @@ allocate_compare_struct(int trait, QTL_SEQUENCE *seq, char *seq_str, int n_inter
 }
 
 
-void
-bash_compare_struct(
+void bash_compare_struct(int n) {
 /* this is a KLUDGE for now - we need to recycle these better */
-        int n
-) {
     free_qtl_map(compares[n]->data[0]->map);
     compares[n]->data[0]->map = NULL;
     unparray(compares[n]->data, compares[n]->num_orders, COMPARE_DATA);
@@ -420,26 +369,6 @@ void store_compare_map(int compare_num, QTL_MAP *map, bool contig) {
                     if (map->constraint[0].backx_weight != DONT_FIX) break;
                 }
                 if ((/*j=*/map->left[0]) != map->right[0] - 1) break;
-#ifdef DELETED
-                /* It does want to go in... */
-                if (qtls[t][i][j]!=NULL) { /* but data for this qtl already exists! */
-                    prev= qtls[t][i][j];
-                    /* Regardless of whether the old one has a max-like qtl_map,
-                       we give it this one. */
-                    prev->max_like_map= TRUE;
-                    mapcpy(prev->map,data->map);
-                } else { /* No previous data exist, so we alloc a dummy wiggle_int. */
-                    wig=NULL;
-                    single(wig,WIGGLE_INTERVAL);
-                    wig->map=NULL; wig->point=NULL;
-                    wig->map=
-                      alloc_qtl_map(map->num_intervals,map->num_continuous_vars);
-                    mapcpy(wig->map,data->map);
-                    wig->in_qtls_struct=TRUE;
-                    wig->max_like_map= TRUE;
-                    qtls[t][i][j]=wig;
-                }
-#endif
             } when_aborting {
             if (wig != NULL) free_qtl_map(wig->map);
             unsingle(wig, WIGGLE_INTERVAL);
@@ -455,8 +384,7 @@ bool step(int *interval, int *point, bool *contig, WIGGLE_INTERVAL **wig, int n_
         if (++*point < wig[*interval]->num_points) {
             *contig = TRUE;
             return (TRUE);
-        }
-        else if (++*interval < n_intervals) {
+        } else if (++*interval < n_intervals) {
             *contig = wig[*interval]->contig;
             *point = 0;
             return (TRUE);
@@ -468,8 +396,7 @@ bool step(int *interval, int *point, bool *contig, WIGGLE_INTERVAL **wig, int n_
         if (--*point >= 0) {
             *contig = TRUE;
             return (TRUE);
-        }
-        else if (--*interval >= 0) {
+        } else if (--*interval >= 0) {
             if (*interval + 1 == n_intervals) *contig = TRUE;
             else *contig = wig[*interval + 1]->contig;
             *point = wig[*interval]->num_points - 1;
@@ -596,14 +523,12 @@ WIGGLE_PEAK *peak_finder(int *interval, int *point, bool *off_end, bool get_peak
                     maxima = lod;
                     peak_i = *interval;
                     peak_j = *point;
-                }
-                else if ((falloff < 0.0 && lod < maxima + falloff) ||
-                         (falloff > 0.0 && lod < falloff)) {
+                } else if ((falloff < 0.0 && lod < maxima + falloff) ||
+                           (falloff > 0.0 && lod < falloff)) {
                     off_right = FALSE;
                     *off_end = FALSE;
                     break;
-                }
-                else {
+                } else {
                     right_i = *interval;
                     right_j = *point;
                 }
@@ -621,8 +546,7 @@ WIGGLE_PEAK *peak_finder(int *interval, int *point, bool *off_end, bool get_peak
                     (falloff > 0.0 && lod < falloff)) {
                     off_left = FALSE;
                     break;
-                }
-                else {
+                } else {
                     left_i = i;
                     left_j = j;
                 }
@@ -679,8 +603,7 @@ WIGGLE_PEAK *peak_finder(int *interval, int *point, bool *off_end, bool get_peak
 }
 
 
-void
-free_wiggle_peaks(WIGGLE_PEAK *p) {
+void free_wiggle_peaks(WIGGLE_PEAK *p) {
     if (p == NULL) return;
     free_wiggle_peaks(p->next);
     if (p->free_map && p->map != NULL) free_qtl_map(map);
@@ -708,8 +631,7 @@ bool isa_test_wiggle(int wiggle_num) {
 #define ORDER_NUM \
 "%d.%d is not a valid number for a saved scan result.\nUse a number from %d.1-%d.%d.\n"
 
-void
-get_wiggle_nums(char *str, int *wiggle, int *order) {
+void get_wiggle_nums(char *str, int *wiggle, int *order) {
     bool order_set;
     int i;
 
@@ -761,8 +683,7 @@ get_wiggle_nums(char *str, int *wiggle, int *order) {
 "%d.%d is not a valid number for a saved compare result.\nUse a number from %d.1-%d.%d.\n"
 
 
-void
-get_compare_nums(char *str, int *compare, int *contig) {
+void get_compare_nums(char *str, int *compare, int *contig) {
     int i;
     bool contig_set;
 
@@ -803,8 +724,7 @@ get_compare_nums(char *str, int *compare, int *contig) {
 }
 
 
-void
-save_wiggle(FILE *fp, int n) {
+void save_wiggle(FILE *fp, int n) {
     int i, j;
     if (wiggles[n]->data == NULL)
         fprintf(fp, "%d\n", -1);

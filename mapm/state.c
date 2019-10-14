@@ -11,11 +11,7 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-//#define INC_LIB
-//#define INC_SHELL
 #include "mapm.h"
-//#include "lowlevel.h"
-//#include "toplevel.h"
 
 static void allocate_context(STATUS_CONTEXT *con);
 
@@ -89,29 +85,25 @@ real startrecombs;
 int print_dots;
 
 
-void
-state_init(void) {
+void state_init(void) {
     parray(context, MAX_CONTEXTS, STATUS_CONTEXT);
 }
 
 
-void
-reset_state(void) {
+void reset_state(void) {
     allocate_context(context[0]);
     state_init_values();
     set_current_seq(NULL, FALSE);
 }
 
 
-void
-undo_state(void) {
+void undo_state(void) {
     free_context(context[0]);
     state_init_values();
 }
 
 
-void
-state_init_values(void) {
+void state_init_values(void) {
 
 /**** General ****/
 
@@ -251,20 +243,17 @@ state_init_values(void) {
 
 /**** General ****/
 
-command
-set_print_names(void) {
+command set_print_names(void) {
     mapm_ready(ANY_DATA, 0, 0, NULL);
     maybe_set_bool(&print_names);
 }
 
-command
-set_tolerance(void) {
+command set_tolerance(void) {
     mapm_ready(ANY_DATA, 0, 0, NULL);
     maybe_set_real(&tolerance, 0.0000001, 1.0, 8.6);
 }
 
-command
-set_units(void) {
+command set_units(void) {
     char type[TOKLEN + 1];
     mapm_ready(ANY_DATA, 0, 0, NULL);
     get_one_arg(stoken, "", type);
@@ -302,8 +291,7 @@ set_units(void) {
     }
 }
 
-command
-set_cm_func(void) {
+command set_cm_func(void) {
     int i;
 
     char type[TOKLEN + 1];
@@ -327,14 +315,12 @@ set_cm_func(void) {
 }
 
 
-command
-set_autosave(void) {
+command set_autosave(void) {
     mapm_ready(ANY_DATA, 0, 0, NULL);
     maybe_set_bool(&auto_save);
 }
 
-command
-set_more_mode(void) {
+command set_more_mode(void) {
     mapm_ready(MAYBE_DATA, 0, 0, NULL);
     maybe_set_bool(&more_mode);
 }
@@ -345,8 +331,7 @@ set_more_mode(void) {
 #define DEF_LINK_LOD    "default LOD score threshold is %.2lf\n"
 #define DEF_LINK_THETA  "default %s threshold is %.2lf\n"
 
-command
-set_default_linkage(void) {
+command set_default_linkage(void) {
     real lod, theta;
     bool have_theta = FALSE;
 
@@ -374,8 +359,7 @@ set_default_linkage(void) {
 
 /**** three-point ****/
 
-command
-set_use_3pt(void) {
+command set_use_3pt(void) {
     mapm_ready(ANY_DATA, 0, 0, NULL);
     maybe_set_bool(&use_three_pt);
 }
@@ -384,8 +368,7 @@ set_use_3pt(void) {
 #define DEF_3PT_THETA "triplet %s threshold is %.2lf\n"
 #define DEF_3PT_NUM   "number of linkages required is %2d\n"
 
-command
-set_3pt_linkage(void) {
+command set_3pt_linkage(void) {
     real lod, theta;
     bool have_theta = FALSE, have_num = FALSE;
     int num;
@@ -422,8 +405,7 @@ set_3pt_linkage(void) {
 #define TRIP_THRESH \
   "triplet log-likelihood exclusion threshold is %.2lf.\nwindow size is %d.\n"
 
-command
-set_3pt_threshold(void) {
+command set_3pt_threshold(void) {
     real like;
     int wind, have_num = FALSE;
 
@@ -446,8 +428,7 @@ set_3pt_threshold(void) {
 #define SET_3ERR_USAGE \
   "'on', 'off', or a real number from 0 to 10 (percent chance of error)"
 
-command
-set_3pt_errors(void) {
+command set_3pt_errors(void) {
     real rate;
 
     mapm_ready(ANY_DATA, 0, 0, NULL);
@@ -478,8 +459,7 @@ set_3pt_errors(void) {
 "multipoint exclusion threshold is %.2lf.\nwindow size is %d.\n\
 strict multipoint exclusion threshold is %.2lf.\n"
 
-command
-set_npt_threshold(void) {
+command set_npt_threshold(void) {
     real like, like2;
     int wind, have_num = FALSE, have_2nd = FALSE;
 
@@ -505,8 +485,7 @@ set_npt_threshold(void) {
     if (npt_threshold == npt_first_threshold) {
         sprintf(ps, NPT_THRESH1, npt_threshold, npt_window);
         pr();
-    }
-    else {
+    } else {
         sprintf(ps, NPT_THRESH2, npt_threshold, npt_window, npt_first_threshold);
         pr();
     }
@@ -518,8 +497,7 @@ set_npt_threshold(void) {
 #define CD_NOT \
 "slecting codominant markers (or not) does not apply to the loaded data"
 
-command
-set_inf_threshold(void) {
+command set_inf_threshold(void) {
     real theta;
     int indivs, codom, have_indivs = FALSE, have_cd = FALSE;
 
@@ -536,12 +514,10 @@ set_inf_threshold(void) {
                 if (matches(args, "codominant") || streq(args, "cd")) {
                     codom = TRUE;
                     have_cd = TRUE;
-                }
-                else if (matches("any", args) || matches("all", args)) {
+                } else if (matches("any", args) || matches("all", args)) {
                     codom = FALSE;
                     have_cd = TRUE;
-                }
-                else set_usage_error("either 'codominant' or 'any'");
+                } else set_usage_error("either 'codominant' or 'any'");
             }
         }
         if (have_cd &&
@@ -558,8 +534,7 @@ set_inf_threshold(void) {
 }
 
 
-command
-set_print_all_maps(void) {
+command set_print_all_maps(void) {
     mapm_ready(ANY_DATA, 0, 0, NULL);
     maybe_set_bool(&print_all_maps);
 }
@@ -567,14 +542,12 @@ set_print_all_maps(void) {
 
 /**** F2 and error checker ****/
 
-command
-set_fake_maps(void) {
+command set_fake_maps(void) {
     mapm_ready(F2, 0, 0, NULL);
     maybe_set_bool(&fake_maps);
 }
 
-command
-set_use_error_rate(void) {
+command set_use_error_rate(void) {
     mapm_ready(F2, 0, 0, NULL);
     maybe_set_bool(&use_error_rate);
 }
@@ -582,8 +555,7 @@ set_use_error_rate(void) {
 #define ERROR_THRESHES "error LOD threshold to print: %.2lf\n\
 error LOD thresholds for mapping: single: %.2lf, net: %.2lf\n"
 
-command
-set_error_lod_thresh(void) {
+command set_error_lod_thresh(void) {
     real t1, t2, t3;
 
     mapm_ready(F2, 0, 0, NULL);
@@ -610,8 +582,7 @@ set_error_lod_thresh(void) {
 
 /**************** State Contexts ****************/
 
-void
-allocate_context(STATUS_CONTEXT *con) {
+void allocate_context(STATUS_CONTEXT *con) {
     run {
             con->sex_specific = FALSE;
             con->compress_DNA = TRUE;
@@ -632,158 +603,15 @@ allocate_context(STATUS_CONTEXT *con) {
     }
 }
 
-void
-free_context(STATUS_CONTEXT *con) {
+void free_context(STATUS_CONTEXT *con) {
     free_table(con->named_sequences);
     free_table(con->sequence_history);
 }
 
-
-bool
-change_context(int new_context) {
-    if (context[new_context] != NULL) {
-        active_context = new_context;
-        /* set the globals */
-        sex_specific = context[active_context]->sex_specific;
-        compress_DNA = context[active_context]->compress_DNA;
-        max_problem_size = context[active_context]->max_problem_size;
-#ifdef HAVE_CEPH
-        if(raw.data_type == CEPH)
-          raw.data.ceph.use_number = context[active_context]->use_number;
-#endif
-        return (TRUE);
-    } else {
-        return (FALSE);
-    }
-}
-
-
-bool
-create_new_context(int new_context) {
-    if (context[new_context] != NULL || new_context > MAX_CONTEXTS)
-        return (FALSE);
-
-    allocate_context(context[new_context]);
-
-    /* take current values as defaults */
-    context[new_context]->sex_specific = context[active_context]->sex_specific;
-    context[new_context]->compress_DNA = context[active_context]->compress_DNA;
-    context[new_context]->use_number = context[active_context]->use_number;
-    context[new_context]->max_problem_size =
-            context[active_context]->max_problem_size;
-
-    return (TRUE);
-}
-
-
-#ifdef OBSOLETE
-void
-kill_context (STATUS_CONTEXT *con, bool save_it)
-{
-    char *name,*seqnce,*err;
-
-    if(save_it) {
-    for(Te=con->named_sequences->list; Te!=NULL; Te=Te->next) {
-        if(!name_sequence(Te->id.name,Te->string,&err))
-          error(err);
-    }
-    }
-    free_context(con);
-}
-#endif
-
-
-/**** CEPH/OBSOLETE? ****/
-
-#ifdef OBSOLETE
-command
-set_sex_specific (void)
-{
-    maybe_set_bool(&sex_specific);
-    context[active_context]->sex_specific = sex_specific;
-}
-
-command 
-set_3pt_sex (void) /* unused */
-{
-    mapm_ready(ANY_DATA,0,0,NULL);
-    maybe_set_bool(&triplet_sex);
-}
-
-command 
-set_segregation_distortion (void)
-{
-    maybe_set_bool(&segregation_distortion);
-}
-
-command 
-set_print_maps (void)
-{
-    maybe_set_bool(&print_maps);
-}
-
-command 
-set_inner_tolerance (void)
-{
-    maybe_set_real(&inner_tolerance,0.0000001,1.0,8.6);
-}
-
-command 
-set_startrecombs (void)
-{
-    maybe_set_real(&startrecombs,0.0,0.5,4.2);
-}
-
-command 
-set_inner_loop (void)
-{
-    maybe_set_bool(&inner_loop);
-}
-
-command 
-set_print_problem_size (void)
-{
-    maybe_set_bool(&print_problem_size);
-}
-
-command 
-set_max_problem_size (void)
-{
-    maybe_set_long(&max_problem_size,100,100000000);
-    context[active_context]->max_problem_size = max_problem_size;
-}
-
-command 
-set_time_stamping (void)
-{
-    maybe_set_bool(&time_stamping);
-}
-
-command 
-set_print_dots (void)
-{
-    maybe_set_bool(&print_dots);
-}
-
-command 
-set_use_hmm (void)
-{
-    maybe_set_bool(&use_hmm);
-}
-
-command 
-set_use_haplotypes (void)
-{
-    maybe_set_bool(&use_haplotypes);
-}
-#endif /* OBSOLETE */
-
-
 /**************** Save and Load Status info ****************/
 
 
-void
-write_status(FILE *fp) {
+void write_status(FILE *fp) {
     int i, usenum;
 
     fprint(fp, "*MapmakerStatusInfo:\n");
@@ -873,8 +701,7 @@ write_status(FILE *fp) {
 }
 
 
-void
-read_status(FILE *fp) {
+void read_status(FILE *fp) {
     int i, mapnum, usenum, num;
     char word[TOKLEN + 1];
 

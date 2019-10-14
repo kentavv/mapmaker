@@ -11,10 +11,6 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-//#define INC_LIB
-//#define INC_SHELL
-//#define INC_CALLQCTM
-//#define INC_QLOWLEVEL
 #include "qtl.h"
 
 
@@ -31,17 +27,14 @@ assign_probs(DATA *data,        /* Needs data->interval_len[interval] */
 );
 
 static void make_genotype_arrays(int data_type, int num_intervals);
-//static int map_function;
-
-bool valid_trait_num(int num);
 
 /********* FUNCTIONS TO DEAL WITH THE DATA AND MAP STRUCTS FOR QCTM *********/
 
-void
-data_init(void) {}
+void data_init(void) {
 
-DATA *
-alloc_data(int num_intervals, int num_cont_vars) {
+}
+
+DATA *alloc_data(int num_intervals, int num_cont_vars) {
     DATA *data;
 
     if (num_intervals < 1 || num_cont_vars < 0 || !data_loaded()) send(CRASH);
@@ -72,8 +65,7 @@ alloc_data(int num_intervals, int num_cont_vars) {
 }
 
 
-void
-free_data(DATA *data) {
+void free_data(DATA *data) {
     if (data == NULL) return;
     unmatrix(data->genotype_prob, data->max_individuals,
              INTERVAL_GENOTYPE_PROBS);
@@ -94,11 +86,7 @@ free_data(DATA *data) {
 }
 
 
-void
-prepare_data(
-        QTL_MAP *map,
-        DATA *data        /* side-effected */
-) {
+void prepare_data(QTL_MAP *map, DATA *data /* side-effected */) {
     int i, j, k, indiv;
     bool missing;
 
@@ -151,15 +139,9 @@ prepare_data(
 }
 
 
-void
-assign_probs(
-        DATA *data,        /* Needs data->interval_len[interval] */
-        int raw_i,
-        int data_i, /* The individual's numbers in the data and raw structs */
-        int interval,      /* The interval number */
-        int left,
-        int right   /* The left and right locus numbers */
-) {
+void assign_probs(DATA *data, /* Needs data->interval_len[interval] */ int raw_i,
+                  int data_i, /* The individual's numbers in the data and raw structs */ int interval, /* The interval number */
+                  int left, int right   /* The left and right locus numbers */) {
     int geno, num;
 
     if (right == INF_LOCUS) send(CRASH); /* KLUDGE for now */
@@ -173,14 +155,9 @@ assign_probs(
 }
 
 
-void
-initial_qctm_values(
-        DATA *data,
-        QTL_MAP *map    /* side-effected */
-)
-/* map->fix_pos, fix_weight, fix_dominance, trait, left, and right must be 
+void initial_qctm_values(DATA *data, QTL_MAP *map    /* side-effected */) {
+/* map->fix_pos, fix_weight, fix_dominance, trait, left, and right must be
    set, and prepare_data() must have been run on data */
-{
     int i, k;
     real a = 0., b = 0., c, mu, sigma_sq;
 
@@ -281,8 +258,7 @@ initial_qctm_values(
 
 /*************************** Setup stuff for QCTM ***************************/
 
-void
-alloc_qctm_globals(void) {
+void alloc_qctm_globals(void) {
     int j;
 
     /* defaults set in qcmds.c ??? */
@@ -328,8 +304,7 @@ alloc_qctm_globals(void) {
 
 #define RIGHT_BIT_SET(geno_vector) ((int)(geno_vector & (GENOTYPE)1))
 
-void
-make_genotype_arrays(int data_type, int num_intervals) {
+void make_genotype_arrays(int data_type, int num_intervals) {
     int i, j, this_genotype, N;
     GENOTYPE geno;
 
@@ -374,39 +349,38 @@ make_genotype_arrays(int data_type, int num_intervals) {
 }
 
 
-void
-free_qctm_globals(void) {}  /* KLUDGE: CURRENTLY A NOP */
-bool
-qctm_globals_avail(void) { return (null_qtl_weight != ((real *) NULL)); }
+void free_qctm_globals(void) {
+    /* KLUDGE: CURRENTLY A NOP */
+}
+
+bool qctm_globals_avail(void) {
+    return (null_qtl_weight != ((real *) NULL));
+}
 
 
 /********************* RANDOM FUNCTIONS *********************/
 
-real
-haldane(real theta) {
+real haldane(real theta) {
     if (theta == 0.0) return (0.0);
     else if (theta >= MAX_REC_FRAC) return (MAX_CM);
     else return (-0.50 * log(1 - 2 * theta));
 }
 
 
-real
-unhaldane(real morgans) {
+real unhaldane(real morgans) {
     if (morgans == 0.0) return (0.0);
     else if (morgans >= (MAX_CM / 100.0)) return (MAX_REC_FRAC);
     else return ((1.0 - exp(-2.0 * morgans)) / 2.0);
 }
 
-real
-kosambi(real theta) {
+real kosambi(real theta) {
     if (theta == 0.0) return (0.0);
     else if (theta >= MAX_REC_FRAC) return (MAX_CM);
     else return (0.25 * log((1.0 + 2.0 * theta) / (1.0 - 2.0 * theta)));
 }
 
 
-real
-unkosambi(real morgans) {
+real unkosambi(real morgans) {
     real exp_4_morgans;
 
     if (morgans == 0.0) return (0.0);
@@ -442,8 +416,7 @@ unmap_func (real morgans)
 #endif
 
 
-real
-model_prediction(QTL_MAP *map, int indiv) {
+real model_prediction(QTL_MAP *map, int indiv) {
     int j, k, geno, qtl, left, right;
     real pheno, interval_rf, left_rf, right_rf, sum, num = 0., dom = 0.;
     INTERVAL_GENOTYPE_PROBS *interval_prob; /* p[0][genotype-code] => real*/

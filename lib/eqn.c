@@ -11,14 +11,12 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-//#define INC_LIB
-//#define INC_EQN
 #include "system.h"
 
-#define VALUE -1
+#define VALUE (-1)
 #define OP 0
 #define LEFT_PAREN 1
-#define MISSING_PHENO -100000.0
+#define MISSING_PHENO (-100000.0)
 
 static int stack_pointer;
 
@@ -30,8 +28,45 @@ char **variable_table;
 real *value_table;
 
 
-EQUATION **make_equation(char *original_equation, int (*variable_lookup)()) {
-    EQUATION **parsed_eqn, **postfixed;
+#define SYMBOL (-1)           /* these are flags          */
+#define VARIABLE 2          /* to be used in the        */
+#define NUMBER 1            /* data structures EQUATION */
+
+#define PLUS 1
+#define MINUS 2
+#define MULTIPLY 3
+#define DIVIDE 4
+#define EXP 5
+#define LOG 6
+#define LN 7
+#define SIN 8
+#define ASIN 9
+#define COS 10
+#define ACOS 11
+#define TAN 12
+#define ATAN 13
+#define LEFT_P 14
+#define RIGHT_P 15
+
+static void parse_equation(char *original_equation, EQUATION **parsed_eqn, int (*variable_lookup)(char *), int *new_size, int *the_index);
+
+static void add_number(int mark, EQUATION **parsed_eqn, char *parsed_token, int *new_size, int *the_index);
+
+static void add_to_parsed_eqn(int mark, EQUATION **parsed_eqn, int parsed_token, int *new_size, int *the_index);
+
+static void add_parenthesis(const int *i, int par, int mark, EQUATION **parsed_eqn);
+
+static void check_sizeof_array(const int *size);
+
+static void postfix(EQUATION **parsed_eqn, EQUATION **postfixed);
+
+static real pop_stack(void) /* This function returns the top value from the stack */;
+
+static real push_stack(real value_to_push);
+
+
+EQUATION **make_equation(char *original_equation, int (*variable_lookup)(char *)) {
+    EQUATION **parsed_eqn, **postfixed = NULL;
     int i;
     int the_index, new_size;
     /* I'll now call the function parse_equation, that will take
@@ -42,7 +77,9 @@ EQUATION **make_equation(char *original_equation, int (*variable_lookup)()) {
             the_index = 0;
             new_size = 0;
             array(parsed_eqn, MAX_EQN_SIZE, EQUATION*);
-            for (i = 0; i < MAX_EQN_SIZE; i++) single(parsed_eqn[i], EQUATION);
+            for (i = 0; i < MAX_EQN_SIZE; i++) {
+                single(parsed_eqn[i], EQUATION);
+            }
             parse_equation(original_equation, parsed_eqn,
                            variable_lookup, &new_size, &the_index);
 
@@ -57,8 +94,10 @@ EQUATION **make_equation(char *original_equation, int (*variable_lookup)()) {
         } on_exit {
         relay_messages;
     }
+
     return postfixed;
 }
+
 
 /******************** The parse_eqn algorithim *************************/
 /* This algorithim uses a state table. The state variable STATE has three
@@ -97,7 +136,7 @@ EQUATION **make_equation(char *original_equation, int (*variable_lookup)()) {
    proper form, i.e. nothing like 7 +* 2 or (^4 + 5).    ******************/
 
 
-void parse_equation(char *original_equation, EQUATION **parsed_eqn, int (*variable_lookup)(), int *new_size, int *the_index) {
+void parse_equation(char *original_equation, EQUATION **parsed_eqn, int (*variable_lookup)(char *), int *new_size, int *the_index) {
     int i, mark, state;
     char parsed_token[TOKLEN + 1];
     real tok;
@@ -105,8 +144,7 @@ void parse_equation(char *original_equation, EQUATION **parsed_eqn, int (*variab
 
     token = get_temp_string();
     self_delimiting = ptr_to("()*+-/^");
-    state = VALUE; /* Sets initial state in state machine to expect
-		      a VALUE */
+    state = VALUE; /* Sets initial state in state machine to expect a VALUE */
 
     eqnlen = len(original_equation);
     while (stoken(&original_equation, sREQUIRED, parsed_token)) {
@@ -211,9 +249,9 @@ void parse_equation(char *original_equation, EQUATION **parsed_eqn, int (*variab
     }
 }
 
+
 void add_number(int mark, EQUATION **parsed_eqn, char *parsed_token, int *new_size, int *the_index) {
     real new_number; /* is used to convert tokens into reals */
-
 
     if (mark == NUMBER) /* only need to add the number */ {
         parsed_eqn[*the_index]->is_a = mark; /* sets is_a */
@@ -225,9 +263,9 @@ void add_number(int mark, EQUATION **parsed_eqn, char *parsed_token, int *new_si
     }
 }
 
-void add_to_parsed_eqn(int mark, EQUATION **parsed_eqn, int parsed_token, int *new_size, int *the_index)
-/* This is is function that adds the structure to the array */
-{
+
+void add_to_parsed_eqn(int mark, EQUATION **parsed_eqn, int parsed_token, int *new_size, int *the_index) {
+    /* This is is function that adds the structure to the array */
     int t;
 
     if (mark == VARIABLE) {
@@ -238,31 +276,36 @@ void add_to_parsed_eqn(int mark, EQUATION **parsed_eqn, int parsed_token, int *n
         *new_size = (*new_size + 1);
     } else if (mark == SYMBOL) {
         if (parsed_token == LEFT_P || parsed_token == RIGHT_P) {
-            for (t = 0; t < 4; t++, *the_index = (*the_index + 1))
+            for (t = 0; t < 4; t++, *the_index = (*the_index + 1)) {
                 add_parenthesis(the_index, parsed_token, mark, parsed_eqn);
+            }
             /* where I add so many parenthesis, I **/
             /* wrote a subroutine to do it for me **/
             check_sizeof_array(the_index);
         } else if (parsed_token == PLUS || parsed_token == MINUS) {
             /* Need to add )))+/-((( */
-            for (t = 0; t < 3; t++, *the_index = (*the_index + 1))
+            for (t = 0; t < 3; t++, *the_index = (*the_index + 1)) {
                 add_parenthesis(the_index, RIGHT_P, mark, parsed_eqn);
+            }
             parsed_eqn[*the_index]->is_a = mark;
             parsed_eqn[*the_index]->val.symbol = parsed_token;
             *the_index = (*the_index + 1);
-            for (t = 0; t < 3; t++, *the_index = (*the_index + 1))
+            for (t = 0; t < 3; t++, *the_index = (*the_index + 1)) {
                 add_parenthesis(the_index, LEFT_P, mark, parsed_eqn);
+            }
             check_sizeof_array(the_index);
             *new_size = (*new_size + 1);
         } else if (parsed_token == MULTIPLY || parsed_token == DIVIDE) {
             /* Need to add ))* or /(( */
-            for (t = 0; t < 2; t++, *the_index = (*the_index + 1))
+            for (t = 0; t < 2; t++, *the_index = (*the_index + 1)) {
                 add_parenthesis(the_index, RIGHT_P, mark, parsed_eqn);
+            }
             parsed_eqn[*the_index]->is_a = mark;
             parsed_eqn[*the_index]->val.symbol = parsed_token;
             *the_index = (*the_index + 1);
-            for (t = 0; t < 2; t++, *the_index = (*the_index + 1))
+            for (t = 0; t < 2; t++, *the_index = (*the_index + 1)) {
                 add_parenthesis(the_index, LEFT_P, mark, parsed_eqn);
+            }
             check_sizeof_array(the_index);
             *new_size = (*new_size + 1);
         } else if (parsed_token == EXP) {
@@ -289,19 +332,21 @@ void add_to_parsed_eqn(int mark, EQUATION **parsed_eqn, int parsed_token, int *n
     }
 }
 
-void add_parenthesis(int *i, int par, int mark, EQUATION **parsed_eqn) {
+
+void add_parenthesis(const int *i, int par, int mark, EQUATION **parsed_eqn) {
     parsed_eqn[*i]->is_a = mark;
     parsed_eqn[*i]->val.symbol = par;
 }
 
-void check_sizeof_array(int *size) {
 
+void check_sizeof_array(const int *size) {
     if (*size > MAX_EQN_SIZE) {
         BADEQN_errpos = -1;
         BADEQN_errmsg = ptr_to("Error - Equation is too long!");
         send (BADEQN);
     }
 }
+
 
 /******************  The postfix algorithm  ************************/
 /**   The principle behind postfix is to take the array of data 
@@ -320,7 +365,9 @@ void postfix(EQUATION **parsed_eqn, EQUATION **postfixed) {
     EQUATION **temp_eqn;
 
     array(temp_eqn, MAX_EQN_SIZE, EQUATION*);
-    for (i = 0; i < MAX_EQN_SIZE; i++) single(temp_eqn[i], EQUATION);
+    for (i = 0; i < MAX_EQN_SIZE; i++) {
+        single(temp_eqn[i], EQUATION);
+    }
     while (parsed_eqn[parsed_index]->is_a != 0) {
         if (parsed_eqn[parsed_index]->is_a == NUMBER ||
             parsed_eqn[parsed_index]->is_a == VARIABLE) {
@@ -336,9 +383,9 @@ void postfix(EQUATION **parsed_eqn, EQUATION **postfixed) {
                 while (1) {
                     if (temp_index < 0) break;
                     if (temp_eqn[temp_index]->val.symbol == LEFT_P &&
-                        temp_eqn[temp_index]->is_a == SYMBOL)
+                        temp_eqn[temp_index]->is_a == SYMBOL) {
                         break;
-                    else {
+                    } else {
                         postfixed[post_index] = temp_eqn[temp_index];
                         post_index++;
                         temp_index--;
@@ -363,11 +410,12 @@ void postfix(EQUATION **parsed_eqn, EQUATION **postfixed) {
     postfixed[post_index]->is_a = 0;
 }
 
+
 /********************* EVALUATING THE EQUATION **********************/
 
-real evaluate_equation(EQUATION **postfixed, real (*value_find)()) {
+real evaluate_equation(EQUATION **postfixed, real (*value_find)(int)) {
     int i, missing = FALSE;
-    real number_to_use, c, exponent, divisor, var_push, subtract, value_lookup();
+    real number_to_use, c, exponent, divisor, var_push, subtract;
     i = 0;
     stack_pointer = 0;
 
@@ -396,9 +444,9 @@ real evaluate_equation(EQUATION **postfixed, real (*value_find)()) {
                             break;
                         case DIVIDE:
                             divisor = pop_stack();
-                            if (divisor != 0.0)
+                            if (divisor != 0.0) {
                                 push_stack(pop_stack() / divisor);
-                            else {
+                            } else {
                                 BADEQN_errpos = -1;
                                 BADEQN_errmsg = ptr_to("Error - division by 0 attempted\n");
                                 send(BADEQN);
@@ -410,9 +458,9 @@ real evaluate_equation(EQUATION **postfixed, real (*value_find)()) {
                             break;
                         case LOG:
                             number_to_use = pop_stack();
-                            if (number_to_use > 0.0)
+                            if (number_to_use > 0.0) {
                                 push_stack(log10(number_to_use));
-                            else {
+                            } else {
                                 BADEQN_errpos = -1;
                                 BADEQN_errmsg = ptr_to("Error - can't take log of 0 or negative number\n");
                                 send(BADEQN);
@@ -433,9 +481,9 @@ real evaluate_equation(EQUATION **postfixed, real (*value_find)()) {
                             break;
                         case ASIN:
                             number_to_use = pop_stack();
-                            if ((number_to_use < 1.0 && number_to_use > -1.0))
+                            if ((number_to_use < 1.0 && number_to_use > -1.0)) {
                                 push_stack(asin(number_to_use));
-                            else {
+                            } else {
                                 BADEQN_errpos = -1;
                                 BADEQN_errmsg = ptr_to("Error - can't take asin of number greater than 1\n");
                                 send(BADEQN);
@@ -446,15 +494,13 @@ real evaluate_equation(EQUATION **postfixed, real (*value_find)()) {
                             break;
                         case ACOS:
                             number_to_use = pop_stack();
-                            if ((number_to_use < 1.0 && number_to_use > -1.0))
+                            if ((number_to_use < 1.0 && number_to_use > -1.0)) {
                                 push_stack(acos(number_to_use));
-                            else {
+                            } else {
                                 BADEQN_errpos = -1;
                                 BADEQN_errmsg = ptr_to("Error - can't take acos of number greater than 1\n");
                                 send(BADEQN);
                             }
-
-
                             break;
                         case TAN:
                             push_stack(tan(pop_stack()));
@@ -469,39 +515,44 @@ real evaluate_equation(EQUATION **postfixed, real (*value_find)()) {
         } on_exit {
         relay_messages;
     }
-    if (missing == TRUE) return (MISSING_PHENO);
-    else {
+
+    if (missing == TRUE) {
+        return (MISSING_PHENO);
+    } else {
         c = pop_stack();
         return (c);
     }
 }
 
 
-real pop_stack(void) /* This function returns the top value from the stack */
-{
-
+real pop_stack(void) {
+    /* This function returns the top value from the stack */
     if (stack_pointer <= 0) send (CRASH);
     return (val[--stack_pointer]);
 }
 
-real push_stack(real value_to_push) {
 
-    if (stack_pointer > SIZEOF_STACK)
+real push_stack(real value_to_push) {
+    if (stack_pointer > SIZEOF_STACK) {
         send (CRASH);
+    }
     return (val[stack_pointer++] = value_to_push);
 }
+
 
 void eqn_init(void) {
     matrix(variable_table, 200, 200, char);
     array(value_table, 200, real);
 }
 
+
 int variable_lookup(char *item) {
     int i;
 
     for (i = 0; i < table_size; i++) {
-        if (streq(item, variable_table[i]))
+        if (streq(item, variable_table[i])) {
             return (i);
+        }
     }
     BADEQN_errpos = -1;
     BADEQN_errmsg = ptr_to("Error - variable name not known");
@@ -509,10 +560,11 @@ int variable_lookup(char *item) {
     return 0; /* not reached */
 }
 
+
 real value_lookup(int index) {
-    if (index < table_size)
+    if (index < table_size) {
         return (value_table[index]);
-    else {
+    } else {
         BADEQN_errpos = -1;
         BADEQN_errmsg = ptr_to("Error - no value for variable");
         send (BADEQN);

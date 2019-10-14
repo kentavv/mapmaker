@@ -26,8 +26,6 @@ extern bool (*quit_save_hook)(bool);
 
 void banner(void);
 
-char *get_version(char *version_filename);
-
 void photo_banner(void);
 
 char *centering(char *str, bool lineup);
@@ -44,8 +42,6 @@ void mkhelp(char *cmd_name, char *abbrev, long description_index, int num_args_p
             char *arguments, char *defaults);
 
 bool valid_name(char *str);
-
-void null_command(void);
 
 int parser(char *line, char **rest, bool help_ok);
 
@@ -68,10 +64,6 @@ void maybe_set_bool(bool *var);
 
 void maybe_set_real(real *var, real lbound, real hbound, real fmt);
 
-void maybe_set_long(long *var, long lbound, long hbound);
-
-void maybe_set_int(int *var, int lbound, int hbound);
-
 void set_usage_error(char *com_args);
 
 void usage_error(int num);
@@ -80,15 +72,7 @@ void nomore_args(int n);
 
 void more_args(int num);
 
-void input_error(char *val, char *def);
-
-void expect_nomore_input(char *str, int mode, int num);
-
-void expect_more_input(char *str, int mode, int num);
-
 bool split_arglist(char **rest, int divider);
-
-bool split_uncrunched_args(char **rest, int divider);
 
 void maybe_ok(char *str);
 
@@ -98,17 +82,11 @@ command show_cmd_history(void);
 
 command quit(void);
 
-command really_quit(void);
-
 command run_from_file(void);
 
 command do_photo(void);
 
-command set_more(void);
-
 command set_wizard(void);
-
-command set_verbose_mem(void);
 
 command help(void);
 
@@ -123,11 +101,6 @@ command cd_command(void);
 command system_command(void);
 
 command comment(void);
-
-void wimp_start(void);
-
-void mkwimp(char *name, char *menu_entry, int menu_num, void (*wimp_function)(void), void (*status_function)(void), void (*wimp_help_function)(void),
-            int shortcut);
 
 void mkmenu(int num, char *title);
 
@@ -196,23 +169,6 @@ extern int cmd_history_num;   /* in shell.c -- looks nice in prompt() */
 #define EXACTLY 0
 #define UPTO 1
 #define ATLEAST 2
-
-///* existing system commands */
-//command quit();
-//command really_quit();
-//command run_from_file();
-//command do_photo();
-//command set_more();
-//command set_verbose_memory();
-//command help();
-//command about();
-//command show_cmd_history();
-//command review_output();
-//command show_time();
-//command cd_command();
-//command system_command();
-//command comment();
-//command set_wizard();
 
 extern bool photo_update_top_hook;  /* make photo call update_top() */
 extern void (*photo_banner_hook)(FILE *); /* make photo_banner call this w/arg fp */

@@ -13,11 +13,7 @@
 
 /******************** STRLIB.C - STRING & PARSING STUFF ********************/
 
-//#define INC_LIB
-//#define INC_HELP_DEFS
 #include "system.h"
-
-//int  get_token();
 
 char Cw, Ct, *self_delimiting, *null_string;
 
@@ -29,8 +25,7 @@ void nstrcpy(char *to, char *from, int n) {
 }
 
 
-void
-maxstrcat(char *to, char *from, int n) {
+void maxstrcat(char *to, char *from, int n) {
     int i, j;
 
     if ((i = len(to)) >= n) {
@@ -42,18 +37,7 @@ maxstrcat(char *to, char *from, int n) {
 }
 
 
-void
-nstrcat(char *to, char *from, int n) {
-    int i, j;
-
-    i = len(to);
-    for (j = 0; from[j] != '\0' && j < n; i++, j++) to[i] = from[j];
-    to[i] = '\0';
-}
-
-
-void
-strins(char *to, char *from) {
+void strins(char *to, char *from) {
     int i, current_length, num_to_ins;
 
     current_length = len(to);
@@ -64,20 +48,7 @@ strins(char *to, char *from) {
 }
 
 
-void
-nstrins(char *to, char *from, int max_to_ins) {
-    int i, current_length, num_to_ins;
-
-    current_length = len(to);
-    num_to_ins = iminf(len(from), max_to_ins);
-    if (num_to_ins == 0) return;
-    for (i = current_length; i >= 0; i--) to[i + num_to_ins] = to[i];
-    for (i = 0; i < num_to_ins; i++) to[i] = from[i];
-}
-
-
-void
-maxstrins(char *to, char *from, int max_total_length) {
+void maxstrins(char *to, char *from, int max_total_length) {
     int i, current_length, num_to_ins;
 
     current_length = len(to);
@@ -89,8 +60,7 @@ maxstrins(char *to, char *from, int max_total_length) {
 }
 
 
-void
-strdel(char *str, int num_chars) {
+void strdel(char *str, int num_chars) {
     int i;
     char *rest;
 
@@ -104,8 +74,7 @@ strdel(char *str, int num_chars) {
 }
 
 
-char *
-mkstrcpy(char *str) {
+char *mkstrcpy(char *str) {
     char *foo;
 
     array(foo, istrlen(str) + 1, char);
@@ -114,30 +83,22 @@ mkstrcpy(char *str) {
 }
 
 
-char *
-ptr_to(char *str) { return (str); } /* A Kludge to be sure, but the only way to do this in C */
+char *ptr_to(char *str) { return (str); } /* A Kludge to be sure, but the only way to do this in C */
 
 
-int
-nullstr(char *str) {
+int nullstr(char *str) {
     int i;
 
-    if (str == NULL) return (TRUE);
+    if (str == NULL) return TRUE;
     for (i = 0; str[i] != '\0'; i++)
-        if (!white(str[i]) && !trash(str[i])) return (FALSE);
-    return (TRUE);
+        if (!white(str[i]) && !trash(str[i])) return FALSE;
+    return TRUE;
 }
 
 
-/* 2/21 - the name strfind has been changed to strfinder due to
-   a conflict with something of the same name in libc.a on
-   some UNIX machines. */
-
-int
-strfinder(    /* index of chr, or -1 if can't find chr */
+int strfinder(    /* index of chr, or -1 if can't find chr */
         char *str,
-        int chr
-) {
+        int chr) {
     int i;
 
     if (chr == '\0') return (strlen(str));
@@ -146,33 +107,28 @@ strfinder(    /* index of chr, or -1 if can't find chr */
 }
 
 
-bool
-nmatches(char *s1, char *s2, int n)
+bool nmatches(char *s1, char *s2, int n) {
 /* match at least n chars in the first token in s1 to s2 "template" 
    for example "pr" matches "print" (n<=2). 
    if s1=="" or s2=="" it returns FALSE, if n==0 it returns TRUE 
    if s1 is longer than s2 it must return FALSE
    it assumes both s1 and s2 are despace()ed and filter()ed, but not 
    necessarily lowercase()ed */
-{
     int i;
 
-    if (s1[0] == '\0' || s2[0] == '\0') return (FALSE);
-    if (n == 0) return (TRUE);
+    if (s1[0] == '\0' || s2[0] == '\0') return FALSE;
+    if (n == 0) return TRUE;
     for (i = 0; s1[i] != '\0'; i++) {
-        if (s2[i] == '\0') return (FALSE);
-        if (tolower(s1[i]) != tolower(s2[i])) return (FALSE);
+        if (s2[i] == '\0') return FALSE;
+        if (tolower(s1[i]) != tolower(s2[i])) return FALSE;
         if (white(s1[i])) break;
     }
     return (i >= n ? TRUE : FALSE);
 }
 
 
-int
-xstreq(    /* !!! currently broken !!! */
-        char *s1,
-        char *s2
-) {
+int xstreq(char *s1, char *s2) {
+    /* !!! currently broken !!! */
     int i, j, preceeding_space;
 
     i = 0;
@@ -185,35 +141,32 @@ xstreq(    /* !!! currently broken !!! */
         else if (white(s1[i])) {
             preceeding_space = TRUE;
             continue;
-        }
-        else { /* char must be matched, checking for space first */
+        } else { /* char must be matched, checking for space first */
             while (trash(s2[j])) j++;
             if (preceeding_space) {
-                if (!white(s2[j])) return (FALSE); /* incl \0 */
+                if (!white(s2[j])) return FALSE; /* incl \0 */
                 do j++; while (white(s2[j]) || trash(s2[j]));
                 preceeding_space = FALSE;
             }
             if (tolower(s1[i]) != tolower(s2[j])) /* incl s2[j]==\0 */
-                return (FALSE);
+                return FALSE;
             do j++; while (trash(s2[j]));
             continue;
         }
 
     /* here, we do not care about preceeding_space */
-    if (nullstr(&s2[j])) return (TRUE); else return (FALSE);
+    if (nullstr(&s2[j])) return TRUE; else return FALSE;
 }
 
 
-char *
-truncstr(char *str, int length) {
+char *truncstr(char *str, int length) {
     if (str == NULL) send(CRASH);
     if (len(str) > length) str[length] = '\0';
     return (str);
 }
 
 
-char *
-pad_to_len(char *str, int length) {
+char *pad_to_len(char *str, int length) {
     int start, i;
 
     start = len(str);
@@ -224,21 +177,9 @@ pad_to_len(char *str, int length) {
 }
 
 
-char *
-append_spaces(char *str, int num) {
-    int i, j;
-
-    for (i = len(str), j = 0; j < num; i++, j++) str[i] = ' ';
-    str[i] = '\0';
-    return (str);
-}
-
-
-char *
-despace(char *str)
+char *despace(char *str) {
 /* All whitespace is changed to single spaces. Leading and trailing whitespace
    is done away with entirely. */
-{
     int i, j, space;
 
     if (str == NULL) send(CRASH);
@@ -258,8 +199,7 @@ despace(char *str)
 }
 
 
-char *
-lowercase(char *str) {
+char *lowercase(char *str) {
     int i;
     char c;
 
@@ -271,8 +211,7 @@ lowercase(char *str) {
 }
 
 
-char *
-_filter(char *str) {
+char *_filter(char *str) {
     int i, j;
 
     for (i = 0, j = 0; str[i] != '\0'; i++)
@@ -282,20 +221,7 @@ _filter(char *str) {
 }
 
 
-char *
-filter_nonspaces(char *str) {
-    int i, j;
-
-    for (i = 0, j = 0; str[i] != '\0'; i++)
-        if (white(str[i])) str[j++] = ' ';
-        else if (!trash(str[i])) str[j++] = str[i];
-    str[j] = '\0';
-    return (str);
-}
-
-
-char *
-crunch(char *str) {
+char *crunch(char *str) {
     despace(str);
     _filter(str);
     lowercase(str);
@@ -303,8 +229,7 @@ crunch(char *str) {
 }
 
 
-char *
-uppercase(char *str) {
+char *uppercase(char *str) {
     int i;
     char c;
 
@@ -327,14 +252,7 @@ uppercase(char *str) {
 
 #define self(c) strin(self_delimiting,c)
 
-bool
-get_token(
-        char *str,
-        char *tok,
-        char **p_rest,
-        int length,
-        bool *truncated /* side-effected */
-) {
+bool get_token(char *str, char *tok, char **p_rest, int length, bool *truncated /* side-effected */) {
     int i, j;
 
     *truncated = FALSE;
@@ -343,13 +261,13 @@ get_token(
     if (str[i] == '\0') {
         tok[0] = '\0';
         *p_rest = str + i;
-        return (FALSE);
+        return FALSE;
     }
     if (self(str[i])) { /* must be !white() here */
         tok[0] = str[i];
         tok[1] = '\0';
         *p_rest = str + i + 1;
-        return (TRUE);
+        return TRUE;
     }
     for (j = 0; str[i] != '\0' && !white(str[i]) && !self(str[i]); i++)
         if (j >= length) {
@@ -358,7 +276,7 @@ get_token(
             tok[j] = '\0';
             *p_rest = str + i;
             *truncated = TRUE;
-            return (TRUE);
+            return TRUE;
         } else {
             tok[j++] = str[i];
             continue;
@@ -367,16 +285,11 @@ get_token(
     tok[j] = '\0';
     while (str[i] != '\0' && white(str[i])) i++;
     *p_rest = str + i;
-    return (TRUE);
+    return TRUE;
 }
 
 
-bool
-split_string(
-        char *str,
-        char **rest,
-        int divider /* character that the string should be split on */
-) {
+bool split_string(char *str, char **rest, int divider /* character that the string should be split on */) {
     int i, j;
 
     *rest = NULL;
@@ -389,9 +302,9 @@ split_string(
             i--;
             while (i > 0 && white(str[i])) i--;
             str[i + 1] = '\0';
-            return (TRUE);
+            return TRUE;
         }
-    return (FALSE);
+    return FALSE;
 }
 
 
@@ -399,8 +312,7 @@ split_string(
 
 char *tok, *x; /* local */
 
-int
-itoken(char **p_str, int default_val, int *p_val) {
+int itoken(char **p_str, int default_val, int *p_val) {
     char *rest;
     long foo;
     bool toolong;
@@ -408,22 +320,21 @@ itoken(char **p_str, int default_val, int *p_val) {
     if (!get_token(*p_str, tok, &rest, TOKLEN, &toolong)) {
         *p_val = default_val;
         *p_str = rest; /* will be the end of str */
-        if (default_val == iREQUIRED) return (FALSE); else return (TRUE);
+        if (default_val == iREQUIRED) return FALSE; else return TRUE;
     } else if (toolong || sscanf(tok, "%ld%s", &foo, x) != 1 ||
                foo > MAXINT || foo < -MAXINT) {
         /* a token exists, but it's bad, so we leave *p_str alone */
         *p_val = default_val;
-        return (FALSE);
+        return FALSE;
     } else { /* all is OK: set *p_str and val */
         *p_val = (int) foo;
         *p_str = rest;
-        return (TRUE);
+        return TRUE;
     }
 }
 
 
-int
-ltoken(char **p_str, long default_val, long *p_val) {
+int ltoken(char **p_str, long default_val, long *p_val) {
     char *rest;
     long foo;
     bool toolong;
@@ -431,21 +342,20 @@ ltoken(char **p_str, long default_val, long *p_val) {
     if (!get_token(*p_str, tok, &rest, TOKLEN, &toolong)) {
         *p_val = default_val;
         *p_str = rest; /* will be the end of str */
-        if (default_val == lREQUIRED) return (FALSE); else return (TRUE);
+        if (default_val == lREQUIRED) return FALSE; else return TRUE;
     } else if (toolong || sscanf(tok, "%ld%s", &foo, x) != 1) {
         /* a token exists, but it's bad, so we leave *p_str alone */
         *p_val = default_val;
-        return (FALSE);
+        return FALSE;
     } else { /* all is OK: set *p_str and val */
         *p_val = foo;
         *p_str = rest;
-        return (TRUE);
+        return TRUE;
     }
 }
 
 
-int
-rtoken(char **p_str, real default_val, real *p_val) {
+int rtoken(char **p_str, real default_val, real *p_val) {
     char *rest;
     double foo;
     bool toolong;
@@ -453,24 +363,23 @@ rtoken(char **p_str, real default_val, real *p_val) {
     if (!get_token(*p_str, tok, &rest, TOKLEN, &toolong)) {
         *p_val = default_val;
         *p_str = rest;
-        if (default_val == rREQUIRED) return (FALSE); else return (TRUE);
+        if (default_val == rREQUIRED) return FALSE; else return TRUE;
     } else if (toolong || sscanf(tok, "%lf%s", &foo, x) != 1 ||
                foo > MAXREAL || foo < -MAXREAL ||
                (foo > ((double) 0) && foo < MINREAL) ||
                (foo < ((double) 0) && foo > MINREAL)) { /* leave *p_str */
         *p_val = default_val;
-        return (FALSE);
+        return FALSE;
     } else { /* token is OK */
         *p_val = (real) foo;
         *p_str = rest;
-        return (TRUE);
+        return TRUE;
     }
 }
 
 
 /* only to be driven by macros in strlib.c */
-int
-stok(char **p_str, char *default_val, char *val, int num_chars, int allow_truncation, char *ok_chars) {
+int stok(char **p_str, char *default_val, char *val, int num_chars, int allow_truncation, char *ok_chars) {
     char *rest;
     bool toolong;
     int i;
@@ -479,11 +388,10 @@ stok(char **p_str, char *default_val, char *val, int num_chars, int allow_trunca
         *p_str = rest; /* will be the '\0' at the end of str */
         if (default_val == sREQUIRED) {
             val[0] = '\0';
-            return (FALSE);
-        }
-        else {
+            return FALSE;
+        } else {
             nstrcpy(val, default_val, TOKLEN);
-            return (TRUE);
+            return TRUE;
         }
     } else {
         if (!allow_truncation && toolong) {
@@ -491,30 +399,25 @@ stok(char **p_str, char *default_val, char *val, int num_chars, int allow_trunca
                 val = NULL;
             else
                 nstrcpy(val, default_val, num_chars);
-            return (FALSE);
+            return FALSE;
         }
         if (ok_chars != NULL)
             for (i = 0; i <= len(*p_str); i++)
                 if (!strin(ok_chars, (*p_str)[i])) {
                     nstrcpy(val, default_val, num_chars);
-                    return (FALSE);
+                    return FALSE;
                 }
     }
     *p_str = rest; /* The next token - val is set */
-    return (TRUE);
+    return TRUE;
 }
 
-int
-stoken(char **p, char *def, char *val) { return (stok(p, def, val, TOKLEN, TRUE, NULL)); }
+int stoken(char **p, char *def, char *val) {
+    return (stok(p, def, val, TOKLEN, TRUE, NULL));
+}
 
 
-int
-parse_char( /* see strlib.h for info */
-        char **p_str,
-        char *ok_list,
-        int skip_whitespace,
-        char *p_ch
-) {
+int parse_char( /* see strlib.h for info */char **p_str, char *ok_list, int skip_whitespace, char *p_ch) {
     int i;
 
     i = 0;
@@ -523,24 +426,19 @@ parse_char( /* see strlib.h for info */
             if (skip_whitespace) continue;
             else {
                 *p_ch = '\0';
-                return (FALSE);
+                return FALSE;
             } /* leave p_str */
         } else if (nullstr(ok_list) || strchr(ok_list, *p_ch)) {
             *p_str += i;
-            return (TRUE);
-        } else return (FALSE); /* leave p_str; p_ch=the bad char */
+            return TRUE;
+        } else return FALSE; /* leave p_str; p_ch=the bad char */
     }
     *p_str += i - 1;  /* hit end of the string, set p_str to point to \0 */
-    return (FALSE); /* p_ch=\0 */
+    return FALSE; /* p_ch=\0 */
 }
 
 
-void
-parse_whitespace(char **p_str) { while (**p_str != '\0' && white(**p_str)) ++*p_str; }
-
-
-int
-count_tokens(char *str) {
+int count_tokens(char *str) {
     int i, n;
 
     if (str == NULL) send(CRASH);
@@ -556,91 +454,65 @@ count_tokens(char *str) {
 }
 
 
-bool
-is_a_token(char *str) {
+bool is_a_token(char *str) {
     int length, i;
 
-    if ((length = len(str)) == 0) return (FALSE);
-    if (length == 1 && strin(self_delimiting, str[0])) return (TRUE);
-    for (i = 0; i < length; i++) if (white(str[i])) return (FALSE);
-    return (TRUE);
+    if ((length = len(str)) == 0) return FALSE;
+    if (length == 1 && strin(self_delimiting, str[0])) return TRUE;
+    for (i = 0; i < length; i++) if (white(str[i])) return FALSE;
+    return TRUE;
 }
 
 
 int field(char **p_str, int length, char *val)   /* OBSOLETE */
 {
-    if (len(*p_str) < length) return (FALSE);
+    if (len(*p_str) < length) return FALSE;
     nstrcpy(val, *p_str, length);
     *p_str += length;
     despace(val);
-    return (TRUE);
+    return TRUE;
 }
 
 
 /**** see strlib.h for info on irange(), lrange(), and rrange() ****/
 
-int
-irange(int *p_var, int min_val, int max_val) {
+int irange(int *p_var, int min_val, int max_val) {
     if (*p_var < min_val) {
         *p_var = min_val;
-        return (FALSE);
-    }
-    else if (*p_var > max_val) {
+        return FALSE;
+    } else if (*p_var > max_val) {
         *p_var = max_val;
-        return (FALSE);
-    }
-    else return (TRUE);
+        return FALSE;
+    } else return TRUE;
 }
 
 
-int
-lrange(long *p_var, long min_val, long max_val) {
+int lrange(long *p_var, long min_val, long max_val) {
     if (*p_var < min_val) {
         *p_var = min_val;
-        return (FALSE);
-    }
-    else if (*p_var > max_val) {
+        return FALSE;
+    } else if (*p_var > max_val) {
         *p_var = max_val;
-        return (FALSE);
-    }
-    else return (TRUE);
+        return FALSE;
+    } else return TRUE;
 }
 
 
-int
-rrange(real *p_var, real min_val, real max_val) {
+int rrange(real *p_var, real min_val, real max_val) {
     if (*p_var < min_val) {
         *p_var = min_val;
-        return (FALSE);
-    }
-    else if (*p_var > max_val) {
+        return FALSE;
+    } else if (*p_var > max_val) {
         *p_var = max_val;
-        return (FALSE);
-    }
-    else return (TRUE);
-}
-
-
-char *
-binary(
-        int num,
-        int bits,
-        char *str  /* side effected */
-) {
-    int i;
-
-    for (i = bits; i >= 0; i--, num >>= 1)
-        if (num & 1) str[i] = '1'; else str[i] = '0';
-    str[bits] = '\0';
-    return (str);
+        return FALSE;
+    } else return TRUE;
 }
 
 
 static char **tempstr;        /* internal use only */
 static int tempstr_n;         /* internal use only */
 
-char *
-get_temp_string(void) {
+char *get_temp_string(void) {
     char *str;
 
     if (tempstr_n == NUM_TEMP_STRINGS - 1) str = tempstr[tempstr_n = 0];
@@ -666,8 +538,7 @@ typedef struct {
 PRINT_INFO **print_info; /* [(int)(format*10)] => ptr to a PRINT_INFO */
 
 
-static PRINT_INFO *
-lookup_print_info(real format_num) {
+static PRINT_INFO *lookup_print_info(real format_num) {
     int int_format;
     PRINT_INFO *p;
 
@@ -679,8 +550,7 @@ lookup_print_info(real format_num) {
 }
 
 
-void
-init_print_info(void) {
+void init_print_info(void) {
     int int_format, total_spaces, decimal_places;
     PRINT_INFO *p;
 
@@ -716,8 +586,7 @@ init_print_info(void) {
 
 /**************** The funky real-number printing routines ********************/
 
-char *
-rs(real format, real number) {
+char *rs(real format, real number) {
     int i, max_spaces;
     char *str;
     PRINT_INFO *info;
@@ -740,8 +609,7 @@ rs(real format, real number) {
 }
 
 
-char *
-rsn(real format, real number) {
+char *rsn(real format, real number) {
     int i, max_spaces;
     char *str;
     PRINT_INFO *info;
@@ -767,8 +635,7 @@ rsn(real format, real number) {
 }
 
 
-char *
-rsd(real format, real number) {
+char *rsd(real format, real number) {
     int i, max_spaces;
     char *str;
     PRINT_INFO *info;
@@ -792,8 +659,7 @@ rsd(real format, real number) {
 }
 
 
-void
-str_init(void) {
+void str_init(void) {
     array(tok, TOKLEN + 1, char);
     tok[0] = '\0';
     array(x, TOKLEN + 1, char);
@@ -805,6 +671,3 @@ str_init(void) {
     tempstr_n = 0;
     init_print_info();
 }
-
-
-

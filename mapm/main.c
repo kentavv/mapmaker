@@ -11,11 +11,7 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-//#define INC_LIB
-//#define INC_SHELL
 #include "mapm.h"
-//#include "toplevel.h"
-//#include "lowlevel.h"
 
 void setup_commands(void);
 
@@ -83,8 +79,7 @@ int main(int argc, char *argv[]) {
 }
 
 
-bool
-mapm_save_on_exit(bool do_it_now) {
+bool mapm_save_on_exit(bool do_it_now) {
     if (!do_it_now) return (auto_save && data_loaded());
     if (auto_save && data_loaded()) do_save_data(raw.filename, FALSE);
     return (TRUE); /* => OK to exit now */
@@ -120,13 +115,8 @@ The '%s' command ignores order and distance information.\n%s"
 #define SEQ_EXP_EMPTY "After expanding names, the current sequence is empty."
 #define SEQ_HELP      "Type 'help sequence' for details."
 
-void
-mapm_ready(
-        int data_type,     /* CEPH, F2, NO_DATA, ANY_DATA, or MAYBE_DATA */
-        int min_seq_loci,  /* 0 indicates no seq is needed */
-        bool permable_seq, /* TRUE, FALSE or MAYBE, ignored if min_seq_loci==0 */
-        int *seq_loci
-) {
+void mapm_ready(int data_type, /* CEPH, F2, NO_DATA, ANY_DATA, or MAYBE_DATA */ int min_seq_loci, /* 0 indicates no seq is needed */
+                bool permable_seq, /* TRUE, FALSE or MAYBE, ignored if min_seq_loci==0 */ int *seq_loci) {
     int loci;
 
     if (data_type == NO_DATA && data_loaded()) {
@@ -247,14 +237,8 @@ mapm_ready(
 #define WARN_HAPLO_DUPS \
   "%s: haplotype group(s) listed %smultiple times... %s"
 
-bool
-crunch_locus_list(
-        int *locus,
-        int *num_loci,
-        bool verbose, /* ORDER_ERRORS, or CRUNCH_WARNINGS, or FALSE (silent) */
-        bool check_assignments,
-        bool in_sequence /* adjusts output: TRUE, FALSE, or MAYBE */
-) {
+bool crunch_locus_list(int *locus, int *num_loci, bool verbose, /* ORDER_ERRORS, or CRUNCH_WARNINGS, or FALSE (silent) */ bool check_assignments,
+                       bool in_sequence /* adjusts output: TRUE, FALSE, or MAYBE */) {
     int i, n;
     bool haplos_converted, haplo_dups, other_dups, wrong_chrom;
     bool abort_on_error;
@@ -336,8 +320,7 @@ crunch_locus_list(
 #define CHROM_NOT_SET    "no chromosome is selected"
 #define CHROM_NOT_ANY    "you must select a chromosome ('any' is not allowed)"
 
-int
-get_chrom_arg(bool allow_no_chrom) {
+int get_chrom_arg(bool allow_no_chrom) {
     char name[TOKLEN + 1];
     int chrom;
 
@@ -358,8 +341,7 @@ get_chrom_arg(bool allow_no_chrom) {
 }
 
 
-bool
-input_dist(real *dist) {
+bool input_dist(real *dist) {
     if (*dist < 0.0) return (FALSE);
     else if (*dist <= 0.5) return (TRUE);
     else if (*dist >= 999.0) return (FALSE);
@@ -369,200 +351,13 @@ input_dist(real *dist) {
 }
 
 
-/********** We don't use these anymore, do we? ************/
-
-bool
-get_markers(char *prompt, char *command_str, int **marker_list, int *num_markers) {
-    int i;
-    char token[TOKLEN + 1], *str, *save_str, *errmsg;
-
-    *marker_list = NULL;
-
-    run {
-            if (!nullstr(command_str)) str = save_str = command_str;
-            else {
-                getln(prompt);
-                str = save_str = ln;
-            }
-            *num_markers = count_tokens(str);
-            array(*marker_list, *num_markers, int);
-
-            for (i = 0; i < *num_markers; i++) {
-                if (!stoken(&str, sREQUIRED, token) ||
-                    !is_a_locus(token, &(*marker_list)[i], &errmsg)) {
-                    print("error in marker list '");
-                    print(command_str);
-                    print("'\n");
-                    space(22 + imaxf(len(save_str) - len(str) - 1, 0));
-                    print("^\n");
-                    print(errmsg);
-                    nl();
-                    abort_command();
-                }
-            }
-            if (!nullstr(str)) send(CRASH);
-
-        } when_aborting {
-        unarray(*marker_list, int);
-        relay;
-    }
-
-    return (TRUE);
-}
-
-
-#define GETI_BAD_NUM \
-"bad interval number (must be an integer from %d to %d)\n"
-
-bool
-get_intervals(char *prompt, char *command_str, bool **selected_interval, int *marker, int num_markers, bool edges_ok) {
-    int interval, to_interval, i, first, last;
-    char *str, *save_str, c;
-
-    run {
-            if (edges_ok) {
-                first = 0;
-                last = num_markers;
-            }
-            else {
-                first = 1;
-                last = num_markers - 1;
-            }
-            if (!nullstr(command_str)) str = save_str = command_str;
-            else {
-                print("loci:          ");
-                for (i = 0; i < num_markers; i++) {
-                    print(loc2str(marker[i]));
-                    print("    ");
-                }
-                print("\nintervals: ");
-                if (!edges_ok) {
-                    print(loc2str(-1));
-                    print("    ");
-                }
-                for (i = first; i <= last; i++) {
-                    sprintf(ps, "(%d)%s", i, i < 10 ? " " : "");
-                    pr();
-                    print(loc2str(-1));
-                }
-                nl();
-                print(prompt);
-                getln("[all] ");
-                str = save_str = ln;
-            }
-            array(*selected_interval, num_markers + 1, int);
-            for (i = 0; i < num_markers + 1; i++) (*selected_interval)[i] = FALSE;
-
-            if (nullstr(str) || xstreq(str, "all")) {
-                for (i = first; i <= last; i++) (*selected_interval)[i] = TRUE;
-            } else
-                while (!nullstr(str)) {
-                    if (!itoken(&str, iREQUIRED, &interval) ||
-                        !irange(&interval, first, last)) {
-                        print("error in interval list '");
-                        print(ps);
-                        print("'\n");
-                        space(19 + imaxf(len(save_str) - len(str) - 1, 0));
-                        print("^\n");
-                        sprintf(ps, GETI_BAD_NUM, first, last);
-                        pr();
-                        abort_command();
-                    }
-                    to_interval = interval;
-                    if (parse_char(&str, "-", SKIPWHITE, &c)) {
-                        if (!itoken(&str, iREQUIRED, &to_interval) ||
-                            !irange(&to_interval, interval, last)) {
-                            print("error in interval list '");
-                            print(ps);
-                            print("'\n");
-                            space(19 + imaxf(len(save_str) - len(str) - 1, 0));
-                            print("^\n");
-                            sprintf(ps, "bad interval number: valid range is %d to %d\n",
-                                    interval, last);
-                            pr();
-                            abort_command();
-
-                        }
-                    }
-                    for (i = interval; i <= to_interval; i++) (*selected_interval)[i] = TRUE;
-                }
-        } when_aborting {
-        unarray(*selected_interval, int);
-        relay;
-    }
-    return (TRUE);
-}
-
-
-bool
-get_reals(char *prompt, real *real_list, char *command_str, int *num_reals) {
-    int i;
-
-    if (nullstr(command_str)) {
-        getln(prompt);
-        crunch(ln);
-        *num_reals = count_tokens(ln);
-        for (i = 0; i < *num_reals; i++) {
-            if (!(rtoken(&ln, rREQUIRED, &real_list[i])))
-                return (FALSE);
-        }
-    } else { /* real list is in command_str */
-        crunch(command_str);
-        *num_reals = count_tokens(command_str);
-        for (i = 0; i < *num_reals; i++) {
-            if (!(rtoken(&command_str, rREQUIRED, &real_list[i])))
-                return (FALSE);
-        }
-    }
-    return (TRUE);
-}
-
-
-//#ifdef OBSOLETE_CODE
-//char *print_using();
-//
-///* The screen header:
-//         1         2         3         4         5         6         7
-//1234567890123456789012345678901234567890123456789012345678901234567890123456789
-//-------------------------------------------------------------------------------
-//MAPMAKER 3.0b     units: kossambi CM             photo: 123456789012.out
-//using %-24s photo: %s"
-//sequence #123: blah blah blah
-//-------------------------------------------------------------------------------
-//*/
-//
-//#define LINE0 "MAPMAKER V3.0b   map function %-17s  data: %-22s"
-//#define LINE1 "units: %-9s using: %-24s photo: %-22s"
-//#define LINE2 "sequence #%d: %-64s"
-//
-//void
-//mapm_top (char **line, int lines, int cols)
-//{
-//    char file[PATH_LENGTH+1];
-//
-//    if(!data_loaded()) { sprintf(line[0],LINE0,mapfunction->name,"<none>"); }
-//    else { nstrcpy(file,raw.filename,cols-55);
-//	   sprintf(line[0],LINE0,mapfunction->name,file); }
-//
-//    if(!log_open) { strcpy(file,"<off>"); }
-//    else { nstrcpy(file,photo_file,cols-36); }
-//
-//    sprintf(line[1],LINE1,(units == RECFRACS)?"rec-fracs":"cM",print_using(),file);
-//
-//    sprintf(line[2],LINE2,context[active_context]->seq_history_num,seq_string);
-//}
-//#endif
-
-
-void
-setup_commands(void) {
+void setup_commands(void) {
     two_pt_touched = FALSE;
     three_pt_touched = FALSE;
 
     /*  command-name	             Abbrev	function	   	type  
 	1234567890123456789012345    123	12345678901234...  	123
-	------------------------- sp ---  tab   --------------	  tab   --- 
-    mc("dietrichs unreadable gels", "dug",	blow_dead_bears,	CMD);*/
+	------------------------- sp ---  tab   --------------	  tab   ---*/
 
     /* npt commands */
     mc("map", "m", make_map, CMD);

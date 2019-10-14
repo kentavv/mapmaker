@@ -11,11 +11,7 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-//#define INC_LIB
-//#define INC_SHELL
 #include "mapm.h"
-//#include "toplevel.h"
-//#include "lowlevel.h"
 
 void expand_two_pt(int num_entries);
 
@@ -37,7 +33,6 @@ TWO_PT_DATA ***two_pt_data = NULL;
 int two_pt_allocated = 0, two_pt_used = 0, two_pt_max = 0, two_pt_collect = 0;
 TWO_PT_DATA **two_pt_list = NULL;
 TWO_PT_DATA *UNLINKED_TWO_PT, the_unlinked_two_pt;
-//TWO_PT_DATA *get_next_two_pt_entry();
 
 /* internal for 3pt */
 typedef struct three_entry {
@@ -54,22 +49,15 @@ THREE_STRUCT *three_pt_data;
 
 TRIPLE_LIST *allocate_three_entries(int num_to_alloc);
 
-//TRIPLE_LIST *allocate_three_entries();
 void deallocate_triple_list(TRIPLE_LIST *p);
 
-//void deallocate_triple_list();
 int num_threes_allocated, num_threes_deallocated; /* for testing purposes */
 
-//void put_next();
 bool replace_triple(int locus1, int locus2, int locus3, real d1, real d2, real d3);
 
-//bool replace_triple();
-//bool restore_triple();
 void save_triple(int locus1, int locus2, int locus3, real d1, real d2, real d3);
 
-//void save_triple();
 bool same_2_loop(TRIPLE_LIST *p, int locus3, real *d1, real *d2, real *d3);
-//bool same_2_loop();
 
 bool get_triple(int locus1, int locus2, int locus3, real *d1, real *d2, real *d3);
 
@@ -83,8 +71,7 @@ static void return_to_unused(TRIPLE_LIST *p);
 
 /**************** Stuff to handle global 2pt data ****************/
 
-void
-allocate_two_pt(int num_loci) {
+void allocate_two_pt(int num_loci) {
     int i, j;
 
     two_pt_data = NULL;
@@ -116,8 +103,7 @@ allocate_two_pt(int num_loci) {
 }
 
 
-void
-free_two_pt(int num_loci) {
+void free_two_pt(int num_loci) {
     int i;
     if (two_pt_data == NULL) return;
 
@@ -130,8 +116,7 @@ free_two_pt(int num_loci) {
 }
 
 
-TWO_PT_DATA *
-get_next_two_pt_entry(int a, int b, bool *used_needs_incrementing) {
+TWO_PT_DATA *get_next_two_pt_entry(int a, int b, bool *used_needs_incrementing) {
     TWO_PT_DATA *p = NULL;
 
     if (two_pt_data[a][b] != NULL && two_pt_data[a][b] != UNLINKED_TWO_PT) {
@@ -172,8 +157,7 @@ get_next_two_pt_entry(int a, int b, bool *used_needs_incrementing) {
 }
 
 
-void
-expand_two_pt(int num_entries) {
+void expand_two_pt(int num_entries) {
     int i;
 
     if (num_entries == EXPAND_DEFAULT)
@@ -192,11 +176,8 @@ expand_two_pt(int num_entries) {
 /* The following procedures are the only external accessors to the 
    TWO_PT_DATA structure. */
 
-void
-compute_two_pt( /* internal use only */
-        int a,
-        int b
-) {
+void compute_two_pt(int a, int b) {
+    /* internal use only */
     TWO_PT_DATA *two_pt = NULL;
     int temp;
     bool inc;
@@ -226,13 +207,8 @@ compute_two_pt( /* internal use only */
 }
 
 
-bool
-get_two_pt( /* TRUE if not UNLINKED_TWO_PT */
-        int a,
-        int b,
-        real *lod,
-        real *theta
-) {
+bool get_two_pt(int a, int b, real *lod, real *theta) {
+    /* TRUE if not UNLINKED_TWO_PT */
     int temp;
 
     if (a < b) {
@@ -248,14 +224,8 @@ get_two_pt( /* TRUE if not UNLINKED_TWO_PT */
 }
 
 
-bool
-get_sex_two_pt( /* TRUE if not UNLINKED_TWO_PT */
-        int a,
-        int b,
-        real *lod,
-        real *thetam,
-        real *thetaf
-) {
+bool get_sex_two_pt(int a, int b, real *lod, real *thetam, real *thetaf) {
+    /* TRUE if not UNLINKED_TWO_PT */
     int temp;
 
     if (a < b) {
@@ -274,8 +244,7 @@ get_sex_two_pt( /* TRUE if not UNLINKED_TWO_PT */
 
 /**************** Stuff for Global 3pt data ****************/
 
-void
-allocate_three_pt(int num_total) {
+void allocate_three_pt(int num_total) {
     int i;
 
     run {
@@ -303,8 +272,7 @@ allocate_three_pt(int num_total) {
     }
 }
 
-TRIPLE_LIST *
-allocate_three_entries(int num_to_alloc) {
+TRIPLE_LIST *allocate_three_entries(int num_to_alloc) {
     TRIPLE_LIST *part;
 
     if (num_to_alloc == 0) return (NULL);
@@ -323,15 +291,13 @@ allocate_three_entries(int num_to_alloc) {
 }
 
 
-void
-bash_all_three_pt(int num_total) {
+void bash_all_three_pt(int num_total) {
     free_three_pt(num_total);
     allocate_three_pt(num_total);
 }
 
 
-void
-free_three_pt(int num_total) {
+void free_three_pt(int num_total) {
     int i;
 
     num_threes_deallocated = 0; /* for testing purposes */
@@ -350,8 +316,7 @@ free_three_pt(int num_total) {
        num_threes_allocated, num_threes_deallocated); pr(); */
 }
 
-void
-deallocate_triple_list(TRIPLE_LIST *p) {
+void deallocate_triple_list(TRIPLE_LIST *p) {
     if (p->next != NULL) deallocate_triple_list(p->next);
     unsingle(p, TRIPLE_LIST);
     num_threes_deallocated++;
@@ -361,8 +326,7 @@ deallocate_triple_list(TRIPLE_LIST *p) {
 /* insert_triple() arranges loci and likelihoods in numeric order (loci)
    and calls save_triple() to store the data in the global three_pt_data */
 
-void
-insert_triple(int loc1, int loc2, int loc3, real d1, real d2, real d3) {
+void insert_triple(int loc1, int loc2, int loc3, real d1, real d2, real d3) {
 /* d1 - 123, d2 - 132, d3= 213 */
     int temploc;
     real tempreal;
@@ -395,8 +359,7 @@ insert_triple(int loc1, int loc2, int loc3, real d1, real d2, real d3) {
 }
 
 
-void
-save_triple(int locus1, int locus2, int locus3, real d1, real d2, real d3) {
+void save_triple(int locus1, int locus2, int locus3, real d1, real d2, real d3) {
     TRIPLE_LIST *t, *p;
     real r1, r2, r3;
 
@@ -463,8 +426,7 @@ save_triple(int locus1, int locus2, int locus3, real d1, real d2, real d3) {
 }
 
 
-bool
-replace_triple(int locus1, int locus2, int locus3, real d1, real d2, real d3) {
+bool replace_triple(int locus1, int locus2, int locus3, real d1, real d2, real d3) {
     TRIPLE_LIST *p, *new_entry;
 
     if (three_pt_data->entry[locus1].locus2 == locus2 &&
@@ -524,59 +486,7 @@ replace_triple(int locus1, int locus2, int locus3, real d1, real d2, real d3) {
     return (TRUE);
 }
 
-
-void
-compute_triple(
-        int a,
-        int b,
-        int c,        /* markers */
-        real *d1,
-        real *d2,
-        real *d3 /* likelihoods to be filled in */
-) {
-    /* d1 - abc, d2 - acb, d3 - bac */
-    MAP *map;
-    double best, like[3];
-
-    map = allocate_map(3);
-    map->locus[0] = a;
-    map->locus[1] = b;
-    map->locus[2] = c;
-    map->num_loci = 3;
-    init_rec_fracs(map);
-    converge_to_map(map);
-    like[0] = map->log_like;
-    best = like[0];
-
-    map->locus[0] = a;
-    map->locus[1] = c;
-    map->locus[2] = b;
-    map->num_loci = 3;
-    init_rec_fracs(map);
-    converge_to_map(map);
-    like[1] = map->log_like;
-    if (like[1] > best) best = like[1];
-
-    map->locus[0] = b;
-    map->locus[1] = a;
-    map->locus[2] = c;
-    map->num_loci = 3;
-    init_rec_fracs(map);
-    converge_to_map(map);
-    like[2] = map->log_like;
-    if (like[2] > best) best = like[2];
-
-    *d1 = like[0] - best;
-    *d2 = like[1] - best;
-    *d3 = like[2] - best;
-
-    insert_triple(a, b, c, like[0] - best, like[1] - best, like[2] - best);
-    three_pt_touched = TRUE;
-}
-
-
-bool
-restore_triple(int locus1, int locus2, int locus3, real *d1, real *d2, real *d3) {
+bool restore_triple(int locus1, int locus2, int locus3, real *d1, real *d2, real *d3) {
     /* d1= 123, d2= 132, d3= 213 -
        these transformations are correct!  */
 
@@ -631,8 +541,7 @@ bool get_triple(int locus1, int locus2, int locus3, real *d1, real *d2, real *d3
 }
 
 
-bool
-same_2_loop(TRIPLE_LIST *p, int locus3, real *d1, real *d2, real *d3) {
+bool same_2_loop(TRIPLE_LIST *p, int locus3, real *d1, real *d2, real *d3) {
     if (p == NULL) return (FALSE);
     while (p->locus3 != locus3) {
         if (p->next_same2 == NULL)
@@ -646,14 +555,7 @@ same_2_loop(TRIPLE_LIST *p, int locus3, real *d1, real *d2, real *d3) {
 }
 
 
-bool
-three_linked(
-        int *locus,  /* array of 3 locus numbers */
-        real lodbound,
-        real thetabound,
-        int num_links,
-        bool sex
-) {
+bool three_linked(int *locus, /* array of 3 locus numbers */ real lodbound, real thetabound, int num_links, bool sex) {
     int x, i, j, count;
     real lod, theta, thetam, thetaf;
 
@@ -674,8 +576,7 @@ three_linked(
 }
 
 
-void
-compute_3pt(SEQ_NODE *seq, bool sex, real trip_err_rate, real *like, MAP *map) {
+void compute_3pt(SEQ_NODE *seq, bool sex, real trip_err_rate, real *like, MAP *map) {
     int i, k;
     real best;
 
@@ -699,8 +600,7 @@ compute_3pt(SEQ_NODE *seq, bool sex, real trip_err_rate, real *like, MAP *map) {
 
 /***************************** Haplotype-Groups *****************************/
 
-void
-setup_haplo_group(int *locus, int num_loci) {
+void setup_haplo_group(int *locus, int num_loci) {
     int first, i;
 
     first = locus[0];
@@ -712,10 +612,8 @@ setup_haplo_group(int *locus, int num_loci) {
 }
 
 
-bool
-delete_haplo_groups(int *locus, int num_loci, int *old_locus, int *num_old)
+bool delete_haplo_groups(int *locus, int num_loci, int *old_locus, int *num_old) {
 /* delete ALL haplo groups containing any of these loci */
-{
     int i, j, next, any;
 
     any = FALSE;
@@ -737,11 +635,7 @@ delete_haplo_groups(int *locus, int num_loci, int *old_locus, int *num_old)
 /* msg is designed to look like those in chroms.c */
 #define INSANE "%s- not the name of its haplotype-group, using %s\n"
 
-bool
-force_haplo_sanity(
-        int *locus, /* just a ptr to one int, maybe side-effected */
-        bool verbose
-) {
+bool force_haplo_sanity(int *locus, /* just a ptr to one int, maybe side-effected */ bool verbose) {
     if (haplo_first[*locus] == NO_LOCUS || *locus == haplo_first[*locus])
         return (TRUE);
     if (verbose) {
@@ -756,8 +650,7 @@ force_haplo_sanity(
 /**************** Classes ****************/
 /* defined here because they are easiest to save/load in the table */
 
-bool
-isa_class(char *name, int *num) {
+bool isa_class(char *name, int *num) {
     int i, classnum = -1;
     if (streq(name, "")) return (FALSE);
     for (i = 0; i < NUM_CLASSES; i++)
@@ -771,16 +664,14 @@ isa_class(char *name, int *num) {
 }
 
 
-bool
-make_new_class(char *name, char **why_not) {
+bool make_new_class(char *name, char **why_not) {
     int i, classnum = -1;
 
     if (!valid_name(name)) /* checks non-null */
     {
         *why_not = ptr_to("illegal name");
         return (FALSE);
-    }
-    else if (!valid_new_name(name)) /* check class names too */
+    } else if (!valid_new_name(name)) /* check class names too */
     {
         *why_not = ptr_to("name is already in use");
         return (FALSE);
@@ -800,9 +691,8 @@ make_new_class(char *name, char **why_not) {
 }
 
 
-void
-print_class_names(void) /* let print() auto_wrap... */
-{
+void print_class_names(void) {
+    /* let print() auto_wrap... */
     int i;
     for (i = 0; i < NUM_CLASSES; i++) {
         print(class_name[i]);
@@ -824,8 +714,7 @@ print_class_names(void) /* let print() auto_wrap... */
 
 //void return_to_unused(), remove_triple_list();
 
-void
-bash_order_info(int *changed, int num_changed) {
+void bash_order_info(int *changed, int num_changed) {
     int a, b, i, j;
     TRIPLE_LIST *p, *q, *prev;
     /* this is merciless - might do *something* smarter */
@@ -849,8 +738,7 @@ bash_order_info(int *changed, int num_changed) {
             if (changed[i] > j) {
                 a = changed[i];
                 b = j;
-            }
-            else {
+            } else {
                 a = j;
                 b = changed[i];
             }
@@ -945,8 +833,7 @@ bash_order_info(int *changed, int num_changed) {
     }
 }
 
-void
-return_to_unused(TRIPLE_LIST *p) {
+void return_to_unused(TRIPLE_LIST *p) {
     /* Places a previously allocated but now unused elemtn on top of the
        unused stack */
 
@@ -959,15 +846,13 @@ return_to_unused(TRIPLE_LIST *p) {
     three_pt_data->unused = p;
 }
 
-void
-remove_triple_list(TRIPLE_LIST *p) {
+void remove_triple_list(TRIPLE_LIST *p) {
     if (p->next != NULL) remove_triple_list(p->next);
     return_to_unused(p);
 }
 
 
-void
-allocate_order_data(int num_markers) {
+void allocate_order_data(int num_markers) {
     int i;
 
     array(my_group, num_markers, int);
@@ -998,8 +883,7 @@ allocate_order_data(int num_markers) {
 }
 
 
-void
-free_order_data(int num_markers) {
+void free_order_data(int num_markers) {
     unarray(my_group, int);
     unarray(haplo_first, int);
     unarray(haplo_next, int);
@@ -1020,8 +904,7 @@ free_order_data(int num_markers) {
 }
 
 
-void
-write_order_data(FILE *fp) {
+void write_order_data(FILE *fp) {
     int i, locus;
 
     sprintf(ps, "*OrderInfo: %d %d\n", num_groups, num_orders);
@@ -1043,8 +926,7 @@ write_order_data(FILE *fp) {
 }
 
 
-void
-read_order_data(FILE *fp) {
+void read_order_data(FILE *fp) {
     int i, locus;
     int mod, group, first, next, ord_first, un_first, ord_next, class_num;
     real rate;
@@ -1087,8 +969,7 @@ read_order_data(FILE *fp) {
 }
 
 
-void
-read_two_pt(FILE *fp) {
+void read_two_pt(FILE *fp) {
     int a, b, n;
     int i, j, k, n_unlinked = 0, n_miss = 0, n_real = 0, n_to_read;
     bool inc, missing_means_unlinked = FALSE; /* eg missing means missing */
@@ -1139,8 +1020,7 @@ read_two_pt(FILE *fp) {
 }
 
 
-void
-write_two_pt(FILE *fp) {
+void write_two_pt(FILE *fp) {
     int i, j, n_unlinked = 0, n_miss = 0, n_real = 0;
     bool missing_means_unlinked = FALSE; /* eg missing means missing */
 
@@ -1184,8 +1064,7 @@ write_two_pt(FILE *fp) {
 }
 
 
-void
-read_three_pt(FILE *fp) {
+void read_three_pt(FILE *fp) {
     int i, j, k;
     real d1, d2, d3;
 
@@ -1196,8 +1075,7 @@ read_three_pt(FILE *fp) {
 }
 
 
-void
-write_three_pt(FILE *fp) {
+void write_three_pt(FILE *fp) {
     int i;
     TRIPLE_LIST *p;
 

@@ -20,11 +20,7 @@ void nstrcpy(char *to, char *from, int n);
 
 void maxstrcat(char *to, char *from, int n);
 
-void nstrcat(char *to, char *from, int n);
-
 void strins(char *to, char *from);
-
-void nstrins(char *to, char *from, int max_to_ins);
 
 void maxstrins(char *to, char *from, int max_total_length);
 
@@ -46,15 +42,11 @@ char *truncstr(char *str, int length);
 
 char *pad_to_len(char *str, int length);
 
-char *append_spaces(char *str, int num);
-
 char *despace(char *str);
 
 char *lowercase(char *str);
 
 char *_filter(char *str);
-
-char *filter_nonspaces(char *str);
 
 char *crunch(char *str);
 
@@ -76,13 +68,9 @@ int stoken(char **p, char *def, char *val);
 
 int parse_char(char **p_str, char *ok_list, int skip_whitespace, char *p_ch);
 
-void parse_whitespace(char **p_str);
-
 int count_tokens(char *str);
 
 bool is_a_token(char *str);
-
-int field(char **p_str, int length, char *val);
 
 int irange(int *p_var, int min_val, int max_val);
 
@@ -90,11 +78,8 @@ int lrange(long *p_var, long min_val, long max_val);
 
 int rrange(real *p_var, real min_val, real max_val);
 
-char *binary(int num, int bits, char *str);
-
 char *get_temp_string(void);
 
-//PRINT_INFO *lookup_print_info(real format_num);
 void init_print_info(void);
 
 char *rs(real format, real number);

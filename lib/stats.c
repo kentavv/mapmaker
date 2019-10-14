@@ -11,10 +11,6 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-//#define INC_LIB
-//#define INC_MISC
-//#define INC_STATS
-//#define INC_HELP_DEFS
 #include "system.h"
 
 NORMAL_TEST *check_normalcy(real *dist, int dist_size) {
@@ -99,8 +95,6 @@ void within(NORMAL_TEST *normal_results, real *dist, int dist_size) {
 
 
 void print_normal(NORMAL_TEST *to_be_printed, real lamda) {
-
-
     if (lamda < 0) {
         print("-------------------------------------------------------------");
         print("----------------");
@@ -172,35 +166,6 @@ void print_normal(NORMAL_TEST *to_be_printed, real lamda) {
         print("----------------");
         nl();
     }
-}
-
-
-void box_cox(real start, real stop, real step, real *dist, int dist_size) {
-    int i;
-    real lamda, *new_dist;
-    NORMAL_TEST *new_test;
-
-    lamda = start;
-
-    single(new_test, NORMAL_TEST);
-    array(new_dist, dist_size, real);
-
-
-    while (lamda <= stop) {
-        if (lamda <= 0)
-            return;
-        for (i = 0; i < dist_size; i++) {
-            if (dist[i] < 0) {
-                print("I'm sorry box_cox doesn't work on negative numbers\n");
-                return;
-            } else
-                new_dist[i] = (pow(dist[i], lamda) - 1) / lamda;
-        }
-        new_test = check_normalcy(new_dist, dist_size);
-        print_normal(new_test, lamda);
-        lamda += step;
-    }
-
 }
 
 

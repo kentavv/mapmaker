@@ -53,8 +53,7 @@ MAP_FUNCTION maps[2];
 int num_map_functions;
 
 
-MAP *
-allocate_map(int maxloci) {
+MAP *allocate_map(int maxloci) {
     MAP *map;
     run {
             map = NULL;
@@ -83,8 +82,7 @@ allocate_map(int maxloci) {
 }
 
 
-void
-allocate_error_matrix(MAP *map) {
+void allocate_error_matrix(MAP *map) {
     if (map->error_rate != NULL) return;
     run {
             array(map->error_rate, map->max_loci, real);
@@ -97,8 +95,7 @@ allocate_error_matrix(MAP *map) {
 }
 
 
-void
-free_map(MAP *map) {
+void free_map(MAP *map) {
     if (map == NULL) return;
     unarray(map->fix_interval, int);
     unmatrix(map->rec_frac, map->max_loci - 1, real);
@@ -116,8 +113,7 @@ free_map(MAP *map) {
 }
 
 
-bool
-clean_map(MAP *map) {
+bool clean_map(MAP *map) {
     int i, j;
 
     map->num_loci = 0;
@@ -139,13 +135,7 @@ clean_map(MAP *map) {
 }
 
 
-void
-init_for_ctm( /* what else */
-        MAP *map,
-        bool sex,
-        bool errors,
-        bool start /* deal with start */
-) {
+void init_for_ctm(/* what else */ MAP *map, bool sex, bool errors, bool start /* deal with start */) {
     int i, j;
 
     map->sex_specific = sex;
@@ -182,12 +172,12 @@ init_for_ctm( /* what else */
 }
 
 
-void
-init_rec_fracs(MAP *map) { init_for_ctm(map, sex_specific, use_error_rate, TRUE); }
+void init_rec_fracs(MAP *map) {
+    init_for_ctm(map, sex_specific, use_error_rate, TRUE);
+}
 
 
-void
-init_not_fixed(MAP *map) {
+void init_not_fixed(MAP *map) {
     int i;
     for (i = 0; i < map->num_loci - 1; i++)
         map->rec_frac[i][FEMALE] = map->rec_frac[i][MALE] = NOT_FIXED;
@@ -195,8 +185,7 @@ init_not_fixed(MAP *map) {
 }
 
 
-void
-mapcpy(MAP *to, MAP *from, bool clean_it) {
+void mapcpy(MAP *to, MAP *from, bool clean_it) {
     int i, j;
     if (to->max_loci < from->num_loci) send(CRASH);
 
@@ -236,12 +225,7 @@ mapcpy(MAP *to, MAP *from, bool clean_it) {
 }
 
 
-int
-insert_locus(    /* Returns TRUE if successful */
-        MAP *map,
-        int position,
-        int locus
-) {
+int insert_locus(/* Returns TRUE if successful */ MAP *map, int position, int locus) {
     int i;
 
     if (map->num_loci == map->max_loci) return (FALSE);
@@ -267,8 +251,7 @@ insert_locus(    /* Returns TRUE if successful */
 }
 
 
-SAVED_LIST *
-allocate_map_list(int maxmaps, int maxloci, bool sortflag, MAP **map) {
+SAVED_LIST *allocate_map_list(int maxmaps, int maxloci, bool sortflag, MAP **map) {
     SAVED_LIST *list;
     int i;
 
@@ -292,15 +275,13 @@ allocate_map_list(int maxmaps, int maxloci, bool sortflag, MAP **map) {
 }
 
 
-MAP *
-get_map_to_bash(SAVED_LIST *list) {
+MAP *get_map_to_bash(SAVED_LIST *list) {
     clean_map(list->extra_map);
     return (list->extra_map);
 }
 
 
-void
-free_map_list(SAVED_LIST *list) {
+void free_map_list(SAVED_LIST *list) {
     int i;
     if (list == NULL) return;
     free_map(list->extra_map);
@@ -313,8 +294,7 @@ free_map_list(SAVED_LIST *list) {
 }
 
 
-void
-clean_list(SAVED_LIST *list) {
+void clean_list(SAVED_LIST *list) {
     int i;
 
     list->num_maps = 0;
@@ -325,8 +305,7 @@ clean_list(SAVED_LIST *list) {
 }
 
 
-MAP *
-get_best_map(SAVED_LIST *list) {
+MAP *get_best_map(SAVED_LIST *list) {
     int i;
     real best;
     MAP *map = NULL;
@@ -342,8 +321,7 @@ get_best_map(SAVED_LIST *list) {
     return (map);
 }
 
-int
-insert_map_into_list(SAVED_LIST *list, MAP **map) {
+int insert_map_into_list(SAVED_LIST *list, MAP **map) {
     int val;
 
     list->extra_map = *map;
@@ -355,8 +333,7 @@ insert_map_into_list(SAVED_LIST *list, MAP **map) {
     return (val);
 }
 
-void
-overwrite_map_num(SAVED_LIST *list, MAP **map, int chrom) {
+void overwrite_map_num(SAVED_LIST *list, MAP **map, int chrom) {
     MAP *tempmap;
 
     tempmap = list->map_list[chrom];
@@ -368,8 +345,7 @@ overwrite_map_num(SAVED_LIST *list, MAP **map, int chrom) {
 }
 
 
-int
-insert_sorted_map(SAVED_LIST *list) {
+int insert_sorted_map(SAVED_LIST *list) {
     int nmaps;
     MAP *tempmap;
 
@@ -403,10 +379,8 @@ insert_sorted_map(SAVED_LIST *list) {
 }
 
 
-void
-sort_last(   /* Sorts last entry in the list */
-        SAVED_LIST *list
-) {
+void sort_last(SAVED_LIST *list) {
+    /* Sorts last entry in the list */
     int i;
     MAP *movable, *tempmap;
 
@@ -420,12 +394,10 @@ sort_last(   /* Sorts last entry in the list */
             list->map_list[i + 1] = tempmap;
         }
     }
-    return;
 }
 
 
-int
-insert_unsorted_map(SAVED_LIST *list) {
+int insert_unsorted_map(SAVED_LIST *list) {
     MAP *tempmap;
 
     if (list->num_maps == list->max_maps)
@@ -442,31 +414,16 @@ insert_unsorted_map(SAVED_LIST *list) {
 
 /******************************* Map Functions *******************************/
 
-//real apportion();
-//real poisson_add(), poisson_d_r();
-//real poisson_r_d(), kosa_r_d();
-//real kosa_add(), kosa_d_r();
-//real poisson_d_r_deriv(), kosa_d_r_deriv();
-
-
-real
-apportion(
-        bool rec_flag, /* assume REC==1 */
-        real both,
-        real first,
-        real second
-) {
+real apportion(bool rec_flag, /* assume REC==1 */ real both, real first, real second) {
     if (rec_flag) return ((first - second + both) / (2.0 * both));
     else return ((first + second - both) / (2.0 * (1.0 - both)));
 }
 
-real
-poisson_add(real first, real second) {
+real poisson_add(real first, real second) {
     return first * (1.0 - second) + (1.0 - first) * second;
 }
 
-real
-poisson_r_d(real rec_frac) {
+real poisson_r_d(real rec_frac) {
 #ifdef DONT_DO_THIS
     if (raw.data_type == F2) {
     if (raw.data.f2.cross_type == RI_SIB)
@@ -483,8 +440,7 @@ poisson_r_d(real rec_frac) {
                     9.999));
 }
 
-real
-poisson_d_r(real dist) {
+real poisson_d_r(real dist) {
     real rec_frac;
 
     rec_frac = 0.5 * (1.0 - exp((real) (-2.0 * dist)));
@@ -502,13 +458,11 @@ poisson_d_r(real dist) {
 #endif
 }
 
-real
-kosa_add(real first, real second) {
+real kosa_add(real first, real second) {
     return (first + second) / (1.0 + 4.0 * first * second);
 }
 
-real
-kosa_r_d(real rec_frac) {
+real kosa_r_d(real rec_frac) {
 #ifdef DONT_DO_THIS
     if(raw.data_type == F2) {
     if(raw.data.f2.cross_type == RI_SIB)
@@ -525,8 +479,7 @@ kosa_r_d(real rec_frac) {
                     9.999));
 }
 
-real
-kosa_d_r(real dist) {
+real kosa_d_r(real dist) {
     real rec_frac;
 
     rec_frac = 0.5 * tanh((real) (2.0 * dist));
@@ -544,24 +497,22 @@ kosa_d_r(real dist) {
 #endif
 }
 
-real
-poisson_d_r_deriv(real dist) {
+real poisson_d_r_deriv(real dist) {
     return ((real) (exp(-2.0 * dist)));
 }
 
-real
-kosa_d_r_deriv(real dist) {
+real kosa_d_r_deriv(real dist) {
     return ((real) 4.0 / ((exp(2.0 * dist) + exp(-2.0 * dist)) *
                           (exp(2.0 * dist) + exp(-2.0 * dist))));
 }
 
 
-void
-map_func(int mapnum) { mapfunction = &maps[mapnum]; }
+void map_func(int mapnum) {
+    mapfunction = &maps[mapnum];
+}
 
 
-void
-map_init(void) {
+void map_init(void) {
     strcpy(maps[HALDANE].name, "Haldane");
     maps[HALDANE].add = poisson_add;
     maps[HALDANE].apportion = apportion;
@@ -584,8 +535,7 @@ map_init(void) {
 /******************************* Save/Load *******************************/
 
 
-void
-read_map(FILE *fp, MAP *map) {
+void read_map(FILE *fp, MAP *map) {
     int i, j, num_loci, num, unlink, sex, errors;
     real rnum, like;
     char name[NAME_LEN + 2], str[TOKLEN + 1];
@@ -661,8 +611,7 @@ read_map(FILE *fp, MAP *map) {
 }
 
 
-void
-write_map(FILE *fp, MAP *map) {
+void write_map(FILE *fp, MAP *map) {
     int i, j;
 
     sprintf(ps, "*%s %d %d %d %d %.3lf\n",

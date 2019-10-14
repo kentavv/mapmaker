@@ -11,18 +11,8 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-//#define INC_LIB
-//#define INC_SHELL
-//#define INC_MISC
 #include "mapm.h"
-//#include "toplevel.h"
-//#include "lowlevel.h"
 
-/* external proccedures WHY WHY WHY FIX FIX FIX */
-//void try_marker();
-
-/* local */
-//void maybe_print_together();
 
 #define ASS_ALREADY "%s- already assigned to %s at LOD %4.1lf...not changing\n"
 
@@ -31,8 +21,7 @@
 
 #define CANT_MAKE "warning: can't make chromosome '%s'... %s\n"
 
-command
-make_chromosome(void) {
+command make_chromosome(void) {
     char name[TOKLEN + 1];
     int i, num;
 
@@ -43,12 +32,10 @@ make_chromosome(void) {
             if (!valid_name(name)) {
                 sprintf(ps, CANT_MAKE, name, "illegal name");
                 pr();
-            }
-            else if (!valid_new_name(name)) {
+            } else if (!valid_new_name(name)) {
                 sprintf(ps, CANT_MAKE, name, "name is already in use");
                 pr();
-            }
-            else if (!make_new_chrom(name, &num)) {
+            } else if (!make_new_chrom(name, &num)) {
                 sprintf(ps, CANT_MAKE, name, "chromosome already exists");
                 pr();
             }
@@ -65,8 +52,7 @@ make_chromosome(void) {
 }
 
 
-command
-set_anchors(void) {
+command set_anchors(void) {
     int i, *locus = NULL, num_loci, chrom;
 
     mapm_ready(ANY_DATA, MAYBE_SEQ, LIST_SEQ, &num_loci);
@@ -108,8 +94,7 @@ set_anchors(void) {
 #define CHROM_FRAME "%s framework:\n"
 #define CHROM_MARKS "%s Markers:\n"
 
-command
-set_framework(void) {
+command set_framework(void) {
     MAP *map, *old;
     char title[TOKLEN + 1];
     int chrom, num_loci;
@@ -136,8 +121,7 @@ set_framework(void) {
                 sprintf(ps, CHROM_FRAME_EXISTS, chrom2str(chrom));
                 pr();
                 nl();
-            }
-            else {
+            } else {
                 sprintf(ps, CHROM_SETTING, chrom2str(chrom));
                 pr();
                 nl();
@@ -162,8 +146,7 @@ set_framework(void) {
 #define CHROMS_FORMAT \
 "   %-8s    %4d    %4d     %4d      %4d     %4d     %4d\n"
 
-command
-list_chroms(void) {
+command list_chroms(void) {
     int frame, total, anchor, placed, unique, region, i, *loci = NULL;
     int sum_frame, sum_total, sum_anchor, sum_placed, sum_unique, sum_region;
 
@@ -196,8 +179,7 @@ list_chroms(void) {
 }
 
 
-command
-list_assignments(void) {
+command list_assignments(void) {
     int chrom, i;
 
     mapm_ready(ANY_DATA, 0, 0, NULL);
@@ -227,8 +209,7 @@ list_assignments(void) {
 }
 
 
-command
-list_mapping(void) {
+command list_mapping(void) {
     int source, num_loci, *locus = NULL;
 
     mapm_ready(ANY_DATA, MAYBE_SEQ, UNCRUNCHED_LIST, &num_loci);
@@ -252,8 +233,7 @@ list_mapping(void) {
 }
 
 
-command
-assign(void) {
+command assign(void) {
     int i, n_loci, *locus = NULL;
     real theta, lod, min_lod, unlinked_lod;
 
@@ -284,8 +264,7 @@ assign(void) {
 }
 
 
-command
-attach(void) {
+command attach(void) {
     int i, chrom, n_loci, *locus = NULL;
 
     mapm_ready(ANY_DATA, 1, UNCRUNCHED_LIST, &n_loci);
@@ -317,8 +296,7 @@ attach(void) {
 }
 
 
-command
-unassign(void) {
+command unassign(void) {
     int n_loci, i, *locus = NULL;
 
     mapm_ready(ANY_DATA, 1, UNCRUNCHED_LIST, &n_loci);
@@ -346,8 +324,7 @@ unassign(void) {
 #define NONE_OK "no orders allowed by three-point analysis, not placed\n"
 #define NPT_WINDOW 5
 
-command
-place(void) {
+command place(void) {
     int chrom, i, left, right;
     int *locus = NULL, n_loci, *chrom_locus = NULL, n_to_place, n_allowed;
     int *chrom_all = NULL, n_chrom, n_frame, n_to_punt;
@@ -487,8 +464,7 @@ place(void) {
 }
 
 
-command
-show_chrom(void) {
+command show_chrom(void) {
     int chrom;
     int *marker = NULL, num_markers, **placement_state = NULL;
     char title[TOKLEN + 1];
@@ -536,8 +512,7 @@ show_chrom(void) {
 #define PLACE_AT \
 "Placing markers at log-likelihood threshold %.1lf:\n"
 
-command
-place_together(void) {
+command place_together(void) {
     int chrom, i;
     int *locus = NULL, n_loci, *chrom_locus = NULL, n_to_place;
     int *chrom_all = NULL, n_chrom, n_frame, n_unplaced, num, prev;
@@ -675,8 +650,7 @@ place_together(void) {
 }
 
 
-command
-draw_chromosome(void) {
+command draw_chromosome(void) {
     int chrom;
     char name[PATH_LENGTH + 1];
     FILE *fp = NULL;
@@ -716,8 +690,7 @@ draw_chromosome(void) {
 }
 
 
-command
-draw_all_chromosomes(void) {
+command draw_all_chromosomes(void) {
     char name[PATH_LENGTH + 1];
     FILE *fp = NULL;
 

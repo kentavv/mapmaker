@@ -11,13 +11,6 @@
 /* This file is part of MAPMAKER 3.0b, Copyright 1987-1992, Whitehead Institute
    for Biomedical Research. All rights reserved. See READ.ME for license. */
 
-//#define INC_LIB
-//#define INC_SHELL
-//#define INC_EQN
-//#define INC_STATS
-//#define INC_CALLQCTM
-//#define INC_QTOPLEVEL
-//#define INC_QLOWLEVEL
 #include "qtl.h"
 
 bool isa_test_wiggle(int wiggle_num);
@@ -33,10 +26,6 @@ real min_trait_val, max_trait_val;
 /***** INTERNAL *****/
 char *temp, errmsg[MAXLINE + 1];
 
-//int get_pair_entry();
-//void load_qtl_files(), save_qtl_files();
-//bool save_on_exit();
-//void print_ps_wiggle_order(), print_ps_multi_wiggle();
 void load_qtl_files(void);
 
 bool save_on_exit(bool do_it_now);
@@ -50,8 +39,6 @@ command show_seq_history(void);
 
 command set_trait(void);
 
-command set_genetics(void);
-
 command load_data(void);
 
 command qtl_map(void);
@@ -61,11 +48,7 @@ command qtl_like(void);
 
 command compare(void);
 
-command pheno_histogram(void);
-
 command wiggle(void);
-
-command test_wiggle(void);
 
 command make_trait(void);
 
@@ -88,8 +71,6 @@ command set_print_iter(void);
 command set_print_long(void);
 
 command set_dbg_qctm(void);
-
-command set_max_ints(void);
 
 command set_brute(void);
 
@@ -133,8 +114,6 @@ command list_wiggles(void);
 
 command save_status(void);
 
-command show_trait(void);
-
 command show_test_wiggle(void);
 
 command show_best(void);
@@ -173,8 +152,7 @@ command set_max_trait(void);
 DATA *data;
 
 /***** Initialize all user variables and the command tables *****/
-void
-cmd_init(void) {
+void cmd_init(void) {
 
     array(temp, MAXLINE + 1, char);
 
@@ -318,62 +296,65 @@ cmd_init(void) {
 }
 
 
-void
-help_init(void) {
-/* #include "qtl.code" - outdated help mechanism */
-}
-
-
 /********** These are the QTL commands ***********/
 
-command
-set_print_iter(void) { maybe_set_bool(&print_iter); }
+command set_print_iter(void) {
+    maybe_set_bool(&print_iter);
+}
 
-command
-set_print_rm(void) { maybe_set_bool(&print_rec_mat); }
+command set_print_rm(void) {
+    maybe_set_bool(&print_rec_mat);
+}
 
-command
-set_print_long(void) { maybe_set_bool(&print_long_maps); }
+command set_print_long(void) {
+    maybe_set_bool(&print_long_maps);
+}
 
-command
-set_print_nam(void) { maybe_set_bool(&print_names); }
+command set_print_nam(void) {
+    maybe_set_bool(&print_names);
+}
 
-command
-set_print_scans(void) { maybe_set_bool(&print_scans); }
+command set_print_scans(void) {
+    maybe_set_bool(&print_scans);
+}
 
-command
-set_brute(void) { maybe_set_bool(&brute_force); }
+command set_brute(void) {
+    maybe_set_bool(&brute_force);
+}
 
-command
-set_print_bf(void) { maybe_set_bool(&print_brute_force); }
+command set_print_bf(void) {
+    maybe_set_bool(&print_brute_force);
+}
 
-command
-set_dbg_qctm(void) { maybe_set_bool(&debug_qctm); }
+command set_dbg_qctm(void) {
+    maybe_set_bool(&debug_qctm);
+}
 
-command
-set_bag_qctm(void) { maybe_set_bool(&bag_qctm); }
+command set_bag_qctm(void) {
+    maybe_set_bool(&bag_qctm);
+}
 
-command
-set_tolerance(void) { maybe_set_real(&like_tolerance, 0.0, VERY_BIG, 8.6); }
+command set_tolerance(void) {
+    maybe_set_real(&like_tolerance, 0.0, VERY_BIG, 8.6);
+}
 
-command
-set_autosave(void) { maybe_set_bool(&auto_save); }
+command set_autosave(void) {
+    maybe_set_bool(&auto_save);
+}
 
-command
-set_more_mode(void) { maybe_set_bool(&more_mode); }
+command set_more_mode(void) {
+    maybe_set_bool(&more_mode);
+}
 
-command
-set_min_trait(void) { maybe_set_real(&min_trait_val, 0.0, VERY_BIG, 8.6); }
+command set_min_trait(void) {
+    maybe_set_real(&min_trait_val, 0.0, VERY_BIG, 8.6);
+}
 
-command
-set_max_trait(void) { maybe_set_real(&max_trait_val, 0.0, VERY_BIG, 8.6); }
+command set_max_trait(void) {
+    maybe_set_real(&max_trait_val, 0.0, VERY_BIG, 8.6);
+}
 
-command
-set_max_ints(void) /* BUG? e can only do this before qctm_init! */
-{ maybe_set_int(&max_intervals, 1, 7); } /* limit is discussed in qctm.c */
-
-command
-set_units(void) {
+command set_units(void) {
     if (nullstr(args)) {
         if (units == RECFRACS)
             print("the 'units' are currently set to recombination-fractions.\n");
@@ -402,8 +383,7 @@ set_units(void) {
 }
 
 
-command
-set_intervals(void) {
+command set_intervals(void) {
     int errpos;
 
     qtl_ready(ANY_DATA, NOSEQ, NOTRAIT, NOQCTM);
@@ -429,8 +409,7 @@ set_intervals(void) {
 }
 
 
-command
-show_seq_history(void) {
+command show_seq_history(void) {
     int i, num_to_print, first_to_print, printed_any;
     char *cmd_str;
     TABLE *seq_history;
@@ -459,8 +438,7 @@ show_seq_history(void) {
 }
 
 
-command
-set_trait(void) {
+command set_trait(void) {
     qtl_ready(ANY_DATA, NOSEQ, NOTRAIT, NOQCTM);
     run {
             if (nullstr(args)) {
@@ -483,8 +461,7 @@ set_trait(void) {
 }
 
 
-command
-translate(void) {
+command translate(void) {
     int printed, i;
 
     qtl_ready(ANY_DATA, NOSEQ, NOTRAIT, NOQCTM);
@@ -523,8 +500,7 @@ translate(void) {
 }
 
 
-command
-qtl_map(void) {
+command qtl_map(void) {
     int perm;
 
     qtl_ready(ANY_DATA, SEQ, TRAIT, QCTM);
@@ -541,9 +517,8 @@ qtl_map(void) {
 }
 
 
-command
-singles(void) /* FROB */
-{
+command singles(void) {
+    /* FROB */
     int perm, last;
     real threshold, scale;
 
@@ -567,8 +542,7 @@ singles(void) /* FROB */
 }
 
 
-command
-qtl_like(void) {
+command qtl_like(void) {
 /*
     int perm;
     real like;
@@ -584,8 +558,7 @@ qtl_like(void) {
 }
 
 
-command
-compare(void) {
+command compare(void) {
     int perm, i, comp;
 
     qtl_ready(ANY_DATA, SEQ, TRAIT, QCTM);
@@ -611,8 +584,7 @@ compare(void) {
 }
 
 
-command
-list_compares(void) {
+command list_compares(void) {
     if (first_compare == num_compares)
         print("No compare results have been saved.\n");
     else {
@@ -627,8 +599,7 @@ list_compares(void) {
 #define SAVED_COMP_NUM    "Saved compare number %d.%d:\n"
 #define SAVED_COMP_THRESH "LOD Threshold: %-4.2lf  Falloff: %-4.2lf\n"
 
-command
-show_best(void) {
+command show_best(void) {
     char arg[TOKLEN + 1];
     int compare, contig, i;
     real threshold, falloff;
@@ -685,8 +656,7 @@ show_best(void) {
 
 #define SAVED_COMP_WHICH  "Compare results number%s %d.%d"
 
-command
-show_compare(void) {
+command show_compare(void) {
     char arg[TOKLEN + 1];
     int compare, contig, i;
     COMPARE_OPERATION *op;
@@ -736,8 +706,7 @@ show_compare(void) {
 #define WIGGLES_STORED "Results have been stored as scan numbers %d.1-%d.%d.\n"
 #define THRESHOLD_AND_SCALE "LOD threshold: %-4.2lf  Scale: %-4.2lf per '*'\n"
 
-command
-wiggle(void) {
+command wiggle(void) {
     int perm, wiggle;
     real inc, threshold, scale;
 
@@ -810,8 +779,7 @@ wiggle(void) {
 #define SAVED_WIGGLE_WIGS   "-%d.%d"
 #define SAVED_WIGGLE_TRAIT  " for trait %d (%s).\n"
 
-command
-list_wiggles(void) {
+command list_wiggles(void) {
     char arg[TOKLEN + 1];
     int wiggle, order;
     WIGGLE_OPERATION *op;
@@ -831,8 +799,7 @@ list_wiggles(void) {
     if (wiggle < 0) {
         wiggle = num_wiggles - 1;
         order = wiggles[wiggle]->num_orders - 1;
-    }
-    else if (order < 0 && wiggles[wiggle]->num_orders == 1) order = 0;
+    } else if (order < 0 && wiggles[wiggle]->num_orders == 1) order = 0;
     op = wiggles[wiggle];
     nl();
 
@@ -850,8 +817,7 @@ list_wiggles(void) {
 }
 
 
-command
-show_wiggle(void) {
+command show_wiggle(void) {
     char arg[TOKLEN + 1];
     int wiggle, order, last;
     real threshold, scale;
@@ -868,8 +834,7 @@ show_wiggle(void) {
     if (wiggle < 0) {
         wiggle = num_wiggles - 1;
         order = wiggles[wiggle]->num_orders - 1;
-    }
-    else if (order < 0 && wiggles[wiggle]->num_orders == 1) order = 0;
+    } else if (order < 0 && wiggles[wiggle]->num_orders == 1) order = 0;
     op = wiggles[wiggle];
     nl();
 
@@ -911,8 +876,7 @@ show_wiggle(void) {
 #define PEAKS_NAMES  "Peak names %s1-%s%d have been set.\n"
 #define PEAKS_NONE   "No peaks with a LOD score above the threshold were found!\n(Existing names remain unchanged).\n"
 
-command
-show_peaks(void) {
+command show_peaks(void) {
     char arg[TOKLEN + 1], *name;
     int wiggle, order, last, peak;
     real threshold, falloff;
@@ -931,8 +895,7 @@ show_peaks(void) {
     if (wiggle < 0) {
         wiggle = num_wiggles - 1;
         order = wiggles[wiggle]->num_orders - 1;
-    }
-    else if (order < 0 && wiggles[wiggle]->num_orders == 1) order = 0;
+    } else if (order < 0 && wiggles[wiggle]->num_orders == 1) order = 0;
     if (order < 0) {
         sprintf(ps, WHICH_WIGGLE, wiggle + 1, wiggle + 1, wiggle + 1,
                 wiggles[wiggle]->num_orders - 1);
@@ -974,8 +937,7 @@ show_peaks(void) {
 }
 
 
-command
-new_show_map(void) {
+command new_show_map(void) {
     int perm, i, last, first = TRUE;
     real inc, dist;
 
@@ -1014,8 +976,7 @@ new_show_map(void) {
 #define TEST_ISNT   \
 "Scan number %d.x did not use test genetics in the scanned interval."
 
-command
-show_test_wiggle(void) {
+command show_test_wiggle(void) {
     char arg[TOKLEN + 1];
     int wiggle, order;
     real threshold;
@@ -1059,8 +1020,7 @@ show_test_wiggle(void) {
 #define TRAITS_FULL "You have reached maximum number of traits.\nUse 'forget tr"
 #define TRAIT_MADE "New trait number %d (%s) had been added to the data set.\n"
 
-command
-make_trait(void) {
+command make_trait(void) {
     int i, j, k, adjusted_array_size;
     real *normal_array = NULL;
     NORMAL_TEST *normal_check = NULL;
@@ -1152,8 +1112,7 @@ make_trait(void) {
 }
 
 
-command
-predict(void) {
+command predict(void) {
     char *name = get_temp_string();
     int trait_redone, trait_index = 0, i, perm;
 
@@ -1195,8 +1154,7 @@ predict(void) {
 }
 
 
-command
-dump_scan(void) {
+command dump_scan(void) {
     char arg[TOKLEN + 1];
     char *name = get_temp_string();
     int i, j;
@@ -1215,8 +1173,7 @@ dump_scan(void) {
     if (wiggle < 0) {
         wiggle = num_wiggles - 1;
         order = wiggles[wiggle]->num_orders - 1;
-    }
-    else if (order < 0 && wiggles[wiggle]->num_orders == 1) order = 0;
+    } else if (order < 0 && wiggles[wiggle]->num_orders == 1) order = 0;
 
     sprintf(name, "scan.%d", wiggle);
     sprintf(ps, "dumping to '%s'\n", name);
@@ -1244,8 +1201,7 @@ dump_scan(void) {
     close_file(fp);
 }
 
-command
-dump_traits(void) {
+command dump_traits(void) {
     int t[8], num, i, j;
     FILE *fp = NULL;
 
@@ -1282,8 +1238,7 @@ dump_traits(void) {
 }
 
 
-command
-dump_genome(void) {
+command dump_genome(void) {
     FILE *fp = NULL;
     int k, l;
     int tot_aa = 0, tot_bb = 0, tot_ab = 0, total_num = 0;
@@ -1297,12 +1252,10 @@ dump_genome(void) {
                     if (raw.locus[k][l] == 'A') {
                         tot_aa++;
                         total_num++;
-                    }
-                    else if (raw.locus[k][l] == 'B') {
+                    } else if (raw.locus[k][l] == 'B') {
                         tot_bb++;
                         total_num++;
-                    }
-                    else if (raw.locus[k][l] == 'H') {
+                    } else if (raw.locus[k][l] == 'H') {
                         tot_ab++;
                         total_num++;
                     }
@@ -1321,8 +1274,7 @@ dump_genome(void) {
     }
 }
 
-command
-list_traits(void) {
+command list_traits(void) {
     int i;
 
     print(BIG_DIVIDER);
@@ -1384,8 +1336,7 @@ show_trait(void) {
 #define TRAIT_NOTMADE "Can't delete specified trait.\nTrait %d (%s) was made using the 'make trait' command."
 #define REALLY_KILL "Trait %d (%s)"
 
-command
-forget_trait(void) {
+command forget_trait(void) {
     char trait_name[TOKLEN + 1], c;
     int t;
 
@@ -1422,8 +1373,7 @@ forget_trait(void) {
 #define WIG_LIST_NAMES "%3d.%s  %-10s  %s\n"
 #define WIG_LIST_NUMS  "%3d.%s  %3d    %s\n"
 
-command
-forget_compare(void) {
+command forget_compare(void) {
     int i, comp_number;
     char c;
 
@@ -1452,8 +1402,7 @@ forget_compare(void) {
 }
 
 
-command
-forget_all_compares(void) {
+command forget_all_compares(void) {
     int i;
     char c;
 
@@ -1499,8 +1448,7 @@ forget_scan(void) {
     print("Scan results deleted.\n");
 }
 
-command
-forget_all_scans(void) {
+command forget_all_scans(void) {
     char c;
     int i;
 
@@ -1518,8 +1466,7 @@ forget_all_scans(void) {
 }
 
 
-command
-let(void) {
+command let(void) {
     char *name, *seqnce, *err;
 
     name = args;
@@ -1529,8 +1476,7 @@ let(void) {
         error(err);
 }
 
-command
-names(void) {
+command names(void) {
     /* This is a KLUDGE for now until we write a macro which ports. */
     for (Te = context[active_context]->named_sequences->list; Te != NULL;
          Te = Te->next) {
@@ -1539,8 +1485,7 @@ names(void) {
     }
 }
 
-command
-forget(void) {
+command forget(void) {
     char *name;
     int fail;
 
@@ -1560,8 +1505,7 @@ forget(void) {
 #define BADEDITEDSEQ \
 "An illegal sequence was specified.\nThe interval list remains '%s'.\n"
 
-command
-sequence_editor(void) {
+command sequence_editor(void) {
     char prompt[TOKLEN + 1], *new_seq;
     int errpos;
 
@@ -1598,8 +1542,7 @@ sequence_editor(void) {
 #define NO_LOADED_DATA \
   "no data are loaded\ntype \"load data <filename>\" to load data\n"
 
-command
-load_data(void) {
+command load_data(void) {
     FILE *fpa = NULL, *fpb = NULL, *fpc = NULL;
 //    int num_of_file=0;
     char *dfile = get_temp_string(), *tfile = get_temp_string(), *mfile = get_temp_string();
@@ -1690,62 +1633,8 @@ load_data(void) {
     }
 }
 
-/********** NO MORE PREP IN QTL
 
-
-command prep_data()
-{
-    char *in_name,*out_name,*str;
-    FILE *fp;
-    int length;
-
-    in_name = NULL; out_name = NULL;
-    
-    run {
-	str = get_temp_string();
-	if(!stoken(&args,sREQUIRED,str)) 
-	  input("Input file to be prepared: ",str,25);
-	in_name = str;
-
-	length = len(str);
-	if(streq(&str[length-5],DATA_EXT))
-	  error("raw file cannot have '.data' extension");
-	if(streq(&str[length-7],TRAIT_EXT))
-	  error("raw file cannot have '.trait' extension");
-
-	out_name = get_temp_string();
-	strcpy(out_name,in_name);
-	make_filename(out_name,FORCE_EXTENSION,DATA_EXT);
-
- fp = open_file(in_name,READ);
-	getdataln(fp);  crunch(ln);
-	close_file(fp);
-	if(streq(ln,"data type f2 intercross") ||
-	   streq(ln,"data type f3 intercross") ||
-	   streq(ln,"data type f2 backcross") ||
-	   streq(ln,"data type ri sib") ||
-	   streq(ln,"data type ri self") ||
-	   streq(ln,"data type f2") ||
-	   streq(ln,"data type backcross") ||
-	   streq(ln,"data type quant intercross") ||
-	   streq(ln,"data type quant backcross") ) {
-	    f2_prep(in_name,out_name);
-	}
-	else {
-	    sf(ps,"'%s' is not an allowable data type",ln);
-	    error(ps);
-	}
-    } except_when(CANTOPEN) {
-	sf(ps,"Can't open file '%s'.",in_name);
-	error(ps);
-	
-    }
-}
-
-**********/
-
-command
-save_status(void) {
+command save_status(void) {
     char *name, *name2, *name3;
     FILE *fp;
 
@@ -1813,15 +1702,13 @@ save_status(void) {
 }
 
 
-bool
-save_on_exit(bool do_it_now) {
+bool save_on_exit(bool do_it_now) {
     if (!do_it_now) return (auto_save && data_loaded());
     if (auto_save && data_loaded()) save_status();
     return (TRUE);
 }
 
-void
-save_qtl_files(FILE *fp) {
+void save_qtl_files(FILE *fp) {
     int i;
 
     fprintf(fp, "%d\n", raw.filenumber);
@@ -1849,8 +1736,7 @@ save_qtl_files(FILE *fp) {
 #define QTL_LD_OLD2 \
 "data were saved in the '.qtls' file. These data will not be loaded.\n"
 
-void
-load_qtl_files(void) {
+void load_qtl_files(void) {
     char name[PATH_LENGTH + 1];
     FILE *fp = NULL;
     int i, n_wigs, n_comps, filenum;
@@ -1900,8 +1786,7 @@ load_qtl_files(void) {
 }
 
 
-command
-tester(void) {
+command tester(void) {
     real theta, f2_sum, f3_sum, a, b, c, x, y, z, left_rf, right_rf;
     int qtl, left, right;
 
@@ -1938,8 +1823,7 @@ tester(void) {
 }
 
 
-command
-tweak_weight(void) {
+command tweak_weight(void) {
     real start, end, step, weight;
     int perm;
 
@@ -1967,8 +1851,7 @@ tweak_weight(void) {
 }
 
 
-command
-draw_wiggle(void) {
+command draw_wiggle(void) {
     char arg[TOKLEN + 1];
     int wiggle, order;
     real threshold, scale;
@@ -1984,8 +1867,7 @@ draw_wiggle(void) {
     if (wiggle < 0) {
         wiggle = num_wiggles - 1;
         order = wiggles[wiggle]->num_orders - 1;
-    }
-    else if (order < 0 && wiggles[wiggle]->num_orders == 1) order = 0;
+    } else if (order < 0 && wiggles[wiggle]->num_orders == 1) order = 0;
     nl();
 
     if (order < 0) {
